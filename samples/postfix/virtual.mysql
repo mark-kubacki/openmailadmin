@@ -1,0 +1,19 @@
+# mysql config file for alias lookups on postfix
+# comments are ok.
+#
+
+# the user name and password to log into the mysql server
+hosts = localhost
+user = yourMySQL-User
+password = ##MysqlSecret-SELECT-only##
+
+# the database name on the servers
+dbname = yourMySQL-DB
+
+# the table name
+table = virtual
+
+#
+select_field = dest
+where_field = address
+additional_conditions = and status = '1'

@@ -1,0 +1,30 @@
+/* ACL folder tree */
+	ul.tree, ul.tree_root {
+		list-style-type: none;
+		padding: 0 0 0 0;
+		margin-left: 20px;
+	}
+	ul.tree_root {
+		margin-left: 5px;
+	}
+	li.container, li.collapsed, li.expanded, li.leaf {
+		padding-left: 0px;
+	}
+	span.ina_mbox, span.act_mbox, span.new_mbox {
+		padding-left: 40px;
+	}
+	li.container, li.expanded {
+		background: transparent url("../images/treeview/-.png") 3px 4px no-repeat;
+	}
+	li.collapsed {
+		background: transparent url("../images/treeview/+.png") 3px 4px no-repeat;
+	}
+	span.ina_mbox {
+		background: transparent url("../images/treeview/ina_mbox.png") 20px 3px no-repeat;
+	}
+	span.act_mbox {
+		background: transparent url("../images/treeview/act_mbox.png") 20px 3px no-repeat;
+	}
+	span.new_mbox {
+		background: transparent url("../images/treeview/new_mbox.png") 20px 3px no-repeat;
+	}

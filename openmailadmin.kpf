@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="C1D5BB04-324E-4D66-8DAD-07515F34B90E" name="openmailadmin" kpf_version="2">
+<preference-set id="">
+  <string id="import_dirname">D:\SD\hsysmailadmin</string>
+</preference-set>
+<file url="index.php4" id="A7EB7766-F9E8-40B9-AC93-DD3EDC49DE8E" name="index.php4">
+</file>
+<file url="INSTALL" id="B4DF053F-19EE-467E-946B-067FAE3CD40A" name="INSTALL">
+</file>
+<folder url="design" id="54E5F724-2631-449B-8867-A398395C8031" name="design">
+<file url="design/favicon.ico" id="0CF90ED4-4447-48E5-9034-F7FD30DE9F5C" name="favicon.ico">
+</file>
+<file url="design/shadow.css" id="EAE7BB46-6410-4F7F-82A9-EDA384898E7C" name="shadow.css">
+</file>
+<file url="design/blueray.css" id="24E2C977-C92C-4711-9E48-FC0D94849A91" name="blueray.css">
+</file>
+<file url="design/treeview.js" id="F019D8C9-D4EA-4671-BAAF-F146DAE817C3" name="treeview.js">
+</file>
+<file url="design/treeview.css" id="D31AC981-982C-4C76-B47A-BA651B0D1F17" name="treeview.css">
+</file>
+<file url="design/openmailadmin.js" id="B097D03F-DD93-4747-BEC7-86C1EDBC711B" name="openmailadmin.js">
+</file>
+</folder>
+<folder url="inc" id="50320A59-8123-42D6-A4CE-48B69E72FE4D" name="inc">
+<file url="inc/.htaccess" id="211EBF24-30F8-49AB-80A2-C475242F105D" name=".htaccess">
+</file>
+<file url="inc/config.inc.php4" id="9B9BDBB0-1F3A-44F6-84A7-63505A07B4D8" name="config.inc.php4">
+</file>
+<file url="inc/database.sql" id="468F3019-7E14-457A-A2B6-732C2BBCF260" name="database.sql">
+</file>
+<file url="inc/format_shadow_classes.inc.php4" id="91093092-F01F-4006-9B4A-E8F0CFE099A0" name="format_shadow_classes.inc.php4">
+</file>
+<file url="inc/functions.inc.php4" id="FF4A43E0-6562-462C-A2A5-2CE8D0DB58B3" name="functions.inc.php4">
+</file>
+<file url="inc/miniauth.inc.php4" id="088B2CB9-EB0A-4543-9FE0-D72A095FB266" name="miniauth.inc.php4">
+</file>
+<file url="inc/translation.inc.php4" id="636CA6B1-BFAE-4632-863A-4C82AD0ED37B" name="translation.inc.php4">
+</file>
+<folder url="inc/lang" id="7BB7F9E3-2DA2-4ED4-B1B5-42E7EB7FBC2D" name="lang">
+<file url="inc/lang/de.inc.php" id="0C92163D-13B9-4A89-82BD-9EDF750DA40F" name="de.inc.php">
+</file>
+<file url="inc/lang/en.inc.php" id="78ABA73B-0011-4FBD-BD73-A1E05271FC66" name="en.inc.php">
+</file>
+<file url="inc/lang/pl.inc.php" id="AC45736D-A129-4D61-8AC8-94602989A18A" name="pl.inc.php">
+</file>
+<file url="inc/lang/ru.inc.php" id="EE298944-5778-4F2A-BA47-006EFBD8E84F" name="ru.inc.php">
+</file>
+</folder>
+<file url="inc/_prepend.php4" id="967DBD1F-2B3E-487B-83AC-6CBC0CEBEB35" name="_prepend.php4">
+</file>
+<file url="inc/_append.php4" id="2456E8CB-53A2-4D20-B729-C8FF48CBDB64" name="_append.php4">
+</file>
+<file url="inc/panel_filter.php4" id="914C5C93-262E-4EB2-A86B-BFC17EDDDB6E" name="panel_filter.php4">
+</file>
+<folder id="FA13EF8A-8D1F-413F-A74F-D69CC0FE4B98" name="lib">
+<file url="inc/lib/cyradm.php" id="BF02C4FC-A320-44C2-A80D-4AA26F9D526D" name="cyradm.php">
+</file>
+<file url="inc/lib/fake-cyradm.php" id="1E31943C-3998-469C-B69C-45112B421292" name="fake-cyradm.php">
+</file>
+</folder>
+</folder>
+<folder url="samples" id="0A4E4102-48EC-4C5D-ACC1-B2211945407F" name="samples">
+<preference-set id="">
+</preference-set>
+<file url="samples/hsys_mail.daimon.php4" id="F1FE42AD-EFF6-436E-ABFD-85462FBAC9E7" name="hsys_mail.daimon.php4">
+</file>
+<folder id="D9491610-DFFB-45AF-AF21-8A21894CFF7A" name="pam">
+<file url="samples/pam/imap" id="09D25BFB-2E77-4FF2-9D86-A98A608D5276" name="imap">
+</file>
+<file url="samples/pam/imap.caching" id="AB7F3014-405A-41B5-8B36-6BDEFE5691C3" name="imap.caching">
+</file>
+</folder>
+<folder id="88376299-E399-4127-B8D2-06D97891D3C4" name="postfix">
+<file url="samples/postfix/canonical.mysql" id="2C69A0CF-D7AF-4865-B53D-2F79C0B7AA14" name="canonical.mysql">
+</file>
+<file url="samples/postfix/mydestination.mysql" id="49CE5D62-265F-4AE9-8475-B495814F7D53" name="mydestination.mysql">
+</file>
+<file url="samples/postfix/virtual.mysql" id="EC902CEB-FA9D-4241-81C3-248B74E0454A" name="virtual.mysql">
+</file>
+</folder>
+<file url="samples/config.local.inc.php4" id="5BC66975-03F4-49C2-A268-C7C4D36F3225" name="config.local.inc.php4">
+</file>
+<folder id="4E3FA06B-D878-430F-9582-93C1506E730C" name="cyrus">
+<file url="samples/cyrus/cyrus.conf" id="DD9D0CB2-E444-41ED-B54B-139C0371CBE1" name="cyrus.conf">
+</file>
+<file url="samples/cyrus/imapd.conf" id="46BAB357-0FDD-47F1-927C-464962D9DF59" name="imapd.conf">
+</file>
+</folder>
+<folder id="B82F1140-DB17-4180-911D-B4C9E76A4ADB" name="format_shadow_classes">
+<file url="samples/format_shadow_classes/index.php4" id="FBCF7FF8-6BD1-4D45-AA1C-DB47E4CA5021" name="index.php4">
+</file>
+</folder>
+</folder>
+<file url="regexp.php4" id="A7CCD584-4B5F-4B6C-A85D-C6B5CDDFFCD5" name="regexp.php4">
+</file>
+<file url="addresses.php4" id="4DC55634-2F03-45B7-93B5-EA5221F28A03" name="addresses.php4">
+</file>
+<file url="domains.php4" id="C0C4A1E8-96F6-4980-8380-DCD2AB35FE70" name="domains.php4">
+</file>
+<file url="mailboxes.php4" id="AB30AEEF-1182-4AF5-9A56-B89D3D018B9A" name="mailboxes.php4">
+</file>
+<file url="folders.php4" id="2938F057-AC9F-468C-A36D-72DCD18A6991" name="folders.php4">
+</file>
+<file url="openmailadmin.kpf" id="6C78E0CC-AB55-4BA2-BB2E-D0AA003911BC" name="openmailadmin.kpf">
+</file>
+<folder id="45725083-7551-43A7-AF54-CCE3DD7AC79F" name="templates">
+<preference-set id="">
+  <string id="import_dirname">D:\SD\Mark\openMailAdmin\templates</string>
+  <string id="import_include_matches">*.tpl</string>
+</preference-set>
+<folder url="templates/shadow" id="C14324C5-E89A-47FE-AB36-C1C4677766EB" name="shadow">
+<file url="templates/shadow/caption.tpl" id="0670589C-9C56-4D54-A652-A730F909DDE0" name="caption.tpl">
+</file>
+<file url="templates/shadow/common-footer.tpl" id="4E04D93B-A7C8-4904-8E46-589E172E130F" name="common-footer.tpl">
+</file>
+<file url="templates/shadow/common-footer_nv.tpl" id="CF84CAE9-48AF-4E11-9BA4-59059F526F96" name="common-footer_nv.tpl">
+</file>
+<file url="templates/shadow/common-header.tpl" id="B816D1FC-C80C-4EE1-BFB9-B0719C052B7C" name="common-header.tpl">
+</file>
+<file url="templates/shadow/error_box.tpl" id="8AE5FEAA-65F4-4A3F-86FA-4E2388B12FEA" name="error_box.tpl">
+</file>
+<file url="templates/shadow/filter_panel.tpl" id="B4FC98F0-29BD-41C6-9C15-DE19EDD7D11D" name="filter_panel.tpl">
+</file>
+<file url="templates/shadow/information.tpl" id="0F2011B2-ADF3-4E6F-BAEF-CC0D81B15BDA" name="information.tpl">
+</file>
+<file url="templates/shadow/info_box.tpl" id="471E9974-02E3-4B29-8A66-B1C058701693" name="info_box.tpl">
+</file>
+<file url="templates/shadow/login.tpl" id="C51AEF33-5AE8-414D-9279-B4A0F6B1D5B3" name="login.tpl">
+</file>
+<file url="templates/shadow/motd.tpl" id="4C6EEFDF-60CD-4DD3-BC49-62156B7161E0" name="motd.tpl">
+</file>
+<file url="templates/shadow/password.tpl" id="6FB61D58-16D2-49FE-BDAD-B5290312FA82" name="password.tpl">
+</file>
+<folder url="templates/shadow/addresses" id="610B7337-705D-4D39-8AB8-9CAA3317F1B6" name="addresses">
+<file url="templates/shadow/addresses/admin.tpl" id="829690AE-9ED2-43B0-A637-CF69F6B8B2CD" name="admin.tpl">
+</file>
+<file url="templates/shadow/addresses/list.tpl" id="505A16C7-B63B-4C13-99A2-91FBC6782A5F" name="list.tpl">
+</file>
+</folder>
+<folder url="templates/shadow/domains" id="F7F2BB5B-117F-47E4-8FD9-E31B879FA2FD" name="domains">
+<file url="templates/shadow/domains/admin.tpl" id="23ED1930-C0E4-4979-B7F8-870766AB0899" name="admin.tpl">
+</file>
+<file url="templates/shadow/domains/list.tpl" id="42B6C6B7-9CC1-473C-B17E-994043131E30" name="list.tpl">
+</file>
+</folder>
+<folder url="templates/shadow/folders" id="2CB2B3AF-8774-4E7C-929F-AB46A2D2336A" name="folders">
+<file url="templates/shadow/folders/admin.tpl" id="73819390-A9CB-46CC-87F4-37D339AB8071" name="admin.tpl">
+</file>
+<file url="templates/shadow/folders/list.tpl" id="34A98EB5-CEE6-42A9-8191-058C2A3F7698" name="list.tpl">
+</file>
+</folder>
+<folder url="templates/shadow/mailboxes" id="4C713D99-26C6-48D5-A81C-F1B76C8E28EB" name="mailboxes">
+<file url="templates/shadow/mailboxes/admin.tpl" id="3D80C1B9-3B0A-4803-8C0C-BAD49901F4E1" name="admin.tpl">
+</file>
+<file url="templates/shadow/mailboxes/list.tpl" id="C37503DA-EA71-4FB5-BDD0-349195986367" name="list.tpl">
+</file>
+</folder>
+<folder url="templates/shadow/navigation" id="D30F23DF-3C7A-44C0-8EBB-412344BFE0A4" name="navigation">
+<file url="templates/shadow/navigation/entry.tpl" id="5014E953-A757-4740-A785-05272CFFDD29" name="entry.tpl">
+</file>
+<file url="templates/shadow/navigation/navigation.tpl" id="0D190EFB-5466-476C-828C-3489A8B74B41" name="navigation.tpl">
+</file>
+</folder>
+<folder url="templates/shadow/regexp" id="B675B130-2281-4291-BF66-0AE83055703D" name="regexp">
+<file url="templates/shadow/regexp/admin.tpl" id="BFBF962E-65D6-4BAB-B6B3-35D48F4D8C1E" name="admin.tpl">
+</file>
+<file url="templates/shadow/regexp/list.tpl" id="B94C8B24-C819-4951-B41A-E6B91762C9C6" name="list.tpl">
+</file>
+</folder>
+</folder>
+<folder id="FAA95CBC-1688-4AA3-ADE9-EC9B78E90AEE" name="blueray">
+<preference-set id="">
+  <string id="import_dirname">D:\SD\openMailAdmin\templates\blueray</string>
+</preference-set>
+<file url="templates/blueray/common-footer.tpl" id="DC07F314-C1AC-4B1D-B519-82AF12343B66" name="common-footer.tpl">
+</file>
+<file url="templates/blueray/common-footer_nv.tpl" id="A2B831BB-E8F4-4D2B-B02E-9D09A6533336" name="common-footer_nv.tpl">
+</file>
+<file url="templates/blueray/common-header.tpl" id="397EEDB4-7A83-4104-B982-6CC2A97BF72A" name="common-header.tpl">
+</file>
+<file url="templates/blueray/error_box.tpl" id="B7663E62-BDC1-4B12-96CC-8D80481CC198" name="error_box.tpl">
+</file>
+<file url="templates/blueray/filter_panel.tpl" id="1B54BF26-30F8-4DC3-B524-1BBE4D5CD028" name="filter_panel.tpl">
+</file>
+<file url="templates/blueray/information.tpl" id="1EC01DA5-CB43-45F0-A178-B2D964702A67" name="information.tpl">
+</file>
+<file url="templates/blueray/info_box.tpl" id="CCD7E52A-8A6B-4094-B8E2-0FB75855E746" name="info_box.tpl">
+</file>
+<file url="templates/blueray/login.tpl" id="A3CB2486-DB5B-4A1C-ACBB-F7B7E11A687D" name="login.tpl">
+</file>
+<file url="templates/blueray/motd.tpl" id="3DD88013-27BD-428F-A791-EE444C1516B0" name="motd.tpl">
+</file>
+<file url="templates/blueray/password.tpl" id="854368DD-3786-4D7A-9B5C-250271AAF833" name="password.tpl">
+</file>
+<folder url="templates/blueray/addresses" id="03949908-C126-4809-A876-A529550FDF47" name="addresses">
+<file url="templates/blueray/addresses/admin.tpl" id="01C9E416-D89D-43FC-9557-D4AE65BDE410" name="admin.tpl">
+</file>
+<file url="templates/blueray/addresses/list.tpl" id="1F2595D2-51F5-4899-BFBB-57AF67D577AD" name="list.tpl">
+</file>
+</folder>
+<folder url="templates/blueray/domains" id="5F25E834-CC22-4F70-B132-4FF044983D3C" name="domains">
+<file url="templates/blueray/domains/admin.tpl" id="6A02900C-FB96-493D-A052-864A100F4FC4" name="admin.tpl">
+</file>
+<file url="templates/blueray/domains/list.tpl" id="29AF0CC7-A49A-42AB-9C55-DC193AA40789" name="list.tpl">
+</file>
+</folder>
+<folder url="templates/blueray/folders" id="BAC80B1E-3E86-4F23-88F5-3E6C299BB5B6" name="folders">
+<file url="templates/blueray/folders/admin.tpl" id="7754164C-BCFA-47EE-8201-FED725E6F905" name="admin.tpl">
+</file>
+<file url="templates/blueray/folders/list.tpl" id="FE25B52B-A8D2-4EDA-AECB-83F405963FF4" name="list.tpl">
+</file>
+</folder>
+<folder url="templates/blueray/mailboxes" id="9F5CBE6A-1487-4788-BFD0-2C1E4282EEB9" name="mailboxes">
+<file url="templates/blueray/mailboxes/admin.tpl" id="925EF3D3-3783-4C73-BB80-7108D51B91D2" name="admin.tpl">
+</file>
+<file url="templates/blueray/mailboxes/list.tpl" id="D707E154-EE05-464B-8794-9413814A5FD3" name="list.tpl">
+</file>
+</folder>
+<folder url="templates/blueray/navigation" id="565D7E52-00E5-4D2D-88FA-E3D70A39229F" name="navigation">
+<file url="templates/blueray/navigation/navigation.tpl" id="91CC8867-A0A6-44C8-9DC4-6A3A267A8B6C" name="navigation.tpl">
+</file>
+</folder>
+<folder url="templates/blueray/regexp" id="E5C9B82D-7BA4-429A-87A0-EC16E263CCA9" name="regexp">
+<file url="templates/blueray/regexp/admin.tpl" id="1440FC27-993F-48A4-A4D5-C6A362C6C582" name="admin.tpl">
+</file>
+<file url="templates/blueray/regexp/list.tpl" id="DDFE83BE-3305-4DDF-B0D3-85E2A3AB4A7B" name="list.tpl">
+</file>
+</folder>
+</folder>
+</folder>
+</project>
