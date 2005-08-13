@@ -22,6 +22,8 @@ $cfg['mboxview_pers']		= false;
 $cfg['address']['allow_catchall']	= true;
 // Shall creation of catchalls be limited to the owner of that domain?
 $cfg['address']['restrict_catchall']	= true;
+// If an address has at least that many destinations, it will be hidden.
+$cfg['address']['hide_threshold']	= 5;
 
 // Shall we accept other user's mailbox-names as targets?
 // Only use this if you have few mailboxes!

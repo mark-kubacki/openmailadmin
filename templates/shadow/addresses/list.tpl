@@ -9,7 +9,7 @@
     }
     $alias = array_densify($alias, array('domain', 'dest'));
     for($i = 0; isset($alias[$i]); $i++) {
-	if(count($alias[$i]['dest'][0]) < 5)
+	if(count($alias[$i]['dest'][0]) < $cfg['address']['hide_threshold'])
 	    $alias[$i]['dest'][0] = implode('<br />', $alias[$i]['dest'][0]);
 	else
 	    $alias[$i]['dest'][0] = '<span class="quasi_btn">'.sprintf(txt('96'), count($alias[$i]['dest'][0])).' &raquo;</span><div><span class="quasi_btn">&laquo; '.sprintf(txt('96'), count($alias[$i]['dest'][0])).'</span><br />'.implode('<br />', $alias[$i]['dest'][0]).'</div>';

@@ -12,7 +12,7 @@
     }
     $regexp = array_densify($regexp, array('dest'));
     for($i = 0; isset($regexp[$i]); $i++) {
-	if(count($regexp[$i]['dest'][0]) < 5)
+	if(count($regexp[$i]['dest'][0]) < $cfg['address']['hide_threshold'])
 	    $regexp[$i]['dest'][0] = implode('<br />', $regexp[$i]['dest'][0]);
 	else
 	    $regexp[$i]['dest'][0] = '<span class="quasi_btn">'.sprintf(txt('96'), count($regexp[$i]['dest'][0])).' &raquo;</span><div><span class="quasi_btn">&laquo; '.sprintf(txt('96'), count($regexp[$i]['dest'][0])).'</span><br />'.implode('<br />', $regexp[$i]['dest'][0]).'</div>';

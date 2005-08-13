@@ -25,7 +25,7 @@
 		<?php } ?>
 	    </td>
 	    <td>
-		<?php if(count($entry['dest']) >= 5) { ?>
+		<?php if(count($entry['dest']) >= $cfg['address']['hide_threshold']) { ?>
 		    <span class="quasi_btn"><?= sprintf(txt('96'), count($entry['dest'])) ?> &raquo;</span>
 		    <div>
 		    <span class="quasi_btn">&laquo; <?= sprintf(txt('96'), count($entry['dest'])) ?></span>
