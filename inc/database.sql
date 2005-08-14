@@ -6,7 +6,7 @@ CREATE TABLE `domains` (
   `a_admin` tinytext NOT NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `domain` (`domain`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 INSERT INTO `domains` VALUES (1, 'example.com', 'all, samples', 'admin', 'admin');
 
@@ -29,7 +29,7 @@ CREATE TABLE `user` (
   `a_admin_user` tinyint(2) NOT NULL default '0',
   `a_super` tinyint(2) NOT NULL default '0',
   PRIMARY KEY  (`mbox`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /* HERE: Modify the passwords!
  *       ##CyrusSecret## has to be the same as in your config.local.inc.php4
@@ -45,7 +45,7 @@ CREATE TABLE `virtual` (
   `active` tinyint(1) NOT NULL default '1',
   `neu` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`address`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `virtual` VALUES ('me@example.com', 'admin', 'admin', 1, 1);
 
@@ -57,7 +57,7 @@ CREATE TABLE `virtual_regexp` (
   `active` tinyint(1) NOT NULL default '0',
   `neu` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 INSERT INTO `virtual_regexp` VALUES (11, '/^(postmaster|abuse|security|root)@example\\.com/', 'admin', 'admin', 1, 1);
 
@@ -67,7 +67,7 @@ CREATE TABLE `imap_demo` (
   `qmax` int(10) unsigned NOT NULL default '0',
   `ACL` tinytext,
   UNIQUE KEY `mailbox` (`mailbox`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `imap_demo` VALUES ('user.admin', 0, 0, 'admin lrswipcda');
 INSERT INTO `imap_demo` VALUES ('shared', 0, 0, 'anyone lrswipcda');
