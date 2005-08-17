@@ -16,4 +16,4 @@ table = virtual
 #
 select_field = dest
 where_field = address
-additional_conditions = and status = '1'
+additional_conditions = and active = '1'
