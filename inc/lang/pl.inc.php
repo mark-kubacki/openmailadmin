@@ -17,7 +17,7 @@ $res['pl']	= array(
 		.'Zapytaj odpowiedzalnego albo administratora.',
 '13'	=>	'Niepoprawny alias.',
 '14'	=>	'Maxymalna ilo&#347;&#263; alias&oacute;w osi&#261;gni&#281;ta.',
-'15'	=>	'Adresy wyma&#380;one: ',
+'15'	=>	'Te adresy zosta&#322;y wymazane: %s.',
 '16'	=>	'Nie posiadasz potrzebnej autoryzacji do tej akcji.',
 '17'	=>	'Adresy',
 '18'	=>	'Adres',

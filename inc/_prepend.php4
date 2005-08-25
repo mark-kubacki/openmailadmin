@@ -1,5 +1,5 @@
 <?php
-$version = '2005-08-10';
+$version = '2005-08-25';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
@@ -79,6 +79,12 @@ else {
 	$cpate	= array('person' => txt('28'), 'mbox' => $cuser['mbox']);
     }
 }
+
+// include the backend
+include('lib/openmailadmin.php');
+$oma 	= new openmailadmin();
+$oma->authenticated_user 	= &$authinfo;
+$oma->current_user 		= &$cuser;
 
 // Display navigation menu.
 $arr_navmenu = array();
