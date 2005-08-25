@@ -49,7 +49,7 @@ if (!function_exists('file_get_contents')) {
  */
 function hsys_ob_end() {
     $output = ob_get_clean();
-    $output = preg_replace(array('/\>\s+\</', '/\s*\n+\s*/', '/\s{2,}/'), array('><', '', ' '), $output);
+    $output = preg_replace(array('/\>\s+\</', '/\s*\n+\s*(?:(?=.*\<textarea)|(?!.*\<\/textarea))/', '/\s{2,}/'), array('><', '', ' '), $output);
     @ob_start('ob_gzhandler');
     echo($output);
     ob_end_flush();
