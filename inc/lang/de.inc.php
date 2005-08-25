@@ -18,7 +18,7 @@ $res['de']	= array(
 		.'Bitte bei Fragen an den Paten oder den Verwalter wenden.',
 '13'	=>	'Ungültiges Alias.',
 '14'	=>	'Maximale Anzahl an Aliasen erreicht.',
-'15'	=>	'Adressen gelöscht: ',
+'15'	=>	'Adressen gelöscht: %s.',
 '16'	=>	'Sie besitzen nicht die nötigen Rechte für diese Aktion.',
 '17'	=>	'Adressen',
 '18'	=>	'Adresse',

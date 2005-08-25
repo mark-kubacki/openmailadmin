@@ -18,7 +18,7 @@ $res['en']	= array(
 		.'On questions ask your Paten or administrator.',
 '13'	=>	'Invalid alias.',
 '14'	=>	'Alias limit reached.',
-'15'	=>	'Deleted addresses: ',
+'15'	=>	'These addresses have been deleted: %s.',
 '16'	=>	'You have insufficient permissions for this command.',
 '17'	=>	'Addresses',
 '18'	=>	'Address',
