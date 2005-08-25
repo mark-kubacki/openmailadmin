@@ -1,0 +1,18 @@
+# mysql config file for local domain (like sendmail's sendmail.cw) lookups on postfix
+# comments are ok.
+#
+
+# the user name and password to log into the mysql server
+hosts = localhost
+user = yourMySQL-User
+password = ##MysqlSecret-SELECT-only##
+
+# the database name on the servers
+dbname = yourMySQL-DB
+
+# the table name
+table = domains
+
+#
+select_field = domain
+where_field = domain
