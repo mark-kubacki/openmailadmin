@@ -28,6 +28,7 @@
 	td, th {
 		vertical-align: top;
 		text-align: left;
+		white-space: nowrap;
 	}
 
 /* first screen */
@@ -251,6 +252,11 @@
 	#admin dd, #data dd {
 		display: table-cell;
 		width: 400px;
+		white-space: nowrap;
+	}
+	#admin li {
+		float: left;
+		margin-right: 5px;
 	}
 	#admin .submit, #login input[type="submit"] {
 		background-color: inherit;
@@ -341,6 +347,9 @@
 	}
 
 /* special modifiers */
+	li.leaf span a {
+		text-decoration: none;
+	}
 	span.quasi_btn {
 		color: #003399;
 		cursor: pointer;

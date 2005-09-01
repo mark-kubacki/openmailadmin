@@ -53,7 +53,7 @@ TD.caption_dea
 }
 TD.std
 {	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
-	background-color: #ebe6e3;
+	background-color: #ebe6e3; white-space: nowrap;
 }
 TD.ed
 {	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
@@ -117,4 +117,10 @@ PRE
 }
 CODE, PRE, CITE
 {	font-family: "courier new", "courier", monospace;
+}
+UL.ed
+{	list-style: none; padding: 0 0 0 0; margin: 0 0 0 0;
+}
+UL.ed li
+{	float: left; margin-right: 5px;
 }

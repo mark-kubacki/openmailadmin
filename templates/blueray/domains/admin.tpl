@@ -4,11 +4,13 @@
 	<dl>
 	    <dt><?= txt('20') ?></dt>
 	    <dd>
-		<?= $input->radio('action', 'new') ?> <?= txt('21') ?>
+		<ul>
+		<li><?= $input->radio('action', 'new') ?> <?= txt('21') ?></li>
 		<?php if($editable_domains > 0) { ?>
-		    | <?= $input->radio('action', 'delete') ?><?= txt('22') ?>
-		    | <?= $input->radio('action', 'change') ?><?= txt('59') ?>
+		    <li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
+		    <li><?= $input->radio('action', 'change') ?><?= txt('59') ?></li>
 		<?php } ?>
+		</ul>
 	    </dd>
 	</dl>
 	<dl>

@@ -3,6 +3,12 @@
 	<?= $login_error ?>
     </div>
 <?php } ?>
+<?php if(strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE')) { ?>
+    <div id="login_error">
+	Your outdated browser is not standard-compliant and does not support CSS 2.1!<br />
+	Therefore you will encounter serious display problems.
+    </div>
+<?php } ?>
 <div id="login">
     <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
     <h1><?= txt('122') ?></h1>

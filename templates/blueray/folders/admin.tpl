@@ -9,9 +9,11 @@
 	<dl>
 	    <dt><?= txt('20') ?></dt>
 	    <dd>
-		<?= $input->radio('action', 'new') ?><?= txt('21') ?>
-		| <?= $input->radio('action', 'delete') ?><?= txt('22') ?>
-		| <?= $input->radio('action', 'rights') ?><?= txt('106') ?>
+		<ul>
+		<li><?= $input->radio('action', 'new') ?><?= txt('21') ?></li>
+		<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
+		<li><?= $input->radio('action', 'rights') ?><?= txt('106') ?></li>
+		</ul>
 	    </dd>
 	</dl>
 	<dl>

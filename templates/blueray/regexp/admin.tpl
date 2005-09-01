@@ -4,11 +4,13 @@
 	<dl>
 	    <dt><?= txt('20') ?></dt>
 	    <dd>
-		<?= $input->radio('action', 'new') ?> <?= txt('21') ?>
-		| <?= $input->radio('action', 'delete') ?><?= txt('22') ?>
-		| <?= $input->radio('action', 'dest') ?><?= txt('23') ?>
-		| <?= $input->radio('action', 'active') ?><?= txt('24') ?>
-		| <?= $input->radio('action', 'probe') ?><?= txt('37') ?>
+		<ul>
+		<li><?= $input->radio('action', 'new') ?> <?= txt('21') ?></li>
+		<li><?= $input->radio('action', 'delete') ?> <?= txt('22') ?></li>
+		<li><?= $input->radio('action', 'dest') ?> <?= txt('23') ?></li>
+		<li><?= $input->radio('action', 'active') ?> <?= txt('24') ?></li>
+		<li><?= $input->radio('action', 'probe') ?> <?= txt('37') ?></li>
+		</ul>
 	    </dd>
 	</dl>
 	<dl>
