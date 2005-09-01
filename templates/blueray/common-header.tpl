@@ -6,6 +6,8 @@
     <script src="<?= $cfg['design_dir'] ?>/treeview.js" type="text/javascript"></script>
     <script src="<?= $cfg['design_dir'] ?>/openmailadmin.js" type="text/javascript"></script>
     <link rel="stylesheet" href="<?= $cfg['design_dir'] ?>/treeview.css" type="text/css" />
-    <link rel="stylesheet" href="<?= $cfg['design_dir'] ?>/blueray.css" type="text/css" title="foxlike" />
+    <link rel="stylesheet" href="<?= $cfg['design_dir'] ?>/blueray.css" type="text/css" title="blueray" />
+    <link rel="alternate stylesheet" href="<?= $cfg['design_dir'] ?>/blueray.css" type="text/css" title="widescreen" />
+    <link rel="alternate stylesheet" href="<?= $cfg['design_dir'] ?>/blueray_widescreen.css" type="text/css" title="widescreen" />
     </head>
 <body onload="init_tree(); init_oma()">

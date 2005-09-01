@@ -1,0 +1,20 @@
+#filter {
+	width: 100%;
+	clear: both;
+}
+
+#content {
+	min-width: 1200px;
+}
+
+#data, #admin {
+	float: left;
+	clear: none;
+	margin-top: 0;
+	margin-right: 0;
+	margin-bottom: 1em;
+}
+
+#admin {
+	margin-left: 1em;
+}
