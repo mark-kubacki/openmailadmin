@@ -76,13 +76,5 @@ $cfg['Servers']['DB'][] = array(
 );
 */
 
-if(is_readable('inc/config.local.inc.php4')) {
-    include('inc/config.local.inc.php4');
-}
-else if(is_readable($_SERVER['DOCUMENT_ROOT'].'/openMailAdmin/inc/config.local.inc.php4')) {
-    include($_SERVER['DOCUMENT_ROOT'].'/openMailAdmin/inc/config.local.inc.php4');
-}
-else {
-    die('You have to create an configuration file, first.');
-}
+
 ?>
