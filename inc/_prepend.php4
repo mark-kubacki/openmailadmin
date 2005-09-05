@@ -1,5 +1,5 @@
 <?php
-$version = '2005-08-25';
+$version = '2005-09-05';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
@@ -8,14 +8,11 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
 include('config.inc.php4');
-	if(is_readable('inc/config.local.inc.php4')) {
-	include('inc/config.local.inc.php4');
-	}
-	else if(is_readable($_SERVER['DOCUMENT_ROOT'].'/openMailAdmin/inc/config.local.inc.php4')) {
-	include($_SERVER['DOCUMENT_ROOT'].'/openMailAdmin/inc/config.local.inc.php4');
+	if(is_readable('config.local.inc.php4')) {
+	    include('config.local.inc.php4');
 	}
 	else {
-	die('You have to create an configuration file, first.');
+	    die('You have to create an configuration file, first.');
 	}
 include('translation.inc.php4');
 include('format_shadow_classes.inc.php4');
@@ -41,8 +38,10 @@ include('templates/'.$cfg['theme'].'/common-header.tpl');
 // Authentification
 include('miniauth.inc.php4');
 
-if (!(isset($cfg['Servers']['IMAP']['TYPE'])) || !(isset($cfg['Servers']['DB']['TYPE']))) 
+if (!(isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])
+	&& isset($cfg['Servers']['DB'][$_SESSION['server']]['TYPE']))) {
 	die('You have forgotten to set TYPEs in the configuration files!');
+}
 
 switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
     case 'fake-imap':		include('lib/fake-cyradm.php');	break;
