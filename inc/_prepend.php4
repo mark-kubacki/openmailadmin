@@ -11,6 +11,9 @@ include('config.inc.php4');
 	if(is_readable('config.local.inc.php4')) {
 	    include('config.local.inc.php4');
 	}
+	else if(is_readable('inc/config.local.inc.php4')) {
+	    include('inc/config.local.inc.php4');
+	}
 	else {
 	    die('You have to create an configuration file, first.');
 	}
