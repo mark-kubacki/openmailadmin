@@ -41,6 +41,9 @@ include('templates/'.$cfg['theme'].'/common-header.tpl');
 // Authentification
 include('miniauth.inc.php4');
 
+if (!(isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']))) 
+	die('You have forgotten to set TYPEs in the configuration files!');
+
 switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
     case 'fake-imap':		include('lib/fake-cyradm.php');	break;
     default:			include('lib/cyradm.php');	break;
