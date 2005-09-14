@@ -2,7 +2,7 @@
 <!-- Komodo Project File - DO NOT EDIT -->
 <project id="C1D5BB04-324E-4D66-8DAD-07515F34B90E" name="openmailadmin" kpf_version="2">
 <preference-set id="">
-  <string id="import_dirname">D:\SD\hsysmailadmin</string>
+  <string id="import_dirname">D:\xampp\htdocs\openmailadmin</string>
 </preference-set>
 <file url="index.php4" id="A7EB7766-F9E8-40B9-AC93-DD3EDC49DE8E" name="index.php4">
 </file>

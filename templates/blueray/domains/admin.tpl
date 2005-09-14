@@ -6,7 +6,7 @@
 	    <dd>
 		<ul>
 		<li><?= $input->radio('action', 'new') ?> <?= txt('21') ?></li>
-		<?php if($editable_domains > 0) { ?>
+		<?php if($oma->editable_domains > 0) { ?>
 		    <li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 		    <li><?= $input->radio('action', 'change') ?><?= txt('59') ?></li>
 		<?php } ?>
@@ -14,19 +14,19 @@
 	    </dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_name', '1') ?><?= txt('55') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'domain') ?><?= txt('55') ?></dt>
 	    <dd><?= $input->_generate('text', 'domain', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '64', 'onchange' => 'c_name.checked=true')) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_owner', '1') ?><?= txt('56') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'owner') ?><?= txt('56') ?></dt>
 	    <dd><?= $input->_generate('text', 'owner', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '16', 'onchange' => 'c_owner.checked=true')) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_admin', '1') ?><?= txt('57') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'a_admin') ?><?= txt('57') ?></dt>
 	    <dd><?= $input->_generate('text', 'a_admin', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'onchange' => 'c_admin.checked=true')) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_cat', '1') ?><?= txt('58') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'categories') ?><?= txt('58') ?></dt>
 	    <dd><?= $input->_generate('text', 'categories', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '100', 'onchange' => 'c_cat.checked=true')) ?></dd>
 	</dl>
     <span class="quasi_btn" id="admin_hide">&laquo; <?= txt('60') ?></span>

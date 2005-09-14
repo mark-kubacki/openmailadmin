@@ -7,10 +7,10 @@
     }
     $domains = array_densify($domains, array('owner', 'a_admin'));
 ?>
-<?php if($authinfo['a_admin_domains'] > 0) { ?>
+<?php if($oma->authenticated_user['a_admin_domains'] > 0) { ?>
     <form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
-<?= caption(txt('54'), getPageList('<a href="'.mkSelfRef(array('dom_page' => '%d')).'">%d</a>', $cuser['n_domains'], $_SESSION['limit']['upper'], $_SESSION['limit'][$cuser['mbox']]['dom_page'])) ?>
+<?= caption(txt('54'), getPageList('<a href="'.mkSelfRef(array('dom_page' => '%d')).'">%d</a>', $oma->current_user['n_domains'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['dom_page'])) ?>
 <?= $table->outer_shadow_start() ?>
 <table border="0" cellpadding="1" cellspacing="1">
     <tr>

@@ -1,7 +1,7 @@
 <form action="<?= mkSelfRef() ?>" method="post">
 <div id="data">
-<h2><?= txt('17') ?> <?= $cuser['used_alias'] ?>/<?= $cuser['max_alias'] ?></h2>
-<span class="pagelist"><?= getPageList('<a href="'.mkSelfRef(array('addr_page' => '%d')).'">%d</a>', $cuser['used_alias'], $_SESSION['limit']['upper'], $_SESSION['limit'][$cuser['mbox']]['addr_page']) ?></span>
+<h2><?= txt('17') ?> <?= $oma->current_user['used_alias'] ?>/<?= $oma->current_user['max_alias'] ?></h2>
+<span class="pagelist"><?= getPageList('<a href="'.mkSelfRef(array('addr_page' => '%d')).'">%d</a>', $oma->current_user['used_alias'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['addr_page']) ?></span>
 <table class="data">
     <tr>
 	<th colspan="2"><?= txt('18') ?></th>

@@ -16,7 +16,7 @@
 	    <dt><?= txt('18') ?></dt>
 	    <dd>
 		<?= $input->_generate('text', 'alias', null, array('class' => 'email_alias', 'maxlength' => '190')) ?>
-		@<?= addProp($input->select('domain', $cuser['domain_set']), array('class' => 'email_domain')) ?>
+		@<?= addProp($input->select('domain', $oma->current_user['domain_set']), array('class' => 'email_domain')) ?>
 	    </dd>
 	</dl>
 	<dl>
