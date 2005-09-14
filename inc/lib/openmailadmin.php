@@ -415,7 +415,7 @@ class openmailadmin {
 	}
 	// Otherwise (and if only one) try adapting older addresses.
 	if(count($domains) == 1) {
-	    if(preg_match('/[a-z0-9\-\_\.]{2,}\.[a-z]{2,}/i', $_POST['domain'])) {
+	    if(preg_match('/^'.$this->regex_valid_domain.'$/i', $data['domain'])) {
 		// Grep the old name, we will need it later for replacement.
 		$result = mysql_query('SELECT ID, domain AS name FROM '.$cfg['tablenames']['domains'].' WHERE ID = "'.mysql_real_escape_string($domains[0]).'" AND (owner="'.$this->authenticated_user['mbox'].'" or a_admin LIKE "%'.$this->authenticated_user['mbox'].'%")');
 		if(mysql_num_rows($result) == 1) {
