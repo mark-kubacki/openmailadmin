@@ -48,6 +48,10 @@ if (!function_exists('file_get_contents')) {
  * Removes unneccesary whitespace and invokes ob_end_flush().
  */
 function hsys_ob_end() {
+    $output = ob_get_clean();
+    $output = preg_replace(array('/\>\s+\</', '/(\s{1})\s{1,}/', '/\s*\n+\s*(?:(?=.*\<textarea)|(?!.*\<\/textarea))/'), array('><', '$1', ''), $output);
+    @ob_start('ob_gzhandler');
+    echo($output);
     ob_end_flush();
 }
 
