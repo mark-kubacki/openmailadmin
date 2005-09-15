@@ -1,0 +1,6 @@
+<Files *.kpf>
+    Deny From All
+</Files>
+<Files .svn>
+    Deny From All
+</Files>
