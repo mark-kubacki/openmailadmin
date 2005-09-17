@@ -44,6 +44,10 @@ $cfg['admins_delete_domains']	= false;
 // Comment out the following if you not wish to get these subfolders created.
 $cfg['folders']['create_default']	= array('Trash','UMS');
 
+// Default settings for passwords.
+$cfg['passwd']['min_length']	= 8;
+$cfg['passwd']['max_length']	= 16;
+
 // If this file exists it will be shown on login.
 $cfg['motd']		= 'motd.txt';
 

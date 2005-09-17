@@ -51,7 +51,7 @@ $res['en']	= array(
 '43'	=>	'... repeat',
 '44'	=>	'New passwords are not identical.<br />',
 '45'	=>	'For security purposes you have to enter your old password at your account.<br />',
-'46'	=>	'New password has to be between eight and 16 characters long.<br />',
+'46'	=>	'New password has to be between %d and %d characters long.<br />',
 '47'	=>	'Only a combination of at least one small letter, capital letter<br />'
 		.'and a number (optionally additional other characters) is sufficiently safe.<br />',
 '48'	=>	'Password successfully changed.<br />',

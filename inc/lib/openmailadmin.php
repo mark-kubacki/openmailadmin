@@ -505,7 +505,7 @@ class openmailadmin {
 	}
 	else if(strlen($new) < $cfg['passwd']['min_length']
 		|| strlen($new) > $cfg['passwd']['max_length']) {
-	    $this->error[]	= txt('46');
+	    $this->error[]	= sprintf(txt('46'), $cfg['passwd']['min_length'], $cfg['passwd']['max_length']);
 	}
 	else {
 	    // Warn about insecure passwords, but let them pass.

@@ -51,10 +51,10 @@ $res['de']	= array(
 '43'	=>	'... wiederholen',
 '44'	=>	'Die beiden neuen Passwörter sind nicht identisch.<br />',
 '45'	=>	'Zur Sicherheit muss das alte Kennwort beim eigenen Account eingegeben werden.<br />',
-'46'	=>	'Das neue muss mindestens acht Zeichen lang sein, höchstens 16.<br />',
+'46'	=>	'Das neue Kennwort muss mindestens %d Zeichen lang sein, höchstens %d.<br />',
 '47'	=>	'Nur eine Kombination aus mindestens jeweils einem Kleinbuchstaben,<br />'
 		.'Großbuchstaben und einer Zahl (und optional anderem) ist ausreichend sicher.<br />',
-'48'	=>	'Kennwort erfolgreich geändert.<br />',
+'48'	=>	'Das Kennwort wurde erfolgreich geändert.<br />',
 '49'	=>	'Sie besitzen nicht das nötige Recht, das Kennwort zu ändern:<br />'
 		.'Nur der Benutzer selbst oder sein direkter Pate können das Kennwort ändern.<br />',
 

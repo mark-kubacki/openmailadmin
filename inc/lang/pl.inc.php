@@ -50,7 +50,7 @@ $res['pl']	= array(
 '43'	=>	'... powt&oacute;rzy&#263;',
 '44'	=>	'Nowe has&#322;o i powt&oacute;rka nie s&#261; identyczne.<br />',
 '45'	=>	'Dla bezpiecze&#324;stwa musi by&#263; stare has&#322;o podane we w&#322;asnym koncie.<br />',
-'46'	=>	'Nowe has&#322;o musi zawiera&#263; pomi&#281;dzy 8 a 16 znak&oacute;w.<br />',
+'46'	=>	'Nowe has&#322;o musi zawiera&#263; pomi&#281;dzy %d a %d znak&oacute;w.<br />',
 '47'	=>	'Tylko kombinacje z ma&#322;ych i du&#380;ych liter oraz jednej<br />'
 		.'liczby (alternatywnie innych znak&oacute;w) s&#261; wystarczaj&#261;co bezpieczne.<br />',
 '48'	=>	'Has&#322;o zmienione.<br />',
