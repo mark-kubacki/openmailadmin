@@ -31,12 +31,15 @@ $cyr->imap_logout();
 // ------------------------------ Password --------------------------------------------------------
 if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'change') {
     $oma->status_reset();
-    if(isset($_POST['old_pass'])
-	    && $oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2'], $_POST['old_pass'])
-	    || !isset($_POST['old_pass'])
-		&& $oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2'])) {
-	// we have to reset the current user's cleartext password
-	$_SESSION['pass_clear'] = $_POST['new_pass1'];
+    if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
+	if($oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2'], $_POST['old_pass'])) {
+	    // we have to reset the current user's cleartext password
+            // $_SESSION will later be read as $authinfo
+	    $_SESSION['pass_clear'] = $_POST['new_pass1'];
+	}
+    }
+    else {
+	$oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2']);
     }
 
     if($oma->errors_occured()) {
