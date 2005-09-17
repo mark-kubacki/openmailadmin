@@ -23,8 +23,6 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 		    $destination = array($oma->current_user['mbox']);
 		    error(txt('10'));
 		}
-		// Modify the user's 'dest'-field as well.
-		//$_POST['dest'] = implode("\n", $destination);
 	    }
 	}
 	// We need addresses as parameters for every action except the creation of new addresses.
