@@ -155,12 +155,16 @@ function getDomainSet($user, $categories) {
  * (unfortunately, PHP does not support inline functions)
  */
 function IsDescendant($child, $parent, $levels = 7, $cache = array()) {
-    global $cfg; static $tree = array();	// we'll do a bit caching
+    global $cfg;
+    // initialize cache
+    if(!isset($_SESSION['cache']['IsDescendant'])) {
+	$_SESSION['cache']['IsDescendant'] = array();
+    }
 
     if(trim($child) == '' || trim($parent) == '')
 	return false;
-    if(isset($tree[$parent][$child]))
-	return $tree[$parent][$child];
+    if(isset($_SESSION['cache']['IsDescendant'][$parent][$child]))
+	return $_SESSION['cache']['IsDescendant'][$parent][$child];
 
     if($child == $parent) {
 	$rec = true;
@@ -169,7 +173,8 @@ function IsDescendant($child, $parent, $levels = 7, $cache = array()) {
 	$rec = false;
     }
     else {
-	$result = mysql_query('SELECT pate FROM '.$cfg['tablenames']['user'].' WHERE mbox=\''.$child.'\' LIMIT 1');
+	$result = mysql_query('SELECT pate FROM '.$cfg['tablenames']['user']
+				.' WHERE mbox="'.$child.'" LIMIT 1');
 	if(!$result || mysql_num_rows($result) < 1) {
 	    $rec = false;
 	}
@@ -185,10 +190,9 @@ function IsDescendant($child, $parent, $levels = 7, $cache = array()) {
 	    else {
 		$rec = IsDescendant($inter, $parent, $levels--, array_merge($cache, array($inter)));
 	    }
-	    $tree[$parent][$inter] = $rec;
 	}
     }
-    $tree[$parent][$child] = $rec;
+    $_SESSION['cache']['IsDescendant'][$parent][$child] = $rec;
     return $rec;
 }
 
