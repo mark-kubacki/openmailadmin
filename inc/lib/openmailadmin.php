@@ -448,5 +448,76 @@ class openmailadmin {
 	return false;
     }
 
+/* ******************************* domains ********************************** */
+    /*
+     * (Re)sets the user's password.
+     * Use this if the old password does not matter.
+     * Includes the check whether the user has the right to do this.
+     */
+    function user_set_password($username, $plaintext_password) {
+	global $cfg;
+
+	// Check whether the authenticated user has the right to do that.
+	if($this->authenticated_user['a_super'] < 1
+		&& $username != $this->authenticated_user['mbox']
+		&& !IsDescendant($username, $this->authenticated_user['mbox'])) {
+	    $this->error[]	= txt('49');
+	    return false;
+	}
+
+	if($plaintext_password != '') {
+	    $new_crypt	= crypt($plaintext_password, substr($plaintext_password,0,2));
+	    $new_md5	= md5($plaintext_password);
+	}
+	else {
+	    $new_crypt = '';
+	    $new_md5 = '';
+	}
+	mysql_query('UPDATE '.$cfg['tablenames']['user']
+			.' SET pass_crypt="'.$new_crypt.'", pass_md5="'.$new_md5.'"'
+			.' WHERE mbox="'.$username.'" LIMIT 1');
+	if(mysql_affected_rows() > 0) {
+	    $this->info[]	= txt('48');
+	    return true;
+	}
+	else {
+	    $this->error[]	= mysql_error();
+	    return false;
+	}
+    }
+
+    /*
+     * Changes the current user's password.
+     * This requires the former password for authentication if current user and
+     * authenticated user are the same.
+     */
+   function user_change_password($new, $new_repeat, $old_passwd = null) {
+	global $cfg;
+
+	if($this->current_user['mbox'] == $this->authenticated_user['mbox']
+		&& !is_null($old_passwd)
+		&& !(passwd_check($old_passwd, $this->current_user['pass_crypt'])
+			|| passwd_check($old_passwd, $this->current_user['pass_md5']))) {
+	    $this->error[]	= txt('45');
+	}
+	else if($new != $new_repeat) {
+	    $this->error[]	= txt('44');
+	}
+	else if(strlen($new) < $cfg['passwd']['min_length']
+		|| strlen($new) > $cfg['passwd']['max_length']) {
+	    $this->error[]	= txt('46');
+	}
+	else {
+	    // Warn about insecure passwords, but let them pass.
+	    if(!(preg_match('/[a-z]{1}/', $new) && preg_match('/[A-Z]{1}/', $new) && preg_match('/[0-9]{1}/', $new))) {
+		$this->error[]	= txt('47');
+	    }
+	    if($this->user_set_password($this->current_user['mbox'], $new)) {
+		return true;
+	    }
+	}
+
+	return false;
+    }
 }
 ?>
