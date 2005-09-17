@@ -139,6 +139,7 @@ $res['de']	= array(
 '124'	=>	'abmelden',
 '125'	=>	'Version',
 '126'	=>	'Erweiterungen',
+'127'	=>	'Ungültiger Ausdruck.',
 );
 
 ?>

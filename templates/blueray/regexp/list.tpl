@@ -1,10 +1,10 @@
 <form action="<?= mkSelfRef() ?>" method="post">
 <div id="data">
-<h2><?= txt('33') ?> <?= $cuser['used_regexp'] ?>/<?= $cuser['max_regexp'] ?></h2>
-<span class="pagelist"><?= getPageList('<a href="'.mkSelfRef(array('regx_page' => '%d')).'">%d</a>', $cuser['used_regexp'], $_SESSION['limit']['upper'], $_SESSION['limit'][$cuser['mbox']]['regx_page']) ?></span>
+<h2><?= txt('33') ?> <?= $oma->current_user['used_regexp'] ?>/<?= $oma->current_user['max_regexp'] ?></h2>
+<span class="pagelist"><?= getPageList('<a href="'.mkSelfRef(array('regx_page' => '%d')).'">%d</a>', $oma->current_user['used_regexp'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['regx_page']) ?></span>
 <table class="data">
     <tr>
-	<th colspan="2"><?= txt('34') ?>&nbsp;&nbsp;&nbsp;<?= $cuser['reg_exp'] ?></th>
+	<th colspan="2"><?= txt('34') ?>&nbsp;&nbsp;&nbsp;<?= $oma->current_user['reg_exp'] ?></th>
     </tr>
     <tr>
 	<th><?= txt('18') ?></td>

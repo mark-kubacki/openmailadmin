@@ -519,5 +519,137 @@ class openmailadmin {
 
 	return false;
     }
+
+/* ******************************* domains ********************************** */
+    /*
+     * Returns a long list with all regular expressions (the virtual_regexp table).
+     * If $match_against is given, the flag "matching" will be set on matches.
+     */
+    function get_regexp($match_against = null) {
+	global $cfg;
+	$regexp = array();
+
+	$result = mysql_query('SELECT * FROM '.$cfg['tablenames']['virtual_regexp']
+			.' WHERE owner="'.$this->current_user['mbox'].'"'.$_SESSION['filter']['str']['regexp']
+			.' ORDER BY dest'.$_SESSION['limit']['str']['regexp']);
+	if(mysql_num_rows($result) > 0) {
+	    while($row = mysql_fetch_assoc($result)) {
+		// if ordered, check whether expression matches probe address
+		if(!is_null($match_against)
+			&& @preg_match($row['reg_exp'], $match_against)) {
+		    $row['matching']	= true;
+		}
+		else {
+		    $row['matching']	= false;
+		}
+		// explode all destinations (as there may be many)
+		$dest = array();
+		foreach(explode(',', $row['dest']) as $key => $value) {
+		    $value = trim($value);
+		    // replace the current user's name with "mailbox"
+		    if($value == $this->current_user['mbox'])
+			$dest[] = txt('5');
+		    else
+			$dest[] = $value;
+		}
+		$row['dest'] = $dest;
+		// add the current entry to our list of aliases
+		$regexp[] = $row;
+	    }
+	    mysql_free_result($result);
+	}
+
+	return $regexp;
+    }
+    /*
+     * Creates a new regexp-address.
+     */
+    function regexp_create($regexp, $arr_destinations) {
+	global $cfg;
+
+	// some dull checks;
+	// if someone knows how to find out whether an string is a valid regexp -> write me please
+	if($regexp == '' || $regexp{0} != '/') {
+	    $this->error[]	= txt('127');
+	    return false;
+	}
+
+	if($this->current_user['used_regexp'] < $this->current_user['max_regexp']
+		|| $this->authenticated_user['a_super'] > 0) {
+	    mysql_query('INSERT INTO '.$cfg['tablenames']['virtual_regexp'].' (reg_exp, dest, owner)'
+			.' VALUES ("'.mysql_real_escape_string($regexp).'", "'.implode(',', $arr_destinations).'", "'.$this->current_user['mbox'].'")');
+	    if(mysql_affected_rows() < 1) {
+		$this->error[]	= mysql_error();
+	    }
+	    else {
+		$this->current_user['used_regexp']++;
+		return true;
+	    }
+	}
+	else {
+	    $this->error[]	= txt('31');
+	}
+
+	return false;
+    }
+    /*
+     * Deletes the given regular expressions if they belong to the current user.
+     */
+    function regexp_delete($arr_regexp_ids) {
+	global $cfg;
+
+	mysql_query('DELETE FROM '.$cfg['tablenames']['virtual_regexp']
+			.' WHERE owner = "'.$this->current_user['mbox'].'"'
+			.' AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $arr_regexp_ids)).'")'
+			.' LIMIT '.count($arr_regexp_ids));
+	if(mysql_affected_rows() < 1) {
+	    $this->error[]	= mysql_error();
+	}
+	else {
+	    $this->info[]	= txt('32');
+	    $this->current_user['used_regexp'] -= mysql_affected_rows();
+	    return true;
+	}
+
+	return false;
+    }
+    /*
+     * See "address_change_destination".
+     */
+    function regexp_change_destination($arr_regexp_ids, $arr_destinations) {
+	global $cfg;
+
+	mysql_query('UPDATE '.$cfg['tablenames']['virtual_regexp'].' SET dest = "'.implode(',', $arr_destinations).'", neu = 1'
+			.' WHERE owner = "'.$this->current_user['mbox'].'"'
+			.' AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $arr_regexp_ids)).'")'
+			.' LIMIT '.count($arr_regexp_ids));
+	if(mysql_affected_rows() < 1) {
+	    $this->error[]	= mysql_error();
+	}
+	else {
+	    return true;
+	}
+
+	return false;
+    }
+    /*
+     * See "address_toggle_active".
+     */
+    function regexp_toggle_active($arr_regexp_ids) {
+	global $cfg;
+
+	mysql_query('UPDATE '.$cfg['tablenames']['virtual_regexp'].' SET active = NOT active, neu = 1'
+			.' WHERE owner = "'.$this->current_user['mbox'].'"'
+			.' AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $arr_regexp_ids)).'")'
+			.' LIMIT '.count($arr_regexp_ids));
+	if(mysql_affected_rows() < 1) {
+	    $this->error[]	= mysql_error();
+	}
+	else {
+	    return true;
+	}
+
+	return false;
+    }
 }
 ?>

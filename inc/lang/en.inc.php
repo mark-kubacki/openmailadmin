@@ -139,6 +139,7 @@ $res['en']	= array(
 '124'	=>	'log out',
 '125'	=>	'version',
 '126'	=>	'Plugins',
+'127'	=>	'Invalid regular expression.',
 );
 
 ?>
