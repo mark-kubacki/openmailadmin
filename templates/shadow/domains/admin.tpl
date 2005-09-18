@@ -15,19 +15,19 @@
 	    </td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('change[]', 'domain') ?><b><?= txt('55') ?></b></td>
+	    <td class="ed"><?= addProp($input->checkbox('change[]', 'domain'), array('id' => 'c_name')) ?><b><?= txt('55') ?></b></td>
 	    <td class="ed"><?= $input->_generate('text', 'domain', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '64', 'onchange' => 'c_name.checked=true')) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('change[]', 'owner') ?><b><?= txt('56') ?></b></td>
+	    <td class="ed"><?= addProp($input->checkbox('change[]', 'owner'), array('id' => 'c_owner')) ?><b><?= txt('56') ?></b></td>
 	    <td class="ed"><?= $input->_generate('text', 'owner', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '16', 'onchange' => 'c_owner.checked=true')) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('change[]', 'a_admin') ?><b><?= txt('57') ?></b></td>
+	    <td class="ed"><?= addProp($input->checkbox('change[]', 'a_admin'), array('id' => 'c_admin')) ?><b><?= txt('57') ?></b></td>
 	    <td class="ed"><?= $input->_generate('text', 'a_admin', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'onchange' => 'c_admin.checked=true')) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('change[]', 'categories') ?><b><?= txt('58') ?></b></td>
+	    <td class="ed"><?= addProp($input->checkbox('change[]', 'categories'), array('id' => 'c_cat')) ?><b><?= txt('58') ?></b></td>
 	    <td class="ed"><?= $input->_generate('text', 'categories', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '100', 'onchange' => 'c_cat.checked=true')) ?></td>
 	</tr>
 	<tr>

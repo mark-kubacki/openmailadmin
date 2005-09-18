@@ -14,19 +14,19 @@
 	    </dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('change[]', 'domain') ?><?= txt('55') ?></dt>
+	    <dt><?= addProp($input->checkbox('change[]', 'domain'), array('id' => 'c_name')) ?><?= txt('55') ?></dt>
 	    <dd><?= $input->_generate('text', 'domain', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '64', 'onchange' => 'c_name.checked=true')) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('change[]', 'owner') ?><?= txt('56') ?></dt>
+	    <dt><?= addProp($input->checkbox('change[]', 'owner'), array('id' => 'c_owner')) ?><?= txt('56') ?></dt>
 	    <dd><?= $input->_generate('text', 'owner', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '16', 'onchange' => 'c_owner.checked=true')) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('change[]', 'a_admin') ?><?= txt('57') ?></dt>
+	    <dt><?= addProp($input->checkbox('change[]', 'a_admin'), array('id' => 'c_admin')) ?><?= txt('57') ?></dt>
 	    <dd><?= $input->_generate('text', 'a_admin', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'onchange' => 'c_admin.checked=true')) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('change[]', 'categories') ?><?= txt('58') ?></dt>
+	    <dt><?= addProp($input->checkbox('change[]', 'categories'), array('id' => 'c_cat')) ?><?= txt('58') ?></dt>
 	    <dd><?= $input->_generate('text', 'categories', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '100', 'onchange' => 'c_cat.checked=true')) ?></dd>
 	</dl>
     <span class="quasi_btn" id="admin_hide">&laquo; <?= txt('60') ?></span>
