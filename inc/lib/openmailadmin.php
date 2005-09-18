@@ -181,15 +181,19 @@ class openmailadmin {
 	    // Finally, create that address.
 	    mysql_query('INSERT INTO '.$cfg['tablenames']['virtual'].' (address, dest, owner)'
 			.' VALUES ("'.mysql_real_escape_string(strtolower($alias.'@'.$domain)).'", "'.implode(',', $arr_destinations).'", "'.$this->current_user['mbox'].'")');
-	    if(mysql_affected_rows() < 1)
+	    if(mysql_affected_rows() < 1) {
 		$this->error[]	=mysql_error();
-	    else
+	    }
+	    else {
 		$this->current_user['used_alias']++;
+		return true;
+	    }
 	}
 	else {
 	    $this->error[]	= txt('14');
-	    return false;
 	}
+
+	return false;
     }
     /*
      * Deletes the given addresses if they belong to the current user.
@@ -201,18 +205,19 @@ class openmailadmin {
 			.' WHERE owner = "'.$this->current_user['mbox'].'"'
 			.' AND FIND_IN_SET(address, "'.mysql_real_escape_string(implode(',', $arr_addresses)).'")'
 			.' LIMIT '.count($arr_addresses));
-	if(mysql_affected_rows() < count($arr_addresses)) {
-	    $this->error[]	= mysql_error();
-	}
-	else if(mysql_affected_rows() < 1) {
-	    return false;
+	if(mysql_affected_rows() < 1) {
+	    if(mysql_errno() != 0) {
+		$this->error[]	= mysql_error();
+	    }
 	}
 	else {
 	    $this->info[]	= sprintf(txt('15'), implode(',', $arr_addresses));
 	    $this->current_user['used_alias'] -= mysql_affected_rows();
 	    return true;
 	}
-    }
+
+	return false;
+   }
     /*
      * Changes the destination of the given addresses if they belong to the current user.
      */
@@ -224,12 +229,15 @@ class openmailadmin {
 			.' AND FIND_IN_SET(address, "'.mysql_real_escape_string(implode(',', $arr_addresses)).'")'
 			.' LIMIT '.count($arr_addresses));
 	if(mysql_affected_rows() < 1) {
-	    if(mysql_error() != '') {
+	    if(mysql_errno() != 0) {
 		$this->error[]	= mysql_error();
-		return false;
 	    }
 	}
-	return true;
+	else {
+	    return true;
+	}
+
+	return false;
     }
     /*
      * Toggles the 'active'-flag of a set of addresses  of the current user
@@ -243,10 +251,15 @@ class openmailadmin {
 			.' AND FIND_IN_SET(address, "'.mysql_real_escape_string(implode(',', $arr_addresses)).'")'
 			.' LIMIT '.count($arr_addresses));
 	if(mysql_affected_rows() < 1) {
-	    $this->error[]	= mysql_error();
-	    return false;
+	    if(mysql_errno() != 0) {
+		$this->error[]	= mysql_error();
+	    }
 	}
-	return true;
+	else {
+	    return true;
+	}
+
+	return false;
     }
 
 /* ******************************* domains ********************************** */
@@ -352,7 +365,9 @@ class openmailadmin {
 		mysql_free_result($result); unset($domain);
 		mysql_query('DELETE FROM '.$cfg['tablenames']['domains'].' WHERE FIND_IN_SET(ID, "'.implode(',',$del_ID).'") LIMIT '.count($del_ID));
 		if(mysql_affected_rows() < 1) {
-		    $this->error[]	= mysql_error();
+		    if(mysql_errno() != 0) {
+			$this->error[]	= mysql_error();
+		    }
 		}
 		else {
 		    $this->info[]	= txt('52').'<br />'.implode(', ', $del_nm);
@@ -394,7 +409,7 @@ class openmailadmin {
 			.' WHERE (owner="'.$this->authenticated_user['mbox'].'" or a_admin LIKE "%'.$this->authenticated_user['mbox'].'%") AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
 			.' LIMIT '.count($domains));
 	    if(mysql_affected_rows() < 1) {
-		if(mysql_error() != '') {
+		if(mysql_errno() != 0) {
 		    $this->error[]	= mysql_error();
 		}
 		else {
@@ -405,7 +420,7 @@ class openmailadmin {
 	// changing ownership if $cfg['admins_delete_domains'] == false
 	if(!$cfg['admins_delete_domains'] && in_array('owner', $change)) {
 	    mysql_query('UPDATE '.$cfg['tablenames']['domains']
-			.' SET owner="'.mysql_escape_string($data['owner']).'"'
+			.' SET owner="'.mysql_real_escape_string($data['owner']).'"'
 			.' WHERE owner="'.$this->authenticated_user['mbox'].'" AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
 			.' LIMIT '.count($domains));
 	}
@@ -433,8 +448,11 @@ class openmailadmin {
 			// canonical
 			mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['user'].' SET canonical = REPLACE(canonical, "@'.$domain['name'].'", "@'.$data['domain'].'") WHERE canonical LIKE "%@'.$domain['name'].'"');
 		    }
-		    else
+		    else {
 			$this->error[]	= mysql_error();
+		    }
+
+		    return true;
 		}
 		else
 		    $this->error[]	= txt('91');
@@ -448,7 +466,7 @@ class openmailadmin {
 	return false;
     }
 
-/* ******************************* domains ********************************** */
+/* ******************************* passwords ******************************** */
     /*
      * (Re)sets the user's password.
      * Use this if the old password does not matter.
@@ -481,7 +499,9 @@ class openmailadmin {
 	    return true;
 	}
 	else {
-	    $this->error[]	= mysql_error();
+	    if(mysql_errno() != 0) {
+		$this->error[]	= mysql_error();
+	    }
 	    return false;
 	}
     }
@@ -520,7 +540,7 @@ class openmailadmin {
 	return false;
     }
 
-/* ******************************* domains ********************************** */
+/* ******************************* regexp *********************************** */
     /*
      * Returns a long list with all regular expressions (the virtual_regexp table).
      * If $match_against is given, the flag "matching" will be set on matches.
@@ -579,7 +599,9 @@ class openmailadmin {
 	    mysql_query('INSERT INTO '.$cfg['tablenames']['virtual_regexp'].' (reg_exp, dest, owner)'
 			.' VALUES ("'.mysql_real_escape_string($regexp).'", "'.implode(',', $arr_destinations).'", "'.$this->current_user['mbox'].'")');
 	    if(mysql_affected_rows() < 1) {
-		$this->error[]	= mysql_error();
+		if(mysql_errno() != 0) {
+		    $this->error[]	= mysql_error();
+		}
 	    }
 	    else {
 		$this->current_user['used_regexp']++;
@@ -603,7 +625,9 @@ class openmailadmin {
 			.' AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $arr_regexp_ids)).'")'
 			.' LIMIT '.count($arr_regexp_ids));
 	if(mysql_affected_rows() < 1) {
-	    $this->error[]	= mysql_error();
+	    if(mysql_errno() != 0) {
+		$this->error[]	= mysql_error();
+	    }
 	}
 	else {
 	    $this->info[]	= txt('32');
@@ -624,7 +648,9 @@ class openmailadmin {
 			.' AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $arr_regexp_ids)).'")'
 			.' LIMIT '.count($arr_regexp_ids));
 	if(mysql_affected_rows() < 1) {
-	    $this->error[]	= mysql_error();
+	    if(mysql_errno() != 0) {
+		$this->error[]	= mysql_error();
+	    }
 	}
 	else {
 	    return true;
@@ -643,7 +669,9 @@ class openmailadmin {
 			.' AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $arr_regexp_ids)).'")'
 			.' LIMIT '.count($arr_regexp_ids));
 	if(mysql_affected_rows() < 1) {
-	    $this->error[]	= mysql_error();
+	    if(mysql_errno() != 0) {
+		$this->error[]	= mysql_error();
+	    }
 	}
 	else {
 	    return true;
