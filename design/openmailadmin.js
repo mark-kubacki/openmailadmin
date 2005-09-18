@@ -25,6 +25,11 @@ function newsletter_showhide (e) {
     }
 }
 
+function check_corresponding_box (e) {
+    /* (ascending) me -> dd -> dl (descending) -> dt -> input [checkbox] */
+    this.parentNode.parentNode.firstChild.firstChild.checked=true;
+}
+
 function init_oma() {
     /* Initialise admin-panel buttons. */
     if(document.getElementById("admin_hide") != null) {
@@ -34,6 +39,7 @@ function init_oma() {
 	XBrowserAddHandler(document.getElementById("admin_show"),"click","admin_panel_showhide");
 	document.getElementById("admin_panel").style.display = "none";
     }
+    /* newsletter quasi-buttons */
     var spans = document.getElementsByTagName("span");
     for (var i = 0; i < spans.length; i++) {
 	if(spans[i].className == "quasi_btn") {
@@ -46,6 +52,16 @@ function init_oma() {
 		XBrowserAddHandler(spans[i].nextSibling.firstChild,"click","newsletter_showhide");
 		spans[i].nextSibling.style.display = "none";
 	    }
+	}
+    }
+    /* textfields whose visible neighbours are checkboxes */
+    var tinp = document.getElementsByTagName("input");
+    for (var i = 0; i < tinp.length; i++) {
+	if(tinp[i].parentNode.tagName.toLowerCase() == "dd"
+		&& tinp[i].parentNode.parentNode.firstChild.firstChild != null
+		&& tinp[i].parentNode.parentNode.firstChild.firstChild.getAttribute("type", "false") == "checkbox") {
+	    tinp[i].check_corresponding_box = check_corresponding_box;
+	    XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
 	}
     }
 }
