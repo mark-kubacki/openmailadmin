@@ -2,7 +2,7 @@
 <?= caption(txt('40')) ?>
 <?= $table->outer_shadow_start() ?>
 <table border="0" cellpadding="1" cellspacing="1">
-    <?php if($cuser['mbox'] == $authinfo['mbox']) { ?>
+    <?php if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) { ?>
     <tr>
 	<td class="std"><?= txt('41') ?></td>
 	<td class="std"><?= $input->password('old_pass') ?></td>

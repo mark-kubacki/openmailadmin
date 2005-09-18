@@ -34,7 +34,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'chang
     if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 	if($oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2'], $_POST['old_pass'])) {
 	    // we have to reset the current user's cleartext password
-            // $_SESSION will later be read as $authinfo
+            // $_SESSION will later be read as $oma->authenticated_user
 	    $_SESSION['pass_clear'] = $_POST['new_pass1'];
 	}
     }

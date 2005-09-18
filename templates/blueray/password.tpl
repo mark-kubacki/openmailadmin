@@ -1,7 +1,7 @@
 <div id="admin">
 <form action="<?= mkSelfRef() ?>" method="post">
 <h2><?= txt('40') ?></h2>
-    <?php if($cuser['mbox'] == $authinfo['mbox']) { ?>
+    <?php if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) { ?>
     <dl>
 	<dt><?= txt('41') ?></dt>
 	<dd><?= $input->password('old_pass') ?></dd>

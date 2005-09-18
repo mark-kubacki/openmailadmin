@@ -10,8 +10,8 @@
 	<dt><?= txt('9') ?></dt>
 	<dd>
 	    <?= $cpate['person'] ?> (<a href="<?= mkSelfRef(array('cuser' => $cpate['mbox'])) ?>" title="<?= txt('9') ?>"><?= $cpate['mbox'] ?></a>
-	    <?php if($cpate['mbox'] != $authinfo['mbox'] && $cuser['mbox'] != $authinfo['mbox']) { ?>
-		-&gt;<a href="<?= mkSelfRef(array('cuser' => $authinfo['mbox'])) ?>" title="<?= txt('6') ?>"><?= $authinfo['mbox'] ?></a>
+	    <?php if($cpate['mbox'] != $oma->authenticated_user['mbox'] && $oma->current_user['mbox'] != $oma->authenticated_user['mbox']) { ?>
+		-&gt;<a href="<?= mkSelfRef(array('cuser' => $oma->authenticated_user['mbox'])) ?>" title="<?= txt('6') ?>"><?= $oma->authenticated_user['mbox'] ?></a>
 	    <?php } ?>)
 	</dd>
     </dl>
