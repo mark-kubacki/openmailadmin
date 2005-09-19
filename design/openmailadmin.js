@@ -57,8 +57,7 @@ function init_oma() {
     /* textfields whose visible neighbours are checkboxes */
     var tinp = document.getElementsByTagName("input");
     for (var i = 0; i < tinp.length; i++) {
-	if(tinp[i].parentNode.tagName.toLowerCase() == "dd"
-		&& tinp[i].parentNode.parentNode.firstChild.firstChild != null
+	if(tinp[i].parentNode.parentNode.firstChild.firstChild != null
 		&& tinp[i].parentNode.parentNode.firstChild.firstChild.getAttribute("type", "false") == "checkbox") {
 	    tinp[i].check_corresponding_box = check_corresponding_box;
 	    XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
