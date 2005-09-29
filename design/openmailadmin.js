@@ -57,6 +57,9 @@ function init_oma() {
     /* textfields whose visible neighbours are checkboxes */
     var tinp = document.getElementsByTagName("input");
     for (var i = 0; i < tinp.length; i++) {
+	// If this is already a checkbox there is no need of checking another one.
+	if(tinp[i].getAttribute("type", "false") == "checkbox")
+	    continue;
 	try {
 	    if(tinp[i].parentNode.parentNode.firstChild.firstChild != null
 		    && tinp[i].parentNode.parentNode.firstChild.firstChild.getAttribute("type", "false") == "checkbox") {
