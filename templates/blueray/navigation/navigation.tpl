@@ -22,7 +22,7 @@
 	<ul>
 	    <li>
 		<dl>
-		    <dt><?= txt('6') ?></dt>
+		    <dt><?= txt('128') ?></dt>
 		    <dd><?= $authinfo['person'] ?></dd>
 		    <dd><a href="<?= mkSelfRef(array('cuser' => $authinfo['mbox'])) ?>" title="<?= txt('6') ?>"><?= $authinfo['mbox'] ?></a></dd>
 		</dl>
@@ -31,11 +31,14 @@
 	    <li>
 		<dl>
 		    <dt><?= txt('9')?></dt>
-		    <dd><?= $cpate['person'] ?></dd>
-		    <dd><a href="<?= mkSelfRef(array('cuser' => $cpate['mbox'])) ?>" title="<?= txt('9')?>"><?= $cpate['mbox'] ?></a></dd>
+		    <dd><?php $authinfo['user']['pate'] = &$oma->get_user_row($authinfo['pate']); ?><?= $authinfo['user']['pate']['person'] ?></dd>
+		    <dd><a href="<?= mkSelfRef(array('cuser' => $authinfo['pate'])) ?>" title="<?= txt('9')?>"><?= $authinfo['pate'] ?></a></dd>
 		</dl>
 	    </li>
-		<?php if($cuser['mbox'] != $authinfo['mbox']) { ?>
+	    <?php } ?>
+	</ul>
+	<?php if($cuser['mbox'] != $authinfo['mbox']) { ?>
+	    <ul>
 		<li>
 		    <dl>
 			<dt><?= txt('113') ?></dt>
@@ -43,9 +46,17 @@
 			<dd><a href="<?= mkSelfRef(array('cuser' => $cuser['mbox'])) ?>" title="<?= txt('113') ?>"><?= $cuser['mbox'] ?></a></dd>
 		    </dl>
 		</li>
-		<?php } ?>
+	    <?php if($cpate['mbox'] != $authinfo['mbox']) { ?>
+	    <li>
+		<dl>
+		    <dt><?= txt('9')?></dt>
+		    <dd><?= $cpate['person'] ?></dd>
+		    <dd><a href="<?= mkSelfRef(array('cuser' => $cpate['mbox'])) ?>" title="<?= txt('9')?>"><?= $cpate['mbox'] ?></a></dd>
+		</dl>
+	    </li>
 	    <?php } ?>
-	</ul>
+	    </ul>
+	<?php } ?>
     </div>
 </div>
 

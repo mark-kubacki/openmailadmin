@@ -139,6 +139,7 @@ $res['pl']	= array(
 '125'	=>	'wersia',
 '126'	=>	'Dodatki',
 '127'	=>	'Podane wyra&#380;enie regularne jest b&#322;&#261;dne.',
+'128'	=>	'Zalogowany jako',
 );
 
 ?>

@@ -67,6 +67,25 @@ class openmailadmin {
     }
 
     /*
+     * As the name says, returns an array containing the entire row
+     * of the "user" table belonging to that mailbox.
+     */
+    function get_user_row($mailbox) {
+	global $cfg;
+
+	$result = mysql_query('SELECT * FROM '.$cfg['tablenames']['user']
+				.' WHERE mbox="'.mysql_real_escape_string($mailbox).'"'
+				.' LIMIT 1');
+	if(mysql_num_rows($result) > 0) {
+	    $tmp = mysql_fetch_assoc($result);
+	    mysql_free_result($result);
+	    return $tmp;
+	}
+
+	return false;
+    }
+
+    /*
      * Accepts a string containing possible destination for an email-address,
      * selects valid destinations and returns them.
      */

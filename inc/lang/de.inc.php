@@ -140,6 +140,7 @@ $res['de']	= array(
 '125'	=>	'Version',
 '126'	=>	'Erweiterungen',
 '127'	=>	'Ungültiger Ausdruck.',
+'128'	=>	'Eingeloggt als',
 );
 
 ?>
