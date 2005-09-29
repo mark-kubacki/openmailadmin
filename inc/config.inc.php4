@@ -24,6 +24,7 @@ $cfg['address']['allow_catchall']	= true;
 $cfg['address']['restrict_catchall']	= true;
 // If an address has at least that many destinations, it will be hidden.
 $cfg['address']['hide_threshold']	= 5;
+$cfg['remove_whitespace']		= true;
 
 // Shall we accept other user's mailbox-names as targets?
 // Only use this if you have few mailboxes!
