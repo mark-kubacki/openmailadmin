@@ -23,35 +23,35 @@
 	</dl>
 	<dl>
 	    <dt><?= $input->checkbox('c_pate', '1') ?><?= txt('9') ?></dt>
-	    <dd><?= ChkS($input->select('pate', $_SESSION['paten'][$cuser['mbox']]), 'c_pate') ?></dd>
+	    <dd><?= $input->select('pate', $_SESSION['paten'][$cuser['mbox']]) ?></dd>
 	</dl>
 	<dl>
 	    <dt><?= $input->checkbox('c_person', '1') ?><?= txt('84') ?></dt>
-	    <dd><?= ChkS($input->text('person', 100), 'c_person') ?></dd>
+	    <dd><?= $input->text('person', 100) ?></dd>
 	</dl>
 	<dl>
 	    <dt><?= $input->checkbox('c_canon', '1') ?><?= txt('7') ?></dt>
-	    <dd><?= ChkS($input->text('canonical', 100), 'c_canon') ?></dd>
+	    <dd><?= $input->text('canonical', 100) ?></dd>
 	</dl>
 	<dl>
 	    <dt><?= $input->checkbox('c_domains', '1') ?><?= txt('86') ?></dt>
-	    <dd><?= ChkS($input->text('domains', 100), 'c_domains') ?></dd>
+	    <dd><?= $input->text('domains', 100) ?></dd>
 	</dl>
 	<dl>
 	    <dt><?= $input->checkbox('c_quota', '1') ?><?= txt('87') ?></dt>
-	    <dd><?= ChkS($input->text('quota', 7), 'c_quota') ?></dd>
+	    <dd><?= $input->text('quota', 7) ?></dd>
 	</dl>
 	<dl>
 	    <dt><?= $input->checkbox('c_alias', '1') ?><?= txt('88') ?></dt>
-	    <dd><?= ChkS($input->text('max_alias', 4), 'c_alias') ?></dd>
+	    <dd><?= $input->text('max_alias', 4) ?></dd>
 	</dl>
 	<dl>
 	    <dt><?= $input->checkbox('c_regexp', '1') ?><?= txt('89') ?></dt>
-	    <dd><?= ChkS($input->text('max_regexp', 4), 'c_regexp') ?></dd>
+	    <dd><?= $input->text('max_regexp', 4) ?></dd>
 	</dl>
 	<dl>
 	    <dt><?= $input->checkbox('c_reg_exp', '1') ?><?= txt('34') ?></dt>
-	    <dd><?= ChkS($input->text('reg_exp', 100), 'c_reg_exp') ?></dd>
+	    <dd><?= $input->text('reg_exp', 100) ?></dd>
 	</dl>
 	<?php if($authinfo['a_super'] > 1 || $authinfo['a_admin_user'] > 1 || $authinfo['a_admin_domains'] > 1) { ?>
 	<div id="admin_acl">
@@ -65,11 +65,11 @@
 		    <?php if($authinfo['a_super'] > 0) { ?>
 		    <tr>
 			<td class="left"><?= $input->checkbox('c_super', '1') ?><?= txt('68') ?></td>
-			<td><?= $input->radio('a_super', '0', array('onchange' => 'c_super.checked=true')) ?></td>
-			<td><?= $input->radio('a_super', '1', array('onchange' => 'c_super.checked=true')) ?></td>
+			<td><?= $input->radio('a_super', '0') ?></td>
+			<td><?= $input->radio('a_super', '1') ?></td>
 			<td>
 			    <?php if($authinfo['a_super'] > 1) { ?>
-			    <?= $input->radio('a_super', '2', array('onchange' => 'c_super.checked=true')) ?>
+			    <?= $input->radio('a_super', '2') ?>
 			    <?php } ?>
 			</td>
 		    </tr>
@@ -77,11 +77,11 @@
 		    <?php if($authinfo['a_admin_domains'] > 0) { ?>
 		    <tr>
 			<td class="left"><?= $input->checkbox('c_a_dom', '1') ?><?= txt('50') ?></td>
-			<td><?= $input->radio('a_a_dom', '0', array('onchange' => 'c_a_dom.checked=true')) ?></td>
-			<td><?= $input->radio('a_a_dom', '1', array('onchange' => 'c_a_dom.checked=true')) ?></td>
+			<td><?= $input->radio('a_a_dom', '0') ?></td>
+			<td><?= $input->radio('a_a_dom', '1') ?></td>
 			<td>
 			    <?php if($authinfo['a_admin_domains'] > 1) { ?>
-			    <?= $input->radio('a_a_dom', '2', array('onchange' => 'c_a_dom.checked=true')) ?>
+			    <?= $input->radio('a_a_dom', '2') ?>
 			    <?php } ?>
 			</td>
 		    </tr>
@@ -89,11 +89,11 @@
 		    <?php if($authinfo['a_admin_user'] > 0) { ?>
 		    <tr>
 			<td class="left"><?= $input->checkbox('c_a_usr', '1') ?><?= txt('70') ?></td>
-			<td><?= $input->radio('a_a_usr', '0', array('onchange' => 'c_a_usr.checked=true')) ?></td>
-			<td><?= $input->radio('a_a_usr', '1', array('onchange' => 'c_a_usr.checked=true')) ?></td>
+			<td><?= $input->radio('a_a_usr', '0') ?></td>
+			<td><?= $input->radio('a_a_usr', '1') ?></td>
 			<td>
 			    <?php if($authinfo['a_admin_user'] > 1) { ?>
-			    <?= $input->radio('a_a_usr', '2', array('onchange' => 'c_a_usr.checked=true')) ?>
+			    <?= $input->radio('a_a_usr', '2') ?>
 			    <?php } ?>
 			</td>
 		    </tr>

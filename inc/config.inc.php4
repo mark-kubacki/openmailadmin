@@ -24,6 +24,8 @@ $cfg['address']['allow_catchall']	= true;
 $cfg['address']['restrict_catchall']	= true;
 // If an address has at least that many destinations, it will be hidden.
 $cfg['address']['hide_threshold']	= 5;
+// Shall unneccesary whitespace between tags be removed?
+// Setting this to false will make Firefox' odd DOM implementation obvious!
 $cfg['remove_whitespace']		= true;
 
 // Shall we accept other user's mailbox-names as targets?

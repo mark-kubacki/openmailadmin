@@ -80,13 +80,6 @@ function find_in_set($str, $strlist) {
 }
 
 /*
- * if $elem gets changed set checkbox
- */
-function ChkS($elem, $checkbox) {
-    return(addProp($elem, array('onchange' => $checkbox.'.checked=true')));
-}
-
-/*
  * if $elem gets changed, submit current form
  */
 function ChngS($elem) {
