@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
-include('openMailAdmin/inc/config.inc.php4');
-include('openMailadmin/inc/format_shadow_classes.inc.php4');
+include('openmailadmin/inc/config.inc.php4');
+include('openmailadmin/inc/format_shadow_classes.inc.php4');
 
 echo('<html>');
 echo('<head><title>Mailsystem Administration</title>');
@@ -16,7 +16,7 @@ $error	= new _font();
 
 $table->echo_caption('Verwaltung');
 echo($table->outer_shadow_start());
-echo($table->table($table->tr($table->td('<b>Mail-Verwaltung</b> mit <a href="/openMailAdmin">Openmailadmin</a><br />Diese Oberfläche steht jedem mit einem Mailkonto zur Verfügung.<br />Hier kann das Kennwort geändert werden!', 'a', array('width' => '580')))
+echo($table->table($table->tr($table->td('<b>Mail-Verwaltung</b> mit <a href="/openmailadmin">Openmailadmin</a><br />Diese Oberfläche steht jedem mit einem Mailkonto zur Verfügung.<br />Hier kann das Kennwort geändert werden!', 'a', array('width' => '580')))
 		    .$table->tr($table->td('<b>Filterregeln</b> mit <a href="/smartsieve">SmartSieve</a><br />Hier kann jeder Benutzer seine Email-Regeln und Filter einstellen und ändern.'))
     ));
 echo($table->outer_shadow_stop());
