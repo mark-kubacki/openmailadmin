@@ -61,8 +61,11 @@ function init_tree() {
 		}
 	    }
 	    /* ...except for the root tree. */
-	    divs[i].firstChild.style.display = "block";
-	    divs[i].firstChild.className = "tree_root";
+	    try {
+		divs[i].firstChild.style.display = "block";
+		divs[i].firstChild.className = "tree_root";
+	    } catch (e) {
+	    }
 	    break; /* We assume there is only one tree. */
 	}
     }
