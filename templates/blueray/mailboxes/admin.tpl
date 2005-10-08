@@ -15,42 +15,42 @@
 	<dl>
 	    <dt>
 		<?php if(doubleval($cyr->getversion()) >= 2.2) { ?>
-		    <?= $input->checkbox('c_mbox', '1') ?>
+		    <?= $input->checkbox('change[]', 'mbox') ?>
 		<?php } ?>
 		<?= txt('83') ?>
 	    </dt>
 	    <dd><?= $input->text('mbox', 16) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_pate', '1') ?><?= txt('9') ?></dt>
-	    <dd><?= $input->select('pate', $_SESSION['paten'][$cuser['mbox']]) ?></dd>
+	    <dt><?= $input->checkbox('change[]', 'pate') ?><?= txt('9') ?></dt>
+	    <dd><?= $input->select('pate', $selectable_paten) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_person', '1') ?><?= txt('84') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'person') ?><?= txt('84') ?></dt>
 	    <dd><?= $input->text('person', 100) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_canon', '1') ?><?= txt('7') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'canonical') ?><?= txt('7') ?></dt>
 	    <dd><?= $input->text('canonical', 100) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_domains', '1') ?><?= txt('86') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'domains') ?><?= txt('86') ?></dt>
 	    <dd><?= $input->text('domains', 100) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_quota', '1') ?><?= txt('87') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'quota') ?><?= txt('87') ?></dt>
 	    <dd><?= $input->text('quota', 7) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_alias', '1') ?><?= txt('88') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'max_alias') ?><?= txt('88') ?></dt>
 	    <dd><?= $input->text('max_alias', 4) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_regexp', '1') ?><?= txt('89') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'max_regexp') ?><?= txt('89') ?></dt>
 	    <dd><?= $input->text('max_regexp', 4) ?></dd>
 	</dl>
 	<dl>
-	    <dt><?= $input->checkbox('c_reg_exp', '1') ?><?= txt('34') ?></dt>
+	    <dt><?= $input->checkbox('change[]', 'reg_exp') ?><?= txt('34') ?></dt>
 	    <dd><?= $input->text('reg_exp', 100) ?></dd>
 	</dl>
 	<?php if($authinfo['a_super'] > 1 || $authinfo['a_admin_user'] > 1 || $authinfo['a_admin_domains'] > 1) { ?>
@@ -64,7 +64,7 @@
 		    </tr>
 		    <?php if($authinfo['a_super'] > 0) { ?>
 		    <tr>
-			<td class="left"><?= $input->checkbox('c_super', '1') ?><?= txt('68') ?></td>
+			<td class="left"><?= $input->checkbox('change[]', 'a_super') ?><?= txt('68') ?></td>
 			<td><?= $input->radio('a_super', '0') ?></td>
 			<td><?= $input->radio('a_super', '1') ?></td>
 			<td>
@@ -76,7 +76,7 @@
 		    <?php } ?>
 		    <?php if($authinfo['a_admin_domains'] > 0) { ?>
 		    <tr>
-			<td class="left"><?= $input->checkbox('c_a_dom', '1') ?><?= txt('50') ?></td>
+			<td class="left"><?= $input->checkbox('change[]', 'a_a_dom') ?><?= txt('50') ?></td>
 			<td><?= $input->radio('a_a_dom', '0') ?></td>
 			<td><?= $input->radio('a_a_dom', '1') ?></td>
 			<td>
@@ -88,7 +88,7 @@
 		    <?php } ?>
 		    <?php if($authinfo['a_admin_user'] > 0) { ?>
 		    <tr>
-			<td class="left"><?= $input->checkbox('c_a_usr', '1') ?><?= txt('70') ?></td>
+			<td class="left"><?= $input->checkbox('change[]', 'a_a_usr') ?><?= txt('70') ?></td>
 			<td><?= $input->radio('a_a_usr', '0') ?></td>
 			<td><?= $input->radio('a_a_usr', '1') ?></td>
 			<td>

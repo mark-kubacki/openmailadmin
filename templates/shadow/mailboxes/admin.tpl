@@ -19,42 +19,42 @@
 	<tr>
 	    <td class="ed">
 		<?php if(doubleval($cyr->getversion()) >= 2.2) { ?>
-		    <?= $input->checkbox('c_mbox', '1') ?>
+		    <?= $input->checkbox('change[]', 'mbox') ?>
 		<?php } ?>
 		<b><?= txt('83') ?></b>
 	    </td>
 	    <td class="ed"><?= $input->text('mbox', 16) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('c_pate', '1') ?><b><?= txt('9') ?></b></td>
-	    <td class="ed"><?= $input->select('pate', $_SESSION['paten'][$cuser['mbox']]) ?></td>
+	    <td class="ed"><?= $input->checkbox('change[]', 'pate') ?><b><?= txt('9') ?></b></td>
+	    <td class="ed"><?= $input->select('pate', $selectable_paten) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('c_person', '1') ?><b><?= txt('84') ?></b></td>
+	    <td class="ed"><?= $input->checkbox('change[]', 'person') ?><b><?= txt('84') ?></b></td>
 	    <td class="ed"><?= $input->text('person', 100) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('c_canon', '1') ?><b><?= txt('7') ?></b></td>
+	    <td class="ed"><?= $input->checkbox('change[]', 'canonical') ?><b><?= txt('7') ?></b></td>
 	    <td class="ed"><?= $input->text('canonical', 100) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('c_domains', '1') ?><b><?= txt('86') ?></b></td>
+	    <td class="ed"><?= $input->checkbox('change[]', 'domains') ?><b><?= txt('86') ?></b></td>
 	    <td class="ed"><?= $input->text('domains', 100) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('c_quota', '1') ?><b><?= txt('87') ?></b></td>
+	    <td class="ed"><?= $input->checkbox('change[]', 'quota') ?><b><?= txt('87') ?></b></td>
 	    <td class="ed"><?= $input->text('quota', 7) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('c_alias', '1') ?><b><?= txt('88') ?></b></td>
+	    <td class="ed"><?= $input->checkbox('change[]', 'max_alias') ?><b><?= txt('88') ?></b></td>
 	    <td class="ed"><?= $input->text('max_alias', 4) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('c_regexp', '1') ?><b><?= txt('89') ?></b></td>
+	    <td class="ed"><?= $input->checkbox('change[]', 'max_regexp') ?><b><?= txt('89') ?></b></td>
 	    <td class="ed"><?= $input->text('max_regexp', 4) ?></td>
 	</tr>
 	<tr>
-	    <td class="ed"><?= $input->checkbox('c_reg_exp', '1') ?><b><?= txt('34') ?></b></td>
+	    <td class="ed"><?= $input->checkbox('change[]', 'reg_exp') ?><b><?= txt('34') ?></b></td>
 	    <td class="ed"><?= $input->text('reg_exp', 100) ?></td>
 	</tr>
 	<?php if($authinfo['a_super'] > 1 || $authinfo['a_admin_user'] > 1 || $authinfo['a_admin_domains'] > 1) { ?>
@@ -69,7 +69,7 @@
 		    </tr>
 		    <?php if($authinfo['a_super'] > 0) { ?>
 		    <tr>
-			<td class="ed"><?= $input->checkbox('c_super', '1') ?><?= txt('68') ?></td>
+			<td class="ed"><?= $input->checkbox('change[]', 'a_super') ?><?= txt('68') ?></td>
 			<td class="ed"><?= $input->radio('a_super', '0') ?></td>
 			<td class="ed"><?= $input->radio('a_super', '1') ?></td>
 			<td class="ed">
@@ -81,7 +81,7 @@
 		    <?php } ?>
 		    <?php if($authinfo['a_admin_domains'] > 0) { ?>
 		    <tr>
-			<td class="ed"><?= $input->checkbox('c_a_dom', '1') ?><?= txt('50') ?></td>
+			<td class="ed"><?= $input->checkbox('change[]', 'a_a_dom') ?><?= txt('50') ?></td>
 			<td class="ed"><?= $input->radio('a_a_dom', '0') ?></td>
 			<td class="ed"><?= $input->radio('a_a_dom', '1') ?></td>
 			<td class="ed">
@@ -93,7 +93,7 @@
 		    <?php } ?>
 		    <?php if($authinfo['a_admin_user'] > 0) { ?>
 		    <tr>
-			<td class="ed"><?= $input->checkbox('c_a_usr', '1') ?><?= txt('70') ?></td>
+			<td class="ed"><?= $input->checkbox('change[]', 'a_a_usr') ?><?= txt('70') ?></td>
 			<td class="ed"><?= $input->radio('a_a_usr', '0') ?></td>
 			<td class="ed"><?= $input->radio('a_a_usr', '1') ?></td>
 			<td class="ed">
