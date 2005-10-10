@@ -88,7 +88,10 @@ class cyradm {
 
     function renamemb($from_mb, $to_mb) {
 	global $cfg;
-	mysql_query("UPDATE ".$cfg['tablenames']['imap_demo']." SET mailbox=REPLACE(mailbox, '$from_mb', '$to_mb') WHERE mailbox LIKE '$from_mb%'");
+	mysql_query('UPDATE '.$cfg['tablenames']['imap_demo']
+			.' SET mailbox=REPLACE(mailbox, "'.$from_mb.'", "'.$to_mb.'"), '
+				.'ACL=REPLACE(ACL, "'.str_replace('user.', '', $from_mb).'", "'.str_replace('user.', '', $to_mb).'")'
+			.' WHERE mailbox = "'.$from_mb.'" OR mailbox LIKE "'.$from_mb.'%"');
 	if(mysql_error() != '') {
 	    return array(mysql_error());
 	}
