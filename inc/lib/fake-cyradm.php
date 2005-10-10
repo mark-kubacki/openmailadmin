@@ -4,6 +4,8 @@
  */
 
 class cyradm {
+    var $error_msg	= 'This is not an IMAP server - just a fake. Do not worry about any errors.';
+
     function imap_login() {
 	return true;
     }
@@ -169,10 +171,6 @@ class cyradm {
 	    mysql_free_result($result);
 	    return hsys_getACLInfo(array('* ACL '.$mb.' '.$acl), $mb);
 	}
-    }
-
-    function error_msg() {
-	return('This is not an IMAP server - just a fake. Do not worry about any errors.');
     }
 
     function getversion() {
