@@ -124,11 +124,14 @@ function mkSelfRef($arr_Add = array()) {
 /*
  * returns an array containing all domains the user may choose from
  */
-function getDomainSet($user, $categories) {
+function getDomainSet($user, $categories, $cache = true) {
     global $cfg; static $table;
     $cat = ''; $poss_dom = array();
 
-    if(!isset($table['user']['categories'])) {
+    if($cache && isset($table['user']['categories'])) {
+	return $table['user']['categories'];
+    }
+    else {
 	foreach(explode(',', $categories) as $key=>$value) {
 	    $poss_dom[] = trim($value);
 	    $cat .= ' OR categories LIKE \'%'.trim($value).'%\'';
@@ -142,9 +145,14 @@ function getDomainSet($user, $categories) {
 	    mysql_free_result($result);
 	}
 
-	$table['user']['categories'] = $dom;
+	if($cache) {
+	    $table['user']['categories'] = $dom;
+	    return $table['user']['categories'];
+	}
+	else {
+	    return $dom;
+	}
     }
-    return $table['user']['categories'];
 }
 
 /*
