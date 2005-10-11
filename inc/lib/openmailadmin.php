@@ -187,7 +187,8 @@ class openmailadmin {
 	    }
 	    // Will his new address be a valid one?
 	    else if(preg_match('/([A-Z0-9\.\-\_]{'.strlen($alias).'})/i', $alias)) {
-		if(!($this->current_user['reg_exp'] == '' || preg_match($this->current_user['reg_exp'], $alias.'@'.$domain))) {
+		if(!((isset($this->current_user['reg_exp']) && $this->current_user['reg_exp'] == '')
+			|| preg_match($this->current_user['reg_exp'], $alias.'@'.$domain))) {
 		    $this->error[]	= txt('12');
 		    return false;
 		}
@@ -1157,8 +1158,12 @@ class openmailadmin {
 	$inputs['max_regexp']	= array('cap'	=> txt('89'),
 				'def'	=> 0,
 				);
+	$inputs['max_regexp']	= array('cap'	=> txt('34'),
+				'def'	=> '',
+				);
 
 	// Hash with tests vor sanity and possible error-messages on failure.
+	// These will only be processed if a value is given. (I.e. not on the default values from above)
 	// If a test fails the next won't be invoked.
 	$validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= 4 && strlen(~) <= 16 && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
 						'error'	=> txt('62')),
@@ -1180,13 +1185,9 @@ class openmailadmin {
 					);
 	$validate['max_alias']	= array(array(	'val'	=> 'is_numeric(~) && ~ > 0',
 						'error'	=> txt('63')),
-					array(	'val'	=> '$this->authenticated_user[\'a_super\'] > 0 || ~ <= $this->current_user[\'max_alias\'] - hsys_getUsedAlias($this->current_user[\'mbox\'])',
-						'error'	=> txt('66')),
 					);
 	$validate['max_regexp']	= array(array(	'val'	=> 'is_numeric(~) && ~ > 0',
 						'error'	=> txt('63')),
-					array(	'val'	=> '$this->authenticated_user[\'a_super\'] > 0 || ~ <= $this->current_user[\'max_regexp\'] - hsys_getUsedRegexp($this->current_user[\'mbox\'])',
-						'error'	=> txt('66')),
 					);
 
 	// Check field per field.
