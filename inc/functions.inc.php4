@@ -125,18 +125,19 @@ function mkSelfRef($arr_Add = array()) {
  * returns an array containing all domains the user may choose from
  */
 function getDomainSet($user, $categories, $cache = true) {
-    global $cfg; static $table;
+    global $cfg;
     $cat = ''; $poss_dom = array();
 
-    if($cache && isset($table['user']['categories'])) {
-	return $table['user']['categories'];
+    if($cache && isset($_SESSION['cache']['getDomainSet'][$user][$categories])) {
+	return $_SESSION['cache']['getDomainSet'][$user][$categories];
     }
     else {
 	foreach(explode(',', $categories) as $key=>$value) {
 	    $poss_dom[] = trim($value);
-	    $cat .= ' OR categories LIKE \'%'.trim($value).'%\'';
+	    $cat .= ' OR categories LIKE "%'.trim($value).'%"';
 	}
-	$result = mysql_query('SELECT domain FROM '.$cfg['tablenames']['domains'].' WHERE owner=\''.$user.'\' OR a_admin LIKE \'%'.$user.'%\' OR FIND_IN_SET(domain, \''.implode(',', $poss_dom).'\')'.$cat);
+	$result = mysql_query('SELECT domain FROM '.$cfg['tablenames']['domains']
+		.' WHERE owner="'.$user.'" OR a_admin LIKE "%'.$user.'%" OR FIND_IN_SET(domain, "'.implode(',', $poss_dom).'")'.$cat);
 	if($result != false) {
 	    $dom = array();
 	    while($row = mysql_fetch_assoc($result)) {
@@ -146,8 +147,8 @@ function getDomainSet($user, $categories, $cache = true) {
 	}
 
 	if($cache) {
-	    $table['user']['categories'] = $dom;
-	    return $table['user']['categories'];
+	    $_SESSION['cache']['getDomainSet'][$user][$categories] = $dom;
+	    return $_SESSION['cache']['getDomainSet'][$user][$categories];
 	}
 	else {
 	    return $dom;
@@ -217,7 +218,7 @@ function cyrus_format_user($username, $folder = null) {
 
 /*
  * How many aliases the user has already in use?
- * Functions do cache their results.
+ * Does cache, but not session-wide.
  */
 function hsys_getUsedAlias($username) {
     global $cfg; static $used = array();
@@ -230,6 +231,10 @@ function hsys_getUsedAlias($username) {
 
     return $used[$username];
 }
+/*
+ * How many regexp-addresses the user has already in use?
+ * Does cache, but not session-wide.
+ */
 function hsys_getUsedRegexp($username) {
     global $cfg; static $used = array();
 
@@ -247,28 +252,28 @@ function hsys_getUsedRegexp($username) {
  * These just count how many elements have been assigned to that given user.
  */
 function hsys_n_Mailboxes($username) {
-    global $cfg; global $_SESSION;
+    global $cfg;
 
-    if(!isset($_SESSION['n'][$username]['mailboxes'])) {
+    if(!isset($_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'])) {
 	$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['user']
-				.' WHERE pate = \''.$username.'\'');
-	$_SESSION['n'][$username]['mailboxes'] = mysql_result($result, 0, 0);
+				.' WHERE pate = "'.$username.'"');
+	$_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'] = mysql_result($result, 0, 0);
 	mysql_free_result($result);
     }
 
-    return $_SESSION['n'][$username]['mailboxes'];
+    return $_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'];
 }
 function hsys_n_Domains($username) {
-    global $cfg; global $_SESSION;
+    global $cfg;
 
-    if(!isset($_SESSION['n'][$username]['domains'])) {
+    if(!isset($_SESSION['cache']['n_Domains'][$username]['domains'])) {
 	$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['domains']
-				.' WHERE owner = \''.$username.'\'');
-	$_SESSION['n'][$username]['domains'] = mysql_result($result, 0, 0);
+				.' WHERE owner = "'.$username.'"');
+	$_SESSION['cache']['n_Domains'][$username]['domains'] = mysql_result($result, 0, 0);
 	mysql_free_result($result);
     }
 
-    return $_SESSION['n'][$username]['domains'];
+    return $_SESSION['cache']['n_Domains'][$username]['domains'];
 }
 
 /*
