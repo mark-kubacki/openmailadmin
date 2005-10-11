@@ -995,10 +995,10 @@ class openmailadmin {
 		    while($row = mysql_fetch_assoc($result)) {
 			$have_skipped[] = $row['owner'];
 			if($cfg['mboxview_pers']) {
-			    $tmp[] = '<a href="'.mkSelfRef(array('cuser' => $row['owner'])).'" target="user">'.$row['person'].' ('.$row['consum'].')</a>';
+			    $tmp[] = '<a href="'.mkSelfRef(array('cuser' => $row['owner'])).'" title="'.$row['owner'].'">'.$row['person'].' ('.$row['consum'].')</a>';
 			}
 			else {
-			    $tmp[] = '<a href="'.mkSelfRef(array('cuser' => $row['owner'])).'" target="user">'.$row['owner'].' ('.$row['consum'].')</a>';
+			    $tmp[] = '<a href="'.mkSelfRef(array('cuser' => $row['owner'])).'" title="'.$row['person'].'">'.$row['owner'].' ('.$row['consum'].')</a>';
 			}
 		    }
 		    mysql_free_result($result);
