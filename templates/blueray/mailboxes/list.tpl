@@ -6,7 +6,7 @@
 					    : ', '.$mailboxes[$i]['num_regexp'].'/'.$mailboxes[$i]['max_regexp']);
     }
 ?>
-<?php if($authinfo['a_admin_user'] >= 1) { ?>
+<?php if($oma->authenticated_user['a_admin_user'] >= 1) { ?>
     <form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
 <div id="data">
@@ -23,7 +23,7 @@
     <?php foreach($mailboxes as $mailbox) { ?>
 	<tr>
 	    <td>
-		<?php if($mailbox['mbox'] == $authinfo['mbox'] || $mailbox['mbox'] == $cuser['mbox']) { ?>
+		<?php if($mailbox['mbox'] == $oma->authenticated_user['mbox'] || $mailbox['mbox'] == $cuser['mbox']) { ?>
 		    &nbsp;-&nbsp;
 		<?php } else { ?>
 		    <?= $input->checkbox('user[]', $mailbox['mbox']) ?>

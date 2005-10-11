@@ -1,6 +1,6 @@
 <?php
     for($i = 0; isset($mailboxes[$i]); $i++) {
-	if($mailboxes[$i]['mbox'] == $authinfo['mbox'] || $mailboxes[$i]['mbox'] == $cuser['mbox'])
+	if($mailboxes[$i]['mbox'] == $oma->authenticated_user['mbox'] || $mailboxes[$i]['mbox'] == $cuser['mbox'])
 	    $tmp2 = '&nbsp;-&nbsp;';
 	else
 	    $tmp2 = $input->checkbox('user[]', $mailboxes[$i]['mbox']);
@@ -19,7 +19,7 @@
     }
     $mailboxes = array_densify($mailboxes, array('pate'));
 ?>
-<?php if($authinfo['a_admin_user'] >= 1) { ?>
+<?php if($oma->authenticated_user['a_admin_user'] >= 1) { ?>
     <form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
 <?= caption(txt('79'), getPageList('<a href="'.mkSelfRef(array('mbox_page' => '%d')).'">%d</a>', $cuser['n_mbox'], $_SESSION['limit']['upper'], $_SESSION['limit'][$cuser['mbox']]['mbox_page']), 580) ?>

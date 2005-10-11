@@ -57,7 +57,7 @@
 	    <td class="ed"><?= $input->checkbox('change[]', 'reg_exp') ?><b><?= txt('34') ?></b></td>
 	    <td class="ed"><?= $input->text('reg_exp', 100) ?></td>
 	</tr>
-	<?php if($authinfo['a_super'] > 1 || $authinfo['a_admin_user'] > 1 || $authinfo['a_admin_domains'] > 1) { ?>
+	<?php if($oma->authenticated_user['a_super'] > 1 || $oma->authenticated_user['a_admin_user'] > 1 || $oma->authenticated_user['a_admin_domains'] > 1) { ?>
 	<tr>
 	    <td class="ed" colspan="2">
 		<table border="0" cellpadding="1" cellspacing="1">
@@ -67,37 +67,37 @@
 			<td class="ed" width="133"><?= txt('73') ?></td>
 			<td class="ed" width="133"><?= txt('74') ?></td>
 		    </tr>
-		    <?php if($authinfo['a_super'] > 0) { ?>
+		    <?php if($oma->authenticated_user['a_super'] > 0) { ?>
 		    <tr>
 			<td class="ed"><?= $input->checkbox('change[]', 'a_super') ?><?= txt('68') ?></td>
 			<td class="ed"><?= $input->radio('a_super', '0') ?></td>
 			<td class="ed"><?= $input->radio('a_super', '1') ?></td>
 			<td class="ed">
-			    <?php if($authinfo['a_super'] > 1) { ?>
+			    <?php if($oma->authenticated_user['a_super'] > 1) { ?>
 			    <?= $input->radio('a_super', '2') ?>
 			    <?php } ?>
 			</td>
 		    </tr>
 		    <?php } ?>
-		    <?php if($authinfo['a_admin_domains'] > 0) { ?>
+		    <?php if($oma->authenticated_user['a_admin_domains'] > 0) { ?>
 		    <tr>
 			<td class="ed"><?= $input->checkbox('change[]', 'a_admin_domains') ?><?= txt('50') ?></td>
 			<td class="ed"><?= $input->radio('a_admin_domains', '0') ?></td>
 			<td class="ed"><?= $input->radio('a_admin_domains', '1') ?></td>
 			<td class="ed">
-			    <?php if($authinfo['a_admin_domains'] > 1) { ?>
+			    <?php if($oma->authenticated_user['a_admin_domains'] > 1) { ?>
 			    <?= $input->radio('a_admin_domains', '2') ?>
 			    <?php } ?>
 			</td>
 		    </tr>
 		    <?php } ?>
-		    <?php if($authinfo['a_admin_user'] > 0) { ?>
+		    <?php if($oma->authenticated_user['a_admin_user'] > 0) { ?>
 		    <tr>
 			<td class="ed"><?= $input->checkbox('change[]', 'a_admin_user') ?><?= txt('70') ?></td>
 			<td class="ed"><?= $input->radio('a_admin_user', '0') ?></td>
 			<td class="ed"><?= $input->radio('a_admin_user', '1') ?></td>
 			<td class="ed">
-			    <?php if($authinfo['a_admin_user'] > 1) { ?>
+			    <?php if($oma->authenticated_user['a_admin_user'] > 1) { ?>
 			    <?= $input->radio('a_admin_user', '2') ?>
 			    <?php } ?>
 			</td>

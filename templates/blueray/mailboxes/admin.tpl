@@ -53,7 +53,7 @@
 	    <dt><?= $input->checkbox('change[]', 'reg_exp') ?><?= txt('34') ?></dt>
 	    <dd><?= $input->text('reg_exp', 100) ?></dd>
 	</dl>
-	<?php if($authinfo['a_super'] > 1 || $authinfo['a_admin_user'] > 1 || $authinfo['a_admin_domains'] > 1) { ?>
+	<?php if($oma->authenticated_user['a_super'] > 1 || $oma->authenticated_user['a_admin_user'] > 1 || $oma->authenticated_user['a_admin_domains'] > 1) { ?>
 	<div id="admin_acl">
 		<table class="admin">
 		    <tr>
@@ -62,37 +62,37 @@
 			<th><?= txt('73') ?></th>
 			<th><?= txt('74') ?></th>
 		    </tr>
-		    <?php if($authinfo['a_super'] > 0) { ?>
+		    <?php if($oma->authenticated_user['a_super'] > 0) { ?>
 		    <tr>
 			<td class="left"><?= $input->checkbox('change[]', 'a_super') ?><?= txt('68') ?></td>
 			<td><?= $input->radio('a_super', '0') ?></td>
 			<td><?= $input->radio('a_super', '1') ?></td>
 			<td>
-			    <?php if($authinfo['a_super'] > 1) { ?>
+			    <?php if($oma->authenticated_user['a_super'] > 1) { ?>
 			    <?= $input->radio('a_super', '2') ?>
 			    <?php } ?>
 			</td>
 		    </tr>
 		    <?php } ?>
-		    <?php if($authinfo['a_admin_domains'] > 0) { ?>
+		    <?php if($oma->authenticated_user['a_admin_domains'] > 0) { ?>
 		    <tr>
 			<td class="left"><?= $input->checkbox('change[]', 'a_admin_domains') ?><?= txt('50') ?></td>
 			<td><?= $input->radio('a_admin_domains', '0') ?></td>
 			<td><?= $input->radio('a_admin_domains', '1') ?></td>
 			<td>
-			    <?php if($authinfo['a_admin_domains'] > 1) { ?>
+			    <?php if($oma->authenticated_user['a_admin_domains'] > 1) { ?>
 			    <?= $input->radio('a_admin_domains', '2') ?>
 			    <?php } ?>
 			</td>
 		    </tr>
 		    <?php } ?>
-		    <?php if($authinfo['a_admin_user'] > 0) { ?>
+		    <?php if($oma->authenticated_user['a_admin_user'] > 0) { ?>
 		    <tr>
 			<td class="left"><?= $input->checkbox('change[]', 'a_admin_user') ?><?= txt('70') ?></td>
 			<td><?= $input->radio('a_admin_user', '0') ?></td>
 			<td><?= $input->radio('a_admin_user', '1') ?></td>
 			<td>
-			    <?php if($authinfo['a_admin_user'] > 1) { ?>
+			    <?php if($oma->authenticated_user['a_admin_user'] > 1) { ?>
 			    <?= $input->radio('a_admin_user', '2') ?>
 			    <?php } ?>
 			</td>

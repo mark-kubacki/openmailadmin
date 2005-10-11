@@ -2,10 +2,10 @@
 include('inc/_prepend.php4');
 
 // ------------------------------ Folder & ACL ----------------------------------------------------
-if($cuser['mbox'] == $authinfo['mbox']) {
+if($cuser['mbox'] == $oma->authenticated_user['mbox']) {
     // we shall log in as the current user
-    $CYRUS['ADMIN'] = $authinfo['mbox'].$CYRUS['VDOM'];
-    $CYRUS['PASS'] = obfuscator_decrypt($authinfo['pass_clear']);
+    $CYRUS['ADMIN'] = $oma->authenticated_user['mbox'].$CYRUS['VDOM'];
+    $CYRUS['PASS'] = obfuscator_decrypt($oma->authenticated_user['pass_clear']);
     $cyr = new cyradm;
     $cyr->imap_login();
 
@@ -71,7 +71,7 @@ if($cuser['mbox'] == $authinfo['mbox']) {
 	$ACLs = $cyr->getacl($_GET['folder']);
 	ksort($ACLs);
 	reset($ACLs);
-	$has_acl_a = isset($ACLs[$authinfo['mbox'].$CYRUS['VDOM']]) && stristr($ACLs[$authinfo['mbox'].$CYRUS['VDOM']], 'a')
+	$has_acl_a = isset($ACLs[$oma->authenticated_user['mbox'].$CYRUS['VDOM']]) && stristr($ACLs[$oma->authenticated_user['mbox'].$CYRUS['VDOM']], 'a')
 		    || isset($ACLs['anyone']) && stristr($ACLs['anyone'], 'a');
 
 	include('templates/'.$cfg['theme'].'/folders/admin.tpl');
