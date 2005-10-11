@@ -44,6 +44,9 @@ class openmailadmin {
 	$err	= implode(' ', array_unique($this->error));
 	return $err;
     }
+    /*
+     * Concatenates every information message.
+     */
     function info_get() {
 	$err	= implode(' ', array_unique($this->info));
 	return $err;
@@ -134,6 +137,152 @@ class openmailadmin {
 	    }
 	}
 	return array();
+    }
+
+    /*
+     * Returns an array containing all domains the user may choose from.
+     */
+    function get_domain_set($user, $categories, $cache = true) {
+	global $cfg;
+	$cat = '';
+	$poss_dom = array();
+
+	if($cache && isset($_SESSION['cache']['getDomainSet'][$user][$categories])) {
+	    return $_SESSION['cache']['getDomainSet'][$user][$categories];
+	}
+	else {
+	   foreach(explode(',', $categories) as $key=>$value) {
+	       $poss_dom[] = trim($value);
+	       $cat .= ' OR categories LIKE "%'.trim($value).'%"';
+	   }
+	   $result = mysql_query('SELECT domain FROM '.$cfg['tablenames']['domains']
+		   .' WHERE owner="'.$user.'" OR a_admin LIKE "%'.$user.'%" OR FIND_IN_SET(domain, "'.implode(',', $poss_dom).'")'.$cat);
+	   if($result != false) {
+	       $dom = array();
+	       while($row = mysql_fetch_assoc($result)) {
+		   $dom[] = $row['domain'];
+	       }
+	       mysql_free_result($result);
+	   }
+
+	   if($cache) {
+	       $_SESSION['cache']['getDomainSet'][$user][$categories] = $dom;
+	       return $_SESSION['cache']['getDomainSet'][$user][$categories];
+	   }
+	   else {
+	       return $dom;
+	   }
+	}
+    }
+
+    /*
+     * Checks whether a user is a descendant of another user.
+     * (Unfortunately, PHP does not support inline functions.)
+     */
+    function user_is_descendant($child, $parent, $levels = 7, $cache = array()) {
+	global $cfg;
+	// initialize cache
+	if(!isset($_SESSION['cache']['IsDescendant'])) {
+	    $_SESSION['cache']['IsDescendant'] = array();
+	}
+
+	if(trim($child) == '' || trim($parent) == '')
+	    return false;
+	if(isset($_SESSION['cache']['IsDescendant'][$parent][$child]))
+	    return $_SESSION['cache']['IsDescendant'][$parent][$child];
+
+	if($child == $parent) {
+	    $rec = true;
+	}
+	else if($levels <= 0 ) {
+	    $rec = false;
+	}
+	else {
+	    $result = mysql_query('SELECT pate FROM '.$cfg['tablenames']['user']
+				    .' WHERE mbox="'.$child.'" LIMIT 1');
+	    if(!$result || mysql_num_rows($result) < 1) {
+		$rec = false;
+	    }
+	    else {
+		$inter = mysql_result($result, 0, 0);
+		mysql_free_result($result);
+		if($inter == $parent) {
+		    $rec = true;
+		}
+		else if(in_array($inter, $cache)) {	// avoids loops
+		    $rec = false;
+		}
+		else {
+		    $rec = $this->user_is_descendant($inter, $parent, $levels--, array_merge($cache, array($inter)));
+		}
+	    }
+	}
+	$_SESSION['cache']['IsDescendant'][$parent][$child] = $rec;
+	return $rec;
+    }
+
+    /*
+     * How many aliases the user has already in use?
+     * Does cache, but not session-wide.
+     */
+    function user_get_used_alias($username) {
+	global $cfg;
+	static $used = array();
+
+	if(!isset($used[$username])) {
+	    $result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['virtual'].' WHERE owner=\''.$username.'\'');
+	    $used[$username] = mysql_result($result, 0, 0);
+	    mysql_free_result($result);
+	}
+
+	return $used[$username];
+    }
+    /*
+     * How many regexp-addresses the user has already in use?
+     * Does cache, but not session-wide.
+     */
+    function user_get_used_regexp($username) {
+	global $cfg;
+	static $used = array();
+
+	if(!isset($used[$username])) {
+	    $result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['virtual_regexp'].' WHERE owner=\''.$username.'\'');
+	    $used[$username] = mysql_result($result, 0, 0);
+	    mysql_free_result($result);
+	}
+
+	return $used[$username];
+    }
+
+    /*
+     * These just count how many elements have been assigned to that given user.
+     */
+    function user_get_number_mailboxes($username) {
+	global $cfg;
+
+	if(!isset($_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'])) {
+	    $result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['user']
+				    .' WHERE pate = "'.$username.'"');
+	    $_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'] = mysql_result($result, 0, 0);
+	    mysql_free_result($result);
+	}
+
+	return $_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'];
+    }
+    /*
+     * These just count how many elements have been assigned to that given user.
+     */
+    function user_get_number_domains($username) {
+	global $cfg;
+
+	if(!isset($_SESSION['cache']['n_Domains'][$username]['domains'])) {
+	    $result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['domains']
+				    .' WHERE owner = "'.$username.'"');
+	    $_SESSION['cache']['n_Domains'][$username]['domains'] = mysql_result($result, 0, 0);
+	    mysql_free_result($result);
+	}
+
+	return $_SESSION['cache']['n_Domains'][$username]['domains'];
     }
 
 /* ******************************* addresses ******************************** */
@@ -309,17 +458,17 @@ class openmailadmin {
 	$this->editable_domains = 0;
 	$domains = array();
 
-	$query  = 'SELECT SQL_CALC_FOUND_ROWS *'
+	$query  = 'SELECT *'
 		 .' FROM '.$cfg['tablenames']['domains'];
 	if($this->authenticated_user['a_super'] > 0) {
 		$query .= ' WHERE 1=1 '.$_SESSION['filter']['str']['domain'];
 	}
 	else {
-		$query .= ' WHERE (owner=\''.$this->current_user['mbox'].'\' or a_admin LIKE \'%'.$this->current_user['mbox'].'%\')'
+		$query .= ' WHERE (owner="'.$this->current_user['mbox'].'" or a_admin LIKE "%'.$this->current_user['mbox'].'%")'
 			 .$_SESSION['filter']['str']['domain'];
 	}
 	$query .= ' ORDER BY owner, length(a_admin), domain'
-		 .$_SESSION['limit']['str']['domain'];;
+		 .$_SESSION['limit']['str']['domain'];
 
 	$result = mysql_query($query);
 	if(mysql_num_rows($result) > 0) {
@@ -335,11 +484,9 @@ class openmailadmin {
 		$domains[] = $row;
 	    }
 	    mysql_free_result($result);
-	    $result = mysql_query('SELECT FOUND_ROWS()');
-	    $this->current_user['n_domains'] = mysql_result($result, 0, 0);
-	    mysql_free_result($result);
-
 	}
+
+	$this->current_user['n_domains'] = $this->user_get_number_domains($this->current_user['mbox']);
 
 	return $domains;
     }
@@ -350,11 +497,11 @@ class openmailadmin {
      */
     function domain_check($reference, $tobechecked, $domain_key) {
 	if(!isset($reference['domain_set'])) {
-	    $reference['domain_set'] = getDomainSet($reference['mbox'], $reference['domains']);
+	    $reference['domain_set'] = $this->get_domain_set($reference['mbox'], $reference['domains']);
 	}
 	// new domain-key must not lead to more domains than the user already has to choose from
 	// A = Domains the new user will be able to choose from.
-	$dom_a = getDomainSet(mysql_escape_string($tobechecked), mysql_escape_string($domain_key), false);
+	$dom_a = $this->get_domain_set(mysql_escape_string($tobechecked), mysql_escape_string($domain_key), false);
 	// B = Domains the creator may choose from (that is $reference['domain_set'])?
 	// Okay, if A is part of B. (Thus, no additional domains are added for user "A".)
 	// Indication: A <= B
@@ -542,7 +689,7 @@ class openmailadmin {
 	// Check whether the authenticated user has the right to do that.
 	if($this->authenticated_user['a_super'] < 1
 		&& $username != $this->authenticated_user['mbox']
-		&& !IsDescendant($username, $this->authenticated_user['mbox'])) {
+		&& !$this->user_is_descendant($username, $this->authenticated_user['mbox'])) {
 	    $this->error[]	= txt('49');
 	    return false;
 	}
@@ -745,6 +892,11 @@ class openmailadmin {
     }
 
 /* ******************************* mailboxes ******************************** */
+    /*
+     * Returns list with mailboxes the current user can see.
+     * Typically all his patenkinder will show up.
+     * If the current user is at his pages and is superuser, he will see all mailboxes.
+     */
     function get_mailboxes() {
 	global $cfg;
 	$mailboxes = array();
@@ -756,7 +908,7 @@ class openmailadmin {
 	else {
 	    $where_clause = ' WHERE pate="'.$this->current_user['mbox'].'"';
 	}
-	$result = mysql_query('SELECT SQL_CALC_FOUND_ROWS mbox, person, canonical, pate, max_alias, max_regexp, active, date(last_login) AS lastlogin, a_super, a_admin_domains, a_admin_user, '
+	$result = mysql_query('SELECT mbox, person, canonical, pate, max_alias, max_regexp, active, date(last_login) AS lastlogin, a_super, a_admin_domains, a_admin_user, '
 				    .'(SELECT count(*) FROM '.$cfg['tablenames']['virtual']
 				    .' WHERE '.$cfg['tablenames']['virtual'].'.owner=mbox) AS num_alias, '
 				    .'(SELECT count(*) FROM '.$cfg['tablenames']['virtual_regexp']
@@ -765,12 +917,7 @@ class openmailadmin {
 				.$where_clause.$_SESSION['filter']['str']['mbox']
 				.' ORDER BY pate, mbox'.$_SESSION['limit']['str']['mbox']);
 
-	$this->current_user['n_mbox'] = 0;
 	if(mysql_num_rows($result) > 0) {
-	    $result2 = mysql_query('SELECT FOUND_ROWS()');
-	    $this->current_user['n_mbox'] = mysql_result($result2, 0, 0);
-	    mysql_free_result($result2);
-
 	    while($row = mysql_fetch_assoc($result)) {
 		if(in_array($row['mbox'], $cfg['user_ignore']))
 		    continue;
@@ -780,10 +927,14 @@ class openmailadmin {
 	    }
 	    mysql_free_result($result);
 	}
+	$this->current_user['n_mbox'] = $this->user_get_number_mailboxes($this->current_user['mbox']);
 
 	return $mailboxes;
     }
 
+    /*
+     * This will return a list with $whose's patenkinder for further use in selections.
+     */
     function get_selectable_paten($whose) {
 	global $cfg;
 
@@ -812,17 +963,22 @@ class openmailadmin {
 	return $_SESSION['paten'][$whose];
     }
 
+    /*
+     * Eliminates every mailbox name from $desired_mboxes which is no descendant
+     * of $who. If the authenticated user is superuser, no filtering is done
+     * except elimination imposed by $cfg['user_ignore'].
+     */
     function mailbox_filter_manipulable($who, $desired_mboxes) {
 	global $cfg;
 	$allowed = array();
 
 	// Does the authenticated user have the right to do that?
 	if($this->authenticated_user['a_super'] >= 1) {
-	    $allowed = $desired_mboxes;
+	    $allowed = array_diff($desired_mboxes, $cfg['user_ignore']);
 	}
 	else {
 	    foreach($desired_mboxes as $mbox) {
-		if(!in_array($mbox, $cfg['user_ignore']) && IsDescendant($mbox, $who)) {
+		if(!in_array($mbox, $cfg['user_ignore']) && $this->user_is_descendant($mbox, $who)) {
 		    $allowed[] = $mbox;
 		}
 	    }
@@ -831,6 +987,10 @@ class openmailadmin {
 	return $allowed;
     }
 
+    /*
+     * $props is typically $_POST, as this function selects all the necessary fields
+     * itself.
+     */
     function mailbox_create($mboxname, $props) {
 	global $cfg;
 	global $cyr;
@@ -853,8 +1013,8 @@ class openmailadmin {
 	// contingents (only if non-superuser)
 	if($this->authenticated_user['a_super'] == 0) {
 	    // As the current user's contingents will be decreased we have to use his values.
-	    if($props['max_alias'] > ($this->current_user['max_alias'] - hsys_getUsedAlias($this->current_user['mbox']))
-			|| $props['max_regexp'] > ($this->current_user['max_regexp'] - hsys_getUsedRegexp($this->current_user['mbox']))) {
+	    if($props['max_alias'] > ($this->current_user['max_alias'] - $this->user_get_used_alias($this->current_user['mbox']))
+			|| $props['max_regexp'] > ($this->current_user['max_regexp'] - $this->user_get_used_regexp($this->current_user['mbox']))) {
 		$this->error[]	= txt('66');
 		return false;
 	    }
@@ -947,6 +1107,9 @@ class openmailadmin {
 	return true;
     }
 
+    /*
+     * $props can be $_POST, as every sutable field from $change is used.
+     */
     function mailbox_change($mboxnames, $change, $props) {
 	global $cfg;
 	global $cyr;
@@ -1033,7 +1196,7 @@ class openmailadmin {
 				    .' WHERE FIND_IN_SET(mbox, "'.implode(',', $to_be_processed).'")'
 				    .' LIMIT '.count($to_be_processed));
 			$has_to_be_free = mysql_result($result, 0, 0);
-			if($has_to_be_free <= hsys_getUsedAlias($this->current_user['mbox'])) {
+			if($has_to_be_free <= $this->user_get_used_alias($this->current_user['mbox'])) {
 			    // If so, set new contingents on the users...
 			    mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['user']
 				.' SET '.$what.'='.$props[$what]
@@ -1103,6 +1266,9 @@ class openmailadmin {
 	return true;
     }
 
+    /*
+     * If ressources are freed, the current user will get them.
+     */
     function mailbox_delete($mboxnames) {
 	global $cfg;
 	global $cyr;
@@ -1185,6 +1351,9 @@ class openmailadmin {
 	return true;
     }
 
+    /*
+     * active <-> inactive
+     */
     function mailbox_toggle_active($mboxnames) {
 	global $cfg;
 
@@ -1257,7 +1426,7 @@ class openmailadmin {
 	$validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= 4 && strlen(~) <= 16 && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
 						'error'	=> txt('62')),
 					);
-	$validate['pate']	= array(array(	'val'	=> '$this->authenticated_user[\'a_super\'] > 0 || IsDescendant(~, $this->authenticated_user[\'mbox\'])',
+	$validate['pate']	= array(array(	'val'	=> '$this->authenticated_user[\'a_super\'] > 0 || $this->user_is_descendant(~, $this->authenticated_user[\'mbox\'])',
 						),
 					);
 	$validate['person']	= array(array(	'val'	=> 'strlen(~) <= 100 && strlen(~) >= 4 && preg_match(\'/^[\w\s0-9-_\.\(\)]*$/\', ~)',

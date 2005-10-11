@@ -6,7 +6,7 @@ $cyr->imap_login();
 hsys_imap_detect_HS();
 
 // ------------------------------ Information -----------------------------------------------------
-$oma->current_user['domain_set'] = getDomainSet($oma->current_user['mbox'], $oma->current_user['domains']);
+$oma->current_user['domain_set'] = $oma->get_domain_set($oma->current_user['mbox'], $oma->current_user['domains']);
 
 $a_tmp = array();
 if($oma->current_user['a_super'] > 0)		$a_tmp[] = txt('68');

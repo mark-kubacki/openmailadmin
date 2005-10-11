@@ -2,8 +2,8 @@
 include('inc/_prepend.php4');
 include('inc/panel_filter.php4');
 
-$oma->current_user['domain_set'] = getDomainSet($oma->current_user['mbox'], $oma->current_user['domains']);
-$oma->current_user['used_regexp'] = hsys_getUsedRegexp($oma->current_user['mbox']);
+$oma->current_user['domain_set'] = $oma->get_domain_set($oma->current_user['mbox'], $oma->current_user['domains']);
+$oma->current_user['used_regexp'] = $oma->user_get_used_regexp($oma->current_user['mbox']);
 
 // ------------------------------ Regexp ----------------------------------------------------------
 // PERFORM ACTION

@@ -1,6 +1,4 @@
 <?php
-// After 2005 we will see if a API improves efficiency...
-
 // from PEAR: PHP_Compat
 if (!function_exists('array_combine')) {
     function array_combine($keys, $values)
@@ -122,87 +120,6 @@ function mkSelfRef($arr_Add = array()) {
 }
 
 /*
- * returns an array containing all domains the user may choose from
- */
-function getDomainSet($user, $categories, $cache = true) {
-    global $cfg;
-    $cat = ''; $poss_dom = array();
-
-    if($cache && isset($_SESSION['cache']['getDomainSet'][$user][$categories])) {
-	return $_SESSION['cache']['getDomainSet'][$user][$categories];
-    }
-    else {
-	foreach(explode(',', $categories) as $key=>$value) {
-	    $poss_dom[] = trim($value);
-	    $cat .= ' OR categories LIKE "%'.trim($value).'%"';
-	}
-	$result = mysql_query('SELECT domain FROM '.$cfg['tablenames']['domains']
-		.' WHERE owner="'.$user.'" OR a_admin LIKE "%'.$user.'%" OR FIND_IN_SET(domain, "'.implode(',', $poss_dom).'")'.$cat);
-	if($result != false) {
-	    $dom = array();
-	    while($row = mysql_fetch_assoc($result)) {
-		$dom[] = $row['domain'];
-	    }
-	    mysql_free_result($result);
-	}
-
-	if($cache) {
-	    $_SESSION['cache']['getDomainSet'][$user][$categories] = $dom;
-	    return $_SESSION['cache']['getDomainSet'][$user][$categories];
-	}
-	else {
-	    return $dom;
-	}
-    }
-}
-
-/*
- * checks whether a user is a descendant of another user
- * (unfortunately, PHP does not support inline functions)
- */
-function IsDescendant($child, $parent, $levels = 7, $cache = array()) {
-    global $cfg;
-    // initialize cache
-    if(!isset($_SESSION['cache']['IsDescendant'])) {
-	$_SESSION['cache']['IsDescendant'] = array();
-    }
-
-    if(trim($child) == '' || trim($parent) == '')
-	return false;
-    if(isset($_SESSION['cache']['IsDescendant'][$parent][$child]))
-	return $_SESSION['cache']['IsDescendant'][$parent][$child];
-
-    if($child == $parent) {
-	$rec = true;
-    }
-    else if($levels <= 0 ) {
-	$rec = false;
-    }
-    else {
-	$result = mysql_query('SELECT pate FROM '.$cfg['tablenames']['user']
-				.' WHERE mbox="'.$child.'" LIMIT 1');
-	if(!$result || mysql_num_rows($result) < 1) {
-	    $rec = false;
-	}
-	else {
-	    $inter = mysql_result($result, 0, 0);
-	    mysql_free_result($result);
-	    if($inter == $parent) {
-		$rec = true;
-	    }
-	    else if(in_array($inter, $cache)) {	// avoids loops
-		$rec = false;
-	    }
-	    else {
-		$rec = IsDescendant($inter, $parent, $levels--, array_merge($cache, array($inter)));
-	    }
-	}
-    }
-    $_SESSION['cache']['IsDescendant'][$parent][$child] = $rec;
-    return $rec;
-}
-
-/*
  * Adds prefixes and suffixes as well as separators to a username
  */
 function cyrus_format_user($username, $folder = null) {
@@ -214,66 +131,6 @@ function cyrus_format_user($username, $folder = null) {
     else {
 	return(cyrus_format_user($username).$CYRUS['SEPA'].$folder);
     }
-}
-
-/*
- * How many aliases the user has already in use?
- * Does cache, but not session-wide.
- */
-function hsys_getUsedAlias($username) {
-    global $cfg; static $used = array();
-
-    if(!isset($used[$username])) {
-	$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['virtual'].' WHERE owner=\''.$username.'\'');
-	$used[$username] = mysql_result($result, 0, 0);
-	mysql_free_result($result);
-    }
-
-    return $used[$username];
-}
-/*
- * How many regexp-addresses the user has already in use?
- * Does cache, but not session-wide.
- */
-function hsys_getUsedRegexp($username) {
-    global $cfg; static $used = array();
-
-    if(!isset($used[$username])) {
-	$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['virtual_regexp'].' WHERE owner=\''.$username.'\'');
-	$used[$username] = mysql_result($result, 0, 0);
-	mysql_free_result($result);
-    }
-
-    return $used[$username];
-}
-
-
-/*
- * These just count how many elements have been assigned to that given user.
- */
-function hsys_n_Mailboxes($username) {
-    global $cfg;
-
-    if(!isset($_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'])) {
-	$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['user']
-				.' WHERE pate = "'.$username.'"');
-	$_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'] = mysql_result($result, 0, 0);
-	mysql_free_result($result);
-    }
-
-    return $_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'];
-}
-function hsys_n_Domains($username) {
-    global $cfg;
-
-    if(!isset($_SESSION['cache']['n_Domains'][$username]['domains'])) {
-	$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['domains']
-				.' WHERE owner = "'.$username.'"');
-	$_SESSION['cache']['n_Domains'][$username]['domains'] = mysql_result($result, 0, 0);
-	mysql_free_result($result);
-    }
-
-    return $_SESSION['cache']['n_Domains'][$username]['domains'];
 }
 
 /*

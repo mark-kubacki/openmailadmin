@@ -2,8 +2,8 @@
 include('inc/_prepend.php4');
 include('inc/panel_filter.php4');
 
-$oma->current_user['domain_set'] = getDomainSet($oma->current_user['mbox'], $oma->current_user['domains']);
-$oma->current_user['used_alias'] = hsys_getUsedAlias($oma->current_user['mbox']);
+$oma->current_user['domain_set'] = $oma->get_domain_set($oma->current_user['mbox'], $oma->current_user['domains']);
+$oma->current_user['used_alias'] = $oma->user_get_used_alias($oma->current_user['mbox']);
 
 // ------------------------------ Addresses -------------------------------------------------------
 // PERFORM ACTION

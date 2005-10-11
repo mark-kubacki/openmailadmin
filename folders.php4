@@ -69,7 +69,8 @@ if($cuser['mbox'] == $authinfo['mbox']) {
     // ADMIN PANEL (not hidden by default)
     if(isset($_GET['folder'])&& in_array($_GET['folder'], $mailbox_list)) {
 	$ACLs = $cyr->getacl($_GET['folder']);
-	ksort($ACLs); reset($ACLs);
+	ksort($ACLs);
+	reset($ACLs);
 	$has_acl_a = isset($ACLs[$authinfo['mbox'].$CYRUS['VDOM']]) && stristr($ACLs[$authinfo['mbox'].$CYRUS['VDOM']], 'a')
 		    || isset($ACLs['anyone']) && stristr($ACLs['anyone'], 'a');
 

@@ -1,5 +1,5 @@
 <?php
-$version = '2005-10-08';
+$version = '2005-10-12';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
@@ -68,7 +68,7 @@ if(mysql_num_rows($result) > 0) {
     mysql_free_result($result);
 
     if(!($authinfo['a_super'] >= 1 || $cuser['mbox'] == $authinfo['mbox']
-	|| $cuser['pate'] == $authinfo['mbox'] || IsDescendant($cuser['mbox'], $authinfo['mbox']))) {
+	|| $cuser['pate'] == $authinfo['mbox'] || $oma->user_is_descendant($cuser['mbox'], $authinfo['mbox']))) {
 	error(txt('2'));
 	include('templates/'.$cfg['theme'].'/common-footer_nv.tpl');
 	exit();
@@ -105,7 +105,7 @@ $arr_navmenu = array();
     $arr_navmenu[]	= array('link'		=> 'index.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
 				'caption'	=> txt('1'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'index.php4'));
-if($cuser['max_alias'] > 0 || $authinfo['a_super'] >= 1 || hsys_getUsedAlias($cuser['mbox'])) {
+if($cuser['max_alias'] > 0 || $authinfo['a_super'] >= 1 || $oma->user_get_used_alias($cuser['mbox'])) {
     $arr_navmenu[]	= array('link'		=> 'addresses.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
 				'caption'	=> txt('17'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'addresses.php4'));
@@ -115,17 +115,17 @@ if($cuser['mbox'] == $authinfo['mbox']) {
 				'caption'	=> txt('103'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'folders.php4'));
 }
-if($cuser['max_regexp'] > 0 || $authinfo['a_super'] >= 1 || hsys_getUsedRegexp($cuser['mbox'])) {
+if($cuser['max_regexp'] > 0 || $authinfo['a_super'] >= 1 || $oma->user_get_used_regexp($cuser['mbox'])) {
     $arr_navmenu[]	= array('link'		=> 'regexp.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
 				'caption'	=> txt('33'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'regexp.php4'));
 }
-if($authinfo['a_admin_domains'] >= 1 || hsys_n_Domains($cuser['mbox']) > 0) {
+if($authinfo['a_admin_domains'] >= 1 || $oma->user_get_number_domains($cuser['mbox']) > 0) {
     $arr_navmenu[]	= array('link'		=> 'domains.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
 				'caption'	=> txt('54'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'domains.php4'));
 }
-if($authinfo['a_admin_user'] >= 1 || hsys_n_Mailboxes($cuser['mbox']) > 0) {
+if($authinfo['a_admin_user'] >= 1 || $oma->user_get_number_mailboxes($cuser['mbox']) > 0) {
     $arr_navmenu[]	= array('link'		=> 'mailboxes.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
 				'caption'	=> txt('79'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php4'));
