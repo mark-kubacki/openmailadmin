@@ -2,7 +2,7 @@
 include('inc/_prepend.php4');
 
 // ------------------------------ Folder & ACL ----------------------------------------------------
-if($cuser['mbox'] == $oma->authenticated_user['mbox']) {
+if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
     // we shall log in as the current user
     $CYRUS['ADMIN'] = $oma->authenticated_user['mbox'].$CYRUS['VDOM'];
     $CYRUS['PASS'] = obfuscator_decrypt($oma->authenticated_user['pass_clear']);

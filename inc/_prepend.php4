@@ -66,6 +66,8 @@ include('lib/openmailadmin.php');
 $oma 	= new openmailadmin();
 $oma->authenticated_user	= &$authinfo;
 $oma->current_user		= &$cuser;
+unset($authinfo);
+unset($cuser);
 
 // Query for the current user...
 $result = mysql_query('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.$now_on.'" LIMIT 1');

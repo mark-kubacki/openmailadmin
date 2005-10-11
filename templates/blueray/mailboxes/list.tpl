@@ -11,7 +11,7 @@
 <?php } ?>
 <div id="data">
 <h2><?= txt('79') ?></h2>
-<span class="pagelist"><?= getPageList('<a href="'.mkSelfRef(array('mbox_page' => '%d')).'">%d</a>', $cuser['n_mbox'], $_SESSION['limit']['upper'], $_SESSION['limit'][$cuser['mbox']]['mbox_page']) ?></span>
+<span class="pagelist"><?= getPageList('<a href="'.mkSelfRef(array('mbox_page' => '%d')).'">%d</a>', $oma->current_user['n_mbox'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['mbox_page']) ?></span>
 <table class="data">
     <tr>
 	<th><?= txt('5') ?></th>
@@ -23,7 +23,7 @@
     <?php foreach($mailboxes as $mailbox) { ?>
 	<tr>
 	    <td>
-		<?php if($mailbox['mbox'] == $oma->authenticated_user['mbox'] || $mailbox['mbox'] == $cuser['mbox']) { ?>
+		<?php if($mailbox['mbox'] == $oma->authenticated_user['mbox'] || $mailbox['mbox'] == $oma->current_user['mbox']) { ?>
 		    &nbsp;-&nbsp;
 		<?php } else { ?>
 		    <?= $input->checkbox('user[]', $mailbox['mbox']) ?>

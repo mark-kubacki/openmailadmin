@@ -4,8 +4,8 @@
 if(!isset($_SESSION['limit']['upper'])) {
     $_SESSION['limit']['upper'] = $cfg['max_elements_per_page'];
 }
-if(!isset($_SESSION['limit'][$cuser['mbox']]) || isset($_POST['limit'])) {
-    $_SESSION['limit'][$cuser['mbox']] = array('address' => 0, 'regexp' => 0, 'domain' => 0, 'mbox' => 0,
+if(!isset($_SESSION['limit'][$oma->current_user['mbox']]) || isset($_POST['limit'])) {
+    $_SESSION['limit'][$oma->current_user['mbox']] = array('address' => 0, 'regexp' => 0, 'domain' => 0, 'mbox' => 0,
 						'addr_page' => 0, 'regx_page' => 0, 'dom_page' => 0, 'mbox_page' => 0);
 }
 if(isset($_POST['limit'])) {
@@ -16,30 +16,30 @@ if(isset($_POST['limit'])) {
 	$_SESSION['limit']['upper']	= false; // equals 'no limit'
 }
 if(isset($_GET['addr_page']) && is_numeric($_GET['addr_page'])) {
-    $_SESSION['limit'][$cuser['mbox']]['address'] = max(0, (intval($_GET['addr_page']) - 1) * $_SESSION['limit']['upper']);
-    $_SESSION['limit'][$cuser['mbox']]['addr_page'] = intval($_GET['addr_page']);
+    $_SESSION['limit'][$oma->current_user['mbox']]['address'] = max(0, (intval($_GET['addr_page']) - 1) * $_SESSION['limit']['upper']);
+    $_SESSION['limit'][$oma->current_user['mbox']]['addr_page'] = intval($_GET['addr_page']);
     unset($_GET['addr_page']);
 }
 if(isset($_GET['regx_page']) && is_numeric($_GET['regx_page'])) {
-    $_SESSION['limit'][$cuser['mbox']]['regexp'] = max(0, (intval($_GET['regx_page']) - 1) * $_SESSION['limit']['upper']);
-    $_SESSION['limit'][$cuser['mbox']]['regx_page'] = intval($_GET['regx_page']);
+    $_SESSION['limit'][$oma->current_user['mbox']]['regexp'] = max(0, (intval($_GET['regx_page']) - 1) * $_SESSION['limit']['upper']);
+    $_SESSION['limit'][$oma->current_user['mbox']]['regx_page'] = intval($_GET['regx_page']);
     unset($_GET['regx_page']);
 }
 if(isset($_GET['dom_page']) && is_numeric($_GET['dom_page'])) {
-    $_SESSION['limit'][$cuser['mbox']]['domain'] = max(0, (intval($_GET['dom_page']) - 1) * $_SESSION['limit']['upper']);
-    $_SESSION['limit'][$cuser['mbox']]['dom_page'] = intval($_GET['dom_page']);
+    $_SESSION['limit'][$oma->current_user['mbox']]['domain'] = max(0, (intval($_GET['dom_page']) - 1) * $_SESSION['limit']['upper']);
+    $_SESSION['limit'][$oma->current_user['mbox']]['dom_page'] = intval($_GET['dom_page']);
     unset($_GET['dom_page']);
 }
 if(isset($_GET['mbox_page']) && is_numeric($_GET['mbox_page'])) {
-    $_SESSION['limit'][$cuser['mbox']]['mbox'] = max(0, (intval($_GET['mbox_page']) - 1) * $_SESSION['limit']['upper']);
-    $_SESSION['limit'][$cuser['mbox']]['mbox_page'] = intval($_GET['mbox_page']);
+    $_SESSION['limit'][$oma->current_user['mbox']]['mbox'] = max(0, (intval($_GET['mbox_page']) - 1) * $_SESSION['limit']['upper']);
+    $_SESSION['limit'][$oma->current_user['mbox']]['mbox_page'] = intval($_GET['mbox_page']);
     unset($_GET['mbox_page']);
 }
 if($_SESSION['limit']['upper']) {
-    $_SESSION['limit']['str']['address']= ' LIMIT '.$_SESSION['limit'][$cuser['mbox']]['address'].','.$_SESSION['limit']['upper'];
-    $_SESSION['limit']['str']['regexp']	= ' LIMIT '.$_SESSION['limit'][$cuser['mbox']]['regexp'].','.$_SESSION['limit']['upper'];
-    $_SESSION['limit']['str']['domain']	= ' LIMIT '.$_SESSION['limit'][$cuser['mbox']]['domain'].','.$_SESSION['limit']['upper'];
-    $_SESSION['limit']['str']['mbox']	= ' LIMIT '.$_SESSION['limit'][$cuser['mbox']]['mbox'].','.$_SESSION['limit']['upper'];
+    $_SESSION['limit']['str']['address']= ' LIMIT '.$_SESSION['limit'][$oma->current_user['mbox']]['address'].','.$_SESSION['limit']['upper'];
+    $_SESSION['limit']['str']['regexp']	= ' LIMIT '.$_SESSION['limit'][$oma->current_user['mbox']]['regexp'].','.$_SESSION['limit']['upper'];
+    $_SESSION['limit']['str']['domain']	= ' LIMIT '.$_SESSION['limit'][$oma->current_user['mbox']]['domain'].','.$_SESSION['limit']['upper'];
+    $_SESSION['limit']['str']['mbox']	= ' LIMIT '.$_SESSION['limit'][$oma->current_user['mbox']]['mbox'].','.$_SESSION['limit']['upper'];
 }
 else {
     $_SESSION['limit']['str'] = array('address' => '', 'regexp' => '', 'domain' => '', 'mbox' => '');
@@ -59,9 +59,9 @@ if(isset($_POST['filtr']) && isset($_POST['filtr_addr']) && $_POST['filtr'] == '
     $filtr_post = '';
     $_SESSION['filter']['str'] = array('address' => '', 'regexp' => '', 'domain' => '', 'mbox' => '');
     switch($_POST['cond']) {
-	case 'has':	$filtr_post = '\'%'.str_replace(txt('5'), $cuser['mbox'], mysql_escape_string($_POST['cont'])).'%\'';	break;
-	case 'begins':	$filtr_post = '\''.str_replace(txt('5'), $cuser['mbox'], mysql_escape_string($_POST['cont'])).'%\'';		break;
-	case 'ends':	$filtr_post = '\'%'.str_replace(txt('5'), $cuser['mbox'], mysql_escape_string($_POST['cont'])).'\'';		break;
+	case 'has':	$filtr_post = '\'%'.str_replace(txt('5'), $oma->current_user['mbox'], mysql_escape_string($_POST['cont'])).'%\'';	break;
+	case 'begins':	$filtr_post = '\''.str_replace(txt('5'), $oma->current_user['mbox'], mysql_escape_string($_POST['cont'])).'%\'';		break;
+	case 'ends':	$filtr_post = '\'%'.str_replace(txt('5'), $oma->current_user['mbox'], mysql_escape_string($_POST['cont'])).'\'';		break;
     }
     switch($_POST['what']) {
 	case 'addr':

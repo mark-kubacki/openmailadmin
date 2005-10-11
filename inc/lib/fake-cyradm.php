@@ -15,13 +15,17 @@ class cyradm {
     }
 
     function command($line) {
-	global $cfg; global $cuser;
+	global $cfg;
+	global $oma;
 
 	switch($line) {
 	    case '. list "" *':
 		// query for all visible folders
 		$ret = array();
-		$result = mysql_query('SELECT mailbox as folder, (select count(*) from '.$cfg['tablenames']['imap_demo'].' where mailbox like concat(folder, ".%")) as children FROM '.$cfg['tablenames']['imap_demo'].' WHERE ACL LIKE "% '.$cuser['mbox'].' l%" OR ACL LIKE "'.$cuser['mbox'].' l%" OR ACL LIKE "% anyone l%" OR ACL LIKE "anyone l%"');
+		$result = mysql_query('SELECT mailbox as folder,'
+			.' (SELECT COUNT(*) FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox LIKE CONCAT(folder, ".%")) AS children'
+			.' FROM '.$cfg['tablenames']['imap_demo']
+			.' WHERE ACL LIKE "% '.$oma->current_user['mbox'].' l%" OR ACL LIKE "'.$oma->current_user['mbox'].' l%" OR ACL LIKE "% anyone l%" OR ACL LIKE "anyone l%"');
 		if(mysql_num_rows($result) > 0) {
 		    while($row = mysql_fetch_assoc($result)) {
 			$ret[] = '* LIST '
@@ -46,14 +50,15 @@ class cyradm {
     }
 
     function createmb($mb) {
-	global $cfg; global $cuser; global $_GET; global $_POST;
+	global $cfg;
+	global $oma;
 
 	if(isset($_GET['folder'])) {
 	    $result = mysql_query('SELECT ACL FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox="'.mysql_escape_string($_GET['folder']).'" LIMIT 1');
 	    $newacl = mysql_result($result, 0, 0);
 	    mysql_free_result($result);
 	    $acl = $this->getacl(mysql_escape_string($_GET['folder']));
-	    if(isset($acl[$cuser['mbox']]) && stristr($acl[$cuser['mbox']], 'a')
+	    if(isset($acl[$oma->current_user['mbox']]) && stristr($acl[$oma->current_user['mbox']], 'a')
 		|| isset($acl['anyone']) && stristr($acl['anyone'], 'a')) {
 		mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$newacl.'")');
 	    }
@@ -65,7 +70,7 @@ class cyradm {
 	    mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$_POST['mbox'].' lrswipcda")');
 	}
 	else {
-	    mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$cuser['mbox'].' lrswipcda")');
+	    mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$oma->current_user['mbox'].' lrswipcda")');
 	}
 	if(mysql_affected_rows() < 1) {
 	    return array(mysql_error());
@@ -131,7 +136,8 @@ class cyradm {
     }
 
     function setacl($mb, $user, $acl) {
-	global $cfg; global $cuser;
+	global $cfg;
+	global $oma;
 
 	// does the user exist?
 	$result = mysql_query('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.mysql_escape_string($user).'" LIMIT 1');
@@ -141,7 +147,7 @@ class cyradm {
 
 	    // fetch old ACL
 	    $facl = $this->getacl(mysql_escape_string($mb));
-	    if(isset($facl[$cuser['mbox']]) && stristr($facl[$cuser['mbox']], 'a')
+	    if(isset($facl[$oma->current_user['mbox']]) && stristr($facl[$oma->current_user['mbox']], 'a')
 		|| isset($facl['anyone']) && stristr($facl['anyone'], 'a')) {
 		// modify ACL
 		if($acl == 'none') {

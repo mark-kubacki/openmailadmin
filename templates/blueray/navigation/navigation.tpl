@@ -37,13 +37,13 @@
 	    </li>
 	    <?php } ?>
 	</ul>
-	<?php if($cuser['mbox'] != $oma->authenticated_user['mbox']) { ?>
+	<?php if($oma->current_user['mbox'] != $oma->authenticated_user['mbox']) { ?>
 	    <ul>
 		<li>
 		    <dl>
 			<dt><?= txt('113') ?></dt>
-			<dd><?= $cuser['person'] ?></dd>
-			<dd><a href="<?= mkSelfRef(array('cuser' => $cuser['mbox'])) ?>" title="<?= txt('113') ?>"><?= $cuser['mbox'] ?></a></dd>
+			<dd><?= $oma->current_user['person'] ?></dd>
+			<dd><a href="<?= mkSelfRef(array('cuser' => $oma->current_user['mbox'])) ?>" title="<?= txt('113') ?>"><?= $oma->current_user['mbox'] ?></a></dd>
 		    </dl>
 		</li>
 	    <?php if($cpate['mbox'] != $oma->authenticated_user['mbox']) { ?>
