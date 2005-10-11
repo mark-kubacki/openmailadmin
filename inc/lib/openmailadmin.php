@@ -824,7 +824,7 @@ class openmailadmin {
 	    return false;
 	}
 	$mboxname = mysql_real_escape_string($mboxname);
-	if(!$this->validate_input($props, array('mbox','person','pate','canonical','reg_exp','domains','max_alias','max_regexp','a_a_dom','a_a_usr','a_super','quota'))) {
+	if(!$this->validate_input($props, array('mbox','person','pate','canonical','reg_exp','domains','max_alias','max_regexp','a_admin_domains','a_admin_user','a_super','quota'))) {
 	    return false;
 	}
 
@@ -855,7 +855,7 @@ class openmailadmin {
 
 	// on success write the new user to database
 	mysql_query('INSERT INTO '.$cfg['tablenames']['user'].' (mbox, person, pate, canonical, reg_exp, domains, max_alias, max_regexp, created, a_admin_domains, a_admin_user, a_super)'
-		    .' VALUES ("'.$props['mbox'].'","'.$props['person'].'","'.$props['pate'].'","'.$props['canonical'].'","'.$props['reg_exp'].'","'.$props['domains'].'",'.$props['max_alias'].','.$props['max_regexp'].', now(), '.$props['a_a_dom'].', '.$props['a_a_usr'].', '.$props['a_super'].')');
+		    .' VALUES ("'.$props['mbox'].'","'.$props['person'].'","'.$props['pate'].'","'.$props['canonical'].'","'.$props['reg_exp'].'","'.$props['domains'].'",'.$props['max_alias'].','.$props['max_regexp'].', now(), '.$props['a_admin_domains'].', '.$props['a_admin_user'].', '.$props['a_super'].')');
 	if(mysql_affected_rows() < 1) {
 	    $this->error[]	= mysql_error();
 	    // Rollback
@@ -956,24 +956,16 @@ class openmailadmin {
 
 	// Create an array holding every property we have to change.
 	$to_change	= array();
-	if(in_array('person', $change))
-	    $to_change[]	= 'person = "'.$props['person'].'"';
-	if(in_array('canonical', $change))
-	    $to_change[]	= 'canonical = "'.$props['canonical'].'"';
-	if(in_array('pate', $change))
-	    $to_change[]	= 'pate = "'.$props['pate'].'"';
-	if(in_array('domains', $change))
-	    $to_change[]	= 'domains = "'.$props['domains'].'"';
-	if(in_array('reg_exp', $change))
-	    $to_change[]	= 'reg_exp = "'.$props['reg_exp'].'"';
-	if(in_array('a_a_dom', $change)) {
-	    $to_change[]	= 'a_admin_domains = '.$props['a_a_dom'];
-	}
-	if(in_array('a_a_usr', $change)) {
-	    $to_change[]	= 'a_admin_user = '.$props['a_a_usr'];
-	}
-	if(in_array('a_super', $change)) {
-	    $to_change[]	= 'a_super = '.$props['a_super'];
+	foreach(array('person', 'canonical', 'pate', 'domains', 'reg_exp', 'a_admin_domains', 'a_admin_user', 'a_super')
+		as $property) {
+	    if(in_array($property, $change)) {
+		if(is_numeric($props[$property])) {
+		    $to_change[]	= $property.' = '.$props[$property];
+		}
+		else {
+		    $to_change[]	= $property.' = "'.$props[$property].'"';
+		}
+	    }
 	}
 
 	// Execute the change operation regarding properties in DB.
@@ -1241,10 +1233,10 @@ class openmailadmin {
 	$inputs['a_super']	= array('cap'	=> txt('68'),
 				'def'	=> 0,
 				);
-	$inputs['a_a_dom']	= array('cap'	=> txt('50'),
+	$inputs['a_admin_domains']	= array('cap'	=> txt('50'),
 				'def'	=> 0,
 				);
-	$inputs['a_a_usr']	= array('cap'	=> txt('70'),
+	$inputs['a_admin_user']	= array('cap'	=> txt('70'),
 				'def'	=> 0,
 				);
 
@@ -1280,8 +1272,8 @@ class openmailadmin {
 					array(	'val'	=> '~ == 0 || $this->authenticated_user[\'#\'] >= 2 || $this->authenticated_user[\'a_super\'] > ~ || $this->authenticated_user[\'#\'] > ~',
 						'error'	=> txt('16')),
 					);
-	$validate['a_a_dom']	= $validate['a_super'];
-	$validate['a_a_usr']	= $validate['a_super'];
+	$validate['a_admin_domains']	= $validate['a_super'];
+	$validate['a_admin_user']	= $validate['a_super'];
 
 	// Check field per field.
 	$error_occured	= false;

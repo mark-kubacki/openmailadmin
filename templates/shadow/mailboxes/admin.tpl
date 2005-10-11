@@ -81,24 +81,24 @@
 		    <?php } ?>
 		    <?php if($authinfo['a_admin_domains'] > 0) { ?>
 		    <tr>
-			<td class="ed"><?= $input->checkbox('change[]', 'a_a_dom') ?><?= txt('50') ?></td>
-			<td class="ed"><?= $input->radio('a_a_dom', '0') ?></td>
-			<td class="ed"><?= $input->radio('a_a_dom', '1') ?></td>
+			<td class="ed"><?= $input->checkbox('change[]', 'a_admin_domains') ?><?= txt('50') ?></td>
+			<td class="ed"><?= $input->radio('a_admin_domains', '0') ?></td>
+			<td class="ed"><?= $input->radio('a_admin_domains', '1') ?></td>
 			<td class="ed">
 			    <?php if($authinfo['a_admin_domains'] > 1) { ?>
-			    <?= $input->radio('a_a_dom', '2') ?>
+			    <?= $input->radio('a_admin_domains', '2') ?>
 			    <?php } ?>
 			</td>
 		    </tr>
 		    <?php } ?>
 		    <?php if($authinfo['a_admin_user'] > 0) { ?>
 		    <tr>
-			<td class="ed"><?= $input->checkbox('change[]', 'a_a_usr') ?><?= txt('70') ?></td>
-			<td class="ed"><?= $input->radio('a_a_usr', '0') ?></td>
-			<td class="ed"><?= $input->radio('a_a_usr', '1') ?></td>
+			<td class="ed"><?= $input->checkbox('change[]', 'a_admin_user') ?><?= txt('70') ?></td>
+			<td class="ed"><?= $input->radio('a_admin_user', '0') ?></td>
+			<td class="ed"><?= $input->radio('a_admin_user', '1') ?></td>
 			<td class="ed">
 			    <?php if($authinfo['a_admin_user'] > 1) { ?>
-			    <?= $input->radio('a_a_usr', '2') ?>
+			    <?= $input->radio('a_admin_user', '2') ?>
 			    <?php } ?>
 			</td>
 		    </tr>
