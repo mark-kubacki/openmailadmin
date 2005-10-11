@@ -272,19 +272,14 @@ function hsys_n_Domains($username) {
 }
 
 /*
- * Primarily a caching wrapper to $cyrus->getquota
+ * Wrapper to $cyrus->getquota
  */
 function hsys_getQuota($username) {
-    global $cyr; static $table = array();
+    global $cyr;
 
-    if(!isset($table[$username])) {
-	$result = $cyr->getquota(cyrus_format_user($username));
-	$table[$username] = $result;
-    }
-
-    return $table[$username];
-
+    return $cyr->getquota(cyrus_format_user($username));
 }
+
 function hsys_getMaxQuota($username) {
     $result = hsys_getQuota($username);
     return $result['qmax'];

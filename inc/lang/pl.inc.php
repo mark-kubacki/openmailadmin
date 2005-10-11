@@ -83,7 +83,7 @@ $res['pl']	= array(
 '72'	=>	'Konto %s dla %s zosta&#322;o otworzone.<br />Nie zapomij zaaktywowa&#263; je i ustali&#263; wst&#281;pne has&#322;o.',
 '73'	=>	'jest',
 '74'	=>	'mo&#380;e przydziela&#263;',
-'75'	=>	'Wyma&#380;one konta: ',
+'75'	=>	'Wyma&#380;one konta: %s',
 '76'	=>	'Pojemno&#347;&#263; niniejszego konta zosta&#322;a na %d podwy&#380;szone.',
 '77'	=>	'Status',
 '78'	=>	'Pojemno&#347;&#263; niniejszego konta by&#322;a ustalona na %d.',
@@ -140,6 +140,9 @@ $res['pl']	= array(
 '126'	=>	'Dodatki',
 '127'	=>	'Podane wyra&#380;enie regularne jest b&#322;&#261;dne.',
 '128'	=>	'Zalogowany jako',
+'129'	=>	'Te pola musz&#261; zawiera&#263; prawid&#322;owych warto&#347;ci: %s.',
+'130'	=>	'Te pola nie zawieraj&#261; prawid&#322;owych warto&#347;ci: %s.',
+'131'	=>	'Te konta posiadaj&#261; wi&#281;cej ni&#380; %d %s: %s.',
 );
 
 ?>

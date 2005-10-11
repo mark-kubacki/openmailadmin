@@ -72,7 +72,7 @@ $res['en']	= array(
 '60'	=>	'hide',
 '61'	=>	'In order to create a mailbox you have to fill out every form field.<br />',
 '62'	=>	'Mailbox\' names consist of four to 16 alphanumeric characters.<br />',
-'63'	=>	'Quota, regexp and aliases have to be entered in figures.<br />Quota\'s unit is kiB.<br />',
+'63'	=>	'Quota, regexp and aliases have to be numbers. Quota\'s unit is kiB.<br />',
 '64'	=>	'Standard-from is not a valid email-address.<br />',
 '65'	=>	'You do not have enough space to be assigned to the selected user.<br />',
 '66'	=>	'Not enough free aliases or addresses.',
@@ -84,7 +84,7 @@ $res['en']	= array(
 '72'	=>	'Mailbox %s of %s created.<br />Do not forget to activate it and assign an initial password.',
 '73'	=>	'is',
 '74'	=>	'may create',
-'75'	=>	'Deleted accounts: ',
+'75'	=>	'These accounts have been deleted: %s',
 '76'	=>	'Current user\'s quota increased by %d.',
 '77'	=>	'Status',
 '78'	=>	'Current user\'s quota hase been changed to %d.',
@@ -141,8 +141,9 @@ $res['en']	= array(
 '126'	=>	'Plugins',
 '127'	=>	'Invalid regular expression.',
 '128'	=>	'You are',
-'129'	=>	'Please fill out these form fields: %s',
-'130'	=>	'These form fields contain invalid values: %s',
+'129'	=>	'Please fill out these form fields: %s.',
+'130'	=>	'These form fields contain invalid values: %s.',
+'131'	=>	'These accounts use more than %d %s: %s.',
 );
 
 ?>

@@ -72,7 +72,7 @@ $res['de']	= array(
 '60'	=>	'verstecke',
 '61'	=>	'Um eine neue Mailbox anzulegen bitte alle Felder ausfüllen!<br />',
 '62'	=>	'Ein Mailboxname besteht aus mindestens vier und höchstens 16 alphanumerischen Zeichen.<br />',
-'63'	=>	'Quota sowie maximale Regexp und Alias müssen in reinen Zahlen angegeben werden.<br />Die Einheit von Quota ist kiB.<br />',
+'63'	=>	'Quota sowie maximale Regexp und Alias müssen in reinen Zahlen angegeben werden. Die Einheit von Quota ist kiB.<br />',
 '64'	=>	'Standard-Absender ist keine gültige Email-Adresse.<br />',
 '65'	=>	'Sie besitzen nicht genügend freien Speicher, der dem gewünschten Benutzer zugewiesen werden könnte.<br />',
 '66'	=>	'Es müssen genügend freie Aliase oder Sonderadressen vorhanden sein.',
@@ -84,7 +84,7 @@ $res['de']	= array(
 '72'	=>	'Mailbox %s von %s erstellt.<br />Bitte nicht vergessen, die Mailbox zu aktivieren und ihr ein Kennwort zuzuweisen.',
 '73'	=>	'ist',
 '74'	=>	'darf erstellen',
-'75'	=>	'Folgende Benutzer wurden gelöscht: ',
+'75'	=>	'Folgende Benutzer wurden gelöscht: %s',
 '76'	=>	'Quota des aktuellen Benutzers wurde auf %d erhöht.',
 '77'	=>	'Status',
 '78'	=>	'Quota des aktuellen Benutzers wurde geändert auf %d.',
@@ -141,8 +141,9 @@ $res['de']	= array(
 '126'	=>	'Erweiterungen',
 '127'	=>	'Ungültiger Ausdruck.',
 '128'	=>	'Eingeloggt als',
-'129'	=>	'Diese Felder müssen mit gültigen Werten versehen werden: %s',
-'130'	=>	'Diese Felder enthalten ungültige Werte: %s',
+'129'	=>	'Diese Felder müssen mit gültigen Werten versehen werden: %s.',
+'130'	=>	'Diese Felder enthalten ungültige Werte: %s.',
+'131'	=>	'Diese Accounts halten mehr als %d %s: %s.',
 );
 
 ?>
