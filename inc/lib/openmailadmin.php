@@ -50,6 +50,23 @@ class openmailadmin {
     }
 
     /*
+     * This procedure simply executes every command stored in the array.
+     */
+    function rollback($what) {
+	global $cfg;
+	global $cyr;
+
+	if(is_array($what)) {
+	    foreach($what as $cmd) {
+		eval($cmd.';');
+	    }
+	}
+	else {
+	    eval($what.';');
+	}
+    }
+
+    /*
      * Returns a long list with every active mailbox.
      */
     function get_mailbox_names() {
@@ -817,6 +834,7 @@ class openmailadmin {
     function mailbox_create($mboxname, $props) {
 	global $cfg;
 	global $cyr;
+	$rollback	= array();
 
 	// Check inputs for sanity and consistency.
 	if(!$this->authenticated_user['a_admin_user'] > 0) {
@@ -855,6 +873,7 @@ class openmailadmin {
 		    $this->error[]	= mysql_error();
 		    return false;
 		}
+		$rollback[] = 'mysql_unbuffered_query(\'DELETE FROM \'.$cfg[\'tablenames\'][\'virtual\'].\' WHERE address="'.$props['canonical'].'" AND owner="'.$mboxname.'" LIMIT 1\');';
 	}
 
 	// on success write the new user to database
@@ -863,13 +882,14 @@ class openmailadmin {
 	if(mysql_affected_rows() < 1) {
 	    $this->error[]	= mysql_error();
 	    // Rollback
-	    mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['virtual']
-					.' WHERE address="'.$props['canonical'].'" AND owner="'.$mboxname.'"'
-					.' LIMIT 1');
+	    $this->rollback($rollback);
 	    return false;
 	}
+	$rollback[] = 'mysql_unbuffered_query(\'DELETE FROM \'.$cfg[\'tablenames\'][\'user\'].\' WHERE mbox="'.$mboxname.'" LIMIT 1\');';
+
 	// Decrease current users's contingents...
 	if($this->authenticated_user['a_super'] == 0) {
+	    $rollback[] = 'mysql_unbuffered_query(\'UPDATE \'.$cfg[\'tablenames\'][\'user\'].\' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox="'.$this->current_user['mbox'].'" LIMIT 1\');';
 	    mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['user']
 			.' SET max_alias='.($this->current_user['max_alias']-intval($props['max_alias'])).', max_regexp='.($this->current_user['max_regexp']-intval($props['max_regexp']))
 			.' WHERE mbox="'.$this->current_user['mbox'].'" LIMIT 1');
@@ -879,10 +899,7 @@ class openmailadmin {
 	if($result) {
 	    $this->error[]	= var_export($result, true);
 	    // Rollback
-	    mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox="'.$this->current_user['mbox'].'" LIMIT 1');
-	    mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.$mboxname.'" LIMIT 1');
-	    if($cfg['create_canonical'])
-		mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['virtual'].' WHERE address="'.$props['canonical'].'" AND owner="'.$mboxname.'" LIMIT 1');
+	    $this->rollback($rollback);
 	    return false;
 	}
 	else {
@@ -893,23 +910,19 @@ class openmailadmin {
 		}
 	    }
 	}
+	$rollback[] = '$cyr->deletemb(cyrus_format_user(\''.$mboxname.'\'));';
 
 	// Decrease the creator's quota...
 	if($this->authenticated_user['a_super'] == 0 && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET') {
-	    $result = $cyr->setmbquota(cyrus_format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox'])-$props['quota']);
+	    $tmp = hsys_getMaxQuota($this->current_user['mbox']);
+	    $result = $cyr->setmbquota(cyrus_format_user($this->current_user['mbox']), $tmp-$props['quota']);
 	    if($result) {
 		$this->error[]	= var_export($result, true);
 		// Rollback
-		$cyr->deletemb(cyrus_format_user($mboxname));
-		mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['virtual']
-					    .' WHERE address="'.$props['canonical'].'" AND owner="'.$mboxname.'"'
-					    .' LIMIT 1');
-		mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox="'.$this->current_user['mbox'].'" LIMIT 1');
-		mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.$mboxname.'" LIMIT 1');
-		if($cfg['create_canonical'])
-		    mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['virtual'].' WHERE address="'.$props['canonical'].'" AND owner="'.$mboxname.'" LIMIT 1');
+		$this->rollback($rollback);
 		return false;
 	    }
+	    $rollback[] = '$cyr->setmbquota(cyrus_format_user($this->current_user[\'mbox\']), '.$tmp.'));';
 	    $this->info[]	= sprintf(txt('69'), hsys_getMaxQuota($this->current_user['mbox'])-$props['quota']);
 	}
 	else {
@@ -922,13 +935,7 @@ class openmailadmin {
 	    if($result) {
 		$this->error[]	= var_export($result, true);
 		// Rollback
-		$cyr->deletemb(cyrus_format_user($mboxname));
-		if($this->authenticated_user['a_super'] == 0 && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET')
-		    $cyr->setmbquota(cyrus_format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox']));
-		mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox="'.$this->current_user['mbox'].'" LIMIT 1');
-		mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.$mboxname.'" LIMIT 1');
-		if($cfg['create_canonical'])
-		    mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['virtual'].' WHERE address="'.$props['canonical'].'" AND owner="'.$mboxname.'" LIMIT 1');
+		$this->rollback($rollback);
 		return false;
 	    }
 	}
