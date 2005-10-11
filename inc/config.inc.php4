@@ -49,6 +49,9 @@ $cfg['folders']['create_default']	= array('Trash','UMS');
 
 // Pretend these users don't exist. Creation of these mailboxes will be denied.
 $cfg['user_ignore']		= array('cyrus');
+// Default dimensions for mailbox names.
+$cfg['mbox']['min_length']	= 4;
+$cfg['mbox']['max_length']	= 16;
 
 // Default settings for passwords.
 $cfg['passwd']['min_length']	= 8;

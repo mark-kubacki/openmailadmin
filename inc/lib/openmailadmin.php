@@ -1385,6 +1385,7 @@ class openmailadmin {
      * This function will apply mysql_real_escape_string on every valid non-numerical item listed in $which.
      */
     function validate_input(&$data, $which) {
+	global $cfg;
 	// Fieldname as key, cap as its caption and def as its default value.
 	$inputs['mbox']		= array('cap'	=> txt('83'),
 				);
@@ -1423,8 +1424,8 @@ class openmailadmin {
 	// Hash with tests vor sanity and possible error-messages on failure.
 	// These will only be processed if a value is given. (I.e. not on the default values from above)
 	// If a test fails the next won't be invoked.
-	$validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= 4 && strlen(~) <= 16 && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
-						'error'	=> txt('62')),
+	$validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= $cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
+						'error'	=> sprintf(txt('62'), $cfg['mbox']['min_length'], $cfg['mbox']['max_length']) ),
 					);
 	$validate['pate']	= array(array(	'val'	=> '$this->authenticated_user[\'a_super\'] > 0 || $this->user_is_descendant(~, $this->authenticated_user[\'mbox\'])',
 						),

@@ -71,7 +71,7 @@ $res['en']	= array(
 
 '60'	=>	'hide',
 '61'	=>	'In order to create a mailbox you have to fill out every form field.<br />',
-'62'	=>	'Mailbox\' names consist of four to 16 alphanumeric characters.<br />',
+'62'	=>	'Mailbox\' names consist of %d to %d alphanumeric characters.<br />',
 '63'	=>	'Quota, regexp and aliases have to be numbers. Quota\'s unit is kiB.<br />',
 '64'	=>	'Standard-from is not a valid email-address.<br />',
 '65'	=>	'You do not have enough space to be assigned to the selected user.<br />',

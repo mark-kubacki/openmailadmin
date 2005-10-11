@@ -71,7 +71,7 @@ $res['de']	= array(
 
 '60'	=>	'verstecke',
 '61'	=>	'Um eine neue Mailbox anzulegen bitte alle Felder ausfüllen!<br />',
-'62'	=>	'Ein Mailboxname besteht aus mindestens vier und höchstens 16 alphanumerischen Zeichen.<br />',
+'62'	=>	'Ein Mailboxname besteht aus mindestens %d und höchstens %d alphanumerischen Zeichen.<br />',
 '63'	=>	'Quota sowie maximale Regexp und Alias müssen in reinen Zahlen angegeben werden. Die Einheit von Quota ist kiB.<br />',
 '64'	=>	'Standard-Absender ist keine gültige Email-Adresse.<br />',
 '65'	=>	'Sie besitzen nicht genügend freien Speicher, der dem gewünschten Benutzer zugewiesen werden könnte.<br />',

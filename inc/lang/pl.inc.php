@@ -70,7 +70,7 @@ $res['pl']	= array(
 
 '60'	=>	'zamknij',
 '61'	=>	'Aby nowe konto za&#322;o&#380;y&#263; musz&#261; by&#263; wszystkie pola wype&#322;nione.<br />',
-'62'	=>	'Nazwa konta sk&#322;ada si&#281; z conajmniej 4 a do 16 alphanumericznych znak&oacute;w.<br />',
+'62'	=>	'Nazwa konta sk&#322;ada si&#281; z conajmniej %d do %d alphanumericznych znak&oacute;w.<br />',
 '63'	=>	'Pojemno&#347;ci i ilo&#347;ci musz&#261; by&#263; podane w zyfrach.<br />Jedno&#347;&#263; pojemno&#347;ci jest kiB.<br />',
 '64'	=>	'Pole "standartowy nadawca" nie zawiera prawid&#322;owego adresu email.<br />',
 '65'	=>	'Nie posiadasz wystarczaj&#347;nco mijejsca, ktory by m&oacute;g&#322; by&#263; dostarczony wybranym kont.<br />',
