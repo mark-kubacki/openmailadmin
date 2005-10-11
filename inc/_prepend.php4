@@ -61,14 +61,22 @@ $cfg['tablenames']
 		);
 $now_on = isset($_GET['cuser']) ? mysql_escape_string($_GET['cuser']) : $authinfo['mbox'];
 
-// and query for the current user
-$result = mysql_query('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox=\''.$now_on.'\' LIMIT 1');
+// include the backend
+include('lib/openmailadmin.php');
+$oma 	= new openmailadmin();
+$oma->authenticated_user	= &$authinfo;
+$oma->current_user		= &$cuser;
+
+// Query for the current user...
+$result = mysql_query('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.$now_on.'" LIMIT 1');
 if(mysql_num_rows($result) > 0) {
-    $cuser = mysql_fetch_assoc($result);
+    $oma->current_user = mysql_fetch_assoc($result);
     mysql_free_result($result);
 
-    if(!($authinfo['a_super'] >= 1 || $cuser['mbox'] == $authinfo['mbox']
-	|| $cuser['pate'] == $authinfo['mbox'] || $oma->user_is_descendant($cuser['mbox'], $authinfo['mbox']))) {
+    if(!($oma->authenticated_user['a_super'] >= 1
+	|| $oma->current_user['mbox'] == $oma->authenticated_user['mbox']
+	|| $oma->current_user['pate'] == $oma->authenticated_user['mbox']
+	|| $oma->user_is_descendant($oma->current_user['mbox'], $oma->authenticated_user['mbox']))) {
 	error(txt('2'));
 	include('templates/'.$cfg['theme'].'/common-footer_nv.tpl');
 	exit();
@@ -79,54 +87,48 @@ else {
     exit();
 }
 
-// ... and his paten
-if($cuser['mbox'] == $cuser['pate']) {
-    $cpate = array('person' => txt('29'), 'mbox' => $cuser['mbox']);
+// ... and his paten.
+if($oma->current_user['mbox'] == $oma->current_user['pate']) {
+    $cpate = array('person' => txt('29'), 'mbox' => $oma->current_user['mbox']);
 }
 else {
-    $result = mysql_query('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox=\''.$cuser['pate'].'\' LIMIT 1');
+    $result = mysql_query('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.$oma->current_user['pate'].'" LIMIT 1');
     if(mysql_num_rows($result) > 0) {
 	$cpate = mysql_fetch_assoc($result);
 	mysql_free_result($result);
     }
     else {
-	$cpate	= array('person' => txt('28'), 'mbox' => $cuser['mbox']);
+	$cpate	= array('person' => txt('28'), 'mbox' => $oma->current_user['mbox']);
     }
 }
 
-// include the backend
-include('lib/openmailadmin.php');
-$oma 	= new openmailadmin();
-$oma->authenticated_user 	= &$authinfo;
-$oma->current_user 		= &$cuser;
-
 // Display navigation menu.
 $arr_navmenu = array();
-    $arr_navmenu[]	= array('link'		=> 'index.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
+    $arr_navmenu[]	= array('link'		=> 'index.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('1'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'index.php4'));
-if($cuser['max_alias'] > 0 || $authinfo['a_super'] >= 1 || $oma->user_get_used_alias($cuser['mbox'])) {
-    $arr_navmenu[]	= array('link'		=> 'addresses.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
+if($oma->current_user['max_alias'] > 0 || $oma->authenticated_user['a_super'] >= 1 || $oma->user_get_used_alias($oma->current_user['mbox'])) {
+    $arr_navmenu[]	= array('link'		=> 'addresses.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('17'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'addresses.php4'));
 }
-if($cuser['mbox'] == $authinfo['mbox']) {
-    $arr_navmenu[]	= array('link'		=> 'folders.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
+if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
+    $arr_navmenu[]	= array('link'		=> 'folders.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('103'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'folders.php4'));
 }
-if($cuser['max_regexp'] > 0 || $authinfo['a_super'] >= 1 || $oma->user_get_used_regexp($cuser['mbox'])) {
-    $arr_navmenu[]	= array('link'		=> 'regexp.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
+if($oma->current_user['max_regexp'] > 0 || $oma->authenticated_user['a_super'] >= 1 || $oma->user_get_used_regexp($oma->current_user['mbox'])) {
+    $arr_navmenu[]	= array('link'		=> 'regexp.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('33'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'regexp.php4'));
 }
-if($authinfo['a_admin_domains'] >= 1 || $oma->user_get_number_domains($cuser['mbox']) > 0) {
-    $arr_navmenu[]	= array('link'		=> 'domains.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
+if($oma->authenticated_user['a_admin_domains'] >= 1 || $oma->user_get_number_domains($oma->current_user['mbox']) > 0) {
+    $arr_navmenu[]	= array('link'		=> 'domains.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('54'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'domains.php4'));
 }
-if($authinfo['a_admin_user'] >= 1 || $oma->user_get_number_mailboxes($cuser['mbox']) > 0) {
-    $arr_navmenu[]	= array('link'		=> 'mailboxes.php4'.($cuser['mbox'] != $authinfo['mbox'] ? '?cuser='.$cuser['mbox'] : ''),
+if($oma->authenticated_user['a_admin_user'] >= 1 || $oma->user_get_number_mailboxes($oma->current_user['mbox']) > 0) {
+    $arr_navmenu[]	= array('link'		=> 'mailboxes.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('79'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php4'));
 }
