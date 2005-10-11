@@ -326,6 +326,33 @@ class openmailadmin {
 	return $domains;
     }
     /*
+     * May the new user only select from domains which have been assigned to
+     * the reference user? If so, return true.
+     * $reference is an user, $tobechecked an mailboxname.
+     */
+    function domain_check($reference, $tobechecked, $domain_key) {
+	if(!isset($reference['domain_set'])) {
+	    $reference['domain_set'] = getDomainSet($reference['mbox'], $reference['domains']);
+	}
+	// new domain-key must not lead to more domains than the user already has to choose from
+	// A = Domains the new user will be able to choose from.
+	$dom_a = getDomainSet(mysql_escape_string($tobechecked), mysql_escape_string($domain_key), false);
+	// B = Domains the creator may choose from (that is $reference['domain_set'])?
+	// Okay, if A is part of B. (Thus, no additional domains are added for user "A".)
+	// Indication: A <= B
+	if(count($dom_a) == 0) {
+	    // This will be only a warning.
+	    $this->error[] = txt('80');
+	}
+	else if(count($dom_a) > count($reference['domain_set'])
+		&& count(array_diff($dom_a, $reference['domain_set'])) > 0) {
+	    // A could have domains which the reference cannot access.
+	    return false;
+	}
+
+	return true;
+    }
+    /*
      * Adds a new domain into the corresponding table.
      * Categories are for grouping domains.
      */
@@ -776,7 +803,7 @@ class openmailadmin {
 	    $allowed = $desired_mboxes;
 	}
 	else {
-	    foreach($mboxnames as $mbox) {
+	    foreach($desired_mboxes as $mbox) {
 		if(IsDescendant($mbox, $who)) {
 		    $allowed[] = $mbox;
 		}
@@ -786,132 +813,17 @@ class openmailadmin {
 	return $allowed;
     }
 
-    function mailbox_check_requirements($action, $props) {
-	global $cfg;
-
-	// beautify
-	if(isset($props['quota']) && $props['quota'] != 'NOT-SET') {
-	    $props['quota'] = abs(intval($props['quota']));
-	}
-	if(isset($props['max_alias']))
-	    $props['max_alias'] = abs(intval($props['max_alias']));
-	else
-	    $props['max_alias'] = 0;
-	if(isset($props['max_regexp']))
-	    $props['max_regexp'] = abs(intval($props['max_regexp']));
-	else
-	    $props['max_regexp'] = 0;
-	// requirements
-	if(($action == 'change' && in_array('quota', $props['change']) || $action == 'new')
-		&& $props['quota'] == 'NOT-SET'
-		&& ($this->authenticated_user['a_super'] == 0 || hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET')) {
-	    $this->error[] = txt('63');
-	}
-	if($action == 'change' || $action == 'delete' || $action == 'active') {
-	    if(count($props['user']) < 1) {
-		$this->error[] = txt('11');
-	    }
-	}
-	if($action == 'change' && in_array('mbox', $props['change']) && count($props['user']) != 1) {
-	    $this->error[] = txt('91');
-	}
-	if(!$this->errors_occured() && ($action == 'new' || $action == 'change')) {
-	    if($action == 'new' && !(isset($props['mbox']) && isset($props['person']) && isset($props['canonical']) && isset($props['reg_exp']) && isset($props['domains']))) {
-		$this->error[] = txt('61');
-	    }
-	    if(($action == 'new' || in_array('mbox', $props['change']))
-			&& (strlen($props['mbox']) < 4 || strlen($props['mbox']) > 16 || !preg_match('/[a-zA-Z0-9]{'.strlen($props['mbox']).'}/', $props['mbox']))) {
-		$this->error[] = txt('62');
-	    }
-	    if(($action == 'new' || in_array('canonical', $props['change']))
-			&& !preg_match('/'.$this->regex_valid_email.'/i', $props['canonical'])) {
-		$this->error[] = txt('64');
-	    }
-	    if($action == 'change' && in_array('mbox', $props['change']) && $props['mbox'] == $props['user']['0']) {
-		$this->error[] = txt('93');
-	    }
-	    if(!$this->errors_occured() && $action == 'change' && in_array('mbox', $props['change'])) {
-		// Is the desired name already in use?
-		$result = mysql_query('SELECT COUNT(mbox) AS number FROM '.$cfg['tablenames']['user'].' WHERE mbox = "'.$props['mbox'].'"');
-		$tmp = mysql_fetch_assoc($result);
-		mysql_free_result($result);
-		if($tmp['number'] > 0) {
-		    $this->error[] = txt('92');
-		}
-		unset($tmp); unset($result);
-	    }
-	    // check quota and address contingents
-	    if(($action == 'change' && in_array('domains', $props['change']))
-			|| $action == 'new') {
-		if(!isset($this->current_user['domain_set']))
-		    $this->current_user['domain_set'] = getDomainSet($this->current_user['mbox'], $this->current_user['domains']);
-		// new domain-key must not lead to more domains than the user already has to choose from
-		// what domains the new user will have to choose from? A
-		$dom_a = getDomainSet(mysql_escape_string($action == 'change' ? $props['user'][0] : $props['mbox']), mysql_escape_string($props['domains']));
-		// what domains the creator may choose from? B
-		// okay, if A plus B is A (thus, no additional domains are added)
-		$dom_ab = array_unique(array_merge($dom_a, $this->current_user['domain_set']));
-		if(count($dom_a) == 0) {
-		    $this->error[] = txt('80');
-		}
-		else if(count($this->current_user['domain_set']) != count($dom_ab)) {
-		    $this->error[] = txt('81');
-		}
-	    }
-	    if($this->authenticated_user['a_super'] == 0 && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET' &&
-		    $action == 'new' && $props['quota'] > (hsys_getMaxQuota($this->current_user['mbox']) - hsys_getUsedQuota($this->current_user['mbox']))) {
-		$this->error[] = txt('65');	// does not apply if action==change! (see below)
-	    }
-	    if($this->authenticated_user['a_super'] == 0
-		&& ($action == 'new' || in_array('alias', $props['change']) || in_array('reg_exp', $props['change']))
-		&& ($props['max_alias'] > ($this->current_user['max_alias'] - hsys_getUsedAlias($this->current_user['mbox']))
-		    || $props['max_regexp'] > ($this->current_user['max_regexp'] - hsys_getUsedRegexp($this->current_user['mbox'])))) {
-		$this->error[] = txt('66');
-	    }
-	    if(!$this->errors_occured()) {
-		// are the users descendants of the authentificated user?
-		if($this->authenticated_user['a_super'] == 0 && isset($props['user']) && is_array($props['user'])) {
-		    foreach($props['user'] as $key=>$user) {
-			if($user != '') {
-			    if(!IsDescendant($user, $this->authenticated_user['mbox'])) {
-				$this->error[] = txt('16');
-				break;
-			    }
-			}
-		    }
-		    reset($props['user']);
-		}
-		// Quota
-		if(!$this->errors_occured() && $action == 'change' && $this->authenticated_user['a_super'] == 0
-			&& in_array('quota', $props['change']) && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET') {
-		    foreach($props['user'] as $key=>$user) {
-			if($user != '') {
-			    if(hsys_getMaxQuota($user) != 'NOT-SET')
-				$add_quota += $props['quota'] - hsys_getMaxQuota($user);
-			}
-		    }
-		    reset($props['user']);
-		    if(hsys_getMaxQuota($this->current_user['mbox']) - hsys_getUsedQuota($this->current_user['mbox']) < $add_quota) {
-			$this->error[] = txt('65');
-			$this->error[] = sprintf(txt('67'), $add_quota, (hsys_getMaxQuota($this->current_user['mbox']) - hsys_getUsedQuota($this->current_user['mbox'])));
-		    }
-		    unset($add_quota);
-		}
-	    }
-	}
-
-	if(!$this->errors_occured()) {
-	    return true;
-	}
-
-	return false;
-    }
-
+    /*
+     * $mboxname is an array.
+     */
     function mailbox_create($mboxname, $props) {
 	global $cfg;
 	global $cyr;
 
 	$mboxname = mysql_real_escape_string($mboxname);
+	if(!$this->validate_input($props, array('mbox','person','pate','canonical','reg_exp','domains','max_alias','max_regexp','a_a_dom','a_a_usr','a_super','quota'))) {
+	    return false;
+	}
 
 	// first create the default-from (canonical) (must not already exist!)
 	if($cfg['create_canonical']) {
@@ -1019,24 +931,30 @@ class openmailadmin {
 	global $cfg;
 	global $cyr;
 
-	$aux_tmp = mysql_real_escape_string(implode(',', $this->mailbox_filter_manipulable($this->authenticated_user['mbox'], $mboxnames)));
+	if(!$this->validate_input($props, $change)) {
+	    return false;
+	}
 
-	if(count($aux_tmp) == 1) {
+	$mboxnames = $this->mailbox_filter_manipulable($this->authenticated_user['mbox'], $mboxnames);
+	$aux_tmp = mysql_real_escape_string(implode(',', $mboxnames));
+
+	$to_change	= array();		// this will hold all the properties to be changed
+	if(count($mboxnames) == 1) {
 	    if(in_array('person', $change))
-		$to_change[]	= 'person = "'.mysql_escape_string($props['person']).'"';
+		$to_change[]	= 'person = "'.$props['person'].'"';
 	    if(in_array('canonical', $change))
-		$to_change[]	= 'canonical = "'.mysql_escape_string($props['canonical']).'"';
+		$to_change[]	= 'canonical = "'.$props['canonical'].'"';
 	}
 	if(in_array('pate', $change))
-	    $to_change[]	= 'pate = "'.mysql_escape_string($props['pate']).'"';
+	    $to_change[]	= 'pate = "'.$props['pate'].'"';
 	if(in_array('domains', $change))
-	    $to_change[]	= 'domains = "'.mysql_escape_string($props['domains']).'"';
+	    $to_change[]	= 'domains = "'.$props['domains'].'"';
 	if(in_array('max_alias', $change))
 	    $to_change[]	= 'max_alias = '.intval($props['max_alias']);
 	if(in_array('max_regexp', $change))
 	    $to_change[]	= 'max_regexp = '.intval($props['max_regexp']);
 	if(in_array('reg_exp', $change))
-	    $to_change[]	= 'reg_exp = "'.mysql_escape_string($props['reg_exp']).'"';
+	    $to_change[]	= 'reg_exp = "'.$props['reg_exp'].'"';
 
 	if(in_array('a_a_dom', $change) && is_numeric($props['a_a_dom']) && $this->authenticated_user['a_admin_domains'] >= 2) {
 	    $to_change[]	= 'a_admin_domains = '.(max(0, min(intval($props['a_a_dom']), $this->authenticated_user['a_admin_domains'])));
@@ -1056,18 +974,22 @@ class openmailadmin {
 		$tmp = mysql_fetch_assoc($result);
 		mysql_free_result($result);
 		mysql_query('UPDATE '.$cfg['tablenames']['user']
-			.' SET max_alias='.($this->current_user['max_alias']-$tmp['anzahl']*$props['max_alias']+$tmp['nr_alias']).', max_regexp='.($this->current_user['max_regexp']-$tmp['anzahl']*intval($props['max_regexp'])+$tmp['nr_regexp'])
+			.' SET max_alias='.($this->current_user['max_alias']-$tmp['anzahl']*$props['max_alias']+$tmp['nr_alias'])
+			    .', max_regexp='.($this->current_user['max_regexp']-$tmp['anzahl']*intval($props['max_regexp'])+$tmp['nr_regexp'])
 			.' WHERE mbox="'.$this->current_user['mbox'].'" LIMIT 1');
 		unset($tmp);
 	    }
 	}
-	if(isset($to_change) && is_array($to_change))
-	    mysql_query('UPDATE '.$cfg['tablenames']['user'].' SET '.implode(',', $to_change).' WHERE FIND_IN_SET(mbox, "'.$aux_tmp.'") LIMIT '.count($aux_tmp));
-	unset($to_change);
+	if(count($to_change) > 0) {
+	    mysql_query('UPDATE '.$cfg['tablenames']['user']
+			.' SET '.implode(',', $to_change)
+			.' WHERE FIND_IN_SET(mbox, "'.$aux_tmp.'")'
+			.' LIMIT '.count($mboxnames));
+	}
 
 	if(in_array('quota', $change)) {
 	    if($this->authenticated_user['a_super'] == 0) {
-		foreach($aux_tmp as $key=>$user) {
+		foreach($mboxnames as $key=>$user) {
 		    if($user != '') {
 			if(hsys_getMaxQuota($user) == intval($props['quota']))
 			    continue;
@@ -1077,15 +999,15 @@ class openmailadmin {
 		}
 		if(isset($add_quota) && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET') {
 		    $cyr->setmbquota(cyrus_format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox'])-$add_quota);
-		    info(sprintf(txt('78'), (hsys_getMaxQuota($this->current_user['mbox'])-$add_quota)));
+		    $this->info[]	= sprintf(txt('78'), (hsys_getMaxQuota($this->current_user['mbox'])-$add_quota));
 		}
 	    }
-	    reset($aux_tmp);
-	    foreach($aux_tmp as $key=>$user) {
+	    reset($mboxnames);
+	    foreach($mboxnames as $key=>$user) {
 		if($user != '') {
 		    $result = $cyr->setmbquota(cyrus_format_user($user), intval($props['quota']));
 		    if($result) {
-			error(var_export($result, true));
+			$this->error[]	= var_export($result, true);
 		    }
 		}
 	    }
@@ -1093,17 +1015,17 @@ class openmailadmin {
 	}
 
 	if(in_array('mbox', $change)) {
-	    if($cyr->renamemb(cyrus_format_user($aux_tmp['0']), cyrus_format_user($props['mbox']))) {
-		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['user'].' SET mbox = "'.$props['mbox'].'" WHERE mbox = "'.$aux_tmp['0'].'" LIMIT 1');
-		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['domains'].' SET owner = "'.$props['mbox'].'" WHERE owner = "'.$aux_tmp['0'].'"');
-		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['domains'].' SET a_admin = REPLACE(a_admin, "'.$aux_tmp['0'].'", "'.$props['mbox'].'") WHERE a_admin LIKE "%'.$aux_tmp['0'].'%"');
-		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual'].' SET dest = REPLACE(dest, "'.$aux_tmp['0'].'", "'.$props['mbox'].'"), neu = 1 WHERE dest REGEXP "'.$aux_tmp['0'].'[^@]{1,}" OR dest LIKE "%'.$aux_tmp['0'].'"');
-		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual'].' SET owner = "'.$props['mbox'].'" WHERE owner = "'.$aux_tmp['0'].'"');
-		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual_regexp'].' SET dest = REPLACE(dest, "'.$aux_tmp['0'].'", "'.$props['mbox'].'"), neu = 1 WHERE dest REGEXP "'.$aux_tmp['0'].'[^@]{1,}" OR dest LIKE "%'.$aux_tmp['0'].'"');
-		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual_regexp'].' SET owner = "'.$props['mbox'].'" WHERE owner = "'.$aux_tmp['0'].'"');
+	    if(count($cyr->renamemb(cyrus_format_user($mboxnames['0']), cyrus_format_user($props['mbox']))) == 0) {
+		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['user'].' SET mbox = "'.$props['mbox'].'" WHERE mbox = "'.$mboxnames['0'].'" LIMIT 1');
+		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['domains'].' SET owner = "'.$props['mbox'].'" WHERE owner = "'.$mboxnames['0'].'"');
+		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['domains'].' SET a_admin = REPLACE(a_admin, "'.$mboxnames['0'].'", "'.$props['mbox'].'") WHERE a_admin LIKE "%'.$mboxnames['0'].'%"');
+		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual'].' SET dest = REPLACE(dest, "'.$mboxnames['0'].'", "'.$props['mbox'].'"), neu = 1 WHERE dest REGEXP "'.$mboxnames['0'].'[^@]{1,}" OR dest LIKE "%'.$mboxnames['0'].'"');
+		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual'].' SET owner = "'.$props['mbox'].'" WHERE owner = "'.$mboxnames['0'].'"');
+		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual_regexp'].' SET dest = REPLACE(dest, "'.$mboxnames['0'].'", "'.$props['mbox'].'"), neu = 1 WHERE dest REGEXP "'.$mboxnames['0'].'[^@]{1,}" OR dest LIKE "%'.$mboxnames['0'].'"');
+		mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual_regexp'].' SET owner = "'.$props['mbox'].'" WHERE owner = "'.$mboxnames['0'].'"');
 	    }
 	    else {
-		error($cyr->error_msg.'<br />'.txt('94'));
+		$this->error[]	= $cyr->error_msg.'<br />'.txt('94');
 	    }
 	}
 
@@ -1118,7 +1040,8 @@ class openmailadmin {
 	global $cfg;
 	global $cyr;
 
-	$aux_tmp = mysql_real_escape_string(implode(',', $this->mailbox_filter_manipulable($this->authenticated_user['mbox'], $mboxnames)));
+	$mboxnames = $this->mailbox_filter_manipulable($this->authenticated_user['mbox'], $mboxnames);
+	$aux_tmp = mysql_real_escape_string(implode(',', $mboxnames));
 
 	if($this->authenticated_user['a_super'] == 0) {
 	    $result = mysql_query('SELECT SUM(max_alias) AS nr_alias, SUM(max_regexp) AS nr_regexp'
@@ -1133,9 +1056,10 @@ class openmailadmin {
 	$add_quota = 0;
 	foreach($mboxnames as $key=>$user) {
 	    if($user != '') {
-		if($this->authenticated_user['a_super'] == 0) {
-		    if(hsys_getMaxQuota($user) != 'NOT-SET')
-			$toadd = hsys_getMaxQuota($user);
+		// We have to sum up all the space which gets freed in case we later want increase the deleter's quota.
+		if($this->authenticated_user['a_super'] == 0
+			&& hsys_getMaxQuota($user) != 'NOT-SET') {
+		    $toadd = hsys_getMaxQuota($user);
 		}
 		$result = $cyr->deletemb(cyrus_format_user($user));
 		if($result) {
@@ -1162,7 +1086,6 @@ class openmailadmin {
 	if($this->authenticated_user['a_super'] == 0 && isset($tmp['nr_alias'])) {
 	    mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['user'].' SET max_alias='.($this->current_user['max_alias']+$tmp['nr_alias']).', max_regexp='.($this->current_user['max_regexp']+$tmp['nr_regexp'])
 			.' WHERE mbox="'.$this->current_user['mbox'].'" LIMIT 1');
-	    unset($tmp);
 	}
 	// patenkinder (will be inherited by the one deleting)
 	mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['user']
@@ -1175,7 +1098,7 @@ class openmailadmin {
 	    $cyr->setmbquota(cyrus_format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox'])+$add_quota);
 	    info(sprintf(txt('76'), (hsys_getMaxQuota($this->current_user['mbox'])+$add_quota)));
 	}
-	unset($user); unset($aux_tmp); unset($key);
+
 	if(isset($_SESSION['paten'])) unset($_SESSION['paten']); // inefficient, but maybe we come up with something more elegant
 
 	return true;
@@ -1189,7 +1112,7 @@ class openmailadmin {
 	if(count($tobechanged) > 0) {
 	    mysql_query('UPDATE '.$cfg['tablenames']['user']
 			    .' SET active = NOT active'
-			    .' WHERE FIND_IN_SET(mbox, "'.mysql_real_escape_string(implode(',', $tobechanged)).'")'
+			    .' WHERE FIND_IN_SET(mbox, "'.implode(',', $tobechanged).'")'
 			    .' LIMIT '.count($tobechanged));
 
 	    if(mysql_affected_rows() < 1) {
@@ -1203,6 +1126,121 @@ class openmailadmin {
 	}
 
 	return false;
+    }
+
+    /*
+     * Here are all the checks whether an given field carries a valid value.
+     * $data		typically $_POST
+     * which		array with the fields' names
+     * This function will apply mysql_real_escape_string on every valid non-numerical item.
+     */
+    function validate_input(&$data, $which) {
+	// Fieldname as key, cap as its caption and def as its default value.
+	$inputs['mbox']		= array('cap'	=> txt('83'),
+				);
+	$inputs['pate']		= array('cap'	=> txt('9'),
+				'def'	=> $this->current_user['mbox'],
+				);
+	$inputs['person']	= array('cap'	=> txt('84'),
+				'def'	=> $data['mbox'],
+				);
+	$inputs['domains']	= array('cap'	=> txt('86'),
+				'def'	=> $this->current_user['domains'],
+				);
+	$inputs['canonical']	= array('cap'	=> txt('7'),
+				);
+	$inputs['quota']	= array('cap'	=> txt('87'),
+				);
+	$inputs['max_alias']	= array('cap'	=> txt('88'),
+				'def'	=> 1,
+				);
+	$inputs['max_regexp']	= array('cap'	=> txt('89'),
+				'def'	=> 0,
+				);
+
+	// Hash with tests vor sanity and possible error-messages on failure.
+	// If a test fails the next won't be invoked.
+	$validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= 4 && strlen(~) <= 16 && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
+						'error'	=> txt('62')),
+					);
+	$validate['pate']	= array(array(	'val'	=> '$this->authenticated_user[\'a_super\'] > 0 || IsDescendant(~, $this->authenticated_user[\'mbox\'])',
+						),
+					);
+	$validate['person']	= array(array(	'val'	=> 'strlen(~) <= 100 && strlen(~) >= 4 && preg_match(\'/^[\w\s0-9-_\.\(\)]*$/\', ~)',
+						),
+					);
+	$validate['domains']	= array(array(	'val'	=> '$this->domain_check($this->current_user, $this->current_user[\'mbox\'], ~)',
+						'error'	=> txt('81')),
+					);
+	$validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.$this->regex_valid_email.\'/i\', ~)',
+						'error'	=> txt('64')),
+					);
+	$validate['quota']	= array(array(	'val'	=> 'is_numeric(~) && ~ > 0',
+						'error'	=> txt('63')),
+					);
+	$validate['max_alias']	= array(array(	'val'	=> 'is_numeric(~) && ~ > 0',
+						'error'	=> txt('63')),
+					array(	'val'	=> '$this->authenticated_user[\'a_super\'] > 0 || ~ <= $this->current_user[\'max_alias\'] - hsys_getUsedAlias($this->current_user[\'mbox\'])',
+						'error'	=> txt('66')),
+					);
+	$validate['max_regexp']	= array(array(	'val'	=> 'is_numeric(~) && ~ > 0',
+						'error'	=> txt('63')),
+					array(	'val'	=> '$this->authenticated_user[\'a_super\'] > 0 || ~ <= $this->current_user[\'max_regexp\'] - hsys_getUsedRegexp($this->current_user[\'mbox\'])',
+						'error'	=> txt('66')),
+					);
+
+	// Check field per field.
+	$error_occured	= false;
+	$invalid	= array();
+	$missing	= array();
+	foreach($which as $fieldname) {
+	    // Do we have to care about that field?
+	    if(isset($inputs[$fieldname])) {
+		// Did the user provide it?
+		if(isset($data[$fieldname])) {
+		    // If so and if we have a rule to check for validity, we have to validate this field.
+		    if(isset($validate[$fieldname])) {
+			foreach($validate[$fieldname] as $test) {
+			    if(!eval('return ('.str_replace('~', '$data[\''.$fieldname.'\']', $test['val']).');')) {
+				// The given value is invalid.
+				$error_occured = true;
+				if(isset($test['error'])) {
+				    $this->error[]	= $test['error'];
+				}
+				else {
+				    $invalid[] = $inputs[$fieldname]['cap'];
+				}
+				break;
+			    }
+			}
+		    }
+		    $data[$fieldname] = mysql_real_escape_string($data[$fieldname]);
+		}
+		else {
+		    // Assign it a valid value, if possible.
+		    if(isset($inputs[$fieldname]['def'])) {
+			$data[$fieldname]	= $inputs[$fieldname]['def'];
+		    }
+		    else {
+			// No value was given and we cannot assign it a default value.
+			$error_occured = true;
+			$missing[] = $inputs[$fieldname]['cap'];
+		    }
+		}
+	    }
+	}
+
+	// Now we can set error-messages.
+	if($error_occured) {
+	    if(count($invalid) > 0) {
+		$this->error[]	= sprintf(txt('130'), implode(', ', $invalid));
+	    }
+	    if(count($missing) > 0) {
+		$this->error[]	= sprintf(txt('129'), implode(', ', $missing));
+	    }
+	}
+
+	return(!$error_occured);
     }
 
 }

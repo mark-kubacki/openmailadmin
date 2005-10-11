@@ -70,7 +70,7 @@ $res['en']	= array(
 '59'	=>	'change',
 
 '60'	=>	'hide',
-'61'	=>	'In order to create a mailbox fill out every input-field!<br />',
+'61'	=>	'In order to create a mailbox you have to fill out every form field.<br />',
 '62'	=>	'Mailbox\' names consist of four to 16 alphanumeric characters.<br />',
 '63'	=>	'Quota, regexp and aliases have to be entered in figures.<br />Quota\'s unit is kiB.<br />',
 '64'	=>	'Standard-from is not a valid email-address.<br />',
@@ -141,6 +141,8 @@ $res['en']	= array(
 '126'	=>	'Plugins',
 '127'	=>	'Invalid regular expression.',
 '128'	=>	'You are',
+'129'	=>	'Please fill out these form fields: %s',
+'130'	=>	'These form fields contain invalid values: %s',
 );
 
 ?>

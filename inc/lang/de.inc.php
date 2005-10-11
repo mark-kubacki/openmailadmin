@@ -90,7 +90,7 @@ $res['de']	= array(
 '78'	=>	'Quota des aktuellen Benutzers wurde geändert auf %d.',
 '79'	=>	'Mailboxen',
 '80'	=>	'Der Benutzer wird keine Domänen zur Auswahl haben.<br />',
-'81'	=>	'Der Benuter darf nicht Domänen erhalten, die dem Ersteller nicht zugewiesen wurden.<br />',
+'81'	=>	'Der Benuter darf nicht Domänen erhalten, die dem Ersteller nicht zugewiesen worden waren.<br />',
 '82'	=>	'letzter Login',
 '83'	=>	'Mailboxname',
 '84'	=>	'voller Name',
@@ -141,6 +141,8 @@ $res['de']	= array(
 '126'	=>	'Erweiterungen',
 '127'	=>	'Ungültiger Ausdruck.',
 '128'	=>	'Eingeloggt als',
+'129'	=>	'Diese Felder müssen mit gültigen Werten versehen werden: %s',
+'130'	=>	'Diese Felder enthalten ungültige Werte: %s',
 );
 
 ?>

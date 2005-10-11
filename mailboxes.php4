@@ -19,21 +19,19 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $authinfo['a_admin_user'] 
     }
     else {
 	$oma->status_reset();
-	if($oma->mailbox_check_requirements($_POST['action'], $_POST)) {
-	    switch($_POST['action']) {
-		case 'new':
-		    $oma->mailbox_create($_POST['mbox'], $_POST);
-		    break;
-		case 'delete':
-		    $oma->mailbox_delete($_POST['user']);
-		    break;
-		case 'change':
-		    $oma->mailbox_change($_POST['user'], $_POST['change'], $_POST);
-		    break;
-		case 'active':
-		    $oma->mailbox_toggle_active($_POST['user']);
-		    break;
-	    }
+	switch($_POST['action']) {
+	    case 'new':
+		$oma->mailbox_create($_POST['mbox'], $_POST);
+		break;
+	    case 'delete':
+		$oma->mailbox_delete($_POST['user']);
+		break;
+	    case 'change':
+		$oma->mailbox_change($_POST['user'], $_POST['change'], $_POST);
+		break;
+	    case 'active':
+		$oma->mailbox_toggle_active($_POST['user']);
+		break;
 	}
 
 	if($oma->errors_occured()) {
