@@ -728,7 +728,6 @@ class openmailadmin {
     }
 
 /* ******************************* mailboxes ******************************** */
-    var $blacklist	= array('cyrus');	// Pretend these users don't exist.
     function get_mailboxes() {
 	global $cfg;
 	$mailboxes = array();
@@ -756,7 +755,7 @@ class openmailadmin {
 	    mysql_free_result($result2);
 
 	    while($row = mysql_fetch_assoc($result)) {
-		if(in_array($row['mbox'], $this->blacklist))
+		if(in_array($row['mbox'], $cfg['user_ignore']))
 		    continue;
 
 		$row['quota'] = hsys_format_quota($row['mbox']);
@@ -781,7 +780,7 @@ class openmailadmin {
 				    .' WHERE pate="'.$whose.'"');
 	    }
 	    while($row = mysql_fetch_assoc($result)) {
-		if(in_array($row['mbox'], $this->blacklist))
+		if(in_array($row['mbox'], $cfg['user_ignore']))
 		    continue;
 		$selectable_paten[] = $row['mbox'];
 	    }
@@ -797,6 +796,7 @@ class openmailadmin {
     }
 
     function mailbox_filter_manipulable($who, $desired_mboxes) {
+	global $cfg;
 	$allowed = array();
 
 	// Does the authenticated user have the right to do that?
@@ -805,7 +805,7 @@ class openmailadmin {
 	}
 	else {
 	    foreach($desired_mboxes as $mbox) {
-		if(IsDescendant($mbox, $who)) {
+		if(!in_array($mbox, $cfg['user_ignore']) && IsDescendant($mbox, $who)) {
 		    $allowed[] = $mbox;
 		}
 	    }
@@ -821,6 +821,10 @@ class openmailadmin {
 	// Check inputs for sanity and consistency.
 	if(!$this->authenticated_user['a_admin_user'] > 0) {
 	    $this->error[]	= txt('16');
+	    return false;
+	}
+	if(in_array($mboxname, $cfg['user_ignore'])) {
+	    $this->error[]	= sprintf(txt('130'), txt('83'));
 	    return false;
 	}
 	$mboxname = mysql_real_escape_string($mboxname);

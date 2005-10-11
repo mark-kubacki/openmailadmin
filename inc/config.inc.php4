@@ -47,6 +47,9 @@ $cfg['admins_delete_domains']	= false;
 // Comment out the following if you not wish to get these subfolders created.
 $cfg['folders']['create_default']	= array('Trash','UMS');
 
+// Pretend these users don't exist. Creation of these mailboxes will be denied.
+$cfg['user_ignore']		= array('cyrus');
+
 // Default settings for passwords.
 $cfg['passwd']['min_length']	= 8;
 $cfg['passwd']['max_length']	= 16;
