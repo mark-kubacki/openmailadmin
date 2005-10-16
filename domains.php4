@@ -9,7 +9,8 @@ if($oma->authenticated_user['a_admin_domains'] > 0) {
 	    error(txt('112'));
 	}
 	else
-	if(isset($_POST['dom']) && !is_array($_POST['dom']) && $_POST['action'] != 'new') {
+	if($_POST['action'] != 'new'
+		&& !(isset($_POST['dom']) && count($_POST['dom']) > 0) ) {
 	    error(txt('11'));
 	}
 	else {
