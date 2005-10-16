@@ -5,14 +5,15 @@ CREATE TABLE `domains` (
   `owner` varchar(16) NOT NULL default '',
   `a_admin` tinytext NOT NULL,
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `domain` (`domain`)
+  UNIQUE KEY `domain` (`domain`),
+  KEY `owner` (`owner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 INSERT INTO `domains` VALUES (1, 'example.com', 'all, samples', 'admin', 'admin');
 
 CREATE TABLE `user` (
   `mbox` varchar(16) NOT NULL default '',
-  `person` varchar(100) NOT NULL default '',
+  `person` varchar(100) character set utf8 collate utf8_unicode_ci NOT NULL default '',
   `pate` varchar(16) NOT NULL default '',
   `canonical` varchar(100) NOT NULL default '',
   `pass_crypt` varchar(14) default '',
@@ -44,7 +45,8 @@ CREATE TABLE `virtual` (
   `owner` varchar(16) NOT NULL default '',
   `active` tinyint(1) NOT NULL default '1',
   `neu` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`address`)
+  PRIMARY KEY  (`address`),
+  KEY `owner` (`owner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `virtual` VALUES ('me@example.com', 'admin', 'admin', 1, 1);
@@ -56,7 +58,8 @@ CREATE TABLE `virtual_regexp` (
   `owner` varchar(16) NOT NULL default '',
   `active` tinyint(1) NOT NULL default '0',
   `neu` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY  (`ID`),
+  KEY `owner` (`owner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
 INSERT INTO `virtual_regexp` VALUES (11, '/^(postmaster|abuse|security|root)@example\\.com/', 'admin', 'admin', 1, 1);
@@ -66,7 +69,7 @@ CREATE TABLE `imap_demo` (
   `used` int(10) unsigned NOT NULL default '0',
   `qmax` int(10) unsigned NOT NULL default '0',
   `ACL` tinytext,
-  UNIQUE KEY `mailbox` (`mailbox`)
+  PRIMARY KEY `mailbox` (`mailbox`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `imap_demo` VALUES ('user.admin', 0, 0, 'admin lrswipcda');
