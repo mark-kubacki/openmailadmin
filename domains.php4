@@ -16,7 +16,7 @@ if($oma->authenticated_user['a_admin_domains'] > 0) {
 	    $oma->status_reset();
 	    switch($_POST['action']) {
 		case 'new':
-		    $oma->domain_add($_POST['domain'], $_POST['categories'], $_POST['owner'], $_POST['a_admin']);
+		    $oma->domain_add($_POST['domain'], $_POST);
 		    break;
 		case 'delete':
 		    $oma->domain_remove($_POST['dom']);

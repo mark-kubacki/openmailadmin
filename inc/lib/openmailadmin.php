@@ -522,30 +522,26 @@ class openmailadmin {
      * Adds a new domain into the corresponding table.
      * Categories are for grouping domains.
      */
-    function domain_add($domain, $categories, $owner, $administrators) {
+    function domain_add($domain, $props) {
 	global $cfg;
 
-	if(!stristr($categories, 'all'))
-	    $categories = 'all, '.$categories;
-	if(trim($owner) == '')
-	    $owner = $this->current_user['mbox'];
-	if(trim($administrators) == '')
-	    $administrators = $this->current_user['mbox'];
-	if(!stristr($administrators.$owner, $this->current_user['mbox']))
-	    $administrators .= ' '.$this->current_user['mbox'];
+	$props['domain'] = $domain;
+	if(!$this->validate_input($props, array('domain', 'categories', 'owner', 'a_admin'))) {
+	    return false;
+	}
 
-	if(preg_match('/^'.$this->regex_valid_domain.'$/i', $domain)) {
-	    mysql_query('INSERT INTO '.$cfg['tablenames']['domains'].' (domain, categories, owner, a_admin)'
-			.' VALUES ("'.mysql_real_escape_string($domain).'", "'.mysql_real_escape_string($categories).'", "'.mysql_real_escape_string($owner).'", "'.mysql_real_escape_string($administrators).'")');
-	    if(mysql_affected_rows() < 1) {
-		$this->error[]	= mysql_error();
-	    }
-	    else {
-		return true;
-	    }
+	if(!stristr($props['categories'], 'all'))
+	    $props['categories'] = 'all,'.$props['categories'];
+	if(!stristr($props['a_admin'], $this->current_user['mbox']))
+	    $props['a_admin'] .= ','.$this->current_user['mbox'];
+
+	mysql_query('INSERT INTO '.$cfg['tablenames']['domains'].' (domain, categories, owner, a_admin)'
+		    .' VALUES ("'.$domain.'", "'.$props['categories'].'", "'.$props['owner'].'", "'.$props['a_admin'].'")');
+	if(mysql_affected_rows() < 1) {
+	    $this->error[]	= mysql_error();
 	}
 	else {
-	    $this->error[]	= txt('51');
+	    return true;
 	}
 
 	return false;
@@ -600,22 +596,27 @@ class openmailadmin {
 	return false;
     }
     /*
-     * Every parameter is an array.
+     * Every parameter is an array. $domains contains IDs.
      */
     function domain_change($domains, $change, $data) {
 	global $cfg;
+	$toc = array();		// to be changed
+
+	if(!$this->validate_input($data, $change)) {
+	    return false;
+	}
 
 	if(!is_array($change)) {
 	    $this->error[]	= txt('53');
 	    return false;
 	}
 	if($cfg['admins_delete_domains'] && in_array('owner', $change))
-	    $toc[] = 'owner="'.mysql_real_escape_string($data['owner']).'"';
+	    $toc[] = 'owner="'.$data['owner'].'"';
 	if(in_array('a_admin', $change))
-	    $toc[] = 'a_admin="'.mysql_real_escape_string($data['a_admin']).'"';
+	    $toc[] = 'a_admin="'.$data['a_admin'].'"';
 	if(in_array('categories', $change))
-	    $toc[] = 'categories="'.mysql_real_escape_string($data['categories']).'"';
-	if(isset($toc) && is_array($toc)) {
+	    $toc[] = 'categories="'.$data['categories'].'"';
+	if(count($toc) > 0) {
 	    mysql_query('UPDATE '.$cfg['tablenames']['domains']
 			.' SET '.implode(',', $toc)
 			.' WHERE (owner="'.$this->authenticated_user['mbox'].'" or a_admin LIKE "%'.$this->authenticated_user['mbox'].'%") AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
@@ -642,7 +643,6 @@ class openmailadmin {
 	}
 	// Otherwise (and if only one) try adapting older addresses.
 	if(count($domains) == 1) {
-	    if(preg_match('/^'.$this->regex_valid_domain.'$/i', $data['domain'])) {
 		// Grep the old name, we will need it later for replacement.
 		$result = mysql_query('SELECT ID, domain AS name FROM '.$cfg['tablenames']['domains'].' WHERE ID = "'.mysql_real_escape_string($domains[0]).'" AND (owner="'.$this->authenticated_user['mbox'].'" or a_admin LIKE "%'.$this->authenticated_user['mbox'].'%")');
 		if(mysql_num_rows($result) == 1) {
@@ -668,9 +668,6 @@ class openmailadmin {
 		}
 		else
 		    $this->error[]	= txt('91');
-	    }
-	    else
-		$this->error[]	= txt('51');
 	}
 	else
 	    $this->error[]	= txt('53');
@@ -1394,7 +1391,6 @@ class openmailadmin {
 				'def'	=> $this->current_user['mbox'],
 				);
 	$inputs['person']	= array('cap'	=> txt('84'),
-				'def'	=> $data['mbox'],
 				);
 	$inputs['domains']	= array('cap'	=> txt('86'),
 				'def'	=> $this->current_user['domains'],
@@ -1421,6 +1417,17 @@ class openmailadmin {
 	$inputs['a_admin_user']	= array('cap'	=> txt('70'),
 				'def'	=> 0,
 				);
+	// domains
+	$inputs['domain']	= array('cap'	=> txt('55'),
+				);
+	$inputs['owner']	= array('cap'	=> txt('56'),
+				'def'	=> $this->current_user['mbox'],
+				);
+	$inputs['a_admin']	= array('cap'	=> txt('57'),
+				'def'	=> implode(',', array_unique(array($this->current_user['mbox'], $this->authenticated_user['mbox']))),
+				);
+	$inputs['categories']	= array('cap'	=> txt('58'),
+				);
 
 	// Hash with tests vor sanity and possible error-messages on failure.
 	// These will only be processed if a value is given. (I.e. not on the default values from above)
@@ -1434,7 +1441,9 @@ class openmailadmin {
 	$validate['person']	= array(array(	'val'	=> 'strlen(~) <= 100 && strlen(~) >= 4 && preg_match(\'/^[\w\s0-9-_\.\(\)]*$/\', ~)',
 						),
 					);
-	$validate['domains']	= array(array(	'val'	=> '$this->domain_check($this->current_user, $this->current_user[\'mbox\'], ~)',
+	$validate['domains']	= array(array(	'val'	=> '~ = trim(~) && preg_match(\'/^((?:[\w]+|[\w]+\.[\w]+),\s*)*([\w]+|[\w]+\.[\w]+)$/i\', ~)',
+						),
+					array(	'val'	=> '$this->domain_check($this->current_user, $this->current_user[\'mbox\'], ~)',
 						'error'	=> txt('81')),
 					);
 	$validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.$this->regex_valid_email.\'/i\', ~)',
@@ -1456,6 +1465,19 @@ class openmailadmin {
 					);
 	$validate['a_admin_domains']	= $validate['a_super'];
 	$validate['a_admin_user']	= $validate['a_super'];
+	// domains
+	$validate['domain']	= array(array(	'val'	=> 'preg_match(\'/^\'.$this->regex_valid_domain.\'$/i\', ~)',
+						'error'	=> txt('51')),
+					);
+	$validate['owner']	= array(array(	'val'	=> 'strlen(~) >= $cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
+						),
+					);
+	$validate['a_admin']	= array(array(	'val'	=> 'preg_match(\'/^([a-z0-9]+,\s*)*[a-z0-9]+$/i\', ~)',
+						),
+					);
+	$validate['categories']	= array(array(	'val'	=> '(~ = trim(~)) && preg_match(\'/^((?:[\w]+|[\w]+\.[\w]+),\s*)*([\w]+|[\w]+\.[\w]+)$/i\', ~)',
+						),
+					);
 
 	// Check field per field.
 	$error_occured	= false;
