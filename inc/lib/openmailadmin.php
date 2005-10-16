@@ -41,14 +41,14 @@ class openmailadmin {
      * Concatenates every error message.
      */
     function errors_get() {
-	$err	= implode(' ', array_unique($this->error));
+	$err	= implode(' ', $this->error);
 	return $err;
     }
     /*
      * Concatenates every information message.
      */
     function info_get() {
-	$err	= implode(' ', array_unique($this->info));
+	$err	= implode(' ', $this->info);
 	return $err;
     }
 
@@ -132,7 +132,7 @@ class openmailadmin {
 		array_walk($matched[0],
 				create_function('&$item,$index',
 						'if(strtolower($item) == \''.strtolower(txt('5')).'\') $item = \''.$this->current_user['mbox'].'\';'
-					       ));
+						));
 		return $matched[0];
 	    }
 	}
@@ -151,27 +151,27 @@ class openmailadmin {
 	    return $_SESSION['cache']['getDomainSet'][$user][$categories];
 	}
 	else {
-	   foreach(explode(',', $categories) as $key=>$value) {
-	       $poss_dom[] = trim($value);
-	       $cat .= ' OR categories LIKE "%'.trim($value).'%"';
-	   }
-	   $result = mysql_query('SELECT domain FROM '.$cfg['tablenames']['domains']
-		   .' WHERE owner="'.$user.'" OR a_admin LIKE "%'.$user.'%" OR FIND_IN_SET(domain, "'.implode(',', $poss_dom).'")'.$cat);
-	   if($result != false) {
-	       $dom = array();
-	       while($row = mysql_fetch_assoc($result)) {
-		   $dom[] = $row['domain'];
-	       }
-	       mysql_free_result($result);
-	   }
+	    foreach(explode(',', $categories) as $value) {
+		$poss_dom[] = trim($value);
+		$cat .= ' OR categories LIKE "%'.trim($value).'%"';
+	    }
+	    $dom = array();
+	    $result = mysql_unbuffered_query('SELECT domain FROM '.$cfg['tablenames']['domains']
+		    .' WHERE owner="'.$user.'" OR a_admin LIKE "%'.$user.'%" OR FIND_IN_SET(domain, "'.implode(',', $poss_dom).'")'.$cat);
+	    if($result != false) {
+		while($row = mysql_fetch_assoc($result)) {
+		    $dom[] = $row['domain'];
+		}
+		mysql_free_result($result);
+	    }
 
-	   if($cache) {
-	       $_SESSION['cache']['getDomainSet'][$user][$categories] = $dom;
-	       return $_SESSION['cache']['getDomainSet'][$user][$categories];
-	   }
-	   else {
-	       return $dom;
-	   }
+	    if($cache) {
+		$_SESSION['cache']['getDomainSet'][$user][$categories] = $dom;
+		return $_SESSION['cache']['getDomainSet'][$user][$categories];
+	    }
+	    else {
+		return $dom;
+	    }
 	}
     }
 
@@ -293,16 +293,16 @@ class openmailadmin {
 	global $cfg;
 	$alias = array();
 
-	$result = mysql_query('SELECT address, dest, SUBSTRING_INDEX(address, "@", 1) as alias, SUBSTRING_INDEX(address, "@", -1) as domain, active'
+	$result = mysql_unbuffered_query('SELECT address, dest, SUBSTRING_INDEX(address, "@", 1) as alias, SUBSTRING_INDEX(address, "@", -1) as domain, active'
 				.' FROM '.$cfg['tablenames']['virtual']
 				.' WHERE owner="'.$this->current_user['mbox'].'"'.$_SESSION['filter']['str']['address']
 				.' ORDER BY domain, dest, alias'
 				.$_SESSION['limit']['str']['address']);
-	if(mysql_num_rows($result) > 0) {
+	if($result) {
 	    while($row = mysql_fetch_assoc($result)) {
 		// explode all destinations (as there may be many)
 		$dest = array();
-		foreach(explode(',', $row['dest']) as $key => $value) {
+		foreach(explode(',', $row['dest']) as $value) {
 		    $value = trim($value);
 		    // replace the current user's name with "mailbox"
 		    if($value == $this->current_user['mbox'])
@@ -330,7 +330,8 @@ class openmailadmin {
 	global $cfg;
 
 	// May the user create another address?
-	if($this->current_user['used_alias'] < $this->current_user['max_alias'] || $this->authenticated_user['a_super'] >= 1) {
+	if($this->current_user['used_alias'] < $this->current_user['max_alias']
+		|| $this->authenticated_user['a_super'] >= 1) {
 	    // If he did choose a catchall, may he create such an address?
 	    if($alias == '*' && $cfg['address']['allow_catchall']) {
 		if($cfg['address']['restrict_catchall']) {
@@ -470,8 +471,8 @@ class openmailadmin {
 	$query .= ' ORDER BY owner, length(a_admin), domain'
 		 .$_SESSION['limit']['str']['domain'];
 
-	$result = mysql_query($query);
-	if(mysql_num_rows($result) > 0) {
+	$result = mysql_unbuffered_query($query);
+	if($result) {
 	    while($row = mysql_fetch_assoc($result)) {
 		if($row['owner'] == $this->authenticated_user['mbox']
 		    || find_in_set($this->authenticated_user['mbox'], $row['a_admin'])) {
@@ -560,14 +561,14 @@ class openmailadmin {
 	if(is_array($domains) && count($domains) > 0) {
 	    if($cfg['admins_delete_domains'])
 		$result = mysql_query('SELECT ID, domain'
-					.' FROM '.$cfg['tablenames']['domains']
-					.' WHERE (owner="'.$this->authenticated_user['mbox'].'" or a_admin LIKE "%'.$this->authenticated_user['mbox'].'%") AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
-					.' LIMIT '.count($domains));
+			.' FROM '.$cfg['tablenames']['domains']
+			.' WHERE (owner="'.$this->authenticated_user['mbox'].'" OR a_admin LIKE "%'.$this->authenticated_user['mbox'].'%") AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
+			.' LIMIT '.count($domains));
 	    else
 		$result = mysql_query('SELECT ID, domain'
-					.' FROM '.$cfg['tablenames']['domains']
-					.' WHERE owner="'.$this->authenticated_user['mbox'].'" AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
-					.' LIMIT '.count($domains));
+			.' FROM '.$cfg['tablenames']['domains']
+			.' WHERE owner="'.$this->authenticated_user['mbox'].'" AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
+			.' LIMIT '.count($domains));
 	    if(mysql_num_rows($result) > 0) {
 		while($domain = mysql_fetch_assoc($result)) {
 		    $del_ID[] = $domain['ID'];
@@ -760,10 +761,10 @@ class openmailadmin {
 	global $cfg;
 	$regexp = array();
 
-	$result = mysql_query('SELECT * FROM '.$cfg['tablenames']['virtual_regexp']
+	$result = mysql_unbuffered_query('SELECT * FROM '.$cfg['tablenames']['virtual_regexp']
 			.' WHERE owner="'.$this->current_user['mbox'].'"'.$_SESSION['filter']['str']['regexp']
 			.' ORDER BY dest'.$_SESSION['limit']['str']['regexp']);
-	if(mysql_num_rows($result) > 0) {
+	if($result) {
 	    while($row = mysql_fetch_assoc($result)) {
 		// if ordered, check whether expression matches probe address
 		if(!is_null($match_against)
@@ -775,7 +776,7 @@ class openmailadmin {
 		}
 		// explode all destinations (as there may be many)
 		$dest = array();
-		foreach(explode(',', $row['dest']) as $key => $value) {
+		foreach(explode(',', $row['dest']) as $value) {
 		    $value = trim($value);
 		    // replace the current user's name with "mailbox"
 		    if($value == $this->current_user['mbox'])
@@ -909,15 +910,15 @@ class openmailadmin {
 	    $where_clause = ' WHERE pate="'.$this->current_user['mbox'].'"';
 	}
 	$result = mysql_query('SELECT mbox, person, canonical, pate, max_alias, max_regexp, active, date(last_login) AS lastlogin, a_super, a_admin_domains, a_admin_user, '
-				    .'(SELECT count(*) FROM '.$cfg['tablenames']['virtual']
-				    .' WHERE '.$cfg['tablenames']['virtual'].'.owner=mbox) AS num_alias, '
-				    .'(SELECT count(*) FROM '.$cfg['tablenames']['virtual_regexp']
-				    .' WHERE '.$cfg['tablenames']['virtual_regexp'].'.owner=mbox) AS num_regexp'
+					.'(SELECT count(*) FROM '.$cfg['tablenames']['virtual']
+					.' WHERE '.$cfg['tablenames']['virtual'].'.owner=mbox) AS num_alias, '
+					.'(SELECT count(*) FROM '.$cfg['tablenames']['virtual_regexp']
+					.' WHERE '.$cfg['tablenames']['virtual_regexp'].'.owner=mbox) AS num_regexp'
 				.' FROM '.$cfg['tablenames']['user']
 				.$where_clause.$_SESSION['filter']['str']['mbox']
 				.' ORDER BY pate, mbox'.$_SESSION['limit']['str']['mbox']);
 
-	if(mysql_num_rows($result) > 0) {
+	if($result) {
 	    while($row = mysql_fetch_assoc($result)) {
 		if(in_array($row['mbox'], $cfg['user_ignore']))
 		    continue;
@@ -941,11 +942,11 @@ class openmailadmin {
 	if(!isset($_SESSION['paten'][$whose])) {
 	    $selectable_paten = array();
 	    if($this->authenticated_user['a_super'] >= 1) {
-		$result = mysql_query('SELECT mbox FROM '.$cfg['tablenames']['user']);
+		$result = mysql_unbuffered_query('SELECT mbox FROM '.$cfg['tablenames']['user']);
 	    }
 	    else {
-		$result = mysql_query('SELECT mbox FROM '.$cfg['tablenames']['user']
-				    .' WHERE pate="'.$whose.'"');
+		$result = mysql_unbuffered_query('SELECT mbox FROM '.$cfg['tablenames']['user']
+					.' WHERE pate="'.$whose.'"');
 	    }
 	    while($row = mysql_fetch_assoc($result)) {
 		if(in_array($row['mbox'], $cfg['user_ignore']))
@@ -1326,15 +1327,15 @@ class openmailadmin {
 	}
 
 	// virtual
-	mysql_query('DELETE FROM '.$cfg['tablenames']['virtual'].' WHERE FIND_IN_SET(owner, "'.$aux_tmp.'")');
-	mysql_query('UPDATE '.$cfg['tablenames']['virtual'].' SET active=0, neu=1 WHERE FIND_IN_SET(dest, "'.$aux_tmp.'")');
+	mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['virtual'].' WHERE FIND_IN_SET(owner, "'.$aux_tmp.'")');
+	mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['virtual'].' SET active=0, neu=1 WHERE FIND_IN_SET(dest, "'.$aux_tmp.'")');
 	// virtual.regexp
-	mysql_query('DELETE FROM '.$cfg['tablenames']['virtual_regexp'].' WHERE FIND_IN_SET(owner, "'.$aux_tmp.'")');
-	mysql_query('UPDATE '.$cfg['tablenames']['virtual_regexp'].' SET active=0, neu=1 WHERE FIND_IN_SET(dest, "'.$aux_tmp.'")');
+	mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['virtual_regexp'].' WHERE FIND_IN_SET(owner, "'.$aux_tmp.'")');
+	mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['virtual_regexp'].' SET active=0, neu=1 WHERE FIND_IN_SET(dest, "'.$aux_tmp.'")');
 	// domain (if the one to be deleted owns domains, the deletor will inherit them)
-	mysql_query('UPDATE '.$cfg['tablenames']['domains'].' SET owner="'.$this->current_user['mbox'].'" WHERE FIND_IN_SET(owner, "'.$aux_tmp.'")');
+	mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['domains'].' SET owner="'.$this->current_user['mbox'].'" WHERE FIND_IN_SET(owner, "'.$aux_tmp.'")');
 	// user
-	mysql_query('DELETE FROM '.$cfg['tablenames']['user'].' WHERE FIND_IN_SET(mbox, "'.$aux_tmp.'")');
+	mysql_unbuffered_query('DELETE FROM '.$cfg['tablenames']['user'].' WHERE FIND_IN_SET(mbox, "'.$aux_tmp.'")');
 	if($this->authenticated_user['a_super'] == 0 && isset($will_be_free['nr_alias'])) {
 	    mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['user']
 		.' SET max_alias='.($this->current_user['max_alias']+$will_be_free['nr_alias']).', max_regexp='.($this->current_user['max_regexp']+$will_be_free['nr_regexp'])

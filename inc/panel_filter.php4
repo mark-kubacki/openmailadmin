@@ -5,8 +5,9 @@ if(!isset($_SESSION['limit']['upper'])) {
     $_SESSION['limit']['upper'] = $cfg['max_elements_per_page'];
 }
 if(!isset($_SESSION['limit'][$oma->current_user['mbox']]) || isset($_POST['limit'])) {
-    $_SESSION['limit'][$oma->current_user['mbox']] = array('address' => 0, 'regexp' => 0, 'domain' => 0, 'mbox' => 0,
-						'addr_page' => 0, 'regx_page' => 0, 'dom_page' => 0, 'mbox_page' => 0);
+    $_SESSION['limit'][$oma->current_user['mbox']]
+	= array('address' => 0, 'regexp' => 0, 'domain' => 0, 'mbox' => 0,
+		'addr_page' => 0, 'regx_page' => 0, 'dom_page' => 0, 'mbox_page' => 0);
 }
 if(isset($_POST['limit'])) {
     if(is_numeric($_POST['limit'])) {
@@ -59,9 +60,9 @@ if(isset($_POST['filtr']) && isset($_POST['filtr_addr']) && $_POST['filtr'] == '
     $filtr_post = '';
     $_SESSION['filter']['str'] = array('address' => '', 'regexp' => '', 'domain' => '', 'mbox' => '');
     switch($_POST['cond']) {
-	case 'has':	$filtr_post = '\'%'.str_replace(txt('5'), $oma->current_user['mbox'], mysql_escape_string($_POST['cont'])).'%\'';	break;
-	case 'begins':	$filtr_post = '\''.str_replace(txt('5'), $oma->current_user['mbox'], mysql_escape_string($_POST['cont'])).'%\'';		break;
-	case 'ends':	$filtr_post = '\'%'.str_replace(txt('5'), $oma->current_user['mbox'], mysql_escape_string($_POST['cont'])).'\'';		break;
+	case 'has':	$filtr_post = '"%'.str_replace(txt('5'), $oma->current_user['mbox'], mysql_real_escape_string($_POST['cont'])).'%"';	break;
+	case 'begins':	$filtr_post = '"'.str_replace(txt('5'), $oma->current_user['mbox'], mysql_real_escape_string($_POST['cont'])).'%"';	break;
+	case 'ends':	$filtr_post = '"%'.str_replace(txt('5'), $oma->current_user['mbox'], mysql_real_escape_string($_POST['cont'])).'"';	break;
     }
     switch($_POST['what']) {
 	case 'addr':
@@ -72,7 +73,7 @@ if(isset($_POST['filtr']) && isset($_POST['filtr_addr']) && $_POST['filtr'] == '
 	    $_SESSION['filter']['str']['regexp'] = ' AND dest LIKE '.$filtr_post;
 	    break;
 	case 'domain':
-	    $_SESSION['filter']['str']['address'] = ' AND SUBSTRING_INDEX(address, \'@\', -1) LIKE '.$filtr_post;
+	    $_SESSION['filter']['str']['address'] = ' AND SUBSTRING_INDEX(address, "@", -1) LIKE '.$filtr_post;
 	    $_SESSION['filter']['str']['domain'] = ' AND domain LIKE '.$filtr_post;
 	    break;
 	case 'mbox':
@@ -97,6 +98,5 @@ if(!isset($_SESSION['filter'])) {
 }
 // DISPLAY
 include('templates/'.$cfg['theme'].'/filter_panel.tpl');
-
 
 ?>

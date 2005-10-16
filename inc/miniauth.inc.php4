@@ -18,14 +18,15 @@ else if(isset($_POST['frm']) && $_POST['frm'] == 'login' && trim($_POST['mboxnam
     else
 	$CYRUS = $cfg['Servers']['CYRUS'][$_POST['server']];
 
-    $result = mysql_query('SELECT * FROM '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user WHERE mbox=\''.mysql_escape_string($_POST['mboxname']).'\' AND active=1 LIMIT 1');
+    $result = mysql_query('SELECT * FROM '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user WHERE mbox="'.mysql_real_escape_string($_POST['mboxname']).'" AND active=1 LIMIT 1');
     if(mysql_num_rows($result) > 0) {
 	$authinfo = mysql_fetch_assoc($result);
 	mysql_free_result($result);
-	if(($authinfo['pass_md5'] == '' && passwd_check($_POST['password'], $authinfo['pass_crypt'])) || passwd_check($_POST['password'], $authinfo['pass_md5'])) {
+	if(($authinfo['pass_md5'] == '' && passwd_check($_POST['password'], $authinfo['pass_crypt']))
+		|| passwd_check($_POST['password'], $authinfo['pass_md5'])) {
 	    $authinfo['pass_clear'] = obfuscator_encrypt($_POST['password']);
 	    unset($_POST['password']);
-	    mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login=NOW() WHERE mbox=\''.$authinfo['mbox'].'\' LIMIT 1');
+	    mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login=NOW() WHERE mbox="'.$authinfo['mbox'].'" LIMIT 1');
 	    session_regenerate_id();
 	    $_SESSION			= $authinfo;
 	    $_SESSION['server']		= $_POST['server'];
@@ -46,10 +47,7 @@ else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER[
     $authinfo	= $_SESSION;
     mysql_connect($cfg['Servers']['DB'][$_SESSION['server']]['HOST'], $cfg['Servers']['DB'][$_SESSION['server']]['USER'], $cfg['Servers']['DB'][$_SESSION['server']]['PASS']) or die('Cannot connect to MySQL Server.');
     mysql_select_db($cfg['Servers']['DB'][$_SESSION['server']]['DB']) or die('Cannot select Database');
-    if(isset($cfg['Servers']['IMAP'][$_SESSION['server']]))
 	$CYRUS = $cfg['Servers']['IMAP'][$_SESSION['server']];		// $CYRUS is needed by our IMAP-library
-    else
-	$CYRUS = $cfg['Servers']['CYRUS'][$_SESSION['server']];
 }
 
 if(!isset($authinfo)) {
