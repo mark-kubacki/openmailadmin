@@ -126,7 +126,7 @@ class openmailadmin {
 	}
 
 	// Get valid destinations.
-	if(preg_match_all('/'.$pattern.'/', $possible, $matched)) {
+	if(preg_match_all('/'.$pattern.'/i', $possible, $matched)) {
 	    if(is_array($matched[0])) {
 		// Replace every occurence of 'mailbox' with the correct name.
 		array_walk($matched[0],
