@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/bin/env perl -w
 use strict;
 
 use DBI;
@@ -46,13 +46,13 @@ $dbh->disconnect;
 sub writePasswdCache {
 ################################################################################
     my @row;
-    
+
     $sth = $dbh->prepare(q{
 	SELECT mbox, pass_crypt
 	FROM user
 	});
     $sth->execute();
-    
+
     open(OUT, '>', $passwd_cache);
     while(@row = $sth->fetchrow_array()) {
 	print OUT $row[0].':'.$row[1]."\n";
@@ -64,17 +64,17 @@ sub writePasswdCache {
 sub writeDomains {
 ################################################################################
     my @row;
-    
+
     $sth = $dbh->prepare(q{
 	SELECT domain
 	FROM domains
-	ORDER BY (SELECT count(*) 
-		  FROM virtual 
-		  WHERE address LIKE CONCAT('%@', domain)) 
+	ORDER BY (SELECT count(*)
+		  FROM virtual
+		  WHERE address LIKE CONCAT('%@', domain))
 		 DESC
 	});
     $sth->execute();
-    
+
     open(OUT, '>', $MTA{'domains'});
     while(@row = $sth->fetchrow_array()) {
 	print OUT $row[0]."\t\t".$row[0]."\n";
@@ -87,20 +87,20 @@ sub writeDomains {
 sub writeFile {
 ################################################################################
     my @row;
-    
+
     $sth = $dbh->prepare(qq{
 	SELECT $_[2], $_[3]
 	FROM $_[1]
 	WHERE active=1 ORDER BY $_[4]
 	});
     $sth->execute();
-    
+
     open(OUT, '>', $MTA{$_[0]});
     while(@row = $sth->fetchrow_array()) {
 	print OUT $row[0]."\t\t".$row[1]."\n";
     }
     close OUT;
-    
+
     $dbh->do(qq{UPDATE LOW_PRIORITY IGNORE $_[1] SET neu=0 WHERE neu=1});
     system($postprocess.$MTA{$_[0]});
 }

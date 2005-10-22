@@ -1,4 +1,4 @@
-#!/usr/local/bin/php
+#!/bin/env php
 <?php
 if(!function_exists('file_put_contents')) {
     function file_put_contents($filename, $contents)
