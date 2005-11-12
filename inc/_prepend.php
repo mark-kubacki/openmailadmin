@@ -1,5 +1,5 @@
 <?php
-$version = '2005-10-12';
+$version = '2005-11-12';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
@@ -8,15 +8,9 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
 include('config.inc.php4');
-	if(is_readable('config.local.inc.php4')) {
-	    include('config.local.inc.php4');
-	}
-	else if(is_readable('inc/config.local.inc.php4')) {
-	    include('inc/config.local.inc.php4');
-	}
-	else {
-	    die('You have to create an configuration file, first.');
-	}
+(include('config.local.inc.php'))
+    or (include('config.local.inc.php4'))
+    or die('You have to create an configuration file, first.');
 include('translation.inc.php4');
 include('format_shadow_classes.inc.php4');
 include('functions.inc.php4');
