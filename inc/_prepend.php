@@ -8,8 +8,8 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
 include('config.inc.php');
-(include('config.local.inc.php'))
-    or (include('config.local.inc.php'))
+@(include('config.local.inc.php'))
+    or @(include('config.local.inc.php4'))
     or die('You have to create an configuration file, first.');
 include('translation.inc.php');
 include('format_shadow_classes.inc.php');
