@@ -1,6 +1,6 @@
 <?php
-include('inc/_prepend.php4');
-include('inc/panel_filter.php4');
+include('inc/_prepend.php');
+include('inc/panel_filter.php');
 
 $oma->current_user['domain_set'] = $oma->get_domain_set($oma->current_user['mbox'], $oma->current_user['domains']);
 $oma->current_user['used_alias'] = $oma->user_get_used_alias($oma->current_user['mbox']);
@@ -66,5 +66,5 @@ include('templates/'.$cfg['theme'].'/addresses/list.tpl');
 // ADMIN PANEL
 include('templates/'.$cfg['theme'].'/addresses/admin.tpl');
 
-include('inc/_append.php4');
+include('inc/_append.php');
 ?>

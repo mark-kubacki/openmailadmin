@@ -1,5 +1,5 @@
 <?php
-include('inc/_prepend.php4');
+include('inc/_prepend.php');
 
 $cyr = new cyradm;
 $cyr->imap_login();
@@ -52,5 +52,5 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'chang
 
 include('templates/'.$cfg['theme'].'/password.tpl');
 
-include('inc/_append.php4');
+include('inc/_append.php');
 ?>

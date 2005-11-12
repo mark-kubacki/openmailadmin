@@ -23,7 +23,7 @@
 	    <?php } ?>
 	</td>
 	<td class="ed" align="right">
-	    <a href="index.php4?login=change"><?= txt('124') ?></a>
+	    <a href="index.php?login=change"><?= txt('124') ?></a>
 	</td>
     </tr>
 </table>

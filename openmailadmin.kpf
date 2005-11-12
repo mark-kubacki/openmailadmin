@@ -4,7 +4,7 @@
 <preference-set id="">
   <string id="import_dirname">D:\xampp\htdocs\openmailadmin</string>
 </preference-set>
-<file url="index.php4" id="A7EB7766-F9E8-40B9-AC93-DD3EDC49DE8E" name="index.php4">
+<file url="index.php" id="A7EB7766-F9E8-40B9-AC93-DD3EDC49DE8E" name="index.php">
 </file>
 <file url="INSTALL" id="B4DF053F-19EE-467E-946B-067FAE3CD40A" name="INSTALL">
 </file>
@@ -27,17 +27,17 @@
 <folder url="inc" id="50320A59-8123-42D6-A4CE-48B69E72FE4D" name="inc">
 <file url="inc/.htaccess" id="211EBF24-30F8-49AB-80A2-C475242F105D" name=".htaccess">
 </file>
-<file url="inc/config.inc.php4" id="9B9BDBB0-1F3A-44F6-84A7-63505A07B4D8" name="config.inc.php4">
+<file url="inc/config.inc.php" id="9B9BDBB0-1F3A-44F6-84A7-63505A07B4D8" name="config.inc.php">
 </file>
 <file url="inc/database.sql" id="468F3019-7E14-457A-A2B6-732C2BBCF260" name="database.sql">
 </file>
-<file url="inc/format_shadow_classes.inc.php4" id="91093092-F01F-4006-9B4A-E8F0CFE099A0" name="format_shadow_classes.inc.php4">
+<file url="inc/format_shadow_classes.inc.php" id="91093092-F01F-4006-9B4A-E8F0CFE099A0" name="format_shadow_classes.inc.php">
 </file>
-<file url="inc/functions.inc.php4" id="FF4A43E0-6562-462C-A2A5-2CE8D0DB58B3" name="functions.inc.php4">
+<file url="inc/functions.inc.php" id="FF4A43E0-6562-462C-A2A5-2CE8D0DB58B3" name="functions.inc.php">
 </file>
-<file url="inc/miniauth.inc.php4" id="088B2CB9-EB0A-4543-9FE0-D72A095FB266" name="miniauth.inc.php4">
+<file url="inc/miniauth.inc.php" id="088B2CB9-EB0A-4543-9FE0-D72A095FB266" name="miniauth.inc.php">
 </file>
-<file url="inc/translation.inc.php4" id="636CA6B1-BFAE-4632-863A-4C82AD0ED37B" name="translation.inc.php4">
+<file url="inc/translation.inc.php" id="636CA6B1-BFAE-4632-863A-4C82AD0ED37B" name="translation.inc.php">
 </file>
 <folder url="inc/lang" id="7BB7F9E3-2DA2-4ED4-B1B5-42E7EB7FBC2D" name="lang">
 <file url="inc/lang/de.inc.php" id="0C92163D-13B9-4A89-82BD-9EDF750DA40F" name="de.inc.php">
@@ -49,11 +49,11 @@
 <file url="inc/lang/ru.inc.php" id="EE298944-5778-4F2A-BA47-006EFBD8E84F" name="ru.inc.php">
 </file>
 </folder>
-<file url="inc/_prepend.php4" id="967DBD1F-2B3E-487B-83AC-6CBC0CEBEB35" name="_prepend.php4">
+<file url="inc/_prepend.php" id="967DBD1F-2B3E-487B-83AC-6CBC0CEBEB35" name="_prepend.php">
 </file>
-<file url="inc/_append.php4" id="2456E8CB-53A2-4D20-B729-C8FF48CBDB64" name="_append.php4">
+<file url="inc/_append.php" id="2456E8CB-53A2-4D20-B729-C8FF48CBDB64" name="_append.php">
 </file>
-<file url="inc/panel_filter.php4" id="914C5C93-262E-4EB2-A86B-BFC17EDDDB6E" name="panel_filter.php4">
+<file url="inc/panel_filter.php" id="914C5C93-262E-4EB2-A86B-BFC17EDDDB6E" name="panel_filter.php">
 </file>
 <folder id="FA13EF8A-8D1F-413F-A74F-D69CC0FE4B98" name="lib">
 <file url="inc/lib/cyradm.php" id="BF02C4FC-A320-44C2-A80D-4AA26F9D526D" name="cyradm.php">
@@ -67,7 +67,7 @@
 <folder url="samples" id="0A4E4102-48EC-4C5D-ACC1-B2211945407F" name="samples">
 <preference-set id="">
 </preference-set>
-<file url="samples/hsys_mail.daimon.php4" id="F1FE42AD-EFF6-436E-ABFD-85462FBAC9E7" name="hsys_mail.daimon.php4">
+<file url="samples/hsys_mail.daimon.php" id="F1FE42AD-EFF6-436E-ABFD-85462FBAC9E7" name="hsys_mail.daimon.php">
 </file>
 <folder id="D9491610-DFFB-45AF-AF21-8A21894CFF7A" name="pam">
 <file url="samples/pam/imap" id="09D25BFB-2E77-4FF2-9D86-A98A608D5276" name="imap">
@@ -83,7 +83,7 @@
 <file url="samples/postfix/virtual.mysql" id="EC902CEB-FA9D-4241-81C3-248B74E0454A" name="virtual.mysql">
 </file>
 </folder>
-<file url="samples/config.local.inc.php4" id="5BC66975-03F4-49C2-A268-C7C4D36F3225" name="config.local.inc.php4">
+<file url="samples/config.local.inc.php" id="5BC66975-03F4-49C2-A268-C7C4D36F3225" name="config.local.inc.php">
 </file>
 <folder id="4E3FA06B-D878-430F-9582-93C1506E730C" name="cyrus">
 <file url="samples/cyrus/cyrus.conf" id="DD9D0CB2-E444-41ED-B54B-139C0371CBE1" name="cyrus.conf">
@@ -92,19 +92,19 @@
 </file>
 </folder>
 <folder id="B82F1140-DB17-4180-911D-B4C9E76A4ADB" name="format_shadow_classes">
-<file url="samples/format_shadow_classes/index.php4" id="FBCF7FF8-6BD1-4D45-AA1C-DB47E4CA5021" name="index.php4">
+<file url="samples/format_shadow_classes/index.php" id="FBCF7FF8-6BD1-4D45-AA1C-DB47E4CA5021" name="index.php">
 </file>
 </folder>
 </folder>
-<file url="regexp.php4" id="A7CCD584-4B5F-4B6C-A85D-C6B5CDDFFCD5" name="regexp.php4">
+<file url="regexp.php" id="A7CCD584-4B5F-4B6C-A85D-C6B5CDDFFCD5" name="regexp.php">
 </file>
-<file url="addresses.php4" id="4DC55634-2F03-45B7-93B5-EA5221F28A03" name="addresses.php4">
+<file url="addresses.php" id="4DC55634-2F03-45B7-93B5-EA5221F28A03" name="addresses.php">
 </file>
-<file url="domains.php4" id="C0C4A1E8-96F6-4980-8380-DCD2AB35FE70" name="domains.php4">
+<file url="domains.php" id="C0C4A1E8-96F6-4980-8380-DCD2AB35FE70" name="domains.php">
 </file>
-<file url="mailboxes.php4" id="AB30AEEF-1182-4AF5-9A56-B89D3D018B9A" name="mailboxes.php4">
+<file url="mailboxes.php" id="AB30AEEF-1182-4AF5-9A56-B89D3D018B9A" name="mailboxes.php">
 </file>
-<file url="folders.php4" id="2938F057-AC9F-468C-A36D-72DCD18A6991" name="folders.php4">
+<file url="folders.php" id="2938F057-AC9F-468C-A36D-72DCD18A6991" name="folders.php">
 </file>
 <file url="openmailadmin.kpf" id="6C78E0CC-AB55-4BA2-BB2E-D0AA003911BC" name="openmailadmin.kpf">
 </file>

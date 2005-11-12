@@ -278,7 +278,7 @@ function array_densify($arr, $dense_field) {
     return $dense;
 }
 
-/* display_tree is specialized for /folders.php4 */
+/* display_tree is specialized for /folders.php */
 function display_tree($tree) {
     echo('<ul class="tree">');
     foreach($tree as $key=>$value) {

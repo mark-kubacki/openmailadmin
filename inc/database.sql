@@ -33,7 +33,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /* HERE: Modify the passwords!
- *       ##CyrusSecret## has to be the same as in your config.local.inc.php4
+ *       ##CyrusSecret## has to be the same as in your config.local.inc.php
  *       You will never log in as 'cyrus' - 'admin' is the user for that.
  */
 INSERT INTO `user` VALUES ('admin', 'Admin Istrator', 'admin', 'me@example.com', ENCRYPT('admin'), MD5('admin'), '', 'all', 1, 1, NOW(), NOW(), 10000, 100, 2, 2, 2);

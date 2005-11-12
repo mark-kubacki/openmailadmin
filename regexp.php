@@ -1,6 +1,6 @@
 <?php
-include('inc/_prepend.php4');
-include('inc/panel_filter.php4');
+include('inc/_prepend.php');
+include('inc/panel_filter.php');
 
 $oma->current_user['domain_set'] = $oma->get_domain_set($oma->current_user['mbox'], $oma->current_user['domains']);
 $oma->current_user['used_regexp'] = $oma->user_get_used_regexp($oma->current_user['mbox']);
@@ -88,5 +88,5 @@ if($oma->current_user['max_regexp'] != 0 && $oma->authenticated_user['max_regexp
     include('templates/'.$cfg['theme'].'/regexp/admin.tpl');
 }
 
-include('inc/_append.php4');
+include('inc/_append.php');
 ?>

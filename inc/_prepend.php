@@ -7,13 +7,13 @@ ini_set('display_errors', '0');
 // error_reporting(E_ALL ^ E_NOTICE);
 error_reporting(E_ALL);
 
-include('config.inc.php4');
+include('config.inc.php');
 (include('config.local.inc.php'))
-    or (include('config.local.inc.php4'))
+    or (include('config.local.inc.php'))
     or die('You have to create an configuration file, first.');
-include('translation.inc.php4');
-include('format_shadow_classes.inc.php4');
-include('functions.inc.php4');
+include('translation.inc.php');
+include('format_shadow_classes.inc.php');
+include('functions.inc.php');
 
 // Initialisation
 	$table	= new _table_shadow();
@@ -33,7 +33,7 @@ header('Content-type: text/html; charset='.$encoding);
 include('templates/'.$cfg['theme'].'/common-header.tpl');
 
 // Authentification
-include('miniauth.inc.php4');
+include('miniauth.inc.php');
 
 if (!(isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])
 	&& isset($cfg['Servers']['DB'][$_SESSION['server']]['TYPE']))) {
@@ -100,33 +100,33 @@ else {
 
 // Display navigation menu.
 $arr_navmenu = array();
-    $arr_navmenu[]	= array('link'		=> 'index.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+    $arr_navmenu[]	= array('link'		=> 'index.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('1'),
-				'active'	=> stristr($_SERVER['PHP_SELF'], 'index.php4'));
+				'active'	=> stristr($_SERVER['PHP_SELF'], 'index.php'));
 if($oma->current_user['max_alias'] > 0 || $oma->authenticated_user['a_super'] >= 1 || $oma->user_get_used_alias($oma->current_user['mbox'])) {
-    $arr_navmenu[]	= array('link'		=> 'addresses.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+    $arr_navmenu[]	= array('link'		=> 'addresses.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('17'),
-				'active'	=> stristr($_SERVER['PHP_SELF'], 'addresses.php4'));
+				'active'	=> stristr($_SERVER['PHP_SELF'], 'addresses.php'));
 }
 if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
-    $arr_navmenu[]	= array('link'		=> 'folders.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+    $arr_navmenu[]	= array('link'		=> 'folders.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('103'),
-				'active'	=> stristr($_SERVER['PHP_SELF'], 'folders.php4'));
+				'active'	=> stristr($_SERVER['PHP_SELF'], 'folders.php'));
 }
 if($oma->current_user['max_regexp'] > 0 || $oma->authenticated_user['a_super'] >= 1 || $oma->user_get_used_regexp($oma->current_user['mbox'])) {
-    $arr_navmenu[]	= array('link'		=> 'regexp.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+    $arr_navmenu[]	= array('link'		=> 'regexp.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('33'),
-				'active'	=> stristr($_SERVER['PHP_SELF'], 'regexp.php4'));
+				'active'	=> stristr($_SERVER['PHP_SELF'], 'regexp.php'));
 }
 if($oma->authenticated_user['a_admin_domains'] >= 1 || $oma->user_get_number_domains($oma->current_user['mbox']) > 0) {
-    $arr_navmenu[]	= array('link'		=> 'domains.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+    $arr_navmenu[]	= array('link'		=> 'domains.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('54'),
-				'active'	=> stristr($_SERVER['PHP_SELF'], 'domains.php4'));
+				'active'	=> stristr($_SERVER['PHP_SELF'], 'domains.php'));
 }
 if($oma->authenticated_user['a_admin_user'] >= 1 || $oma->user_get_number_mailboxes($oma->current_user['mbox']) > 0) {
-    $arr_navmenu[]	= array('link'		=> 'mailboxes.php4'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+    $arr_navmenu[]	= array('link'		=> 'mailboxes.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
 				'caption'	=> txt('79'),
-				'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php4'));
+				'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php'));
 }
 include('templates/'.$cfg['theme'].'/navigation/navigation.tpl');
 

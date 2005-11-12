@@ -1,6 +1,6 @@
 <?php
-include('inc/_prepend.php4');
-include('inc/panel_filter.php4');
+include('inc/_prepend.php');
+include('inc/panel_filter.php');
 
 $cyr = new cyradm;
 $cyr->imap_login();
@@ -59,5 +59,5 @@ if($oma->authenticated_user['a_admin_user'] >= 1) {
 
 $cyr->imap_logout();
 
-include('inc/_append.php4');
+include('inc/_append.php');
 ?>

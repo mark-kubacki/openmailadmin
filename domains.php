@@ -1,6 +1,6 @@
 <?php
-include('inc/_prepend.php4');
-include('inc/panel_filter.php4');
+include('inc/_prepend.php');
+include('inc/panel_filter.php');
 
 // ------------------------------ Domains ---------------------------------------------------------
 if($oma->authenticated_user['a_admin_domains'] > 0) {
@@ -48,5 +48,5 @@ if($oma->authenticated_user['a_admin_domains'] > 0) {
     include('templates/'.$cfg['theme'].'/domains/admin.tpl');
 }
 
-include('inc/_append.php4');
+include('inc/_append.php');
 ?>
