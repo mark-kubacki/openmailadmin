@@ -105,7 +105,6 @@ class cyradm
 	function command($line)
 	{
 		global $rtxt;
-		// print ("line in command: <br><pre><tt>" . $line . "</tt></pre><br>");
 		$result = array();
 		$i = $f = 0;
 		$returntext = "";
