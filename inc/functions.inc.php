@@ -123,23 +123,24 @@ function mkSelfRef($arr_Add = array()) {
  * Adds prefixes and suffixes as well as separators to a username
  */
 function cyrus_format_user($username, $folder = null) {
-    global $CYRUS;
+    global $imap;
+    global $IMAP;
 
     if(is_null($folder)) {
-	return('user'.$CYRUS['SEPA'].$username.$CYRUS['VDOM']);
+	return('user'.$imap->gethierarchyseparator().$username.$IMAP['VDOM']);
     }
     else {
-	return(cyrus_format_user($username).$CYRUS['SEPA'].$folder);
+	return(cyrus_format_user($username).$imap->gethierarchyseparator().$folder);
     }
 }
 
 /*
- * Wrapper to $cyrus->getquota
+ * Wrapper to $imap->getquota
  */
 function hsys_getQuota($username) {
-    global $cyr;
+    global $imap;
 
-    return $cyr->getquota(cyrus_format_user($username));
+    return $imap->getquota(cyrus_format_user($username));
 }
 
 function hsys_getMaxQuota($username) {
@@ -151,54 +152,6 @@ function hsys_getUsedQuota($username) {
     return $result['used'];
 }
 
-/*
- * Detects the hierarchy separator.
- */
-function hsys_imap_detect_HS() {
-    global $cyr; global $CYRUS;
-
-    if(!isset($CYRUS['SEPA'])) {
-        $result = $cyr->command('. list "" ""');
-        $tmp = strstr($result['0'], '"');
-        $CYRUS['SEPA'] = $tmp{1};
-        unset($tmp);
-    }
-
-    return $CYRUS['SEPA'];
-}
-
-/*
- * Returns every folder the user can see as raw list.
- */
-function hsys_imap_getfolders() {
-    global $cyr;
-
-    return $cyr->command('. list "" *');
-}
-
-/*
- * Splits the information containing in raw folder list to a more handy array.
- * see RFC 3501
- */
-function hsys_getFolderInfo($folder) {
-    $result = array();
-
-    if(is_array($folder)) {
-	foreach($folder as $key=>$value) {
-	    $result[] = hsys_getFolderInfo($value);
-	}
-    }
-    else {
-	$arr = array();
-	if(preg_match('/\*\sLIST\s\((.*)\)\s\"(.*?)\"\s\"(.*?)\"/', $folder, $arr)) {
-	    $result	= array('attribute'	=> $arr[1],
-				'separator'	=> $arr[2],
-				'mailbox'	=> trim($arr[3]));
-	}
-    }
-
-    return $result;
-}
 /*
  * Returned array holds usernames as keys and their rights as value.
  * Better provide the folder's name again as it may contain whitespace and
@@ -287,7 +240,7 @@ function display_tree($tree) {
 	$has_subfolders	= !(isset($value['^']) && count($value) == 1);
 
 	// Does this folder contain subfolders?
-        if($has_subfolders) {
+	if($has_subfolders) {
 	    echo('<li class="container">');
 	}
 	else {
@@ -297,7 +250,7 @@ function display_tree($tree) {
 	// Is the node selectable
 	if(isset($value['^'])) {
 	    // Is this one new? Does it lead to the selected one?
-            if($this_new) {
+	    if($this_new) {
 		echo('<span class="new_mbox">');
 	    }
 	    else if($of_interest) {
@@ -320,7 +273,7 @@ function display_tree($tree) {
 	}
 
 	// If it contains subfolders, display them.
-        if($has_subfolders && count($value) > 0) {
+	if($has_subfolders && count($value) > 0) {
 	    display_tree($value);
 	}
 

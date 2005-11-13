@@ -3,8 +3,13 @@
  *   use in demo-accounts
  */
 
-class cyradm {
-    var $error_msg	= 'This is not an IMAP server - just a fake. Do not worry about any errors.';
+class imapd_adm {
+    var $error_msg	= '';
+    var $separator	= '.';
+
+    function imapd_adm($connection_data) {
+	;
+    }
 
     function imap_login() {
 	return true;
@@ -13,6 +18,10 @@ class cyradm {
     function imap_logout() {
 	return true;
     }
+
+	function gethierarchyseparator() {
+		return $this->separator;
+	}
 
     function command($line) {
 	global $cfg;
@@ -37,11 +46,6 @@ class cyradm {
 		}
 		return $ret;
 		break;
-	    case '. list "" ""':
-		return array(	'* LIST (\Noselect) "." ""',
-				'. OK Completed (0.000 secs 0 calls)'
-			    );
-		break;
 	    default:
 		trigger_error('Unknown command in fake-cyradm: "'.$line.'" - please report.');
 		return array();
@@ -63,7 +67,8 @@ class cyradm {
 		mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$newacl.'")');
 	    }
 	    else {
-		return array('* BAD');
+		$this->error_msg = 'You need "a"-rights on that mailbox.';
+		return false;
 	    }
 	}
 	else if(isset($_POST['mbox'])) {
@@ -73,10 +78,11 @@ class cyradm {
 	    mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$oma->current_user['mbox'].' lrswipcda")');
 	}
 	if(mysql_affected_rows() < 1) {
-	    return array(mysql_error());
+	    $this->error_msg	= mysql_error();
+	    return false;
 	}
 	else {
-	    return array();
+	    return true;
 	}
     }
 
@@ -84,11 +90,10 @@ class cyradm {
 	global $cfg;
 	mysql_query("DELETE FROM ".$cfg['tablenames']['imap_demo']." WHERE mailbox='$mb' OR mailbox LIKE '$mb.%'");
 	if(mysql_affected_rows() < 1) {
-	    return array(mysql_error());
+	    return false;
 	}
-	else {
-	    return array();
-	}
+
+	return true;
     }
 
     function renamemb($from_mb, $to_mb) {
@@ -98,32 +103,51 @@ class cyradm {
 				.'ACL=REPLACE(ACL, "'.str_replace('user.', '', $from_mb).'", "'.str_replace('user.', '', $to_mb).'")'
 			.' WHERE mailbox = "'.$from_mb.'" OR mailbox LIKE "'.$from_mb.'%"');
 	if(mysql_error() != '') {
-	    return array(mysql_error());
+	    return false;
 	}
-	else {
-	    return array();
-	}
+
+	return true;
     }
 
-    function setmbquota($mb, $many) {
+    function getmailboxes($ref = '', $pat = '*') {
+	$result = array();
+
+	foreach($this->command('. list "" *') as $folder) {
+		if(preg_match('/\*\sLIST\s\((.*)\)\s\"(.*?)\"\s\"(.*?)\"/', $folder, $arr)) {
+			$result[]
+			= array('attributes'	=> $arr[1],
+				'delimiter'	=> $arr[2],
+				'name'		=> trim($arr[3]));
+		}
+	}
+
+	return $result;
+    }
+
+    function setquota($mb, $many, $storage = '') {
 	global $cfg;
 	if(is_numeric($many))
-	    mysql_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax='.max(1, $many).', used=FLOOR(RAND()*'.max(1, $many).') WHERE mailbox=\''.$mb.'\' LIMIT 1');
-	else
+	    mysql_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax='.intval(max(1, $many)).', used=FLOOR(RAND()*'.intval(max(1, $many)).') WHERE mailbox=\''.$mb.'\' LIMIT 1');
+	else if(is_null($many))
 	    mysql_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax=0 WHERE mailbox=\''.$mb.'\' LIMIT 1');
-	if(mysql_affected_rows() < 1) {
-	    return array(mysql_error());
-	}
 	else {
-	    return array();
+	    $this->error_msg	= 'Quota has either to be numeric or null!';
+	    return false;
 	}
+	if(mysql_affected_rows() < 1) {
+	    $this->error_msg	= 'Given mailbox does not exist.';
+	    return false;
+	}
+
+	return true;
     }
 
     function getquota($mb) {
 	global $cfg;
 	$result = mysql_query("SELECT qmax,used FROM ".$cfg['tablenames']['imap_demo']." WHERE mailbox='$mb' LIMIT 1");
 	if(mysql_num_rows($result) < 1) {
-	    return array('No quota for this mailbox found!');
+	    $this->error_msg	= 'Given mailbox does not exist.';
+	    return array();
 	}
 	else {
 	    $row = mysql_fetch_assoc($result);
@@ -157,15 +181,22 @@ class cyradm {
 		    $facl[$user] = mysql_escape_string(trim($acl));	// we can be lax in th demo
 		}
 		// unify keys and values for storage
-                $store = '';
-                foreach($facl as $user=>$rgh) {
+		$store = '';
+		foreach($facl as $user=>$rgh) {
 		    $store .= $user.' '.$rgh.' ';
 		}
 
 		// write to MySQL
-                mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET ACL="'.trim($store).'" WHERE mailbox="'.mysql_escape_string($mb).'" LIMIT 1');
+		mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET ACL="'.trim($store).'" WHERE mailbox="'.mysql_escape_string($mb).'" LIMIT 1');
+
+		return true;
 	    }
 	}
+	else {
+	    $this->error_msg	= 'User does not exist.';
+	}
+
+	return false;
     }
 
     function getacl($mb) {
@@ -180,6 +211,10 @@ class cyradm {
 	    mysql_free_result($result);
 	    return hsys_getACLInfo(array('* ACL '.$mb.' '.$acl), $mb);
 	}
+    }
+
+    function deketeacl($mb, $user) {
+	return $this->setacl($mb, $user, 'none');
     }
 
     function getversion() {

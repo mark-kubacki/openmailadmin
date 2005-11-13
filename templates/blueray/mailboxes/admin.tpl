@@ -14,7 +14,7 @@
 	</dl>
 	<dl>
 	    <dt>
-		<?php if(doubleval($cyr->getversion()) >= 2.2) { ?>
+		<?php if(version_compare($imap->getversion(), '2.2.0') >= 0) { ?>
 		    <?= $input->checkbox('change[]', 'mbox') ?>
 		<?php } ?>
 		<?= txt('83') ?>

@@ -14,9 +14,7 @@ else if(isset($_POST['frm']) && $_POST['frm'] == 'login' && trim($_POST['mboxnam
     mysql_connect($cfg['Servers']['DB'][$_POST['server']]['HOST'], $cfg['Servers']['DB'][$_POST['server']]['USER'], $cfg['Servers']['DB'][$_POST['server']]['PASS']) or die('Cannot connect to MySQL Server.');
     mysql_select_db($cfg['Servers']['DB'][$_POST['server']]['DB']) or die('Cannot select Database');
     if(isset($cfg['Servers']['IMAP'][$_POST['server']]))
-	$CYRUS = $cfg['Servers']['IMAP'][$_POST['server']];		// $CYRUS is needed by our IMAP-library
-    else
-	$CYRUS = $cfg['Servers']['CYRUS'][$_POST['server']];
+	$IMAP = $cfg['Servers']['IMAP'][$_POST['server']];
 
     $result = mysql_query('SELECT * FROM '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user WHERE mbox="'.mysql_real_escape_string($_POST['mboxname']).'" AND active=1 LIMIT 1');
     if(mysql_num_rows($result) > 0) {
@@ -47,7 +45,7 @@ else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER[
     $authinfo	= $_SESSION;
     mysql_connect($cfg['Servers']['DB'][$_SESSION['server']]['HOST'], $cfg['Servers']['DB'][$_SESSION['server']]['USER'], $cfg['Servers']['DB'][$_SESSION['server']]['PASS']) or die('Cannot connect to MySQL Server.');
     mysql_select_db($cfg['Servers']['DB'][$_SESSION['server']]['DB']) or die('Cannot select Database');
-	$CYRUS = $cfg['Servers']['IMAP'][$_SESSION['server']];		// $CYRUS is needed by our IMAP-library
+	$IMAP = $cfg['Servers']['IMAP'][$_SESSION['server']];
 }
 
 if(!isset($authinfo)) {

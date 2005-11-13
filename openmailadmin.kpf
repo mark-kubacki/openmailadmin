@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Komodo Project File - DO NOT EDIT -->
-<project id="C1D5BB04-324E-4D66-8DAD-07515F34B90E" name="openmailadmin.kpf" kpf_version="2">
+<project id="C1D5BB04-324E-4D66-8DAD-07515F34B90E" name="openmailadmin" kpf_version="2">
 <preference-set id="">
   <string id="import_dirname">D:\xampp\htdocs\openmailadmin</string>
 </preference-set>
@@ -56,11 +56,11 @@
 <file url="inc/panel_filter.php" id="914C5C93-262E-4EB2-A86B-BFC17EDDDB6E" name="panel_filter.php">
 </file>
 <folder id="FA13EF8A-8D1F-413F-A74F-D69CC0FE4B98" name="lib">
-<file url="inc/lib/cyradm.php" id="BF02C4FC-A320-44C2-A80D-4AA26F9D526D" name="cyradm.php">
-</file>
 <file url="inc/lib/fake-cyradm.php" id="1E31943C-3998-469C-B69C-45112B421292" name="fake-cyradm.php">
 </file>
 <file url="inc/lib/openmailadmin.php" id="B89C866E-1408-44AE-9B4B-7D80C981AFBC" name="openmailadmin.php">
+</file>
+<file url="inc/lib/cyrus.php" id="1078973E1AEL52cf15470x24c3" name="cyrus.php">
 </file>
 </folder>
 </folder>

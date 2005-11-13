@@ -4,10 +4,9 @@ include('inc/_prepend.php');
 // ------------------------------ Folder & ACL ----------------------------------------------------
 if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
     // we shall log in as the current user
-    $CYRUS['ADMIN'] = $oma->authenticated_user['mbox'].$CYRUS['VDOM'];
-    $CYRUS['PASS'] = obfuscator_decrypt($oma->authenticated_user['pass_clear']);
-    $cyr = new cyradm;
-    $cyr->imap_login();
+    $IMAP['ADMIN']	= $oma->authenticated_user['mbox'].$IMAP['VDOM'];
+    $IMAP['PASS']	= obfuscator_decrypt($oma->authenticated_user['pass_clear']);
+    $imap	= new imapd_adm($IMAP);
 
     // ACTION
     if(isset($_POST['frm']) && $_POST['frm'] == 'ACL') {
@@ -21,9 +20,8 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 		    $_GET['folder']	= trim($_GET['folder']);
 		    $_POST['subname']	= trim($_POST['subname']);
 		    if(preg_match('/[\w\s\d\+\-\_\.\:\~\=]{'.strlen($_POST['subname']).'}/', $_POST['subname'])) {
-			hsys_imap_detect_HS();
-			$to_be_created = addslashes($_GET['folder'].$CYRUS['SEPA'].$_POST['subname']);
-			$cyr->createmb($to_be_created);
+			$to_be_created = addslashes($_GET['folder'].$imap->gethierarchyseparator().$_POST['subname']);
+			$imap->createmb($to_be_created);
 		    }
 		    else {
 			error(txt('109'));
@@ -32,7 +30,7 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 		break;
 	    case 'delete':
 		if(isset($_GET['folder'])) {
-		    $cyr->deletemb(addslashes(trim($_GET['folder'])));
+		    $imap->deletemb(addslashes(trim($_GET['folder'])));
 		    $_GET['folder'] = 'INBOX';
 		}
 		break;
@@ -43,10 +41,12 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 		else if(isset($_GET['folder'])) {
 		    if($_POST['modaclsel'] == 'above') {
 			if(isset($_POST['modacl']) && count($_POST['modacl']) > 0)
-			    $cyr->setacl(addslashes(trim($_GET['folder'])), $_POST['moduser'], implode('', $_POST['modacl']));
+			    $imap->setacl(addslashes(trim($_GET['folder'])), $_POST['moduser'], implode('', $_POST['modacl']));
+			if($imap->error_msg != '')
+			    error($imap->error_msg);
 		    }
 		    else {
-			$cyr->setacl(addslashes(trim($_GET['folder'])), $_POST['moduser'], addslashes($_POST['modaclsel']));
+			$imap->setacl(addslashes(trim($_GET['folder'])), $_POST['moduser'], addslashes($_POST['modaclsel']));
 		    }
 		}
 		break;
@@ -54,13 +54,13 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
     }
 
     // DATA
-    $raw_folder_list = hsys_getFolderInfo(hsys_imap_getfolders());
+    $raw_folder_list = $imap->getmailboxes();
 
     // merge all steps
     $mbox_arr = array();
     for($i = 0; $i < count($raw_folder_list); $i++) {
-	$mailbox_list[] = $raw_folder_list[$i]['mailbox'];
-	$mbox_arr = array_merge_recursive($mbox_arr, array_stepper($raw_folder_list[$i]['separator'], $raw_folder_list[$i]['mailbox']));
+	$mailbox_list[] = $raw_folder_list[$i]['name'];
+	$mbox_arr = array_merge_recursive($mbox_arr, array_stepper($raw_folder_list[$i]['delimiter'], $raw_folder_list[$i]['name']));
     }
 
     // DISPLAY
@@ -68,16 +68,16 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 
     // ADMIN PANEL (not hidden by default)
     if(isset($_GET['folder'])&& in_array($_GET['folder'], $mailbox_list)) {
-	$ACLs = $cyr->getacl($_GET['folder']);
+	$ACLs = $imap->getacl($_GET['folder']);
 	ksort($ACLs);
 	reset($ACLs);
-	$has_acl_a = isset($ACLs[$oma->authenticated_user['mbox'].$CYRUS['VDOM']]) && stristr($ACLs[$oma->authenticated_user['mbox'].$CYRUS['VDOM']], 'a')
+	$has_acl_a = isset($ACLs[$oma->authenticated_user['mbox'].$IMAP['VDOM']]) && stristr($ACLs[$oma->authenticated_user['mbox'].$IMAP['VDOM']], 'a')
 		    || isset($ACLs['anyone']) && stristr($ACLs['anyone'], 'a');
 
 	include('templates/'.$cfg['theme'].'/folders/admin.tpl');
     }
 
-    $cyr->imap_logout();
+    $imap->imap_logout();
 }
 else {
     error(txt('104'));

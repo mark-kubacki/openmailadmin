@@ -2,9 +2,7 @@
 include('inc/_prepend.php');
 include('inc/panel_filter.php');
 
-$cyr = new cyradm;
-$cyr->imap_login();
-hsys_imap_detect_HS();
+$imap = new imapd_adm($IMAP);
 
 // ------------------------------ Mailboxes -------------------------------------------------------
 // PERFORM ACTION
@@ -56,8 +54,6 @@ if($oma->authenticated_user['a_admin_user'] >= 1) {
 
     include('templates/'.$cfg['theme'].'/mailboxes/admin.tpl');
 }
-
-$cyr->imap_logout();
 
 include('inc/_append.php');
 ?>

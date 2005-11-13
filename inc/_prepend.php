@@ -1,5 +1,5 @@
 <?php
-$version = '2005-11-12';
+$version = '2005-11-13';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
@@ -42,7 +42,7 @@ if (!(isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])
 
 switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
     case 'fake-imap':		include('lib/fake-cyradm.php');	break;
-    default:			include('lib/cyradm.php');	break;
+    default:			include('lib/cyrus.php');	break;
 }
 
 // table names with prefixes
