@@ -3,7 +3,7 @@
 
  File: cyradm-php.lib
  Author: gernot
- Revision: 2.0.0
+ Revision: 2.0.1
  Date: 2000/08/11
 
  This is a completely new implementation of the IMAP Access for
@@ -16,10 +16,9 @@
  - Added renamemailbox command as available with cyrus IMAP 2.2.0-Alpha
  - Added getversion to find out what version of cyrus IMAP is running
 
- Last Change on $Date: 2003/05/04 14:22:10 $
-
- $Id: cyradm.php,v 1.3 2003/05/04 14:22:10 luc Exp $
-
+ Changes by W-Mark Kubacki <wmark@hurrikane.de>
+ - Removed specialized functions which formatted output.
+ - Fixed bugs regarding fetching of ACL.
 
  You should have received a copy of the GNU Public
  License along with this package; if not, write to the
@@ -131,17 +130,6 @@ class cyradm
 
 			if (( strstr($returntext,". NO Quota") )){
 				} else {
-				/*
-				print "<br><font color=red><hr><H1><center><blink>ERROR: </blink>UNEXPECTED IMAP-SERVER-ERROR</center></H1><hr><br>
-				<table color=red border=0 align=center cellpadding=5 callspacing=3>
-				<tr><td><font color=red>SENT COMMAND: </font></td><td><font color=red>$line</font></td></tr>
-				<tr><td><font color=red>SERVER RETURNED:</font></td><td></td></tr>
-				";
-				for ($i=0; $i < count($result); $i++) {
-				print "<tr><td></td><td><font color=red>$result[$i]</font></td></tr>";
-				}
-				print "</table><hr><br><br></font>";
-				*/
 				return false;
 			}
 		}
@@ -171,7 +159,6 @@ class cyradm
 		$pos=strpos($rtxt,"IMAP4 v");
 		$pos+=7;
 		$version=substr($rtxt,$pos,5);
-		// print "<p>Version: ".$version;
 		return $version;
 	}
 
@@ -267,11 +254,6 @@ class cyradm
 
 		return $result;
 	}
-
-	function debug($message) {
-		// echo "<hr>$message<br><hr>";
-	}
-
 
 } //KLASSEN ENDE
 
