@@ -31,7 +31,7 @@
 	    <li>
 		<dl>
 		    <dt><?= txt('9')?></dt>
-		    <dd><?php $oma->authenticated_user['user']['pate'] = &$oma->get_user_row($oma->authenticated_user['pate']); ?><?= $oma->authenticated_user['user']['pate']['person'] ?></dd>
+		    <dd><?php $oma->authenticated_user['user']['pate'] = $oma->get_user_row($oma->authenticated_user['pate']); ?><?= $oma->authenticated_user['user']['pate']['person'] ?></dd>
 		    <dd><a href="<?= mkSelfRef(array('cuser' => $oma->authenticated_user['pate'])) ?>" title="<?= txt('9')?>"><?= $oma->authenticated_user['pate'] ?></a></dd>
 		</dl>
 	    </li>
