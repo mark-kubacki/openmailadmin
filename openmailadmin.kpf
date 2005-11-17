@@ -67,8 +67,6 @@
 <folder url="samples" id="0A4E4102-48EC-4C5D-ACC1-B2211945407F" name="samples">
 <preference-set id="">
 </preference-set>
-<file url="samples/hsys_mail.daimon.php" id="F1FE42AD-EFF6-436E-ABFD-85462FBAC9E7" name="hsys_mail.daimon.php">
-</file>
 <folder id="D9491610-DFFB-45AF-AF21-8A21894CFF7A" name="pam">
 <file url="samples/pam/imap" id="09D25BFB-2E77-4FF2-9D86-A98A608D5276" name="imap">
 </file>
@@ -95,6 +93,10 @@
 <file url="samples/format_shadow_classes/index.php" id="FBCF7FF8-6BD1-4D45-AA1C-DB47E4CA5021" name="index.php">
 </file>
 </folder>
+<file url="samples/oma_mail.daimon.php" id="10795720D36L120ba3ad0x2627" name="oma_mail.daimon.php">
+</file>
+<file url="samples/oma_mail.daimon.pl" id="10795720D98L64cc89790x2627" name="oma_mail.daimon.pl">
+</file>
 </folder>
 <file url="regexp.php" id="A7CCD584-4B5F-4B6C-A85D-C6B5CDDFFCD5" name="regexp.php">
 </file>
