@@ -25,7 +25,7 @@
 	<dl>
 	    <dt><?= txt('108') ?></dt>
 	    <dd>
-		<?= hsys_ACL_matrix($ACLs, true) ?>
+		<?php hsys_ACL_matrix($ACLs, true) ?>
 	    </dd>
 	</dl>
     <?= $input->hidden('frm', 'ACL') ?>
@@ -39,7 +39,7 @@
 	<dl>
 	    <dt><?= txt('108') ?></dt>
 	    <dd>
-		<?= hsys_ACL_matrix($ACLs) ?>
+		<?php hsys_ACL_matrix($ACLs) ?>
 	    </dd>
 	</dl>
 <?php } ?>

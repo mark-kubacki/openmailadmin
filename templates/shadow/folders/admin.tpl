@@ -25,7 +25,7 @@
 	<tr>
 	    <td class="ed"><b><?= txt('108') ?></b></td>
 	    <td class="ed">
-		<?= hsys_ACL_matrix($ACLs, true) ?>
+		<?php hsys_ACL_matrix($ACLs, true) ?>
 	    </td>
 	</tr>
 	<tr>
@@ -42,7 +42,7 @@
 	<tr>
 	    <td class="ed"><b><?= txt('108') ?></b></td>
 	    <td class="ed">
-		<?= hsys_ACL_matrix($ACLs) ?>
+		<?php hsys_ACL_matrix($ACLs) ?>
 	    </td>
 	</tr>
     </table>

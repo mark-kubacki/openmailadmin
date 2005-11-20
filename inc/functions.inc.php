@@ -287,7 +287,9 @@ function display_tree($tree) {
  * Responsible for the nice ACL-rights matrix.
  */
 function hsys_ACL_matrix($ACL, $editable = false, $rights = array('l', 'r', 's', 'w', 'i', 'p', 'c', 'd', 'a')) {
-    global $cfg; global $input;
+    global $cfg;
+    global $input;
+
     $presets = array(	'above'		=> txt('110'),
 			'lrs'		=> txt('114').' (lrs)',
 			'lrsp'		=> txt('115').' (lrsp)',
@@ -296,39 +298,10 @@ function hsys_ACL_matrix($ACL, $editable = false, $rights = array('l', 'r', 's',
 			'lrswipd'	=> txt('118').' (lrswipd)',
 			'lrswipcda'	=> txt('119').' (lrswipcda)',
 			'none'		=> txt('120'));
-    $ret = '';
 
-    $ret .= '<table class="acl_matrix">';
-    $ret .= '<tr><th>'.txt('6').'</th>';
-    $ret .= '<th>'.implode('</th><th>', $rights).'</th>';
-    $ret .= '</tr>';
-    foreach($ACL as $ACL_user => $ACL_given) {
-	$ret .= '<tr>';
-	$ret .= '<td>'.$ACL_user.'</td>';
-	foreach($rights as $key=>$right) {
-	    $ret .= '<td>';
-	    if(stristr($ACL_given, $right)) {
-		$ret .= '<img border="0" src="'.$cfg['images_dir'].'/acl/yes.png" alt="yes" />';
-	    }
-	    else {
-		$ret .= '<img border="0" src="'.$cfg['images_dir'].'/acl/not.png" alt="no" />';
-	    }
-	    $ret .= '</td>';
-	}
-	$ret .= '</tr>';
-    }
-    if($editable) {
-	$ret .= '<tr><td rowspan="2">'.$input->_generate('text', 'moduser', null, array('class' => 'textwhite', 'style' => 'width: 120px', 'maxlength' => '64')).'</td>';
-	foreach($rights as $key=>$right) {
-	    $ret .= '<td>'.$input->checkbox('modacl[]', $right).'</td>';
-	}
-	$ret .= '</tr>';
+    include('./templates/'.$cfg['theme'].'/folders/acl_matrix.tpl');
 
-	$ret .= '<tr><td colspan="'.count($rights).'">'.$input->select('modaclsel', array_values($presets), array_keys($presets)).'</td></tr>';
-    }
-    $ret .= '</table>';
-
-    return $ret;
+    return true;
 }
 
 /*
