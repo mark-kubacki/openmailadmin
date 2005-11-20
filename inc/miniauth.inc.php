@@ -50,13 +50,13 @@ else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER[
 
 if(!isset($authinfo)) {
     // form
-    include('templates/'.$cfg['theme'].'/login.tpl');
+    include('./templates/'.$cfg['theme'].'/login.tpl');
 
     if(@is_readable($cfg['motd'])) {
-	include('templates/'.$cfg['theme'].'/motd.tpl');
+	include('./templates/'.$cfg['theme'].'/motd.tpl');
     }
 
-    include('templates/'.$cfg['theme'].'/common-footer_nv.tpl');
+    include('./templates/'.$cfg['theme'].'/common-footer_nv.tpl');
     session_regenerate_id();
     hsys_ob_end();
     exit();

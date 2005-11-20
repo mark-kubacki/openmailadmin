@@ -1,6 +1,6 @@
 <?php
-include('inc/_prepend.php');
-include('inc/panel_filter.php');
+include('./inc/_prepend.php');
+include('./inc/panel_filter.php');
 
 // ------------------------------ Domains ---------------------------------------------------------
 if($oma->authenticated_user['a_admin_domains'] > 0) {
@@ -41,12 +41,12 @@ if($oma->authenticated_user['a_admin_domains'] > 0) {
 $domains = $oma->get_domains();
 
 // DISPLAY
-include('templates/'.$cfg['theme'].'/domains/list.tpl');
+include('./templates/'.$cfg['theme'].'/domains/list.tpl');
 
 if($oma->authenticated_user['a_admin_domains'] > 0) {
     // ADMIN PANEL
-    include('templates/'.$cfg['theme'].'/domains/admin.tpl');
+    include('./templates/'.$cfg['theme'].'/domains/admin.tpl');
 }
 
-include('inc/_append.php');
+include('./inc/_append.php');
 ?>

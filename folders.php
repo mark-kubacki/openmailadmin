@@ -1,5 +1,5 @@
 <?php
-include('inc/_prepend.php');
+include('./inc/_prepend.php');
 
 // ------------------------------ Folder & ACL ----------------------------------------------------
 if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
@@ -64,7 +64,7 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
     }
 
     // DISPLAY
-    include('templates/'.$cfg['theme'].'/folders/list.tpl');
+    include('./templates/'.$cfg['theme'].'/folders/list.tpl');
 
     // ADMIN PANEL (not hidden by default)
     if(isset($_GET['folder'])&& in_array($_GET['folder'], $mailbox_list)) {
@@ -74,7 +74,7 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 	$has_acl_a = isset($ACLs[$oma->authenticated_user['mbox'].$IMAP['VDOM']]) && stristr($ACLs[$oma->authenticated_user['mbox'].$IMAP['VDOM']], 'a')
 		    || isset($ACLs['anyone']) && stristr($ACLs['anyone'], 'a');
 
-	include('templates/'.$cfg['theme'].'/folders/admin.tpl');
+	include('./templates/'.$cfg['theme'].'/folders/admin.tpl');
     }
 
     $imap->imap_logout();
@@ -83,5 +83,5 @@ else {
     error(txt('104'));
 }
 
-include('inc/_append.php');
+include('./inc/_append.php');
 ?>

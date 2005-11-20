@@ -1,7 +1,7 @@
 <?php
 ob_start('ob_gzhandler');
-include('openmailadmin/inc/config.inc.php');
-include('openmailadmin/inc/format_shadow_classes.inc.php');
+include('./openmailadmin/inc/config.inc.php');
+include('./openmailadmin/inc/format_shadow_classes.inc.php');
 
 echo('<html>');
 echo('<head><title>Mailsystem Administration</title>');

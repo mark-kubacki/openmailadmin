@@ -2,7 +2,7 @@
     <tr>
 	<?php foreach($arr_navmenu as $entry) { ?>
 	<td>
-	    <?php include('templates/shadow/navigation/entry.tpl'); ?>
+	    <?php include('./templates/shadow/navigation/entry.tpl'); ?>
 	</td>
 	<?php } ?>
     </tr>

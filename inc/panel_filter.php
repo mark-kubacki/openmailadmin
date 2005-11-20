@@ -97,6 +97,6 @@ if(!isset($_SESSION['filter'])) {
     $_SESSION['filter']['str'] = array('address' => '', 'regexp' => '', 'domain' => '', 'mbox' => '');
 }
 // DISPLAY
-include('templates/'.$cfg['theme'].'/filter_panel.tpl');
+include('./templates/'.$cfg['theme'].'/filter_panel.tpl');
 
 ?>

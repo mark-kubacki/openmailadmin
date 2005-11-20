@@ -1,5 +1,5 @@
 <?php
-include('templates/'.$cfg['theme'].'/common-footer.tpl');
+include('./templates/'.$cfg['theme'].'/common-footer.tpl');
 
 mysql_close();
 

@@ -1,6 +1,6 @@
 <?php
-include('inc/_prepend.php');
-include('inc/panel_filter.php');
+include('./inc/_prepend.php');
+include('./inc/panel_filter.php');
 
 $imap = new imapd_adm($IMAP);
 
@@ -45,15 +45,15 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $oma->authenticated_user['
 $mailboxes = $oma->get_mailboxes();
 
 // DISPLAY
-include('templates/'.$cfg['theme'].'/mailboxes/list.tpl');
+include('./templates/'.$cfg['theme'].'/mailboxes/list.tpl');
 
 // ADMIN PANEL
 if($oma->authenticated_user['a_admin_user'] >= 1) {
     // What paten may he select?
     $selectable_paten = $oma->get_selectable_paten($oma->current_user['mbox']);
 
-    include('templates/'.$cfg['theme'].'/mailboxes/admin.tpl');
+    include('./templates/'.$cfg['theme'].'/mailboxes/admin.tpl');
 }
 
-include('inc/_append.php');
+include('./inc/_append.php');
 ?>

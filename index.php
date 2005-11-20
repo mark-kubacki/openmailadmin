@@ -1,5 +1,5 @@
 <?php
-include('inc/_prepend.php');
+include('./inc/_prepend.php');
 
 $imap = new imapd_adm($IMAP);
 
@@ -26,7 +26,7 @@ $information[]	= array(txt('8'),	hsys_getMaxQuota($oma->current_user['mbox']) ==
 						hsys_getMaxQuota($oma->current_user['mbox']).' [kiB]');
 $information[]	= array(txt('77'),	$rightstring);
 unset($rightstring);
-include('templates/'.$cfg['theme'].'/information.tpl');
+include('./templates/'.$cfg['theme'].'/information.tpl');
 
 // ------------------------------ Password --------------------------------------------------------
 if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'change') {
@@ -50,7 +50,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'chang
     }
 }
 
-include('templates/'.$cfg['theme'].'/password.tpl');
+include('./templates/'.$cfg['theme'].'/password.tpl');
 
-include('inc/_append.php');
+include('./inc/_append.php');
 ?>

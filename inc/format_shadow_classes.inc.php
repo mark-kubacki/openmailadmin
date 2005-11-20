@@ -233,21 +233,21 @@ function addProp($element, $prop = array()) {
  */
 function error($text, $width=580) {
     global $cfg;
-    include('templates/'.$cfg['theme'].'/error_box.tpl');
+    include('./templates/'.$cfg['theme'].'/error_box.tpl');
 }
 /*
  * displays a nice info-box
  */
 function info($text, $width=580) {
     global $cfg;
-    include('templates/'.$cfg['theme'].'/info_box.tpl');
+    include('./templates/'.$cfg['theme'].'/info_box.tpl');
 }
 /*
  * displays a nice caption
  */
 function caption($text, $right=null, $width=null) {
     global $cfg;
-    include('templates/'.$cfg['theme'].'/caption.tpl');
+    include('./templates/'.$cfg['theme'].'/caption.tpl');
 }
 
 /*

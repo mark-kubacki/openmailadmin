@@ -1,5 +1,5 @@
 <?php
-$version = '2005-11-13';
+$version = '2005-11-20';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
@@ -7,13 +7,13 @@ ini_set('display_errors', '0');
 // error_reporting(E_ALL ^ E_NOTICE);
 error_reporting(E_ALL);
 
-include('config.inc.php');
-@(include('config.local.inc.php'))
-    or @(include('config.local.inc.php4'))
+include('./inc/config.inc.php');
+@(include('./inc/config.local.inc.php'))
+    or @(include('./inc/config.local.inc.php4'))
     or die('You have to create an configuration file, first.');
-include('translation.inc.php');
-include('format_shadow_classes.inc.php');
-include('functions.inc.php');
+include('./inc/translation.inc.php');
+include('./inc/format_shadow_classes.inc.php');
+include('./inc/functions.inc.php');
 
 // Initialisation
 	$table	= new _table_shadow();
@@ -30,10 +30,10 @@ include('functions.inc.php');
 
 // MAIN
 header('Content-type: text/html; charset='.$encoding);
-include('templates/'.$cfg['theme'].'/common-header.tpl');
+include('./templates/'.$cfg['theme'].'/common-header.tpl');
 
 // Authentification
-include('miniauth.inc.php');
+include('./inc/miniauth.inc.php');
 
 if (!(isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])
 	&& isset($cfg['Servers']['DB'][$_SESSION['server']]['TYPE']))) {
@@ -41,8 +41,8 @@ if (!(isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])
 }
 
 switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
-    case 'fake-imap':		include('lib/fake-cyradm.php');	break;
-    default:			include('lib/cyrus.php');	break;
+    case 'fake-imap':		include('./inc/lib/fake-cyradm.php');	break;
+    default:			include('./inc/lib/cyrus.php');		break;
 }
 
 // table names with prefixes
@@ -56,7 +56,7 @@ $cfg['tablenames']
 $now_on = isset($_GET['cuser']) ? mysql_escape_string($_GET['cuser']) : $authinfo['mbox'];
 
 // include the backend
-include('lib/openmailadmin.php');
+include('./inc/lib/openmailadmin.php');
 $oma 	= new openmailadmin();
 $oma->authenticated_user	= &$authinfo;
 $oma->current_user		= &$cuser;
@@ -74,7 +74,7 @@ if(mysql_num_rows($result) > 0) {
 	|| $oma->current_user['pate'] == $oma->authenticated_user['mbox']
 	|| $oma->user_is_descendant($oma->current_user['mbox'], $oma->authenticated_user['mbox']))) {
 	error(txt('2'));
-	include('templates/'.$cfg['theme'].'/common-footer_nv.tpl');
+	include('./templates/'.$cfg['theme'].'/common-footer_nv.tpl');
 	exit();
     }
 }
@@ -128,6 +128,6 @@ if($oma->authenticated_user['a_admin_user'] >= 1 || $oma->user_get_number_mailbo
 				'caption'	=> txt('79'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php'));
 }
-include('templates/'.$cfg['theme'].'/navigation/navigation.tpl');
+include('./templates/'.$cfg['theme'].'/navigation/navigation.tpl');
 
 ?>
