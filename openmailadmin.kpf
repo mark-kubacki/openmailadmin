@@ -155,6 +155,8 @@
 </file>
 <file url="templates/shadow/folders/list.tpl" id="34A98EB5-CEE6-42A9-8191-058C2A3F7698" name="list.tpl">
 </file>
+<file url="templates/shadow/folders/acl_matrix.tpl" id="107AE5ACF96L5dd23c340x275d" name="acl_matrix.tpl">
+</file>
 </folder>
 <folder url="templates/shadow/mailboxes" id="4C713D99-26C6-48D5-A81C-F1B76C8E28EB" name="mailboxes">
 <file url="templates/shadow/mailboxes/admin.tpl" id="3D80C1B9-3B0A-4803-8C0C-BAD49901F4E1" name="admin.tpl">
@@ -215,6 +217,8 @@
 <file url="templates/blueray/folders/admin.tpl" id="7754164C-BCFA-47EE-8201-FED725E6F905" name="admin.tpl">
 </file>
 <file url="templates/blueray/folders/list.tpl" id="FE25B52B-A8D2-4EDA-AECB-83F405963FF4" name="list.tpl">
+</file>
+<file url="templates/blueray/folders/acl_matrix.tpl" id="107AE5AA40FL19d499e00x275d" name="acl_matrix.tpl">
 </file>
 </folder>
 <folder url="templates/blueray/mailboxes" id="9F5CBE6A-1487-4788-BFD0-2C1E4282EEB9" name="mailboxes">
