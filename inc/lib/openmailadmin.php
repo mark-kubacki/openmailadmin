@@ -14,7 +14,7 @@ class openmailadmin {
     var $error;			// This will store any errors. (Array)
     var $info;			// Array for informations.
 
-    var $regex_valid_email	= '[a-z0-9][a-z0-9\.\-\_\+]{1,}@[a-z0-9\.\-\_]{2,}\.[a-z]{2,}';
+    var $regex_valid_email	= '[a-z0-9]{1,}[a-z0-9\.\-\_\+]*@[a-z0-9\.\-\_]{2,}\.[a-z]{2,}';
     var $regex_valid_domain	= '[a-z0-9\-\_\.]{2,}\.[a-z]{2,}';
 
     function openmailadmin() {
