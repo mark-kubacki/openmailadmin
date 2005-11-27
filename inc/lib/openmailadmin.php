@@ -906,7 +906,7 @@ class openmailadmin {
 	else {
 	    $where_clause = ' WHERE pate="'.$this->current_user['mbox'].'"';
 	}
-	$result = mysql_query('SELECT mbox, person, canonical, pate, max_alias, max_regexp, active, date(last_login) AS lastlogin, a_super, a_admin_domains, a_admin_user, '
+	$result = mysql_query('SELECT mbox, person, canonical, pate, max_alias, max_regexp, active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
 					.'(SELECT count(*) FROM '.$cfg['tablenames']['virtual']
 					.' WHERE '.$cfg['tablenames']['virtual'].'.owner=mbox) AS num_alias, '
 					.'(SELECT count(*) FROM '.$cfg['tablenames']['virtual_regexp']
@@ -1036,7 +1036,7 @@ class openmailadmin {
 
 	// on success write the new user to database
 	mysql_query('INSERT INTO '.$cfg['tablenames']['user'].' (mbox, person, pate, canonical, reg_exp, domains, max_alias, max_regexp, created, a_admin_domains, a_admin_user, a_super)'
-		    .' VALUES ("'.$props['mbox'].'","'.$props['person'].'","'.$props['pate'].'","'.$props['canonical'].'","'.$props['reg_exp'].'","'.$props['domains'].'",'.$props['max_alias'].','.$props['max_regexp'].', now(), '.$props['a_admin_domains'].', '.$props['a_admin_user'].', '.$props['a_super'].')');
+		    .' VALUES ("'.$props['mbox'].'","'.$props['person'].'","'.$props['pate'].'","'.$props['canonical'].'","'.$props['reg_exp'].'","'.$props['domains'].'",'.$props['max_alias'].','.$props['max_regexp'].', '.time().', '.$props['a_admin_domains'].', '.$props['a_admin_user'].', '.$props['a_super'].')');
 	if(mysql_affected_rows() < 1) {
 	    $this->error[]	= mysql_error();
 	    // Rollback

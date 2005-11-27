@@ -24,7 +24,7 @@ else if(isset($_POST['frm']) && $_POST['frm'] == 'login' && trim($_POST['mboxnam
 		|| passwd_check($_POST['password'], $authinfo['pass_md5'])) {
 	    $authinfo['pass_clear'] = obfuscator_encrypt($_POST['password']);
 	    unset($_POST['password']);
-	    mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login=FROM_UNIXTIME('.time().') WHERE mbox="'.$authinfo['mbox'].'" LIMIT 1');
+	    mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login='.time().' WHERE mbox="'.$authinfo['mbox'].'" LIMIT 1');
 	    session_regenerate_id();
 	    $_SESSION			= $authinfo;
 	    $_SESSION['server']		= $_POST['server'];

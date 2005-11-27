@@ -144,6 +144,7 @@ $res['de']	= array(
 '129'	=>	'Diese Felder müssen mit gültigen Werten versehen werden: %s.',
 '130'	=>	'Diese Felder enthalten ungültige Werte: %s.',
 '131'	=>	'Diese Accounts halten mehr als %d %s: %s.',
+'132'	=>	'nie',
 );
 
 ?>

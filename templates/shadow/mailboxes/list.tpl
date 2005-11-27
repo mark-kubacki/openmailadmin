@@ -16,6 +16,7 @@
 					.(($mailboxes[$i]['num_regexp'] + $mailboxes[$i]['max_regexp'] == 0)
 					    ? ''
 					    : ', '.$mailboxes[$i]['num_regexp'].'/'.$mailboxes[$i]['max_regexp']);
+	$mailboxes[$i]['lastlogin']	= date($cfg['date_format'], $mailboxes[$i]['lastlogin']);
     }
     $mailboxes = array_densify($mailboxes, array('pate'));
 ?>

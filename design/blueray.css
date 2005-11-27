@@ -386,3 +386,7 @@
 		border-top: 1px solid;
 		border-bottom: 1px solid;
 	}
+
+	TR.recent_login TD + TD + TD + TD + TD {
+		font-weight: bold;
+	}

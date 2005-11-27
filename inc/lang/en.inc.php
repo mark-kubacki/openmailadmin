@@ -144,6 +144,7 @@ $res['en']	= array(
 '129'	=>	'Please fill out these form fields: %s.',
 '130'	=>	'These form fields contain invalid values: %s.',
 '131'	=>	'These accounts use more than %d %s: %s.',
+'132'	=>	'never',
 );
 
 ?>

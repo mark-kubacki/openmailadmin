@@ -143,6 +143,7 @@ $res['pl']	= array(
 '129'	=>	'Te pola musz&#261; zawiera&#263; prawid&#322;owych warto&#347;ci: %s.',
 '130'	=>	'Te pola nie zawieraj&#261; prawid&#322;owych warto&#347;ci: %s.',
 '131'	=>	'Te konta posiadaj&#261; wi&#281;cej ni&#380; %d %s: %s.',
+'132'	=>	'nigdy',
 );
 
 ?>

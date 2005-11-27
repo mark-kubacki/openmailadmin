@@ -17,6 +17,8 @@ $cfg['design_dir']	= 'design';	// CSS
 $cfg['max_elements_per_page']	= 25;
 // set this to true and in mailbox-view the owner's name is shown and not the mailbox name.
 $cfg['mboxview_pers']		= false;
+// Preferred date and time format for displaying.
+$cfg['date_format']		= 'Y-m-d';
 
 // Allow creation of catchalls? (i.e.: @example.com)
 $cfg['address']['allow_catchall']	= true;
@@ -52,6 +54,9 @@ $cfg['user_ignore']		= array('cyrus');
 // Default dimensions for mailbox names.
 $cfg['mbox']['min_length']	= 4;
 $cfg['mbox']['max_length']	= 16;
+// If a user logged in since this amount of seconds his entry will be highlighted.
+// Set to 0 to deactivate.
+$cfg['mboxview_sec']		= 5*86400;
 
 // Default settings for passwords.
 $cfg['passwd']['min_length']	= 8;

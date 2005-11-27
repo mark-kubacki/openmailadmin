@@ -21,7 +21,11 @@
 	<th><?= txt('82') ?></th>
     </tr>
     <?php foreach($mailboxes as $mailbox) { ?>
+	<?php if(time() - $mailbox['lastlogin'] < $cfg['mboxview_sec']) { ?>
+	<tr class="recent_login">
+	<?php } else { ?>
 	<tr>
+	<?php } ?>
 	    <td>
 		<?php if($mailbox['mbox'] == $oma->authenticated_user['mbox'] || $mailbox['mbox'] == $oma->current_user['mbox']) { ?>
 		    &nbsp;-&nbsp;
@@ -56,7 +60,13 @@
 		    | <span title="<?= txt('33') ?>"><?= $mailbox['num_regexp'] ?>/<?= $mailbox['max_regexp'] ?></span>
 		<?php } ?>
 	    </td>
-	    <td><?= $mailbox['lastlogin'] ?></td>
+	    <td>
+		<?php if($mailbox['lastlogin'] < 3000) { ?>
+			<?= txt('132') ?>
+		<?php } else { ?>
+			<?= date($cfg['date_format'], $mailbox['lastlogin']) ?>
+		<?php } ?>
+	    </td>
 	</tr>
     <?php } ?>
 </table>
