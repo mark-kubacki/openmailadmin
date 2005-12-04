@@ -36,7 +36,7 @@ CREATE TABLE `user` (
  *       ##CyrusSecret## has to be the same as in your config.local.inc.php
  *       You will never log in as 'cyrus' - 'admin' is the user for that.
  */
-INSERT INTO `user` VALUES ('admin', 'Admin Istrator', 'admin', 'me@example.com', ENCRYPT('admin'), MD5('admin'), '', 'all', 1, 1, NOW(), NOW(), 10000, 100, 2, 2, 2);
+INSERT INTO `user` VALUES ('admin', 'Admin John Doe', 'admin', 'me@example.com', ENCRYPT('admin'), MD5('admin'), '', 'all', 1, 1, NOW(), NOW(), 10000, 100, 2, 2, 2);
 INSERT INTO `user` VALUES ('cyrus', 'CYRUS', 'CYRUS', '--@example.com', ENCRYPT('##CyrusSecret##'), MD5('##CyrusSecret##'), '', 'none', 1, 1, NOW(), NOW(), 0, 0, 0, 0, 1);
 
 CREATE TABLE `virtual` (
