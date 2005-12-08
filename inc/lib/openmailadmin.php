@@ -165,13 +165,8 @@ class openmailadmin {
 		mysql_free_result($result);
 	    }
 
-	    if($cache) {
 		$_SESSION['cache']['getDomainSet'][$user][$categories] = $dom;
 		return $_SESSION['cache']['getDomainSet'][$user][$categories];
-	    }
-	    else {
-		return $dom;
-	    }
 	}
     }
 
@@ -283,6 +278,14 @@ class openmailadmin {
 	}
 
 	return $_SESSION['cache']['n_Domains'][$username]['domains'];
+    }
+    /*
+     * In case you have changed something about domains...
+     */
+    function user_invalidate_domain_sets() {
+	if(isset($_SESSION['cache']['getDomainSet'])) {
+	    unset($_SESSION['cache']['getDomainSet']);
+	}
     }
 
 /* ******************************* addresses ******************************** */
@@ -541,6 +544,7 @@ class openmailadmin {
 	    $this->error[]	= mysql_error();
 	}
 	else {
+	    $this->user_invalidate_domain_sets();
 	    return true;
 	}
 
@@ -582,6 +586,7 @@ class openmailadmin {
 		    // We better deactivate all aliases containing that domain, so users can see the domain was deleted.
 		    mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual'].' SET active = 0, neu = 1 WHERE FIND_IN_SET(SUBSTRING(address, LOCATE(\'@\', address)+1), \''.implode(',', $del_nm).'\')');
 		    // We can't do such on REGEXP addresses: They may catch more than the given domains.
+		    $this->user_invalidate_domain_sets();
 		    return true;
 		}
 	    }
@@ -637,6 +642,7 @@ class openmailadmin {
 			.' WHERE owner="'.$this->authenticated_user['mbox'].'" AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
 			.' LIMIT '.count($domains));
 	}
+	$this->user_invalidate_domain_sets();
 	// No domain be renamed?
 	if(! in_array('domain', $change)) {
 	    return true;
