@@ -1446,7 +1446,7 @@ class openmailadmin {
 	$validate['person']	= array(array(	'val'	=> 'strlen(~) <= 100 && strlen(~) >= 4 && preg_match(\'/^[\w\s0-9-_\.\(\)]*$/\', ~)',
 						),
 					);
-	$validate['domains']	= array(array(	'val'	=> '~ = trim(~) && preg_match(\'/^((?:[\w]+|[\w]+\.[\w]+),\s*)*([\w]+|[\w]+\.[\w]+)$/i\', ~)',
+	$validate['domains']	= array(array(	'val'	=> '(~ = trim(~)) && preg_match(\'/^((?:[\w]+|[\w]+\.[\w]+),\s*)*([\w]+|[\w]+\.[\w]+)$/i\', ~)',
 						),
 					array(	'val'	=> '$this->domain_check($this->current_user, $this->current_user[\'mbox\'], ~)',
 						'error'	=> txt('81')),
