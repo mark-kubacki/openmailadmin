@@ -10,14 +10,13 @@ $oma->current_user['used_regexp'] = $oma->user_get_used_regexp($oma->current_use
 if(isset($_POST['frm']) && $_POST['frm'] == 'virtual_regexp') {
 	if(!isset($_POST['action'])) {
 		error(txt('112'));
-	}
-	else {
+	} else {
 		if($oma->current_user['max_regexp'] != 0 && $oma->authenticated_user['max_regexp'] != 0) {
 			if($_POST['action'] == 'new' || $_POST['action'] == 'dest') {
 				// Set at least one valid destination.
-				if(isset($_POST['dest_is_mbox']) && $_POST['dest_is_mbox'] == '1')
+				if(isset($_POST['dest_is_mbox']) && $_POST['dest_is_mbox'] == '1') {
 					$destination = array($oma->current_user['mbox']);
-				else {
+				} else {
 					$destination = $oma->get_valid_destinations($_POST['dest']);
 					if(count($destination) < 1) {
 						$destination = array($oma->current_user['mbox']);
@@ -30,8 +29,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual_regexp') {
 			if($_POST['action'] != 'new' && $_POST['action'] != 'probe'
 			   && !(isset($_POST['expr']) && is_array($_POST['expr']))) {
 				error(txt('11'));
-			}
-			else {
+			} else {
 				switch($_POST['action']) {
 					case 'new':
 						$oma->regexp_create(trim($_POST['reg_exp']), $destination);
@@ -55,8 +53,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual_regexp') {
 				}
 			}
 			if(isset($destination)) unset($destination);
-		}
-		else {
+		} else {
 			error(txt('16'));
 		}
 	}
@@ -67,8 +64,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual_regexp') {
 if(isset($_POST['frm']) && isset($_POST['action'])
    && $_POST['frm'] == 'virtual_regexp' && $_POST['action'] == 'probe') {
 	$regexp = $oma->get_regexp($_POST['probe']);
-}
-else {
+} else {
 	$regexp = $oma->get_regexp();
 }
 

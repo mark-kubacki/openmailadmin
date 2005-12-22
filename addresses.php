@@ -10,14 +10,12 @@ $oma->current_user['used_alias'] = $oma->user_get_used_alias($oma->current_user[
 if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 	if(!isset($_POST['action'])) {
 		error(txt('112'));
-	}
-	else
-	{
+	} else {
 		if($_POST['action'] == 'new' || $_POST['action'] == 'dest') {
 			// Set at least one valid destination.
-			if(isset($_POST['dest_is_mbox']) && $_POST['dest_is_mbox'] == '1')
-			    $destination = array($oma->current_user['mbox']);
-			else {
+			if(isset($_POST['dest_is_mbox']) && $_POST['dest_is_mbox'] == '1') {
+				$destination = array($oma->current_user['mbox']);
+			} else {
 				$destination = $oma->get_valid_destinations($_POST['dest']);
 				if(count($destination) < 1) {
 					$destination = array($oma->current_user['mbox']);
@@ -28,8 +26,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 		// We need addresses as parameters for every action except the creation of new addresses.
 		if($_POST['action'] != 'new' && (!isset($_POST['address']) || !is_array($_POST['address']))) {
 			error(txt('11'));
-		}
-		else {
+		} else {
 			$oma->status_reset();
 			switch($_POST['action']) {
 				case 'new':

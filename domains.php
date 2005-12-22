@@ -7,13 +7,10 @@ if($oma->authenticated_user['a_admin_domains'] > 0) {
 	if(isset($_POST['frm']) && $_POST['frm'] == 'domains') {
 		if(!isset($_POST['action'])) {
 			error(txt('112'));
-		}
-		else
-		if($_POST['action'] != 'new'
-			&& !(isset($_POST['dom']) && count($_POST['dom']) > 0) ) {
+		} else if($_POST['action'] != 'new'
+			   && !(isset($_POST['dom']) && count($_POST['dom']) > 0) ) {
 			error(txt('11'));
-		}
-		else {
+		} else {
 			$oma->status_reset();
 			switch($_POST['action']) {
 				case 'new':

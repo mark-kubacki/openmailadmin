@@ -60,7 +60,6 @@ class imapd_adm {
 			$this->command('. logout');
 			fclose($this->sp);
 		}
-
 		return true;
 	}
 
@@ -68,7 +67,6 @@ class imapd_adm {
 		if(!$this->sp) {
 			$this->imap_login();
 		}
-
 		return $this->version;
 	}
 
@@ -100,8 +98,7 @@ class imapd_adm {
 
 		if(count($out) > 1) {
 			return $out;
-		}
-		else {
+		} else {
 			if($row{2} != 'O') {
 				$this->error_msg	= substr($row, 6);
 			}
@@ -130,8 +127,7 @@ class imapd_adm {
 
 		if(isset($oldacl[$this->connection_data['ADMIN']])) {
 			$this->setacl($newname, $this->connection_data['ADMIN'], $oldacl[$this->connection_data['ADMIN']]);
-		}
-		else {
+		} else {
 			$this->deleteacl($newname, $this->connection_data['ADMIN']);
 		}
 
@@ -144,7 +140,6 @@ class imapd_adm {
 	*/
 	function getmailboxes($ref = '', $pat = '*') {
 		$result = array();
-
 		foreach($this->command('. list "'.$ref.'" '.$pat) as $folder) {
 			if(preg_match('/\*\sLIST\s\((.*)\)\s\"(.*?)\"\s\"(.*?)\"/', $folder, $arr)) {
 				$result[]
@@ -153,7 +148,6 @@ class imapd_adm {
 					'name'		=> trim($arr[3]));
 			}
 		}
-
 		return $result;
 	}
 
@@ -170,9 +164,8 @@ class imapd_adm {
 		if($out == false) {
 			// quota not set, thus unlimited
 			$ret = array('used' => 'NOT-SET', 'qmax' => 'NOT-SET');
-		}
-		else if(is_array($out)
-			&& preg_match('/\*\sQUOTA.*\(\w*\s(\d+)\s(\d+)\)/i', $out[0], $arr)) {
+		} else if(is_array($out)
+			   && preg_match('/\*\sQUOTA.*\(\w*\s(\d+)\s(\d+)\)/i', $out[0], $arr)) {
 			$ret = array('used' => $arr[1], 'qmax' => $arr[2]);
 		}
 
@@ -187,14 +180,11 @@ class imapd_adm {
 	*/
 	function setquota($mailboxname, $quota = null, $storage = 'STORAGE') {
 		$data = '';
-
 		if(is_null($quota)) {
 			$data = '()';
-		}
-		else if(is_numeric($quota)) {
+		} else if(is_numeric($quota)) {
 			$data = '('.$storage.' '.intval($quota).')';
 		}
-
 		return $this->command('. setquota "'.$mailboxname.'" '.$data);
 	}
 

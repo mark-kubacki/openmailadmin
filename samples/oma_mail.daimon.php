@@ -1,13 +1,11 @@
 #!/bin/env php
 <?php
 if(!function_exists('file_put_contents')) {
-	function file_put_contents($filename, $contents)
-	{
-		if($fp = fopen($filename, 'w'))
-		{
-		fwrite($fp, $contents);
-		fclose($fp);
-		return true;
+	function file_put_contents($filename, $contents) {
+		if($fp = fopen($filename, 'w')) {
+			fwrite($fp, $contents);
+			fclose($fp);
+			return true;
 		}
 		return false;
 	}
@@ -16,7 +14,7 @@ if(!function_exists('file_put_contents')) {
 $MTA['virtual']	= '/etc/postfix/db/virtual';
 $MTA['regexp']	= '/etc/postfix/db/virtual.regex';
 $MTA['domains']	= '/etc/postfix/db/domains';
-$PASSWD_CACHE   = '/var/lib/pam_mysql.cache';			// in case you cache your SQL-entries
+$PASSWD_CACHE	= '/var/lib/pam_mysql.cache';			// in case you cache your SQL-entries
 $POSTPROCESS	= '/usr/sbin/postmap ';
 
 $DB	= array('HOST'	=> 'localhost',

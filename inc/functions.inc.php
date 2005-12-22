@@ -1,8 +1,7 @@
 <?php
 // from PEAR: PHP_Compat
 if (!function_exists('array_combine')) {
-	function array_combine($keys, $values)
-	{
+	function array_combine($keys, $values) {
 		if (!is_array($keys)) {
 			trigger_error('array_combine() expects parameter 1 to be array, ' . gettype($keys) . ' given', E_USER_WARNING);
 			return;
@@ -128,8 +127,7 @@ function cyrus_format_user($username, $folder = null) {
 
 	if(is_null($folder)) {
 		return('user'.$imap->gethierarchyseparator().$username.$IMAP['VDOM']);
-	}
-	else {
+	} else {
 		return(cyrus_format_user($username).$imap->gethierarchyseparator().$folder);
 	}
 }
@@ -181,14 +179,11 @@ function hsys_format_quota($mailbox) {
 	$result = hsys_getQuota($mailbox);		// first, fetch the quota
 	if($result['qmax'] == 'NOT-SET') {
 		return '&infin;';
-	}
-	else if(round($result['used']/$result['qmax']*100) > 0) {
+	} else if(round($result['used']/$result['qmax']*100) > 0) {
 		return round($result['used']/$result['qmax']*100).'% / '.round($result['qmax']/1024);
-	}
-	else if($result['used'] == 0) {
+	} else if($result['used'] == 0) {
 		return '0% / '.round($result['qmax']/1024);
-	}
-	else {
+	} else {
 		return '>1% / '.round($result['qmax']/1024);
 	}
 }
@@ -242,8 +237,7 @@ function display_tree($tree) {
 		// Does this folder contain subfolders?
 		if($has_subfolders) {
 			echo('<li class="container">');
-		}
-		else {
+		} else {
 			echo('<li class="leaf">');
 		}
 
@@ -252,21 +246,17 @@ function display_tree($tree) {
 			// Is this one new? Does it lead to the selected one?
 			if($this_new) {
 				echo('<span class="new_mbox">');
-			}
-			else if($of_interest) {
+			} else if($of_interest) {
 				echo('<span class="act_mbox">');
-			}
-			else {
+			} else {
 				echo('<span class="ina_mbox">');
 			}
 			echo('<a href="'.mkSelfRef(array('folder' => $value['^'])).'">'.$key.'</a></span>');
 			unset($value['^']);
-		}
-		else { // ... or just a step?
+		} else { // ... or just a step?
 			if($of_interest) {
 				echo('<span class="act_mbox">');
-			}
-			else {
+			} else {
 				echo('<span class="ina_mbox">');
 			}
 			echo($key.'</span>');
@@ -318,8 +308,7 @@ function obfuscator_encrypt($cleartext) {
 			setcookie('obfuscator_key', $key);
 			// set it, in case decryption is done within this pagehit
 			$_COOKIE['obfuscator_key'] = $key;
-		}
-		else {
+		} else {
 			$key = $_COOKIE['obfuscator_key'];
 		}
 
@@ -333,8 +322,7 @@ function obfuscator_encrypt($cleartext) {
 		mcrypt_module_close($td);
 
 		return $encrypted_data;
-	}
-	else {	// rot13 will do the job
+	} else {	// rot13 will do the job
 		return str_rot13($cleartext);
 	}
 }
@@ -359,8 +347,7 @@ function obfuscator_decrypt($ciphertext) {
 		mcrypt_module_close($td);
 
 		return $decrypted_data;
-	}
-	else {	// obviously rot13 has been used
+	} else {	// obviously rot13 must have been used
 		return str_rot13($ciphertext);
 	}
 }

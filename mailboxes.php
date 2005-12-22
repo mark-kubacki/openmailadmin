@@ -9,13 +9,11 @@ $imap = new imapd_adm($IMAP);
 if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $oma->authenticated_user['a_admin_user'] >= 1) {
 	if(!isset($_POST['action'])) {
 		error(txt('112'));
-	}
-	else if(isset($_POST['action'])
+	} else if(isset($_POST['action'])
 			&& ($_POST['action'] == 'change' || $_POST['action'] == 'delete')
 			&& !(isset($_POST['user']) && is_array($_POST['user']))) {
 		error(txt('11'));
-	}
-	else {
+	} else {
 		$oma->status_reset();
 		switch($_POST['action']) {
 			case 'new':

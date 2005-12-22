@@ -12,8 +12,7 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 	if(isset($_POST['frm']) && $_POST['frm'] == 'ACL') {
 		if(!isset($_POST['action'])) {
 			error(txt('112'));
-		}
-		else
+		} else
 		switch($_POST['action']) {
 			case 'new':
 				if(isset($_GET['folder'])) {
@@ -22,8 +21,7 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 					if(preg_match('/[\w\s\d\+\-\_\.\:\~\=]{'.strlen($_POST['subname']).'}/', $_POST['subname'])) {
 						$to_be_created = addslashes($_GET['folder'].$imap->gethierarchyseparator().$_POST['subname']);
 						$imap->createmb($to_be_created);
-					}
-					else {
+					} else {
 						error(txt('109'));
 					}
 				}
@@ -37,15 +35,13 @@ if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 			case 'rights':
 				if(!isset($_POST['moduser']) || trim($_POST['moduser']) == '') {
 					error(txt('111'));
-				}
-				else if(isset($_GET['folder'])) {
+				} else if(isset($_GET['folder'])) {
 					if($_POST['modaclsel'] == 'above') {
 						if(isset($_POST['modacl']) && count($_POST['modacl']) > 0)
 							$imap->setacl(addslashes(trim($_GET['folder'])), $_POST['moduser'], implode('', $_POST['modacl']));
 						if($imap->error_msg != '')
 							error($imap->error_msg);
-					}
-					else {
+					} else {
 						$imap->setacl(addslashes(trim($_GET['folder'])), $_POST['moduser'], addslashes($_POST['modaclsel']));
 					}
 				}

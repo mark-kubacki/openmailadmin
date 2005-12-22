@@ -31,8 +31,7 @@ class _T_tag {
 			if($container) {
 				$ret	.= '>';
 				$ret	.= $strContent;
-			}
-			else {
+			} else {
 				$ret	.= ' />';
 			}
 		}
@@ -69,12 +68,12 @@ class _input extends _T_tag {
 			if(isset($_POST[$name]) && $_POST[$name] == $value)
 				$arrProperties['checked'] = '1';
 			$arrProperties['value'] = $value;
-		}
-		else
+		} else {
 			if(is_null($value) && $type != 'password' && isset($_POST[$name]))
 				$arrProperties['value']	= $_POST[$name];
 			else
 				$arrProperties['value']	= $value;
+		}
 		if(!isset($arrProperties['class']) && isset($this->arrClass[$type]))
 			$arrProperties['class']	= $this->arrClass[$type];
 
@@ -115,8 +114,7 @@ class _input extends _T_tag {
 				$select_value .= ' value="'.$arr_values[$key].'"';
 				if(isset($_POST[$name]) && $_POST[$name] == $arr_values[$key])
 					$select_value .= ' selected="selected"';
-			}
-			else {
+			} else {
 				if(isset($_POST[$name]) && $_POST[$name] == $value)
 					$select_value .= ' selected="selected"';
 			}
@@ -148,8 +146,7 @@ class _font extends _T_tag {
 };
 
 class _table extends _T_tag {
-	function _table()
-	{
+	function _table() {
 		$this->arrProperties['td']	=	array();
 		$this->arrProperties['tr']	=	array();
 		$this->arrProperties['table']	=	array(	'border'	=> '0',
@@ -174,8 +171,7 @@ class _table extends _T_tag {
 class _table_shadow extends _table {
 	var		$old_netscape;
 
-	function _table_shadow()
-	{
+	function _table_shadow() {
 		$this->old_netscape		=	false;
 		$this->arrClass['caption']	=	'caption';
 		$this->arrClass['caption_dea']	=	'caption_dea';
@@ -218,9 +214,9 @@ function B($txt) {
 
 // add a attribute to the given element
 function addProp($element, $prop = array()) {
-	if(count($prop) < 1)
+	if(count($prop) < 1) {
 		return $element;
-	else {
+	} else {
 		$ret = '';
 		foreach($prop as $key => $value)
 			$ret	.= ' '.strtolower($key).'="'.$value.'"';

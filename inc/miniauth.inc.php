@@ -7,8 +7,7 @@ session_start();
 if(isset($_GET['login']) && $_GET['login'] == 'change') {
 	session_destroy();
 	$_SESSION = array();
-}
-else if(isset($_POST['frm']) && $_POST['frm'] == 'login' && trim($_POST['mboxname']) != '') {
+} else if(isset($_POST['frm']) && $_POST['frm'] == 'login' && trim($_POST['mboxname']) != '') {
 	if(!(isset($_POST['server']) && is_numeric($_POST['server'])))
 		$_POST['server'] = 0;
 	mysql_connect($cfg['Servers']['DB'][$_POST['server']]['HOST'], $cfg['Servers']['DB'][$_POST['server']]['USER'], $cfg['Servers']['DB'][$_POST['server']]['PASS']) or die('Cannot connect to MySQL Server.');
@@ -29,19 +28,16 @@ else if(isset($_POST['frm']) && $_POST['frm'] == 'login' && trim($_POST['mboxnam
 			$_SESSION			= $authinfo;
 			$_SESSION['server']		= $_POST['server'];
 			$_SESSION['REMOTE_ADDR']	= $_SERVER['REMOTE_ADDR'];
-		}
-		else {
+		} else {
 			unset($authinfo);
 			$login_error = txt('0');
 			mysql_close();
 		}
-	}
-	else {
+	} else {
 		$login_error = txt('0');
 		mysql_close();
 	}
-}
-else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+} else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER['REMOTE_ADDR']) {
 	$authinfo	= $_SESSION;
 	mysql_connect($cfg['Servers']['DB'][$_SESSION['server']]['HOST'], $cfg['Servers']['DB'][$_SESSION['server']]['USER'], $cfg['Servers']['DB'][$_SESSION['server']]['PASS']) or die('Cannot connect to MySQL Server.');
 	mysql_select_db($cfg['Servers']['DB'][$_SESSION['server']]['DB']) or die('Cannot select Database');

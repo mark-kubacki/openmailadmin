@@ -11,7 +11,7 @@ function txt($id) {
 }
 
 // this will determine which language to use
-if(! $cfg['force_default_language']) {
+if(!$cfg['force_default_language']) {
 	$tmp_av = explode(',', str_replace(';', ',', $_SERVER['HTTP_ACCEPT_LANGUAGE']));
 	if(is_array($tmp_av))
 	for($i = 0; $i < count($tmp_av); $i++) {

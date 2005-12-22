@@ -15,7 +15,7 @@ include('./inc/translation.inc.php');
 include('./inc/format_shadow_classes.inc.php');
 include('./inc/functions.inc.php');
 
-// Initialisation
+// Initialization
 	$table	= new _table_shadow();
 	$tbled	= new _table();
 	$input	= new _input();
@@ -77,8 +77,7 @@ if(mysql_num_rows($result) > 0) {
 		include('./templates/'.$cfg['theme'].'/common-footer_nv.tpl');
 		exit();
 	}
-}
-else {
+} else {
 	error(txt('2'));
 	exit();
 }
@@ -86,14 +85,12 @@ else {
 // ... and his paten.
 if($oma->current_user['mbox'] == $oma->current_user['pate']) {
 	$cpate = array('person' => txt('29'), 'mbox' => $oma->current_user['mbox']);
-}
-else {
+} else {
 	$result = mysql_query('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.$oma->current_user['pate'].'" LIMIT 1');
 	if(mysql_num_rows($result) > 0) {
 		$cpate = mysql_fetch_assoc($result);
 		mysql_free_result($result);
-	}
-	else {
+	} else {
 		$cpate	= array('person' => txt('28'), 'mbox' => $oma->current_user['mbox']);
 	}
 }

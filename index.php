@@ -37,8 +37,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'chang
 			// $_SESSION will later be read as $oma->authenticated_user
 			$_SESSION['pass_clear'] = obfuscator_encrypt($_POST['new_pass1']);
 		}
-	}
-	else {
+	} else {
 		$oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2']);
 	}
 

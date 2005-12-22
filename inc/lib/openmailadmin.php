@@ -63,8 +63,7 @@ class openmailadmin {
 			foreach($what as $cmd) {
 				eval($cmd.';');
 			}
-		}
-		else {
+		} else {
 			eval($what.';');
 		}
 	}
@@ -120,8 +119,7 @@ class openmailadmin {
 			if(count($mailboxes) > 0) {
 				$pattern .= '|'.implode('|', $mailboxes);
 			}
-		}
-		else if($cfg['allow_wcyr_as_target']) {
+		} else if($cfg['allow_wcyr_as_target']) {
 			$pattern .= '|[a-z]{2,}[0-9]{4}';
 		}
 
@@ -149,8 +147,7 @@ class openmailadmin {
 
 		if($cache && isset($_SESSION['cache']['getDomainSet'][$user][$categories])) {
 			return $_SESSION['cache']['getDomainSet'][$user][$categories];
-		}
-		else {
+		} else {
 			foreach(explode(',', $categories) as $value) {
 				$poss_dom[] = trim($value);
 				$cat .= ' OR categories LIKE "%'.trim($value).'%"';
@@ -188,26 +185,21 @@ class openmailadmin {
 
 		if($child == $parent) {
 			$rec = true;
-		}
-		else if($levels <= 0 ) {
+		} else if($levels <= 0 ) {
 			$rec = false;
-		}
-		else {
+		} else {
 			$result = mysql_query('SELECT pate FROM '.$cfg['tablenames']['user']
 						.' WHERE mbox="'.$child.'" LIMIT 1');
 			if(!$result || mysql_num_rows($result) < 1) {
 				$rec = false;
-			}
-			else {
+			} else {
 				$inter = mysql_result($result, 0, 0);
 				mysql_free_result($result);
 				if($inter == $parent) {
 					$rec = true;
-				}
-				else if(in_array($inter, $cache)) {	// avoids loops
+				} else if(in_array($inter, $cache)) {	// avoids loops
 					$rec = false;
-				}
-				else {
+				} else {
 					$rec = $this->user_is_descendant($inter, $parent, $levels--, array_merge($cache, array($inter)));
 				}
 			}
@@ -223,13 +215,11 @@ class openmailadmin {
 	function user_get_used_alias($username) {
 		global $cfg;
 		static $used = array();
-
 		if(!isset($used[$username])) {
-			$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['virtual'].' WHERE owner=\''.$username.'\'');
+			$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['virtual'].' WHERE owner="'.$username.'"');
 			$used[$username] = mysql_result($result, 0, 0);
 			mysql_free_result($result);
 		}
-
 		return $used[$username];
 	}
 	/*
@@ -239,13 +229,11 @@ class openmailadmin {
 	function user_get_used_regexp($username) {
 		global $cfg;
 		static $used = array();
-
 		if(!isset($used[$username])) {
-			$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['virtual_regexp'].' WHERE owner=\''.$username.'\'');
+			$result = mysql_query('SELECT COUNT(*) FROM '.$cfg['tablenames']['virtual_regexp'].' WHERE owner="'.$username.'"');
 			$used[$username] = mysql_result($result, 0, 0);
 			mysql_free_result($result);
 		}
-
 		return $used[$username];
 	}
 
@@ -346,8 +334,7 @@ class openmailadmin {
 								.' LIMIT 1');
 					if(mysql_num_rows($result) > 0) {
 						mysql_free_result($result);
-					}
-					else {
+					} else {
 						$this->error[]	= txt('16');
 						return false;
 					}
@@ -362,8 +349,7 @@ class openmailadmin {
 					$this->error[]	= txt('12');
 					return false;
 				}
-			}
-			else {
+			} else {
 				$this->error[]	= txt('13');
 				return false;
 			}
@@ -373,13 +359,11 @@ class openmailadmin {
 				.' VALUES ("'.mysql_real_escape_string(strtolower($alias.'@'.$domain)).'", "'.implode(',', $arr_destinations).'", "'.$this->current_user['mbox'].'")');
 			if(mysql_affected_rows() < 1) {
 				$this->error[]	=mysql_error();
-			}
-			else {
+			} else {
 				$this->current_user['used_alias']++;
 				return true;
 			}
-		}
-		else {
+		} else {
 			$this->error[]	= txt('14');
 		}
 
@@ -399,8 +383,7 @@ class openmailadmin {
 			if(mysql_errno() != 0) {
 				$this->error[]	= mysql_error();
 			}
-		}
-		else {
+		} else {
 			$this->info[]	= sprintf(txt('15'), implode(',', $arr_addresses));
 			$this->current_user['used_alias'] -= mysql_affected_rows();
 			return true;
@@ -422,8 +405,7 @@ class openmailadmin {
 			if(mysql_errno() != 0) {
 				$this->error[]	= mysql_error();
 			}
-		}
-		else {
+		} else {
 			return true;
 		}
 
@@ -444,8 +426,7 @@ class openmailadmin {
 			if(mysql_errno() != 0) {
 				$this->error[]	= mysql_error();
 			}
-		}
-		else {
+		} else {
 			return true;
 		}
 
@@ -466,8 +447,7 @@ class openmailadmin {
 			 .' FROM '.$cfg['tablenames']['domains'];
 		if($this->authenticated_user['a_super'] > 0) {
 			$query .= ' WHERE 1=1 '.$_SESSION['filter']['str']['domain'];
-		}
-		else {
+		} else {
 			$query .= ' WHERE (owner="'.$this->current_user['mbox'].'" or a_admin LIKE "%'.$this->current_user['mbox'].'%")'
 				 .$_SESSION['filter']['str']['domain'];
 		}
@@ -478,11 +458,10 @@ class openmailadmin {
 		if($result) {
 			while($row = mysql_fetch_assoc($result)) {
 				if($row['owner'] == $this->authenticated_user['mbox']
-					|| find_in_set($this->authenticated_user['mbox'], $row['a_admin'])) {
+				   || find_in_set($this->authenticated_user['mbox'], $row['a_admin'])) {
 					$row['selectable']	= true;
 					++$this->editable_domains;
-				}
-				else {
+				} else {
 					$row['selectable']	= false;
 				}
 				$domains[] = $row;
@@ -512,9 +491,8 @@ class openmailadmin {
 		if(count($dom_a) == 0) {
 			// This will be only a warning.
 			$this->error[] = txt('80');
-		}
-		else if(count($dom_a) > count($reference['domain_set'])
-			&& count(array_diff($dom_a, $reference['domain_set'])) > 0) {
+		} else if(count($dom_a) > count($reference['domain_set'])
+			   && count(array_diff($dom_a, $reference['domain_set'])) > 0) {
 			// A could have domains which the reference cannot access.
 			return false;
 		}
@@ -542,8 +520,7 @@ class openmailadmin {
 				.' VALUES ("'.$domain.'", "'.$props['categories'].'", "'.$props['owner'].'", "'.$props['a_admin'].'")');
 		if(mysql_affected_rows() < 1) {
 			$this->error[]	= mysql_error();
-		}
-		else {
+		} else {
 			$this->user_invalidate_domain_sets();
 			return true;
 		}
@@ -559,16 +536,17 @@ class openmailadmin {
 
 		// We need the old domain name later...
 		if(is_array($domains) && count($domains) > 0) {
-			if($cfg['admins_delete_domains'])
+			if($cfg['admins_delete_domains']) {
 				$result = mysql_query('SELECT ID, domain'
 					.' FROM '.$cfg['tablenames']['domains']
 					.' WHERE (owner="'.$this->authenticated_user['mbox'].'" OR a_admin LIKE "%'.$this->authenticated_user['mbox'].'%") AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
 					.' LIMIT '.count($domains));
-			else
+			} else {
 				$result = mysql_query('SELECT ID, domain'
 					.' FROM '.$cfg['tablenames']['domains']
 					.' WHERE owner="'.$this->authenticated_user['mbox'].'" AND FIND_IN_SET(ID, "'.mysql_real_escape_string(implode(',', $domains)).'")'
 					.' LIMIT '.count($domains));
+			}
 			if(mysql_num_rows($result) > 0) {
 				while($domain = mysql_fetch_assoc($result)) {
 					$del_ID[] = $domain['ID'];
@@ -580,8 +558,7 @@ class openmailadmin {
 					if(mysql_errno() != 0) {
 						$this->error[]	= mysql_error();
 					}
-				}
-				else {
+				} else {
 					$this->info[]	= txt('52').'<br />'.implode(', ', $del_nm);
 					// We better deactivate all aliases containing that domain, so users can see the domain was deleted.
 					mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual'].' SET active = 0, neu = 1 WHERE FIND_IN_SET(SUBSTRING(address, LOCATE(\'@\', address)+1), \''.implode(',', $del_nm).'\')');
@@ -589,12 +566,10 @@ class openmailadmin {
 					$this->user_invalidate_domain_sets();
 					return true;
 				}
-			}
-			else {
+			} else {
 				$this->error[]	= txt('16');
 			}
-		}
-		else {
+		} else {
 			$this->error[]	= txt('11');
 		}
 
@@ -629,8 +604,7 @@ class openmailadmin {
 			if(mysql_affected_rows() < 1) {
 				if(mysql_errno() != 0) {
 					$this->error[]	= mysql_error();
-				}
-				else {
+				} else {
 					$this->error[]	= txt('16');
 				}
 			}
@@ -665,18 +639,17 @@ class openmailadmin {
 					mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual_regexp'].' SET neu = 1, dest = REPLACE(dest, "@'.$domain['name'].'", "@'.$data['domain'].'") WHERE dest LIKE "%@'.$domain['name'].'%"');
 					// canonical
 					mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['user'].' SET canonical = REPLACE(canonical, "@'.$domain['name'].'", "@'.$data['domain'].'") WHERE canonical LIKE "%@'.$domain['name'].'"');
-				}
-				else {
+				} else {
 					$this->error[]	= mysql_error();
 				}
 
 				return true;
-			}
-			else
+			} else {
 				$this->error[]	= txt('91');
-		}
-		else
+			}
+		} else {
 			$this->error[]	= txt('53');
+		}
 
 		return false;
 	}
@@ -701,8 +674,7 @@ class openmailadmin {
 		if($plaintext_password != '') {
 			$new_crypt	= crypt($plaintext_password, substr($plaintext_password,0,2));
 			$new_md5	= md5($plaintext_password);
-		}
-		else {
+		} else {
 			$new_crypt = '';
 			$new_md5 = '';
 		}
@@ -712,8 +684,7 @@ class openmailadmin {
 		if(mysql_affected_rows() > 0) {
 			$this->info[]	= txt('48');
 			return true;
-		}
-		else {
+		} else {
 			if(mysql_errno() != 0) {
 				$this->error[]	= mysql_error();
 			}
@@ -734,15 +705,12 @@ class openmailadmin {
 		   && !(passwd_check($old_passwd, $this->current_user['pass_crypt'])
 			|| passwd_check($old_passwd, $this->current_user['pass_md5']))) {
 			$this->error[]	= txt('45');
-		}
-		else if($new != $new_repeat) {
+		} else if($new != $new_repeat) {
 			$this->error[]	= txt('44');
-		}
-		else if(strlen($new) < $cfg['passwd']['min_length']
+		} else if(strlen($new) < $cfg['passwd']['min_length']
 			|| strlen($new) > $cfg['passwd']['max_length']) {
 			$this->error[]	= sprintf(txt('46'), $cfg['passwd']['min_length'], $cfg['passwd']['max_length']);
-		}
-		else {
+		} else {
 			// Warn about insecure passwords, but let them pass.
 			if(!(preg_match('/[a-z]{1}/', $new) && preg_match('/[A-Z]{1}/', $new) && preg_match('/[0-9]{1}/', $new))) {
 				$this->error[]	= txt('47');
@@ -771,10 +739,9 @@ class openmailadmin {
 			while($row = mysql_fetch_assoc($result)) {
 				// if ordered, check whether expression matches probe address
 				if(!is_null($match_against)
-					&& @preg_match($row['reg_exp'], $match_against)) {
+				   && @preg_match($row['reg_exp'], $match_against)) {
 					$row['matching']	= true;
-				}
-				else {
+				} else {
 					$row['matching']	= false;
 				}
 				// explode all destinations (as there may be many)
@@ -817,13 +784,11 @@ class openmailadmin {
 				if(mysql_errno() != 0) {
 					$this->error[]	= mysql_error();
 				}
-			}
-			else {
+			} else {
 				$this->current_user['used_regexp']++;
 				return true;
 			}
-		}
-		else {
+		} else {
 			$this->error[]	= txt('31');
 		}
 
@@ -843,8 +808,7 @@ class openmailadmin {
 			if(mysql_errno() != 0) {
 				$this->error[]	= mysql_error();
 			}
-		}
-		else {
+		} else {
 			$this->info[]	= txt('32');
 			$this->current_user['used_regexp'] -= mysql_affected_rows();
 			return true;
@@ -866,8 +830,7 @@ class openmailadmin {
 			if(mysql_errno() != 0) {
 				$this->error[]	= mysql_error();
 			}
-		}
-		else {
+		} else {
 			return true;
 		}
 
@@ -887,8 +850,7 @@ class openmailadmin {
 			if(mysql_errno() != 0) {
 				$this->error[]	= mysql_error();
 			}
-		}
-		else {
+		} else {
 			return true;
 		}
 
@@ -908,8 +870,7 @@ class openmailadmin {
 		if($this->current_user['mbox'] == $this->authenticated_user['mbox']
 		   && $this->authenticated_user['a_super'] >= 1) {
 			$where_clause = ' WHERE TRUE';
-		}
-		else {
+		} else {
 			$where_clause = ' WHERE pate="'.$this->current_user['mbox'].'"';
 		}
 		$result = mysql_query('SELECT mbox, person, canonical, pate, max_alias, max_regexp, active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
@@ -946,8 +907,7 @@ class openmailadmin {
 			$selectable_paten = array();
 			if($this->authenticated_user['a_super'] >= 1) {
 				$result = mysql_unbuffered_query('SELECT mbox FROM '.$cfg['tablenames']['user']);
-			}
-			else {
+			} else {
 				$result = mysql_unbuffered_query('SELECT mbox FROM '.$cfg['tablenames']['user']
 							.' WHERE pate="'.$whose.'"');
 			}
@@ -979,8 +939,7 @@ class openmailadmin {
 		// Does the authenticated user have the right to do that?
 		if($this->authenticated_user['a_super'] >= 1) {
 			$allowed = array_diff($desired_mboxes, $cfg['user_ignore']);
-		}
-		else {
+		} else {
 			foreach($desired_mboxes as $mbox) {
 				if(!in_array($mbox, $cfg['user_ignore']) && $this->user_is_descendant($mbox, $who)) {
 					$allowed[] = $mbox;
@@ -1065,8 +1024,7 @@ class openmailadmin {
 			// Rollback
 			$this->rollback($rollback);
 			return false;
-		}
-		else {
+		} else {
 			mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['user'].' SET mbox_exists=1 WHERE mbox="'.$mboxname.'" LIMIT 1');
 			if(isset($cfg['folders']['create_default']) && is_array($cfg['folders']['create_default'])) {
 				foreach($cfg['folders']['create_default'] as $new_folder) {
@@ -1088,8 +1046,7 @@ class openmailadmin {
 			}
 			$rollback[] = '$imap->setquota(cyrus_format_user($this->current_user[\'mbox\']), '.$tmp.'));';
 			$this->info[]	= sprintf(txt('69'), hsys_getMaxQuota($this->current_user['mbox'])-$props['quota']);
-		}
-		else {
+		} else {
 			$this->info[]	= txt('71');
 		}
 
@@ -1139,8 +1096,7 @@ class openmailadmin {
 			if(in_array($property, $change)) {
 				if(is_numeric($props[$property])) {
 					$to_change[]	= $property.' = '.$props[$property];
-				}
-				else {
+				} else {
 					$to_change[]	= $property.' = "'.$props[$property].'"';
 				}
 			}
@@ -1174,8 +1130,7 @@ class openmailadmin {
 						$have_skipped[] = $row['owner'];
 						if($cfg['mboxview_pers']) {
 							$tmp[] = '<a href="'.mkSelfRef(array('cuser' => $row['owner'])).'" title="'.$row['owner'].'">'.$row['person'].' ('.$row['consum'].')</a>';
-						}
-						else {
+						} else {
 							$tmp[] = '<a href="'.mkSelfRef(array('cuser' => $row['owner'])).'" title="'.$row['person'].'">'.$row['owner'].' ('.$row['consum'].')</a>';
 						}
 					}
@@ -1192,8 +1147,7 @@ class openmailadmin {
 						.' SET '.$what.'='.$props[$what]
 						.' WHERE FIND_IN_SET(mbox, "'.implode(',', $to_be_processed).'")'
 						.' LIMIT '.count($to_be_processed));
-					}
-					else {
+					} else {
 						// Now, calculate whether the current user has enough free contingents.
 						$result = mysql_query('SELECT SUM('.$props[$what].'-'.$what.')'
 								.' FROM '.$cfg['tablenames']['user']
@@ -1211,8 +1165,7 @@ class openmailadmin {
 							.' SET '.$what.'='.$what.'-'.$has_to_be_free
 							.' WHERE mbox="'.$this->current_user['mbox'].'"'
 							.' LIMIT 1');
-						}
-						else {
+						} else {
 							// Else, we have to show an error message.
 							$this->error[]	= txt('66');
 						}
@@ -1257,8 +1210,7 @@ class openmailadmin {
 				mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual'].' SET owner = "'.$props['mbox'].'" WHERE owner = "'.$mboxnames['0'].'"');
 				mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual_regexp'].' SET dest = REPLACE(dest, "'.$mboxnames['0'].'", "'.$props['mbox'].'"), neu = 1 WHERE dest REGEXP "'.$mboxnames['0'].'[^@]{1,}" OR dest LIKE "%'.$mboxnames['0'].'"');
 				mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual_regexp'].' SET owner = "'.$props['mbox'].'" WHERE owner = "'.$mboxnames['0'].'"');
-			}
-			else {
+			} else {
 				$this->error[]	= $imap->error_msg.'<br />'.txt('94');
 			}
 		}
@@ -1296,8 +1248,7 @@ class openmailadmin {
 				$result = $imap->deletemb(cyrus_format_user($user));
 				if(!$result) {		// failure
 					$this->error[]	= $imap->error_msg;
-				}
-				else {			// success
+				} else {		// success
 					$add_quota += $toadd;
 					$processed[] = $user;
 				}
@@ -1373,8 +1324,7 @@ class openmailadmin {
 				if(mysql_errno() != 0) {
 					$this->error[]	= mysql_error();
 				}
-			}
-			else {
+			} else {
 				return true;
 			}
 		}
@@ -1495,28 +1445,25 @@ class openmailadmin {
 				if(isset($data[$fieldname]) && $data[$fieldname] != '') {
 					// If so and if we have a rule to check for validity, we have to validate this field.
 					if(isset($validate[$fieldname])) {
-					foreach($validate[$fieldname] as $test) {
-						if(!eval('return ('.str_replace(array('~', '#'), array('$data[\''.$fieldname.'\']', $fieldname), $test['val']).');')) {
-							// The given value is invalid.
-							$error_occured = true;
-							if(isset($test['error'])) {
-								$this->error[]	= $test['error'];
+						foreach($validate[$fieldname] as $test) {
+							if(!eval('return ('.str_replace(array('~', '#'), array('$data[\''.$fieldname.'\']', $fieldname), $test['val']).');')) {
+								// The given value is invalid.
+								$error_occured = true;
+								if(isset($test['error'])) {
+									$this->error[]	= $test['error'];
+								} else {
+									$invalid[] = $inputs[$fieldname]['cap'];
+								}
+								break;
 							}
-							else {
-								$invalid[] = $inputs[$fieldname]['cap'];
-							}
-							break;
 						}
 					}
-					}
 					$data[$fieldname] = mysql_real_escape_string($data[$fieldname]);
-				}
-				else {
+				} else {
 					// Assign it a valid value, if possible.
 					if(isset($inputs[$fieldname]['def'])) {
 						$data[$fieldname]	= $inputs[$fieldname]['def'];
-					}
-					else {
+					} else {
 						// No value was given and we cannot assign it a default value.
 						$error_occured = true;
 						$missing[] = $inputs[$fieldname]['cap'];

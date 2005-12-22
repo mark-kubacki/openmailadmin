@@ -18,9 +18,9 @@ class imapd_adm {
 		return true;
 	}
 
-		function gethierarchyseparator() {
-			return $this->separator;
-		}
+	function gethierarchyseparator() {
+		return $this->separator;
+	}
 
 	function command($line) {
 		global $cfg;
@@ -64,23 +64,19 @@ class imapd_adm {
 			if(isset($acl[$oma->current_user['mbox']]) && stristr($acl[$oma->current_user['mbox']], 'a')
 			   || isset($acl['anyone']) && stristr($acl['anyone'], 'a')) {
 				mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$newacl.'")');
-			}
-			else {
+			} else {
 				$this->error_msg = 'You need "a"-rights on that mailbox.';
 				return false;
 			}
-		}
-		else if(isset($_POST['mbox'])) {
+		} else if(isset($_POST['mbox'])) {
 			mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$_POST['mbox'].' lrswipcda")');
-		}
-		else {
+		} else {
 			mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$oma->current_user['mbox'].' lrswipcda")');
 		}
 		if(mysql_affected_rows() < 1) {
 			$this->error_msg	= mysql_error();
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
@@ -91,7 +87,6 @@ class imapd_adm {
 		if(mysql_affected_rows() < 1) {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -104,7 +99,6 @@ class imapd_adm {
 		if(mysql_error() != '') {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -125,11 +119,11 @@ class imapd_adm {
 
 	function setquota($mb, $many, $storage = '') {
 		global $cfg;
-		if(is_numeric($many))
+		if(is_numeric($many)) {
 			mysql_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax='.intval(max(1, $many)).', used=FLOOR(RAND()*'.intval(max(1, $many)).') WHERE mailbox="'.$mb.'" LIMIT 1');
-		else if(is_null($many))
+		} else if(is_null($many)) {
 			mysql_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax=0 WHERE mailbox="'.$mb.'" LIMIT 1');
-		else {
+		} else {
 			$this->error_msg	= 'Quota has either to be numeric or null!';
 			return false;
 		}
@@ -147,12 +141,11 @@ class imapd_adm {
 		if(mysql_num_rows($result) < 1) {
 			$this->error_msg	= 'Given mailbox does not exist.';
 			return array();
-		}
-		else {
+		} else {
 			$row = mysql_fetch_assoc($result);
 			mysql_free_result($result);
 			if($row['qmax'] == 0) {
-			return array('qmax' => 'NOT-SET', 'used' => 'NOT-SET');
+				return array('qmax' => 'NOT-SET', 'used' => 'NOT-SET');
 			}
 			return $row;
 		}
@@ -172,29 +165,25 @@ class imapd_adm {
 			$facl = $this->getacl(mysql_escape_string($mb));
 			if(isset($facl[$oma->current_user['mbox']]) && stristr($facl[$oma->current_user['mbox']], 'a')
 			   || isset($facl['anyone']) && stristr($facl['anyone'], 'a')) {
-			// modify ACL
-			if($acl == 'none') {
-				unset($facl[$user]);
-			}
-			else {
-				$facl[$user] = mysql_escape_string(trim($acl));	// we can be lax in th demo
-			}
-			// unify keys and values for storage
-			$store = '';
-			foreach($facl as $user=>$rgh) {
-				$store .= $user.' '.$rgh.' ';
-			}
+				// modify ACL
+				if($acl == 'none') {
+					unset($facl[$user]);
+				} else {
+					$facl[$user] = mysql_escape_string(trim($acl));	// we can be lax in th demo
+				}
+				// unify keys and values for storage
+				$store = '';
+				foreach($facl as $user=>$rgh) {
+					$store .= $user.' '.$rgh.' ';
+				}
 
-			// write to MySQL
-			mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET ACL="'.trim($store).'" WHERE mailbox="'.mysql_escape_string($mb).'" LIMIT 1');
-
-			return true;
+				// write to MySQL
+				mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET ACL="'.trim($store).'" WHERE mailbox="'.mysql_escape_string($mb).'" LIMIT 1');
+				return true;
 			}
-		}
-		else {
+		} else {
 			$this->error_msg	= 'User does not exist.';
 		}
-
 		return false;
 	}
 
@@ -204,8 +193,7 @@ class imapd_adm {
 		$result = mysql_query('SELECT ACL FROM '.$cfg['tablenames']['imap_demo']." WHERE mailbox='$mb' LIMIT 1");
 		if(mysql_num_rows($result) < 1) {
 			return array();
-		}
-		else {
+		} else {
 			$acl = mysql_result($result, 0, 0);
 			mysql_free_result($result);
 			return hsys_getACLInfo(array('* ACL '.$mb.' '.$acl), $mb);
