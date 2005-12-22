@@ -8,68 +8,68 @@ $oma->current_user['used_regexp'] = $oma->user_get_used_regexp($oma->current_use
 // ------------------------------ Regexp ----------------------------------------------------------
 // PERFORM ACTION
 if(isset($_POST['frm']) && $_POST['frm'] == 'virtual_regexp') {
-    if(!isset($_POST['action'])) {
-	error(txt('112'));
-    }
-    else {
-	if($oma->current_user['max_regexp'] != 0 && $oma->authenticated_user['max_regexp'] != 0) {
-	    if($_POST['action'] == 'new' || $_POST['action'] == 'dest') {
-		// Set at least one valid destination.
-		if(isset($_POST['dest_is_mbox']) && $_POST['dest_is_mbox'] == '1')
-		    $destination = array($oma->current_user['mbox']);
-		else {
-		    $destination = $oma->get_valid_destinations($_POST['dest']);
-		    if(count($destination) < 1) {
-			$destination = array($oma->current_user['mbox']);
-			error(txt('10'));
-		    }
-		}
-	    }
-	    // On every action except 'new' and 'probe' at least one expression
-	    // must be selected for manipulation and thus $_POST['expr'] be an array.
-	    if($_POST['action'] != 'new' && $_POST['action'] != 'probe'
-		&& !(isset($_POST['expr']) && is_array($_POST['expr']))) {
-		error(txt('11'));
-	    }
-	    else {
-		switch($_POST['action']) {
-		    case 'new':
-			$oma->regexp_create(trim($_POST['reg_exp']), $destination);
-			break;
-		    case 'delete':
-			$oma->regexp_delete($_POST['expr']);
-			break;
-		    case 'dest':
-			$oma->regexp_change_destination($_POST['expr'], $destination);
-			break;
-		    case 'active':
-			$oma->regexp_toggle_active($_POST['expr']);
-			break;
-		}
-
-		if($oma->errors_occured()) {
-		    error($oma->errors_get());
-		}
-		if($oma->info_occured()) {
-		    info($oma->info_get());
-		}
-	    }
-	    if(isset($destination)) unset($destination);
+	if(!isset($_POST['action'])) {
+		error(txt('112'));
 	}
 	else {
-	    error(txt('16'));
+		if($oma->current_user['max_regexp'] != 0 && $oma->authenticated_user['max_regexp'] != 0) {
+			if($_POST['action'] == 'new' || $_POST['action'] == 'dest') {
+				// Set at least one valid destination.
+				if(isset($_POST['dest_is_mbox']) && $_POST['dest_is_mbox'] == '1')
+					$destination = array($oma->current_user['mbox']);
+				else {
+					$destination = $oma->get_valid_destinations($_POST['dest']);
+					if(count($destination) < 1) {
+						$destination = array($oma->current_user['mbox']);
+						error(txt('10'));
+					}
+				}
+			}
+			// On every action except 'new' and 'probe' at least one expression
+			// must be selected for manipulation and thus $_POST['expr'] be an array.
+			if($_POST['action'] != 'new' && $_POST['action'] != 'probe'
+			   && !(isset($_POST['expr']) && is_array($_POST['expr']))) {
+				error(txt('11'));
+			}
+			else {
+				switch($_POST['action']) {
+					case 'new':
+						$oma->regexp_create(trim($_POST['reg_exp']), $destination);
+						break;
+					case 'delete':
+						$oma->regexp_delete($_POST['expr']);
+						break;
+					case 'dest':
+						$oma->regexp_change_destination($_POST['expr'], $destination);
+						break;
+					case 'active':
+						$oma->regexp_toggle_active($_POST['expr']);
+						break;
+				}
+
+				if($oma->errors_occured()) {
+					error($oma->errors_get());
+				}
+				if($oma->info_occured()) {
+					info($oma->info_get());
+				}
+			}
+			if(isset($destination)) unset($destination);
+		}
+		else {
+			error(txt('16'));
+		}
 	}
-    }
 }
 
 // DATA
 // We need to determine whether an string for matching shall be provided.
 if(isset($_POST['frm']) && isset($_POST['action'])
-	&& $_POST['frm'] == 'virtual_regexp' && $_POST['action'] == 'probe') {
-    $regexp = $oma->get_regexp($_POST['probe']);
+   && $_POST['frm'] == 'virtual_regexp' && $_POST['action'] == 'probe') {
+	$regexp = $oma->get_regexp($_POST['probe']);
 }
 else {
-    $regexp = $oma->get_regexp();
+	$regexp = $oma->get_regexp();
 }
 
 // DISPLAY
@@ -77,15 +77,15 @@ include('./templates/'.$cfg['theme'].'/regexp/list.tpl');
 
 // ADMIN PANEL
 if($oma->current_user['max_regexp'] != 0 && $oma->authenticated_user['max_regexp'] != 0) {
-    // This is the action handler for 'probing'.
-    if(isset($_POST['frm']) && isset($_POST['action'])
-		&& $_POST['frm'] == 'virtual_regexp' && $_POST['action'] == 'probe'
-		&& trim($_POST['reg_exp']) != '' && trim($_POST['probe']) != ''
-		&& @preg_match($_POST['reg_exp'], $_POST['probe'])) {
-	info(txt('36'));
-    }
+	// This is the action handler for 'probing'.
+	if(isset($_POST['frm']) && isset($_POST['action'])
+	   && $_POST['frm'] == 'virtual_regexp' && $_POST['action'] == 'probe'
+	   && trim($_POST['reg_exp']) != '' && trim($_POST['probe']) != ''
+	   && @preg_match($_POST['reg_exp'], $_POST['probe'])) {
+		info(txt('36'));
+	}
 
-    include('./templates/'.$cfg['theme'].'/regexp/admin.tpl');
+	include('./templates/'.$cfg['theme'].'/regexp/admin.tpl');
 }
 
 include('./inc/_append.php');
