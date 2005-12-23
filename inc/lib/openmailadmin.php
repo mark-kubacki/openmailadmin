@@ -1018,7 +1018,7 @@ class openmailadmin {
 				.' WHERE mbox="'.$this->current_user['mbox'].'" LIMIT 1');
 		}
 		// ... and then create the user on the server.
-		$result = $imap->createmb(cyrus_format_user($mboxname));
+		$result = $imap->createmb($imap->format_user($mboxname));
 		if(!$result) {
 			$this->error[]	= $imap->error_msg;
 			// Rollback
@@ -1028,23 +1028,23 @@ class openmailadmin {
 			mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['user'].' SET mbox_exists=1 WHERE mbox="'.$mboxname.'" LIMIT 1');
 			if(isset($cfg['folders']['create_default']) && is_array($cfg['folders']['create_default'])) {
 				foreach($cfg['folders']['create_default'] as $new_folder) {
-					$imap->createmb(cyrus_format_user($mboxname, $new_folder));
+					$imap->createmb($imap->format_user($mboxname, $new_folder));
 				}
 			}
 		}
-		$rollback[] = '$imap->deletemb(cyrus_format_user(\''.$mboxname.'\'));';
+		$rollback[] = '$imap->deletemb($imap->format_user(\''.$mboxname.'\'));';
 
 		// Decrease the creator's quota...
 		if($this->authenticated_user['a_super'] == 0 && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET') {
 			$tmp = hsys_getMaxQuota($this->current_user['mbox']);
-			$result = $imap->setquota(cyrus_format_user($this->current_user['mbox']), $tmp-$props['quota']);
+			$result = $imap->setquota($imap->format_user($this->current_user['mbox']), $tmp-$props['quota']);
 			if(!$result) {
 				$this->error[]	= $imap->error_msg;
 				// Rollback
 				$this->rollback($rollback);
 				return false;
 			}
-			$rollback[] = '$imap->setquota(cyrus_format_user($this->current_user[\'mbox\']), '.$tmp.'));';
+			$rollback[] = '$imap->setquota($imap->format_user($this->current_user[\'mbox\']), '.$tmp.'));';
 			$this->info[]	= sprintf(txt('69'), hsys_getMaxQuota($this->current_user['mbox'])-$props['quota']);
 		} else {
 			$this->info[]	= txt('71');
@@ -1052,7 +1052,7 @@ class openmailadmin {
 
 		// ... and set the new user's quota.
 		if(is_numeric($props['quota'])) {
-			$result = $imap->setquota(cyrus_format_user($mboxname), $props['quota']);
+			$result = $imap->setquota($imap->format_user($mboxname), $props['quota']);
 			if(!$result) {
 				$this->error[]	= $imap->error_msg;
 				// Rollback
@@ -1185,14 +1185,14 @@ class openmailadmin {
 					}
 				}
 				if($add_quota != 0 && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET') {
-					$imap->setquota(cyrus_format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox'])-$add_quota);
+					$imap->setquota($imap->format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox'])-$add_quota);
 					$this->info[]	= sprintf(txt('78'), hsys_getMaxQuota($this->current_user['mbox']));
 				}
 			}
 			reset($mboxnames);
 			foreach($mboxnames as $user) {
 				if($user != '') {
-					$result = $imap->setquota(cyrus_format_user($user), intval($props['quota']));
+					$result = $imap->setquota($imap->format_user($user), intval($props['quota']));
 					if(!$result) {
 						$this->error[]	= $imap->error_msg;
 					}
@@ -1202,7 +1202,7 @@ class openmailadmin {
 
 		// Renaming of (single) user.
 		if(in_array('mbox', $change)) {
-			if($imap->renamemb(cyrus_format_user($mboxnames['0']), cyrus_format_user($props['mbox']))) {
+			if($imap->renamemb($imap->format_user($mboxnames['0']), $imap->format_user($props['mbox']))) {
 				mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['user'].' SET mbox = "'.$props['mbox'].'" WHERE mbox = "'.$mboxnames['0'].'" LIMIT 1');
 				mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['domains'].' SET owner = "'.$props['mbox'].'" WHERE owner = "'.$mboxnames['0'].'"');
 				mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['tablenames']['domains'].' SET a_admin = REPLACE(a_admin, "'.$mboxnames['0'].'", "'.$props['mbox'].'") WHERE a_admin LIKE "%'.$mboxnames['0'].'%"');
@@ -1245,7 +1245,7 @@ class openmailadmin {
 				   && hsys_getMaxQuota($user) != 'NOT-SET') {
 					$toadd = hsys_getMaxQuota($user);
 				}
-				$result = $imap->deletemb(cyrus_format_user($user));
+				$result = $imap->deletemb($imap->format_user($user));
 				if(!$result) {		// failure
 					$this->error[]	= $imap->error_msg;
 				} else {		// success
@@ -1265,7 +1265,7 @@ class openmailadmin {
 		if($this->authenticated_user['a_super'] == 0
 		   && $add_quota > 0
 		   && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET') {
-			$imap->setquota(cyrus_format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox'])+$add_quota);
+			$imap->setquota($imap->format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox'])+$add_quota);
 			$this->info[]	= sprintf(txt('76'), (hsys_getMaxQuota($this->current_user['mbox'])+$add_quota));
 		}
 

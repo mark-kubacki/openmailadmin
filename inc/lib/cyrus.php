@@ -16,7 +16,7 @@ class imapd_adm {
 	var $connection_data;	// everything neccessary to connect to cyrus
 	var $version;		// version of cyrus-imapd we have connected to
 
-	// pubic:
+	// public:
 	var $error_msg;		// if an error occured, this variable will hold the error messages
 	var $separator;		// hierarchy separator
 
@@ -214,6 +214,17 @@ class imapd_adm {
 
 	function deleteacl($mailboxname, $user) {
 		return $this->command('. deleteacl "'.$mailboxname.'" "'.$user.'"');
+	}
+
+	/**
+	 * Adds prefixes and suffixes as well as separators to a username
+	 */
+	function format_user($username, $folder = null) {
+		if(is_null($folder)) {
+			return('user'.$this->separator().$username.$this->connection_data['VDOM']);
+		} else {
+			return($this->format_user($username).$this->separator.$folder);
+		}
 	}
 
 }

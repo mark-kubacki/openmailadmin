@@ -119,26 +119,12 @@ function mkSelfRef($arr_Add = array()) {
 }
 
 /*
- * Adds prefixes and suffixes as well as separators to a username
- */
-function cyrus_format_user($username, $folder = null) {
-	global $imap;
-	global $IMAP;
-
-	if(is_null($folder)) {
-		return('user'.$imap->gethierarchyseparator().$username.$IMAP['VDOM']);
-	} else {
-		return(cyrus_format_user($username).$imap->gethierarchyseparator().$folder);
-	}
-}
-
-/*
  * Wrapper to $imap->getquota
  */
 function hsys_getQuota($username) {
 	global $imap;
 
-	return $imap->getquota(cyrus_format_user($username));
+	return $imap->getquota($imap->format_user($username));
 }
 
 function hsys_getMaxQuota($username) {

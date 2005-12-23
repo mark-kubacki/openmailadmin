@@ -3,11 +3,12 @@
  *   use in demo-accounts
  */
 class imapd_adm {
+	var $connection_data;
 	var $error_msg	= '';
 	var $separator	= '.';
 
 	function imapd_adm($connection_data) {
-		;
+		$this->connection_data	= $connection_data;
 	}
 
 	function imap_login() {
@@ -200,13 +201,24 @@ class imapd_adm {
 		}
 	}
 
-	function deketeacl($mb, $user) {
+	function deleteacl($mb, $user) {
 		return $this->setacl($mb, $user, 'none');
 	}
 
 	function getversion() {
 		return '2.2.12';
 	}
-};
 
+	/**
+	 * Adds prefixes and suffixes as well as separators to a username
+	 */
+	function format_user($username, $folder = null) {
+		if(is_null($folder)) {
+			return('user'.$this->gethierarchyseparator().$username.$this->connection_data['VDOM']);
+		} else {
+			return($this->format_user($username).$this->gethierarchyseparator().$folder);
+		}
+	}
+
+}
 ?>
