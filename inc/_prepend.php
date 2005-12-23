@@ -44,6 +44,7 @@ switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
 	case 'fake-imap':	include('./inc/lib/fake-cyradm.php');	break;
 	default:		include('./inc/lib/cyrus.php');		break;
 }
+$imap = new imapd_adm($cfg['Servers']['IMAP'][$_SESSION['server']]);
 
 // table names with prefixes
 $cfg['tablenames']

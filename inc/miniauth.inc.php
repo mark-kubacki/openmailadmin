@@ -12,8 +12,6 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 		$_POST['server'] = 0;
 	mysql_connect($cfg['Servers']['DB'][$_POST['server']]['HOST'], $cfg['Servers']['DB'][$_POST['server']]['USER'], $cfg['Servers']['DB'][$_POST['server']]['PASS']) or die('Cannot connect to MySQL Server.');
 	mysql_select_db($cfg['Servers']['DB'][$_POST['server']]['DB']) or die('Cannot select Database');
-	if(isset($cfg['Servers']['IMAP'][$_POST['server']]))
-		$IMAP = $cfg['Servers']['IMAP'][$_POST['server']];
 
 	$result = mysql_query('SELECT * FROM '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user WHERE mbox="'.mysql_real_escape_string($_POST['mboxname']).'" AND active=1 LIMIT 1');
 	if(mysql_num_rows($result) > 0) {
@@ -41,7 +39,6 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 	$authinfo	= $_SESSION;
 	mysql_connect($cfg['Servers']['DB'][$_SESSION['server']]['HOST'], $cfg['Servers']['DB'][$_SESSION['server']]['USER'], $cfg['Servers']['DB'][$_SESSION['server']]['PASS']) or die('Cannot connect to MySQL Server.');
 	mysql_select_db($cfg['Servers']['DB'][$_SESSION['server']]['DB']) or die('Cannot select Database');
-		$IMAP = $cfg['Servers']['IMAP'][$_SESSION['server']];
 }
 
 if(!isset($authinfo)) {

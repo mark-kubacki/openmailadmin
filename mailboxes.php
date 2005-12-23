@@ -2,8 +2,6 @@
 include('./inc/_prepend.php');
 include('./inc/panel_filter.php');
 
-$imap = new imapd_adm($IMAP);
-
 // ------------------------------ Mailboxes -------------------------------------------------------
 // PERFORM ACTION
 if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $oma->authenticated_user['a_admin_user'] >= 1) {
