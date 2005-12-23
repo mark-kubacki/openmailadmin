@@ -1,78 +1,66 @@
 #!/bin/env php
 <?php
-if(!function_exists('file_put_contents')) {
-	function file_put_contents($filename, $contents) {
-		if($fp = fopen($filename, 'w')) {
-			fwrite($fp, $contents);
-			fclose($fp);
-			return true;
+function make_hashfile_of_query($file, $query, $delimiter = "\t\t", $postprocess = true) {
+	global $POSTPROCESS, $db;
+
+	if($fp = fopen($file, 'w')) {
+		$result = $db->Execute($query);
+		while(!$result->EOF) {
+			fputs($fp, $result->fields[0].$delimiter.$result->fields[1]."\n");
+			$result->MoveNext();
 		}
-		return false;
-	}
-}
+		fclose($fp);
 
-function make_hashfile_of_query($file, $query, $postprocess = true) {
-	global $POSTPROCESS;
-	$fline = '';
-
-	$result = mysql_query($query);
-	while($row = mysql_fetch_row($result)) {
-		$fline .= $row[0]."\t\t".$row[1]."\n";
+		if($postprocess) {
+			exec(sprintf($POSTPROCESS, $file));
+		}
 	}
-	mysql_free_result($result);
-	file_put_contents($file, $fline);
-	if($postprocess)
-		exec($POSTPROCESS.$file);
 }
 
 $MTA['virtual']	= '/etc/postfix/db/virtual';
 $MTA['regexp']	= '/etc/postfix/db/virtual.regex';
 $MTA['domains']	= '/etc/postfix/db/domains';
 $PASSWD_CACHE	= '/var/lib/pam_mysql.cache';			// in case you cache your SQL-entries
-$POSTPROCESS	= '/usr/sbin/postmap ';
+$POSTPROCESS	= '/usr/sbin/postmap %s';
 
-$DB	= array('HOST'	=> 'localhost',
+$DB	= array('TYPE'	=> 'mysql',
+		'HOST'	=> 'localhost',
 		'USER'	=> 'yourMySQL-User',
 		'PASS'	=> '##MysqlSecret-SELECT-only##',
-		'DB'	=> 'yourMySQL-DB'
+		'DB'	=> 'yourMySQL-DB',
+		'PREFIX'=> '',
 		);
-mysql_connect($DB['HOST'], $DB['USER'], $DB['PASS']) or die('Cannot connect to MySQL Server.');
-mysql_select_db($DB['DB']) or die('Cannot select Database');
+
+include('adodb/adodb.inc.php');
+$db	= ADONewConnection($DB['TYPE']);
+$db->Connect($DB['HOST'], $DB['USER'], $DB['PASS'], $DB['DB']) or die('Cannot connect to MySQL Server.');
+$db->SetFetchMode(ADODB_FETCH_NUM);
 
 // virtual
-$result = mysql_query('SELECT COUNT(*) AS neue FROM virtual WHERE neu=1');
-	$row = mysql_fetch_assoc($result);
-	mysql_free_result($result);
-if(!is_file($MTA['virtual']) || $row['neue'] > 0 || time()%6<1) {
-	make_hashfile_of_query($MTA['virtual'], 'SELECT address,dest FROM virtual WHERE active=1 ORDER BY address DESC');
-	mysql_unbuffered_query('UPDATE LOW_PRIORITY IGNORE virtual SET neu=0 WHERE neu=1');
+$amount_new	= $db->GetOne('SELECT COUNT(*) FROM '.$DB['PREFIX'].'virtual WHERE neu=1');
+if(!is_file($MTA['virtual']) || $amount_new > 0 || time()%6<1) {
+	make_hashfile_of_query($MTA['virtual'], 'SELECT address,dest FROM '.$DB['PREFIX'].'virtual WHERE active=1 ORDER BY address DESC');
+	$db->Execute('UPDATE LOW_PRIORITY IGNORE '.$DB['PREFIX'].'virtual SET neu=0 WHERE neu=1');
 }
 
 // virtual.regexp
-$result = mysql_query('SELECT COUNT(*) AS neue FROM virtual_regexp WHERE neu=1');
-	$row = mysql_fetch_assoc($result);
-	mysql_free_result($result);
-if(!is_file($MTA['regexp']) || $row['neue'] > 0 || time()%6<1) {
-	make_hashfile_of_query($MTA['regexp'], 'SELECT reg_exp,dest FROM virtual_regexp WHERE active=1 ORDER BY LENGTH(reg_exp) DESC', false);
-	mysql_unbuffered_query('UPDATE LOW_PRIORITY IGNORE virtual_regexp SET neu=0 WHERE neu=1');
+$amount_new	= $db->GetOne('SELECT COUNT(*) FROM '.$DB['PREFIX'].'virtual_regexp WHERE neu=1');
+if(!is_file($MTA['regexp']) || $amount_new > 0 || time()%6<1) {
+	make_hashfile_of_query($MTA['regexp'], 'SELECT reg_exp,dest FROM '.$DB['PREFIX'].'virtual_regexp WHERE active=1 ORDER BY LENGTH(reg_exp) DESC', "\t\t", false);
+	$db->Execute('UPDATE LOW_PRIORITY IGNORE '.$DB['PREFIX'].'virtual_regexp SET neu=0 WHERE neu=1');
 }
 
 // domains
 if(!is_file($MTA['domains']) || time()%48<1) {
-	make_hashfile_of_query($MTA['domains'], 'SELECT domain FROM domains order by (SELECT count(*) FROM virtual WHERE address LIKE CONCAT(\'%\', \'@\', domain)) DESC');
+	make_hashfile_of_query($MTA['domains'], 'SELECT domain FROM '.$DB['PREFIX'].'domains ORDER BY (SELECT count(*) FROM '.$DB['PREFIX'].'virtual WHERE address LIKE CONCAT(\'%\', \'@\', domain)) DESC');
 }
 
 // passwd_cache
-if($PASSWD_CACHE != null && (!is_file($PASSWD_CACHE) || time()%24<1) && $fp = @fopen($PASSWD_CACHE, 'w')) {
-	$result = mysql_query('SELECT mbox, pass_crypt FROM user');
-	while($row = mysql_fetch_assoc($result)) {
-		fputs($fp, $row['mbox'].':'.$row['pass_crypt']."\n");
-	}
-	mysql_free_result($result);
-	fclose($fp);
+if(!is_null($PASSWD_CACHE) && (!is_file($PASSWD_CACHE) || time()%24<1)) {
+	make_hashfile_of_query($PASSWD_CACHE, 'SELECT mbox, pass_crypt FROM '.$DB['PREFIX'].'user', ':', false);
 }
 
-if(time()%50 < 2)
-	mysql_unbuffered_query('OPTIMIZE TABLE virtual, virtual_regexp, user, domains');
-mysql_close();
+if(time()%50 < 2 && ($DB['TYPE'] == 'mysql' || $DB['TYPE'] == 'mysqli')) {
+	$db->Execute('OPTIMIZE TABLE '.$DB['PREFIX'].'virtual, '.$DB['PREFIX'].'virtual_regexp, '.$DB['PREFIX'].'user, '.$DB['PREFIX'].'domains');
+}
 ?>
