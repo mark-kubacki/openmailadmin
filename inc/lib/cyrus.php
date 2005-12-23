@@ -12,7 +12,7 @@
 class imapd_adm {
 
 	// private:
-	var $sp;		// holds the socket ressource, if connected
+	var $sp = false;	// holds the socket ressource, if connected
 	var $connection_data;	// everything neccessary to connect to cyrus
 	var $version;		// version of cyrus-imapd we have connected to
 
@@ -27,12 +27,6 @@ class imapd_adm {
 		$this->version		= 'unknown';
 		$this->separator	= '.';
 		$this->connection_data	= $connection_data;
-	}
-
-	function __destruct() {
-		if($this->sp) {
-			$this->imap_logout();
-		}
 	}
 
 	/***** connection ****/
@@ -221,7 +215,7 @@ class imapd_adm {
 	 */
 	function format_user($username, $folder = null) {
 		if(is_null($folder)) {
-			return('user'.$this->separator().$username.$this->connection_data['VDOM']);
+			return('user'.$this->separator.$username.$this->connection_data['VDOM']);
 		} else {
 			return($this->format_user($username).$this->separator.$folder);
 		}
