@@ -53,7 +53,7 @@
 		</span>
 	    </td>
 	    <td><?= $mailbox['pate'] ?></td>
-	    <td><?= $mailbox['quota'] ?></td>
+	    <td><?= hsys_format_quota($mailbox['mbox']) ?></td>
 	    <td>
 		<?= $mailbox['num_alias'] ?>/<?= $mailbox['max_alias'] ?>
 		<?php if($mailbox['num_regexp'] + $mailbox['max_regexp'] > 0) { ?>

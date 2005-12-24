@@ -886,8 +886,6 @@ class openmailadmin {
 			while($row = mysql_fetch_assoc($result)) {
 				if(in_array($row['mbox'], $cfg['user_ignore']))
 					continue;
-
-				$row['quota'] = hsys_format_quota($row['mbox']);
 				$mailboxes[] = $row;
 			}
 			mysql_free_result($result);

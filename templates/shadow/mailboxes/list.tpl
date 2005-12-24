@@ -1,5 +1,6 @@
 <?php
     for($i = 0; isset($mailboxes[$i]); $i++) {
+	$mailboxes[$i]['quota']		= hsys_format_quota($mailboxes[$i]['mbox']);
 	if($mailboxes[$i]['mbox'] == $oma->authenticated_user['mbox'] || $mailboxes[$i]['mbox'] == $oma->current_user['mbox'])
 	    $tmp2 = '&nbsp;-&nbsp;';
 	else
