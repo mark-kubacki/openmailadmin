@@ -1,12 +1,3 @@
-<?php
-    for($i = 0; isset($domains[$i]); $i++) {
-	if($domains[$i]['selectable'])
-	    $domains[$i]['domain']	= $input->checkbox('dom[]', $domains[$i]['ID']).$domains[$i]['domain'];
-	else
-	    $domains[$i]['domain']	= '&nbsp;&nbsp;&nbsp;'.$domains[$i]['domain'];
-    }
-    $domains = array_densify($domains, array('owner', 'a_admin'));
-?>
 <?php if($oma->authenticated_user['a_admin_domains'] > 0) { ?>
     <form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
@@ -21,10 +12,13 @@
     </tr>
     <?php foreach($domains as $domain) { ?>
 	<tr>
-	    <td class="std"><?= implode('<br />', $domain['domain']) ?></td>
-	    <td class="std"><?= $domain['owner'][0] ?></td>
-	    <td class="std"><?= $domain['a_admin'][0] ?></td>
-	    <td class="std"><?= implode('<br />', $domain['categories']) ?></td>
+	    <td class="std">
+		<?= $input->checkbox('dom[]', $domain['ID']) ?>
+		<?= $domain['domain'] ?>
+	    </td>
+	    <td class="std"><?= $domain['owner'] ?></td>
+	    <td class="std"><?= $domain['a_admin'] ?></td>
+	    <td class="std"><?= $domain['categories'] ?></td>
 	</tr>
     <?php } ?>
 </table>

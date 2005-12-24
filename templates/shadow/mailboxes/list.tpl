@@ -1,26 +1,3 @@
-<?php
-    for($i = 0; isset($mailboxes[$i]); $i++) {
-	$mailboxes[$i]['quota']		= hsys_format_quota($mailboxes[$i]['mbox']);
-	if($mailboxes[$i]['mbox'] == $oma->authenticated_user['mbox'] || $mailboxes[$i]['mbox'] == $oma->current_user['mbox'])
-	    $tmp2 = '&nbsp;-&nbsp;';
-	else
-	    $tmp2 = $input->checkbox('user[]', $mailboxes[$i]['mbox']);
-	if($cfg['mboxview_pers'])
-	    $mailboxes[$i]['mbox']	= $tmp2.($mailboxes[$i]['active'] == 0 ? '<span class="deactivated">' : '')
-					.'<a href="'.mkSelfRef(array('cuser' => $mailboxes[$i]['mbox'])).'" title="'.$mailboxes[$i]['mbox'].' ('.$mailboxes[$i]['canonical'].'); R='.$mailboxes[$i]['a_super'].':'.$mailboxes[$i]['a_admin_domains'].':'.$mailboxes[$i]['a_admin_user'].'">'.$mailboxes[$i]['person'].'</a>'
-					.($mailboxes[$i]['active'] == 0 ? '</span>' : '');
-	else
-	    $mailboxes[$i]['mbox']	= $tmp2.($mailboxes[$i]['active'] == 0 ? '<span class="deactivated">' : '')
-					.'<a href="'.mkSelfRef(array('cuser' => $mailboxes[$i]['mbox'])).'" title="'.$mailboxes[$i]['person'].' ('.$mailboxes[$i]['canonical'].'); R='.$mailboxes[$i]['a_super'].':'.$mailboxes[$i]['a_admin_domains'].':'.$mailboxes[$i]['a_admin_user'].'">'.$mailboxes[$i]['mbox'].'</a>'
-					.($mailboxes[$i]['active'] == 0 ? '</span>' : '');
-	$mailboxes[$i]['limits']	= $mailboxes[$i]['num_alias'].'/'.$mailboxes[$i]['max_alias']
-					.(($mailboxes[$i]['num_regexp'] + $mailboxes[$i]['max_regexp'] == 0)
-					    ? ''
-					    : ', '.$mailboxes[$i]['num_regexp'].'/'.$mailboxes[$i]['max_regexp']);
-	$mailboxes[$i]['lastlogin']	= date($cfg['date_format'], $mailboxes[$i]['lastlogin']);
-    }
-    $mailboxes = array_densify($mailboxes, array('pate'));
-?>
 <?php if($oma->authenticated_user['a_admin_user'] >= 1) { ?>
     <form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
@@ -30,17 +7,36 @@
     <tr>
 	<td class="std"><b><?= txt('5') ?></b></td>
 	<td class="std"><b><?= txt('9') ?></b></td>
-	<td class="std"><b><?= txt('87') ?> <sub>[MiB]</sub></b></td>
+	<td class="std" colspan="2"><b><?= txt('87') ?> <sub>[MiB]</sub></b></td>
 	<td class="std"><b><?= txt('17') ?></b></td>
 	<td class="std"><b><?= txt('82') ?></b></td>
     </tr>
     <?php foreach($mailboxes as $mailbox) { ?>
 	<tr>
-	    <td class="std"><?= implode('<br />', $mailbox['mbox']) ?></td>
-	    <td class="std"><?= $mailbox['pate'][0] ?></td>
-	    <td class="std"><?= implode('<br />', $mailbox['quota']) ?></td>
-	    <td class="std"><?= implode('<br />', $mailbox['limits']) ?></td>
-	    <td class="std"><?= implode('<br />', $mailbox['lastlogin']) ?></td>
+	    <td class="std">
+		<?php if($mailbox['mbox'] == $oma->authenticated_user['mbox'] || $mailbox['mbox'] == $oma->current_user['mbox']) { ?>
+		    &nbsp;-&nbsp;
+		<?php } else { ?>
+		    <?= $input->checkbox('user[]', $mailbox['mbox']) ?>
+		<?php } ?>
+		<?php if($mailbox['active'] == 0) { ?>
+		    <span class="deactivated">
+		<?php } else { ?>
+		    <span class="active">
+		<?php } ?>
+			<?php if($cfg['mboxview_pers']) { ?>
+				<a href="<?= mkSelfRef(array('cuser' => $mailbox['mbox'])) ?>" title="<?= $mailbox['mbox'].' ('.$mailbox['canonical'].'); R='.$mailbox['a_super'].':'.$mailbox['a_admin_domains'].':'.$mailbox['a_admin_user'] ?>"><?= $mailbox['person'] ?></a>
+			<?php } else { ?>
+				<a href="<?= mkSelfRef(array('cuser' => $mailbox['mbox'])) ?>" title="<?= $mailbox['person'].' ('.$mailbox['canonical'].'); R='.$mailbox['a_super'].':'.$mailbox['a_admin_domains'].':'.$mailbox['a_admin_user'] ?>"><?= $mailbox['mbox'] ?></a>
+			<?php } ?>
+		    </span>
+	    </td>
+	    <td class="std"><?= $mailbox['pate'] ?></td>
+	    <td class="std"><?= hsys_format_quota($mailbox['mbox'], '</td><td class="std">') ?></td>
+	    <td class="std">
+		<?= $mailbox['num_alias'].'/'.$mailbox['max_alias'] ?><?= ($mailbox['num_regexp'] + $mailbox['max_regexp'] == 0) ? '' : ', '.$mailbox['num_regexp'].'/'.$mailbox['max_regexp'] ?>
+	    </td>
+	    <td class="std"><?= date($cfg['date_format'], $mailbox['lastlogin']) ?></td>
 	</tr>
     <?php } ?>
 </table>
