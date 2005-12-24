@@ -123,7 +123,6 @@ function mkSelfRef($arr_Add = array()) {
  */
 function hsys_getQuota($username) {
 	global $imap;
-
 	return $imap->getquota($imap->format_user($username));
 }
 
@@ -161,16 +160,16 @@ function hsys_getACLInfo($folder, $name = null) {
 /*
  * Returns quota of the given user formatted.
  */
-function hsys_format_quota($mailbox) {
-	$result = hsys_getQuota($mailbox);		// first, fetch the quota
+function hsys_format_quota($mboxname, $delimiter = '/') {
+	$result = hsys_getQuota($mboxname);
 	if($result['qmax'] == 'NOT-SET') {
-		return '&infin;';
+		return '-'.$delimiter.'&infin;';
 	} else if(round($result['used']/$result['qmax']*100) > 0) {
-		return round($result['used']/$result['qmax']*100).'% / '.round($result['qmax']/1024);
+		return round($result['used']/$result['qmax']*100).'% '.$delimiter.' '.round($result['qmax']/1024);
 	} else if($result['used'] == 0) {
-		return '0% / '.round($result['qmax']/1024);
+		return '0% '.$delimiter.' '.round($result['qmax']/1024);
 	} else {
-		return '>1% / '.round($result['qmax']/1024);
+		return '>1% '.$delimiter.' '.round($result['qmax']/1024);
 	}
 }
 
