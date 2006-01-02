@@ -35,12 +35,6 @@ if (!function_exists('array_combine')) {
 	}
 }
 
-if (!function_exists('file_get_contents')) {
-	function file_get_contents($file) {
-		return implode('', file($file));
-	}
-}
-
 /*
  * Removes unneccesary whitespace and invokes ob_end_flush().
  */

@@ -1,12 +1,10 @@
 <?php
-/*
+/**
  * This class collects all methods of Openmailadmin, except for the view
- * and data storage. It is not finished, yet!
+ * and data storage.
  *
- * This file is soo long!
- * - Forgive me, but PHP does not support "require_once" inside of class definitions.
+ * @todo	Refactorings: Extract classes.
  */
-
 class openmailadmin {
 	var $current_user;		// What user do we edit/display currently?
 	var $authenticated_user;	// What user did log in?
