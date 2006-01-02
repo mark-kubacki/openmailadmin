@@ -85,7 +85,7 @@ $cfg['Servers']['IMAP'][] = array(
 	'VDOM'	=> ''				// set this if you're using cyrus virtual domains
 );
 $cfg['Servers']['DB'][] = array(
-	'TYPE'  => 'mysql',			// currently only mysql
+	'TYPE'  => 'mysql',
 	'HOST'	=> 'localhost',
 	'USER'	=> '##MysqlUser##',
 	'PASS'	=> '##MysqlSecret##',

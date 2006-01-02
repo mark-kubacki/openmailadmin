@@ -10,18 +10,21 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 } else if(isset($_POST['frm']) && $_POST['frm'] == 'login' && trim($_POST['mboxname']) != '') {
 	if(!(isset($_POST['server']) && is_numeric($_POST['server'])))
 		$_POST['server'] = 0;
-	mysql_connect($cfg['Servers']['DB'][$_POST['server']]['HOST'], $cfg['Servers']['DB'][$_POST['server']]['USER'], $cfg['Servers']['DB'][$_POST['server']]['PASS']) or die('Cannot connect to MySQL Server.');
-	mysql_select_db($cfg['Servers']['DB'][$_POST['server']]['DB']) or die('Cannot select Database');
+	$db	= ADONewConnection($cfg['Servers']['DB'][$_POST['server']]['TYPE']);
+	$db->Connect(	$cfg['Servers']['DB'][$_POST['server']]['HOST'],
+			$cfg['Servers']['DB'][$_POST['server']]['USER'],
+			$cfg['Servers']['DB'][$_POST['server']]['PASS'],
+			$cfg['Servers']['DB'][$_POST['server']]['DB'])
+		or die('Cannot connect to MySQL Server.');
+	$db->SetFetchMode(ADODB_FETCH_ASSOC);
 
-	$result = mysql_query('SELECT * FROM '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user WHERE mbox="'.mysql_real_escape_string($_POST['mboxname']).'" AND active=1 LIMIT 1');
-	if(mysql_num_rows($result) > 0) {
-		$authinfo = mysql_fetch_assoc($result);
-		mysql_free_result($result);
+	$authinfo = $db->GetRow('SELECT * FROM '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user WHERE mbox='.$db->qstr($_POST['mboxname']).' AND active=1');
+	if(!$authinfo === false) {
 		if(($authinfo['pass_md5'] == '' && passwd_check($_POST['password'], $authinfo['pass_crypt']))
 		   || passwd_check($_POST['password'], $authinfo['pass_md5'])) {
 			$authinfo['pass_clear'] = obfuscator_encrypt($_POST['password']);
 			unset($_POST['password']);
-			mysql_unbuffered_query('UPDATE LOW_PRIORITY '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login='.time().' WHERE mbox="'.$authinfo['mbox'].'" LIMIT 1');
+			$db->Execute('UPDATE LOW_PRIORITY '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login='.time().' WHERE mbox='.$db->qstr($authinfo['mbox']).' LIMIT 1');
 			session_regenerate_id();
 			$_SESSION			= $authinfo;
 			$_SESSION['server']		= $_POST['server'];
@@ -29,16 +32,20 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 		} else {
 			unset($authinfo);
 			$login_error = txt('0');
-			mysql_close();
 		}
 	} else {
+		unset($authinfo);
 		$login_error = txt('0');
-		mysql_close();
 	}
 } else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER['REMOTE_ADDR']) {
 	$authinfo	= $_SESSION;
-	mysql_connect($cfg['Servers']['DB'][$_SESSION['server']]['HOST'], $cfg['Servers']['DB'][$_SESSION['server']]['USER'], $cfg['Servers']['DB'][$_SESSION['server']]['PASS']) or die('Cannot connect to MySQL Server.');
-	mysql_select_db($cfg['Servers']['DB'][$_SESSION['server']]['DB']) or die('Cannot select Database');
+	$db	= ADONewConnection($cfg['Servers']['DB'][$_SESSION['server']]['TYPE']);
+	$db->Connect(	$cfg['Servers']['DB'][$_SESSION['server']]['HOST'],
+			$cfg['Servers']['DB'][$_SESSION['server']]['USER'],
+			$cfg['Servers']['DB'][$_SESSION['server']]['PASS'],
+			$cfg['Servers']['DB'][$_SESSION['server']]['DB'])
+		or die('Cannot connect to MySQL Server.');
+	$db->SetFetchMode(ADODB_FETCH_ASSOC);
 }
 
 if(!isset($authinfo)) {

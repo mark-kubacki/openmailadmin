@@ -13,6 +13,7 @@ include('./inc/config.inc.php');
 	or die('You have to create an configuration file, first.');
 include('./inc/translation.inc.php');
 include('./inc/format_shadow_classes.inc.php');
+include('adodb/adodb.inc.php');
 include('./inc/functions.inc.php');
 
 // Initialization
@@ -54,22 +55,20 @@ $cfg['tablenames']
 		'virtual_regexp'=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'virtual_regexp',
 		'imap_demo'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'imap_demo'
 		);
-$now_on = isset($_GET['cuser']) ? mysql_escape_string($_GET['cuser']) : $authinfo['mbox'];
+$now_on = isset($_GET['cuser']) ? $_GET['cuser'] : $authinfo['mbox'];
 
 // include the backend
 include('./inc/lib/openmailadmin.php');
-$oma 	= new openmailadmin();
+$oma 	= new openmailadmin($db);
 $oma->authenticated_user	= &$authinfo;
 $oma->current_user		= &$cuser;
 unset($authinfo);
 unset($cuser);
 
 // Query for the current user...
-$result = mysql_query('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.$now_on.'" LIMIT 1');
-if(mysql_num_rows($result) > 0) {
-	$oma->current_user = mysql_fetch_assoc($result);
-	mysql_free_result($result);
-
+$result = $db->GetRow('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$db->qstr($now_on));
+if(!$result === false) {
+	$oma->current_user = $result;
 	if(!($oma->authenticated_user['a_super'] >= 1
 	   || $oma->current_user['mbox'] == $oma->authenticated_user['mbox']
 	   || $oma->current_user['pate'] == $oma->authenticated_user['mbox']
@@ -87,10 +86,9 @@ if(mysql_num_rows($result) > 0) {
 if($oma->current_user['mbox'] == $oma->current_user['pate']) {
 	$cpate = array('person' => txt('29'), 'mbox' => $oma->current_user['mbox']);
 } else {
-	$result = mysql_query('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.$oma->current_user['pate'].'" LIMIT 1');
-	if(mysql_num_rows($result) > 0) {
-		$cpate = mysql_fetch_assoc($result);
-		mysql_free_result($result);
+	$result = $db->GetRow('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$db->qstr($oma->current_user['pate']));
+	if(!$result === false) {
+		$cpate = $result;
 	} else {
 		$cpate	= array('person' => txt('28'), 'mbox' => $oma->current_user['mbox']);
 	}

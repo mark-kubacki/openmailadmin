@@ -11,7 +11,7 @@ $cfg['Servers']['IMAP'][] = array(
 	'VDOM'	=> ''
 );
 $cfg['Servers']['DB'][] = array(
-	'TYPE'	=> 'mysql',		// currently only mysql
+	'TYPE'	=> 'mysql',
 	'HOST'	=> 'localhost',
 	'USER'	=> 'yourMySQL-User',
 	'PASS'	=> 'yourMySQL-Passwd',
