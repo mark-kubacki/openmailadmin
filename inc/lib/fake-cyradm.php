@@ -1,6 +1,6 @@
 <?php
-/* Fake cyradm
- *   use in demo-accounts
+/**
+ * For emulating cyrus.php by utilizing MySQL as storage.
  */
 class imapd_adm {
 	var $connection_data;

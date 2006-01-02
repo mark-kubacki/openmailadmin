@@ -94,5 +94,4 @@ $cfg['Servers']['DB'][] = array(
 );
 */
 
-
 ?>

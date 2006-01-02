@@ -1,12 +1,14 @@
 <?php
-//
-//	Except for the _T_tag abstract class every class has to contain:
-//	Uber-Classes:
-//		SpecialTag	e.g. td($content)	directly a tag or subtype (input: checkbox)
-//	Solitaire-Classes:
-//		_([specific])				generates and returns the tag for displaying
-//		display([specific], $arrProperties)	same as above plus one argument (may differ!!!)
-//
+/**
+ * Except for the _T_tag abstract class every class has to contain:
+ * Uber-Classes:
+ * 	SpecialTag	e.g. td($content)	directly a tag or subtype (input: checkbox)
+ * Solitaire-Classes:
+ * 	_([specific])				generates and returns the tag for displaying
+ * 	display([specific], $arrProperties)	same as above plus one argument (may differ!!!)
+ *
+ * @deprecated		Relict of former templating system.
+ */
 class _T_tag {
 	var		$images_dir;			// storage of images (for most derived classes need it)
 	var		$arrClass;			// CSS Class of tag
@@ -42,6 +44,9 @@ class _T_tag {
 	}
 };
 
+/**
+ * @deprecated		Relict of former templating system.
+ */
 class _input extends _T_tag {
 	function _input() {
 		$this->arrClass['text']		= 'text';
@@ -135,6 +140,9 @@ class _input extends _T_tag {
 	}
 };
 
+/**
+ * @deprecated		Relict of former templating system.
+ */
 class _font extends _T_tag {
 	function display($strContent, $arrProperties = array()) {
 		return($this->_generic('font', $arrProperties, $strContent));
@@ -145,6 +153,9 @@ class _font extends _T_tag {
 	}
 };
 
+/**
+ * @deprecated		Relict of former templating system.
+ */
 class _table extends _T_tag {
 	function _table() {
 		$this->arrProperties['td']	=	array();
@@ -168,6 +179,9 @@ class _table extends _T_tag {
 
 };
 
+/**
+ * @deprecated		Relict of former templating system.
+ */
 class _table_shadow extends _table {
 	var		$old_netscape;
 
@@ -208,6 +222,9 @@ class _table_shadow extends _table {
 	}
 };
 
+/**
+ * @deprecated		Relict of former templating system.
+ */
 function B($txt) {
 	return('<b>'.$txt.'</b>');
 }
@@ -246,8 +263,8 @@ function caption($text, $right=null, $width=null) {
 	include('./templates/'.$cfg['theme'].'/caption.tpl');
 }
 
-/*
- *
+/**
+ * @deprecated		Relict of former templating system.
  */
 function table_array_matrix($array) {
 	$output = '<table border="0" cellspacing="0" cellpadding="0" width="100%">';

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * This class encapsulates the administrative backend of cyrus-imapd.
  * It does not rely on PHP's IMAP/POP classes and connects on demand.
  *
@@ -8,7 +8,6 @@
  * - quota:		2047
  * - ACL:		2086
  */
-
 class imapd_adm {
 
 	// private:
