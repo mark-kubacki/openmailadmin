@@ -1,126 +1,172 @@
-BODY
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
-	margin-left: 50px; margin-top: 50px; background-color: #ffffff;
+BODY {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
+	margin-left: 50px;
+	margin-top: 50px;
+	background-color: #ffffff;
 }
-A
-{	text-decoration: none;
+A {
+	text-decoration: none;
 }
-A.white
-{	text-decoration: none; color: #ffffff;
+A.white {
+	text-decoration: none;
+	color: #ffffff;
 }
-TABLE.box_note
-{	border: 1px #cccccc solid; padding: 4px; vertical-align:top;
+TABLE.box_note {
+	border: 1px #cccccc solid;
+	padding: 4px;
+	vertical-align:top;
 }
-TABLE.box_error
-{	border: 1px #cc0000 solid; padding: 4px; vertical-align:top;
+TABLE.box_error {
+	border: 1px #cc0000 solid;
+	padding: 4px;
+	vertical-align:top;
 }
-TABLE.box_info
-{	border: 1px #0000cc solid; padding: 4px; vertical-align:top;
+TABLE.box_info {
+	border: 1px #0000cc solid;
+	padding: 4px;
+	vertical-align:top;
 }
-DIV.folder_acl_tree
-{	background-color: #ffffff
+DIV.folder_acl_tree {
+	background-color: #ffffff
 }
-TABLE.acl_matrix
-{	border-collapse: collapse; padding: 0; margin: 0; width: 100%;
+TABLE.acl_matrix {
+	border-collapse: collapse;
+	padding: 0;
+	margin: 0;
+	width: 100%;
 }
-TABLE.acl_matrix TR TD, TABLE.acl_matrix TR TH
-{	text-align: center; font-size: 10px;
+TABLE.acl_matrix TR TD, TABLE.acl_matrix TR TH {
+	text-align: center;
+	font-size: 10px;
 }
-TABLE.acl_matrix TR TD:first-child, TABLE.acl_matrix TR TH:first-child
-{	text-align: left;
+TABLE.acl_matrix TR TD:first-child, TABLE.acl_matrix TR TH:first-child {
+	text-align: left;
 }
-TABLE.acl_matrix TR TD INPUT
-{	width: 100%;
+TABLE.acl_matrix TR TD INPUT {
+	width: 100%;
 }
-TABLE.acl_matrix TR TD:first-child, TABLE.acl_matrix TR TH:first-child
-{	text-align: left;
+TABLE.acl_matrix TR TD:first-child, TABLE.acl_matrix TR TH:first-child {
+	text-align: left;
 }
-TD.box_left
-{	vertical-align: middle; padding: 0 7px 0 7px
+TD.box_left {
+	vertical-align: middle;
+	padding: 0 7px 0 7px
 }
-TD.box_right
-{	text-align: left
+TD.box_right {
+	text-align: left
 }
-TD.caption
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
-	background-color: #7abbff; background-image: url(../images/ver_bl1.gif);
-	color: #f0f0f0; white-space: nowrap;
+TD.caption {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
+	background-color: #7abbff;
+	background-image: url(../images/ver_bl1.gif);
+	color: #f0f0f0;
+	white-space: nowrap;
 }
-TD.caption_dea
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
-	background-color: #7abbff; background-image: url(../images/ver_gy1.png);
+TD.caption_dea {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
+	background-color: #7abbff;
+	background-image: url(../images/ver_gy1.png);
 	color: #f0f0f0;
 }
-TD.std
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
-	background-color: #ebe6e3; white-space: nowrap;
+TD.std {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
+	background-color: #ebe6e3;
+	white-space: nowrap;
 }
-TD.ed
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
+TD.ed {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
 }
-TD.sh_hor
-{	background-image: url(../images/sh_hor.gif);
-	vertical-align: top; text-align: left;
+TD.sh_hor {
+	background-image: url(../images/sh_hor.gif);
+	vertical-align: top;
+	text-align: left;
 }
-TD.sh_ver
-{	background-image: url(../images/sh_ver.gif);
+TD.sh_ver {
+	background-image: url(../images/sh_ver.gif);
 }
-INPUT.text
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
-	width: 98%; border: 0px;
+INPUT.text {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
+	width: 98%;
+	border: 0px;
 }
-INPUT.textwhite
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
+INPUT.textwhite {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
 	border: 1px solid #c0c0c0;
 }
-INPUT.password
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
-	width: 98%; border: 0px;
+INPUT.password {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
+	width: 98%;
+	border: 0px;
 }
-INPUT.submit
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
-	border: 1px solid black; background-color: #c0c0c0; -moz-border-radius: 4px;
+INPUT.submit {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
+	border: 1px solid black;
+	background-color: #c0c0c0;
+	-moz-border-radius: 4px;
 }
-INPUT.checkbox
-{	border: 0px; background-color: #c0c0c0; width: 10px; height: 10px;
+INPUT.checkbox {
+	border: 0px;
+	background-color: #c0c0c0;
+	width: 10px;
+	height: 10px;
 }
-TEXTAREA
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
+TEXTAREA {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
 	width: 98%; border: 1px dashed #c0c0c0;
 }
-SELECT
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10pt;
+SELECT {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
 	border: 1px solid #c0c0c0;
 }
-.error
-{	color: red
+.error {
+	color: red
 }
-.info
-{	color: blue
+.info {
+	color: blue
 }
-.quasi_btn
-{	color: blue; cursor: pointer; white-space: nowrap;
+.quasi_btn {
+	color: blue;
+	cursor: pointer;
+	white-space: nowrap;
 }
-.footer
-{	font-family: Verdana, Geneva, Arial, sans-serif; font-size: 10px;
+.footer {
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10px;
 	color: #c0c0c0;
 }
-.deactivated
-{	text-decoration: line-through;
+.deactivated {
+	text-decoration: line-through;
 }
-.found
-{	color: green;
+.found {
+	color: green;
 }
 
-PRE
-{	padding: 0.5em; margin: 1em; border-width: 1px; border-style: dashed;
+PRE {
+	padding: 0.5em;
+	margin: 1em;
+	border-width: 1px;
+	border-style: dashed;
 }
-CODE, PRE, CITE
-{	font-family: "courier new", "courier", monospace;
+CODE, PRE, CITE {
+	font-family: "courier new", "courier", monospace;
 }
-UL.ed
-{	list-style: none; padding: 0 0 0 0; margin: 0 0 0 0;
+UL.ed {
+	list-style: none;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
 }
-UL.ed li
-{	float: left; margin-right: 5px;
+UL.ed li {
+	float: left;
+	margin-right: 5px;
 }
