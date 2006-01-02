@@ -2,12 +2,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= $lang ?>" lang="<?= $lang ?>">
 <head>
-    <title><?= txt('121') ?></title>
-    <script src="<?= $cfg['design_dir'] ?>/treeview.js" type="text/javascript"></script>
-    <script src="<?= $cfg['design_dir'] ?>/openmailadmin.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="<?= $cfg['design_dir'] ?>/treeview.css" type="text/css" />
-    <link rel="stylesheet" href="<?= $cfg['design_dir'] ?>/blueray.css" type="text/css" title="blueray" />
-    <link rel="alternate stylesheet" href="<?= $cfg['design_dir'] ?>/blueray.css" type="text/css" title="widescreen" />
-    <link rel="alternate stylesheet" href="<?= $cfg['design_dir'] ?>/blueray_widescreen.css" type="text/css" title="widescreen" />
-    </head>
+	<title><?= txt('121') ?></title>
+	<script src="<?= $cfg['design_dir'] ?>/treeview.js" type="text/javascript"></script>
+	<script src="<?= $cfg['design_dir'] ?>/openmailadmin.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="<?= $cfg['design_dir'] ?>/treeview.css" type="text/css" />
+	<link rel="stylesheet" href="<?= $cfg['design_dir'] ?>/blueray.css" type="text/css" title="blueray" />
+	<link rel="alternate stylesheet" href="<?= $cfg['design_dir'] ?>/blueray.css" type="text/css" title="widescreen" />
+	<link rel="alternate stylesheet" href="<?= $cfg['design_dir'] ?>/blueray_widescreen.css" type="text/css" title="widescreen" />
+</head>
 <body onload="init_tree(); init_oma()">

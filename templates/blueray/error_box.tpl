@@ -1,3 +1,3 @@
 <div class="box_error">
-    <p><?= $text ?></p>
+	<p><?= $text ?></p>
 </div>
