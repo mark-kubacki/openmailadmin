@@ -1,3 +1,7 @@
+<?php
+count_same_cols($domains, 'owner', 'n_owner');
+count_same_cols($domains, 'a_admin', 'n_admin');
+?>
 <?php if($oma->authenticated_user['a_admin_domains'] > 0) { ?>
     <form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
@@ -16,8 +20,12 @@
 		<?= $input->checkbox('dom[]', $domain['ID']) ?>
 		<?= $domain['domain'] ?>
 	    </td>
-	    <td class="std"><?= $domain['owner'] ?></td>
-	    <td class="std"><?= $domain['a_admin'] ?></td>
+	    <?php if(isset($domain['n_owner'])) { ?>
+		<td class="std" rowspan="<?= $domain['n_owner'] ?>"><?= $domain['owner'] ?></td>
+	    <?php } ?>
+	    <?php if(isset($domain['n_admin'])) { ?>
+		<td class="std" rowspan="<?= $domain['n_admin'] ?>"><?= $domain['a_admin'] ?></td>
+	    <?php } ?>
 	    <td class="std"><?= $domain['categories'] ?></td>
 	</tr>
     <?php } ?>

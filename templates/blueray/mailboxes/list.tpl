@@ -5,6 +5,7 @@
 					    ? ''
 					    : ', '.$mailboxes[$i]['num_regexp'].'/'.$mailboxes[$i]['max_regexp']);
     }
+count_same_cols($mailboxes, 'pate', 'n_paten');
 ?>
 <?php if($oma->authenticated_user['a_admin_user'] >= 1) { ?>
     <form action="<?= mkSelfRef() ?>" method="post">
@@ -52,7 +53,9 @@
 		<?php } ?>
 		</span>
 	    </td>
-	    <td><?= $mailbox['pate'] ?></td>
+	    <?php if(isset($mailbox['n_paten'])) { ?>
+		<td rowspan="<?= $mailbox['n_paten'] ?>"><?= $mailbox['pate'] ?></td>
+	    <?php } ?>
 	    <td><?= hsys_format_quota($mailbox['mbox']) ?></td>
 	    <td>
 		<?= $mailbox['num_alias'] ?>/<?= $mailbox['max_alias'] ?>

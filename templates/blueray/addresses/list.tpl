@@ -1,3 +1,6 @@
+<?php
+count_same_cols($alias, 'domain', 'n_domain');
+?>
 <form action="<?= mkSelfRef() ?>" method="post">
 <div id="data">
 <h2><?= txt('17') ?> <?= $oma->current_user['used_alias'] ?>/<?= $oma->current_user['max_alias'] ?></h2>
@@ -17,7 +20,9 @@
 		    <span><?= $entry['alias'] ?></span>
 		<?php } ?>
 	    </td>
-	    <td>@<?= $entry['domain'] ?></td>
+	    <?php if(isset($entry['n_domain'])) { ?>
+		<td rowspan="<?= $entry['n_domain'] ?>">@<?= $entry['domain'] ?></td>
+	    <?php } ?>
 	    <td>
 		<?php if(count($entry['dest']) >= $cfg['address']['hide_threshold']) { ?>
 		    <span class="quasi_btn"><?= sprintf(txt('96'), count($entry['dest'])) ?> &raquo;</span>
@@ -29,7 +34,7 @@
 			<li><?= $destination ?></li>
 		    <?php } ?>
 		</ul>
-		<?php if(count($entry['dest']) >= 5) { ?>
+		<?php if(count($entry['dest']) >= $cfg['address']['hide_threshold']) { ?>
 		    </div>
 		<?php } ?>
 	    </td>

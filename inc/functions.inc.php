@@ -337,4 +337,22 @@ function obfuscator_decrypt($ciphertext) {
 	}
 }
 
+/**
+ * For combining rows in tables with same content.
+ *
+ * @param	arr	Array with hashes.
+ * @param	field	Field to be counted (in hash).
+ * @param	tagname	This field will be added to the hash with number of same following rows. Only first different row wiill carry this tag.
+ */
+function count_same_cols(&$arr, $fieldname, $tagname) {
+	$c	= 0;
+	for($i = count($arr)-1; $i >= 0; $i--) {
+		++$c;
+		if(!isset($arr[$i-1][$fieldname]) || $arr[$i-1][$fieldname] != $arr[$i][$fieldname]) {
+			$arr[$i][$tagname]	= $c;
+			$c = 0;
+		}
+	}
+}
+
 ?>

@@ -63,6 +63,8 @@
 <file url="inc/lib/cyrus.php" id="1078973E1AEL52cf15470x24c3" name="cyrus.php">
 </file>
 </folder>
+<file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
+</file>
 </folder>
 <folder url="samples" id="0A4E4102-48EC-4C5D-ACC1-B2211945407F" name="samples">
 <preference-set id="">
