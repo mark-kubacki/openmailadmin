@@ -67,6 +67,18 @@
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
 </file>
+<folder id="1089203809CL719efb1e0x276a" name="database">
+<file url="inc/database/domains.adodb.txt" id="1089203A91DL2dd5b9d80x276a" name="domains.adodb.txt">
+</file>
+<file url="inc/database/imap_demo.adodb.txt" id="1089203A928L4cc525f40x276a" name="imap_demo.adodb.txt">
+</file>
+<file url="inc/database/user.adodb.txt" id="1089203A932L776104250x276a" name="user.adodb.txt">
+</file>
+<file url="inc/database/virtual.adodb.txt" id="1089203A93CL1a16e070x276a" name="virtual.adodb.txt">
+</file>
+<file url="inc/database/virtual_regexp.adodb.txt" id="1089203A946L6dfcabff0x276a" name="virtual_regexp.adodb.txt">
+</file>
+</folder>
 </folder>
 <folder url="samples" id="0A4E4102-48EC-4C5D-ACC1-B2211945407F" name="samples">
 <preference-set id="">
@@ -250,6 +262,8 @@
 <file url="templates/setup/step1.tpl" id="10890EFC2EDLfae673d0x276a" name="step1.tpl">
 </file>
 <file url="templates/setup/step2.tpl" id="10891907EF6L3c823c910x276a" name="step2.tpl">
+</file>
+<file url="templates/setup/step3.tpl" id="10891C87C3FL1de2b0a30x276a" name="step3.tpl">
 </file>
 </folder>
 </folder>

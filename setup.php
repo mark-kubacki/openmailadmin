@@ -13,6 +13,61 @@ include('./inc/functions.inc.php');
 
 include('./templates/setup/header.tpl');
 switch($_GET['step']) {
+	case '3':
+		$db	= @ADONewConnection($_POST['dsn']);
+		if(!$db) {
+			$failure	= 'Cannot connect to DB. Please correct your DSN';
+		} else {
+			$tables
+			= array('user'		=>	'user.adodb.txt',
+				'domains'	=>	'domains.adodb.txt',
+				'virtual'	=>	'virtual.adodb.txt',
+				'virtual_regexp'=>	'virtual_regexp.adodb.txt',
+				'imap_demo'	=>	'imap_demo.adodb.txt',
+				);
+			// create tables
+			$status = array();
+			foreach($tables as $name=>$tablefile) {
+				$definition	= file_get_contents('./inc/database/'.$tablefile);
+				$dict		= NewDataDictionary($db);
+				$sqlarray	= $dict->CreateTableSQL($_POST['prefix'].$name, $definition);
+				$status[$name]	= array($_POST['prefix'].$name,
+							$dict->ExecuteSQLArray($sqlarray),
+							);
+			}
+			// add indices; that is not that critical
+			$dict->ExecuteSQLArray($dict->CreateIndexSQL('domain', $_POST['prefix'].'domains', 'domain', array('UNIQUE')));
+			$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'domains', 'owner'));
+			$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual', 'owner'));
+			$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual_regexp', 'owner'));
+			// add sample data - only if table has been created and did not exist
+			if($status['user'][1] == 2) {
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', crypt($_POST['admin_pass'], substr($_POST['admin_pass'],0,2)), md5($_POST['admin_pass']), '', 'all', 1, 1, time(), time(), 10000, 100, 2, 2, 2),
+						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', crypt($_POST['imap_pass'], substr($_POST['imap_pass'],0,2)), md5($_POST['imap_pass']), '', 'none', 1, 1, time(), time(), 0, 0, 0, 0, 1),
+						));
+			}
+			if($status['domains'][1] == 2) {
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'domains (ID,domain,categories,owner,a_admin) VALUES (?,?,?,?,?)',
+						array(1, 'example.com', 'all, samples', $_POST['admin_user'], $_POST['admin_user']));
+			}
+			if($status['virtual'][1] == 2) {
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual (address,dest,owner,active,neu) VALUES (?,?,?,?,?)',
+						array('me@example.com', $_POST['admin_user'], $_POST['admin_user'], 1, 1));
+			}
+			if($status['virtual_regexp'][1] == 2) {
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual_regexp (ID,reg_exp,dest,owner,active,neu) VALUES (?,?,?,?,?,?)',
+						array(11, '/^(postmaster|abuse|security|root)@example\\.com$/', $_POST['admin_user'], $_POST['admin_user'], 1, 1));
+			}
+			if($status['imap_demo'][1] == 2) {
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'imap_demo (mailbox,used,qmax,ACL) VALUES (?,?,?,?)',
+						array(	array('user.'.$_POST['admin_user'], 0, 0, $_POST['admin_user'].' lrswipcda'),
+							array('shared', 0, 0, 'anyone lrswipcda'),
+							));
+			}
+		}
+		include('./templates/setup/step3.tpl');
+		break;
 	case '2':
 		$available_db	= array();
 		if(function_exists('mysql_connect'))	$available_db[] = array('mysql', 'mysql://user:pwd@host/mydb');

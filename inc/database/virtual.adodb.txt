@@ -1,0 +1,5 @@
+address		C 255	DEFAULT '' PRIMARY,
+dest		X	NOTNULL,
+owner		C 16	DEFAULT '' NOTNULL,
+active		L 1	DEFAULT 1 NOTNULL,
+neu		L 1	DEFAULT 1 NOTNULL

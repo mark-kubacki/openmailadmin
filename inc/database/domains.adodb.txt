@@ -1,0 +1,5 @@
+ID		I	UNSIGNED PRIMARY AUTO,
+domain		C 64	DEFAULT '' NOTNULL,
+categories	C 100	DEFAULT 'all' NOTNULL,
+owner		C 16	DEFAULT '' NOTNULL,
+a_admin		X	NOTNULL

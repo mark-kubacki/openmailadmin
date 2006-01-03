@@ -74,7 +74,7 @@ th.w140 {
 div.next_step {
 	position: relative;
 	left: 600px;
-	width: 100px;
+	width: 140px;
 }
 
 dt {
@@ -96,4 +96,13 @@ input {
 	font-size: 9pt;
 	padding: 1px 2px 1px 2px;
 	margin-left: 1em;
+}
+a {
+	color: blue;
+}
+input.fake_a {
+	border: 0;
+	background-color: inherit;
+	text-decoration: underline;
+	color: blue;
 }
