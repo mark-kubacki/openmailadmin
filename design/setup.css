@@ -9,6 +9,9 @@ body {
 h1, h2 {
 	margin: 0;
 }
+h3 {
+	text-decoration: underline;
+}
 
 div.setup_outer {
 	background-image: url(../images/setup/shadow.png);
@@ -54,6 +57,9 @@ table.settings th {
 table.settings td {
 	border-bottom: 1px #cccccc dotted;
 }
+th.w140 {
+	width: 140px;
+}
 
 .good {
 	color: green;
@@ -63,4 +69,31 @@ table.settings td {
 }
 .bad {
 	color: red;
+}
+
+div.next_step {
+	position: relative;
+	left: 600px;
+	width: 100px;
+}
+
+dt {
+	font-weight: bold;
+}
+
+input {
+	background-color: #ffffff;
+	border: 1px solid;
+	width: 90%;
+}
+
+.hidden {
+	display: none;
+}
+.ajax_ok {
+	background-color: green;
+	color: white;
+	font-size: 9pt;
+	padding: 1px 2px 1px 2px;
+	margin-left: 1em;
 }

@@ -1,9 +1,9 @@
 <?php
-/*if(is_file('./inc/config.local.inc.php')) {
+if(is_file('./inc/config.local.inc.php')) {
 	header('HTTP/1.1 303 See Other');
 	header('Location: index.php');
 	die('Setup has already been run.');
-} */
+}
 
 ob_start('ob_gzhandler');
 
@@ -12,7 +12,15 @@ include('./inc/functions.inc.php');
 @include('adodb/adodb.inc.php');
 
 include('./templates/setup/header.tpl');
-switch($step) {
+switch($_GET['step']) {
+	case '2':
+		$available_db	= array();
+		if(function_exists('mysql_connect'))	$available_db[] = array('mysql', 'mysql://user:pwd@host/mydb');
+		if(function_exists('mysqli_connect'))	$available_db[] = array('mysqli', 'mysqli://user:pwd@host/mydb');
+		if(function_exists('sqlite_open'))	$available_db[] = array('sqlite', 'sqlite://..%2Fmydb.db');
+		if(function_exists('pg_connect'))	$available_db[] = array('postgres', 'postgres://user:pwd@host/mydb');
+		include('./templates/setup/step2.tpl');
+		break;
 	default:
 	case '1':
 		$expectations

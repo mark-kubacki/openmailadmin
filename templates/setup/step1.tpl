@@ -48,5 +48,9 @@
 	</tr>
 	<?php } ?>
 	</table>
-	</div>
+	<h3>next step</h3>
+	<p>We won't hinder you from proceeding to next step, but beware!</p>
+	<p>If you see something in red letters on this page, your installation doesn't meet requirements.
+	In that case, please install missing software or update your environment and try the tests again.</p>
+	<div class="next_step"><a href="setup.php?step=2" title="next step">proceed to step 2</a></div>
 </div>

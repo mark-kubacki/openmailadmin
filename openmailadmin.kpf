@@ -249,6 +249,8 @@
 </file>
 <file url="templates/setup/step1.tpl" id="10890EFC2EDLfae673d0x276a" name="step1.tpl">
 </file>
+<file url="templates/setup/step2.tpl" id="10891907EF6L3c823c910x276a" name="step2.tpl">
+</file>
 </folder>
 </folder>
 <file url="setup.php" id="10890F1EB0DL6da5443b0x276a" name="setup.php">
