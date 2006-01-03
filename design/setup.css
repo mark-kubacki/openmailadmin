@@ -1,0 +1,66 @@
+body {
+	background-image: url(../images/setup/body.png);
+	background-repeat: repeat-x;
+	background-color: #e1d4c0;
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 10pt;
+	margin: 0;
+}
+h1, h2 {
+	margin: 0;
+}
+
+div.setup_outer {
+	background-image: url(../images/setup/shadow.png);
+	background-color: #f5ede3;
+	width: 820px;
+	height: 100%;
+	margin-bottom: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+div.setup_head_outer {
+	background-image: url(../images/setup/head_sh.png);
+	background-color: #003366;
+	color: #ffffff;
+	margin: 0;
+	height: 67px;
+}
+div.setup_head, div.setup_body {
+	margin-top: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 720px;
+}
+div.setup_head {
+	padding-top: 8px;
+}
+div.setup_body {
+	padding-top: 2em;
+}
+
+table.settings {
+	border-collapse: collapse;
+	width: 100%;
+}
+table.settings td, table.settings th {
+	text-align: left;
+	padding-left: 0.3em;
+	padding-right: 0.2em;
+}
+table.settings th {
+	border-bottom: 1px #cccccc solid;
+}
+table.settings td {
+	border-bottom: 1px #cccccc dotted;
+}
+
+.good {
+	color: green;
+}
+.tolerated {
+	color: orange;
+}
+.bad {
+	color: red;
+}
