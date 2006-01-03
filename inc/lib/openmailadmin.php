@@ -529,18 +529,22 @@ class openmailadmin
 					$del_nm[] = $result->fields['domain'];
 					$result->MoveNext();
 				}
-				$this->db->Execute('DELETE FROM '.$cfg['tablenames']['domains'].' WHERE FIND_IN_SET(ID, '.$this->db->qstr(implode(',',$del_ID)).') LIMIT '.count($del_ID));
-				if($this->db->Affected_Rows() < 1) {
-					if($this->db->ErrorNo() != 0) {
-						$this->error[]	= $this->db->ErrorMsg();
+				if(isset($del_ID)) {
+					$this->db->Execute('DELETE FROM '.$cfg['tablenames']['domains'].' WHERE FIND_IN_SET(ID, '.$this->db->qstr(implode(',',$del_ID)).') LIMIT '.count($del_ID));
+					if($this->db->Affected_Rows() < 1) {
+						if($this->db->ErrorNo() != 0) {
+							$this->error[]	= $this->db->ErrorMsg();
+						}
+					} else {
+						$this->info[]	= txt('52').'<br />'.implode(', ', $del_nm);
+						// We better deactivate all aliases containing that domain, so users can see the domain was deleted.
+						$this->db->Execute('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual'].' SET active = 0, neu = 1 WHERE FIND_IN_SET(SUBSTRING(address, LOCATE(\'@\', address)+1), \''.implode(',', $del_nm).'\')');
+						// We can't do such on REGEXP addresses: They may catch more than the given domains.
+						$this->user_invalidate_domain_sets();
+						return true;
 					}
 				} else {
-					$this->info[]	= txt('52').'<br />'.implode(', ', $del_nm);
-					// We better deactivate all aliases containing that domain, so users can see the domain was deleted.
-					$this->db->Execute('UPDATE LOW_PRIORITY '.$cfg['tablenames']['virtual'].' SET active = 0, neu = 1 WHERE FIND_IN_SET(SUBSTRING(address, LOCATE(\'@\', address)+1), \''.implode(',', $del_nm).'\')');
-					// We can't do such on REGEXP addresses: They may catch more than the given domains.
-					$this->user_invalidate_domain_sets();
-					return true;
+					$this->error[]	= txt('16');
 				}
 			} else {
 				$this->error[]	= txt('16');
