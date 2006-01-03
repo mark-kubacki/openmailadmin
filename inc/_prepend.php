@@ -1,5 +1,5 @@
 <?php
-$version = '0.9.0-alpha';
+$version = '0.9.0-beta';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
@@ -86,10 +86,8 @@ if(!$result === false) {
 if($oma->current_user['mbox'] == $oma->current_user['pate']) {
 	$cpate = array('person' => txt('29'), 'mbox' => $oma->current_user['mbox']);
 } else {
-	$result = $db->GetRow('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$db->qstr($oma->current_user['pate']));
-	if(!$result === false) {
-		$cpate = $result;
-	} else {
+	$cpate = $db->GetRow('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$db->qstr($oma->current_user['pate']));
+	if($cpate === false) {
 		$cpate	= array('person' => txt('28'), 'mbox' => $oma->current_user['mbox']);
 	}
 }

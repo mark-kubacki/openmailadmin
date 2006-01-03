@@ -91,11 +91,7 @@ class openmailadmin
 	 */
 	function get_user_row($mailbox) {
 		global $cfg;
-		$result = $this->db->GetRow('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$this->db->qstr($mailbox));
-		if(!$result === false) {
-			return $result->fields;
-		}
-		return false;
+		return $this->db->GetRow('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$this->db->qstr($mailbox));
 	}
 
 	/*
@@ -1248,7 +1244,7 @@ class openmailadmin
 					.' FROM '.$cfg['tablenames']['user']
 					.' WHERE FIND_IN_SET(mbox, '.$aux_tmp.')');
 			if(!$result === false) {
-				$will_be_free = $result->fields;
+				$will_be_free = $result;
 			}
 		}
 
