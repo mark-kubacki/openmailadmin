@@ -7,16 +7,16 @@
  */
 class openmailadmin
 {
-	var $current_user;		// What user do we edit/display currently?
-	var $authenticated_user;	// What user did log in?
+	public	$current_user;		// What user do we edit/display currently?
+	public	$authenticated_user;	// What user did log in?
 
-	var $db;
+	private	$db;
 
-	var $error;			// This will store any errors. (Array)
-	var $info;			// Array for informations.
+	protected	$error;		// This will store any errors. (Array)
+	protected	$info;		// Array for informations.
 
-	var $regex_valid_email	= '[a-z0-9]{1,}[a-z0-9\.\-\_\+]*@[a-z0-9\.\-\_]{2,}\.[a-z]{2,}';
-	var $regex_valid_domain	= '[a-z0-9\-\_\.]{2,}\.[a-z]{2,}';
+	const	regex_valid_email	= '[a-z0-9]{1,}[a-z0-9\.\-\_\+]*@[a-z0-9\.\-\_]{2,}\.[a-z]{2,}';
+	const	regex_valid_domain	= '[a-z0-9\-\_\.]{2,}\.[a-z]{2,}';
 
 	function __construct(ADOConnection $adodb_handler) {
 		$this->status_reset();
@@ -26,30 +26,30 @@ class openmailadmin
 	/*
 	 * Sets $errors to 'no errors occured' and $info to 'no info'.
 	 */
-	function status_reset() {
+	public function status_reset() {
 		$this->error		= array();
 		$this->info		= array();
 	}
 	/*
 	 * If any errors occured, returns true.
 	 */
-	function errors_occured() {
+	public function errors_occured() {
 		return (count($this->error) > 0);
 	}
-	function info_occured() {
+	public function info_occured() {
 		return (count($this->info) > 0);
 	}
 	/*
 	 * Concatenates every error message.
 	 */
-	function errors_get() {
+	public function errors_get() {
 		$err	= implode(' ', $this->error);
 		return $err;
 	}
 	/*
 	 * Concatenates every information message.
 	 */
-	function info_get() {
+	public function info_get() {
 		$err	= implode(' ', $this->info);
 		return $err;
 	}
@@ -57,7 +57,7 @@ class openmailadmin
 	/*
 	 * This procedure simply executes every command stored in the array.
 	 */
-	function rollback($what) {
+	private function rollback($what) {
 		global $cfg;
 		global $imap;
 
@@ -73,7 +73,7 @@ class openmailadmin
 	/*
 	 * Returns a long list with every active mailbox.
 	 */
-	function get_mailbox_names() {
+	private function get_mailbox_names() {
 		global $cfg;
 		$tmp	= array();
 
@@ -89,7 +89,7 @@ class openmailadmin
 	 * As the name says, returns an array containing the entire row
 	 * of the "user" table belonging to that mailbox.
 	 */
-	function get_user_row($mailbox) {
+	public function get_user_row($mailbox) {
 		global $cfg;
 		return $this->db->GetRow('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$this->db->qstr($mailbox));
 	}
@@ -98,11 +98,11 @@ class openmailadmin
 	 * Accepts a string containing possible destination for an email-address,
 	 * selects valid destinations and returns them.
 	 */
-	function get_valid_destinations($possible) {
+	public function get_valid_destinations($possible) {
 		global $cfg;
 
 		// Define what addresses we will accept.
-		$pattern  = $this->regex_valid_email;
+		$pattern  = openmailadmin::regex_valid_email;
 		$pattern .= '|'.$this->current_user['mbox'].'|'.txt('5').'|'.strtolower(txt('5'));
 		if($cfg['allow_mbox_as_target']) {
 			$mailboxes = &$this->get_mailbox_names();
@@ -130,7 +130,7 @@ class openmailadmin
 	/*
 	 * Returns an array containing all domains the user may choose from.
 	 */
-	function get_domain_set($user, $categories, $cache = true) {
+	public function get_domain_set($user, $categories, $cache = true) {
 		global $cfg;
 		$cat = '';
 		$poss_dom = array();
@@ -161,7 +161,7 @@ class openmailadmin
 	 * Checks whether a user is a descendant of another user.
 	 * (Unfortunately, PHP does not support inline functions.)
 	 */
-	function user_is_descendant($child, $parent, $levels = 7, $cache = array()) {
+	public function user_is_descendant($child, $parent, $levels = 7, $cache = array()) {
 		global $cfg;
 		// initialize cache
 		if(!isset($_SESSION['cache']['IsDescendant'])) {
@@ -199,7 +199,7 @@ class openmailadmin
 	 * How many aliases the user has already in use?
 	 * Does cache, but not session-wide.
 	 */
-	function user_get_used_alias($username) {
+	public function user_get_used_alias($username) {
 		global $cfg;
 		static $used = array();
 		if(!isset($used[$username])) {
@@ -211,7 +211,7 @@ class openmailadmin
 	 * How many regexp-addresses the user has already in use?
 	 * Does cache, but not session-wide.
 	 */
-	function user_get_used_regexp($username) {
+	public function user_get_used_regexp($username) {
 		global $cfg;
 		static $used = array();
 		if(!isset($used[$username])) {
@@ -223,7 +223,7 @@ class openmailadmin
 	/*
 	 * These just count how many elements have been assigned to that given user.
 	 */
-	function user_get_number_mailboxes($username) {
+	public function user_get_number_mailboxes($username) {
 		global $cfg;
 		if(!isset($_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'])) {
 			$tmp = $this->db->GetOne('SELECT COUNT(*) FROM '.$cfg['tablenames']['user'].' WHERE pate='.$this->db->qstr($username));
@@ -234,7 +234,7 @@ class openmailadmin
 	/*
 	 * These just count how many elements have been assigned to that given user.
 	 */
-	function user_get_number_domains($username) {
+	public function user_get_number_domains($username) {
 		global $cfg;
 		if(!isset($_SESSION['cache']['n_Domains'][$username]['domains'])) {
 			$tmp = $this->db->GetOne('SELECT COUNT(*) FROM '.$cfg['tablenames']['domains'].' WHERE owner='.$this->db->qstr($username));
@@ -245,7 +245,7 @@ class openmailadmin
 	/*
 	 * In case you have changed something about domains...
 	 */
-	function user_invalidate_domain_sets() {
+	private function user_invalidate_domain_sets() {
 		if(isset($_SESSION['cache']['getDomainSet'])) {
 			unset($_SESSION['cache']['getDomainSet']);
 		}
@@ -255,7 +255,7 @@ class openmailadmin
 	/*
 	 * Returns a long list with all addresses (the virtual table).
 	 */
-	function get_addresses() {
+	public function get_addresses() {
 		global $cfg;
 		$alias = array();
 
@@ -292,7 +292,7 @@ class openmailadmin
 	/*
 	 * Creates a new email-address.
 	 */
-	function address_create($alias, $domain, $arr_destinations) {
+	public function address_create($alias, $domain, $arr_destinations) {
 		global $cfg;
 
 		// May the user create another address?
@@ -344,7 +344,7 @@ class openmailadmin
 	/*
 	 * Deletes the given addresses if they belong to the current user.
 	 */
-	function address_delete($arr_addresses) {
+	public function address_delete($arr_addresses) {
 		global $cfg;
 
 		$this->db->Execute('DELETE FROM '.$cfg['tablenames']['virtual']
@@ -366,7 +366,7 @@ class openmailadmin
 	/*
 	 * Changes the destination of the given addresses if they belong to the current user.
 	 */
-	function address_change_destination($arr_addresses, $arr_destinations) {
+	public function address_change_destination($arr_addresses, $arr_destinations) {
 		global $cfg;
 
 		$this->db->Execute('UPDATE '.$cfg['tablenames']['virtual'].' SET dest='.$this->db->qstr(implode(',', $arr_destinations)).', neu=1'
@@ -387,7 +387,7 @@ class openmailadmin
 	 * Toggles the 'active'-flag of a set of addresses  of the current user
 	 * and thus sets inactive ones to active ones and vice versa.
 	 */
-	function address_toggle_active($arr_addresses) {
+	public function address_toggle_active($arr_addresses) {
 		global $cfg;
 
 		$this->db->Execute('UPDATE '.$cfg['tablenames']['virtual'].' SET active=NOT active, neu=1'
@@ -406,11 +406,11 @@ class openmailadmin
 	}
 
 /* ******************************* domains ********************************** */
-	var $editable_domains;	// How many domains can the current user change?
+	public $editable_domains;	// How many domains can the current user change?
 	/*
 	 * Returns a long list with all domains (from table 'domains').
 	 */
-	function get_domains() {
+	public function get_domains() {
 		global $cfg;
 		$this->editable_domains = 0;
 		$domains = array();
@@ -450,7 +450,7 @@ class openmailadmin
 	 * the reference user? If so, return true.
 	 * $reference is an user, $tobechecked an mailboxname.
 	 */
-	function domain_check($reference, $tobechecked, $domain_key) {
+	private function domain_check($reference, $tobechecked, $domain_key) {
 		if(!isset($reference['domain_set'])) {
 			$reference['domain_set'] = $this->get_domain_set($reference['mbox'], $reference['domains']);
 		}
@@ -475,7 +475,7 @@ class openmailadmin
 	 * Adds a new domain into the corresponding table.
 	 * Categories are for grouping domains.
 	 */
-	function domain_add($domain, $props) {
+	public function domain_add($domain, $props) {
 		global $cfg;
 
 		$props['domain'] = $domain;
@@ -503,7 +503,7 @@ class openmailadmin
 	 * Not only removes the given domains by their ids,
 	 * it deactivates every address which ends in that domain.
 	 */
-	function domain_remove($domains) {
+	public function domain_remove($domains) {
 		global $cfg;
 
 		// We need the old domain name later...
@@ -554,7 +554,7 @@ class openmailadmin
 	/*
 	 * Every parameter is an array. $domains contains IDs.
 	 */
-	function domain_change($domains, $change, $data) {
+	public function domain_change($domains, $change, $data) {
 		global $cfg;
 		$toc = array();		// to be changed
 
@@ -633,7 +633,7 @@ class openmailadmin
 	 * Use this if the old password does not matter.
 	 * Includes the check whether the user has the right to do this.
 	 */
-	function user_set_password($username, $plaintext_password) {
+	private function user_set_password($username, $plaintext_password) {
 		global $cfg;
 
 		// Check whether the authenticated user has the right to do that.
@@ -670,7 +670,7 @@ class openmailadmin
 	 * This requires the former password for authentication if current user and
 	 * authenticated user are the same.
 	 */
-	function user_change_password($new, $new_repeat, $old_passwd = null) {
+	public function user_change_password($new, $new_repeat, $old_passwd = null) {
 		global $cfg;
 
 		if($this->current_user['mbox'] == $this->authenticated_user['mbox']
@@ -701,7 +701,7 @@ class openmailadmin
 	 * Returns a long list with all regular expressions (the virtual_regexp table).
 	 * If $match_against is given, the flag "matching" will be set on matches.
 	 */
-	function get_regexp($match_against = null) {
+	public function get_regexp($match_against = null) {
 		global $cfg;
 		$regexp = array();
 
@@ -739,7 +739,7 @@ class openmailadmin
 	/*
 	 * Creates a new regexp-address.
 	 */
-	function regexp_create($regexp, $arr_destinations) {
+	public function regexp_create($regexp, $arr_destinations) {
 		global $cfg;
 
 		// some dull checks;
@@ -770,7 +770,7 @@ class openmailadmin
 	/*
 	 * Deletes the given regular expressions if they belong to the current user.
 	 */
-	function regexp_delete($arr_regexp_ids) {
+	public function regexp_delete($arr_regexp_ids) {
 		global $cfg;
 
 		$this->db->Execute('DELETE FROM '.$cfg['tablenames']['virtual_regexp']
@@ -792,7 +792,7 @@ class openmailadmin
 	/*
 	 * See "address_change_destination".
 	 */
-	function regexp_change_destination($arr_regexp_ids, $arr_destinations) {
+	public function regexp_change_destination($arr_regexp_ids, $arr_destinations) {
 		global $cfg;
 
 		$this->db->Execute('UPDATE '.$cfg['tablenames']['virtual_regexp'].' SET dest='.$this->db->qstr(implode(',', $arr_destinations)).', neu = 1'
@@ -812,7 +812,7 @@ class openmailadmin
 	/*
 	 * See "address_toggle_active".
 	 */
-	function regexp_toggle_active($arr_regexp_ids) {
+	public function regexp_toggle_active($arr_regexp_ids) {
 		global $cfg;
 
 		$this->db->Execute('UPDATE '.$cfg['tablenames']['virtual_regexp'].' SET active = NOT active, neu = 1'
@@ -836,7 +836,7 @@ class openmailadmin
 	 * Typically all his patenkinder will show up.
 	 * If the current user is at his pages and is superuser, he will see all mailboxes.
 	 */
-	function get_mailboxes() {
+	public function get_mailboxes() {
 		global $cfg;
 		$mailboxes = array();
 
@@ -870,7 +870,7 @@ class openmailadmin
 	/*
 	 * This will return a list with $whose's patenkinder for further use in selections.
 	 */
-	function get_selectable_paten($whose) {
+	public function get_selectable_paten($whose) {
 		global $cfg;
 
 		if(!isset($_SESSION['paten'][$whose])) {
@@ -900,7 +900,7 @@ class openmailadmin
 	 * of $who. If the authenticated user is superuser, no filtering is done
 	 * except elimination imposed by $cfg['user_ignore'].
 	 */
-	function mailbox_filter_manipulable($who, $desired_mboxes) {
+	private function mailbox_filter_manipulable($who, $desired_mboxes) {
 		global $cfg;
 		$allowed = array();
 
@@ -922,7 +922,7 @@ class openmailadmin
 	 * $props is typically $_POST, as this function selects all the necessary fields
 	 * itself.
 	 */
-	function mailbox_create($mboxname, $props) {
+	public function mailbox_create($mboxname, $props) {
 		global $cfg;
 		global $imap;
 		$rollback	= array();
@@ -1040,7 +1040,7 @@ class openmailadmin
 	/*
 	 * $props can be $_POST, as every sutable field from $change is used.
 	 */
-	function mailbox_change($mboxnames, $change, $props) {
+	public function mailbox_change($mboxnames, $change, $props) {
 		global $cfg;
 		global $imap;
 
@@ -1193,7 +1193,7 @@ class openmailadmin
 	/*
 	 * If ressources are freed, the current user will get them.
 	 */
-	function mailbox_delete($mboxnames) {
+	public function mailbox_delete($mboxnames) {
 		global $cfg;
 		global $imap;
 
@@ -1276,7 +1276,7 @@ class openmailadmin
 	/*
 	 * active <-> inactive
 	 */
-	function mailbox_toggle_active($mboxnames) {
+	public function mailbox_toggle_active($mboxnames) {
 		global $cfg;
 		$tobechanged = $this->mailbox_filter_manipulable($this->current_user['mbox'], $mboxnames);
 		if(count($tobechanged) > 0) {
@@ -1300,7 +1300,7 @@ class openmailadmin
 	 * @param	data	typically $_POST
 	 * @param	which	array with the fields' names
 	 */
-	function validate_input(&$data, $which) {
+	private function validate_input(&$data, $which) {
 		global $cfg;
 		// Fieldname as key, cap as its caption and def as its default value.
 		$inputs['mbox']		= array('cap'	=> txt('83'),
@@ -1363,7 +1363,7 @@ class openmailadmin
 						array(	'val'	=> '$this->domain_check($this->current_user, $this->current_user[\'mbox\'], ~)',
 							'error'	=> txt('81')),
 						);
-		$validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.$this->regex_valid_email.\'/i\', ~)',
+		$validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.openmailadmin::regex_valid_email.\'/i\', ~)',
 							'error'	=> txt('64')),
 						);
 		$validate['quota']	= array(array(	'val'	=> 'is_numeric(~) && settype(~, \'int\') && ~ >= 0',
@@ -1383,7 +1383,7 @@ class openmailadmin
 		$validate['a_admin_domains']	= $validate['a_super'];
 		$validate['a_admin_user']	= $validate['a_super'];
 		// domains
-		$validate['domain']	= array(array(	'val'	=> 'preg_match(\'/^\'.$this->regex_valid_domain.\'$/i\', ~)',
+		$validate['domain']	= array(array(	'val'	=> 'preg_match(\'/^\'.openmailadmin::regex_valid_domain.\'$/i\', ~)',
 							'error'	=> txt('51')),
 						);
 		$validate['owner']	= array(array(	'val'	=> 'strlen(~) >= $cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
@@ -1433,7 +1433,6 @@ class openmailadmin
 				}
 			}
 		}
-
 		// Now we can set error-messages.
 		if($error_occured) {
 			if(count($invalid) > 0) {
@@ -1443,7 +1442,6 @@ class openmailadmin
 				$this->error[]	= sprintf(txt('129'), implode(', ', $missing));
 			}
 		}
-
 		return(!$error_occured);
 	}
 
