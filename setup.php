@@ -11,6 +11,28 @@ include('./inc/config.inc.php');
 include('./inc/functions.inc.php');
 @include('adodb/adodb.inc.php');
 
+// definition of configuration file's format
+$config = <<<EOT
+<?php
+// repeat these lines for every server or virtual domain
+\$cfg['Servers']['verbose'][] = '%s';
+\$cfg['Servers']['number'][] = \$i++;
+\$cfg['Servers']['DB'][] = array(
+	'DSN'		=> '%s',
+	'PREFIX'	=> '%s',
+);
+\$cfg['Servers']['IMAP'][] = array(
+	'TYPE'	=> '%s',
+	'HOST'	=> '%s',
+	'PORT'	=> %d,
+	'ADMIN'	=> '%s',
+	'PASS'	=> '%s',
+	'VDOM'	=> ''
+);
+?>
+EOT;
+
+// now comes processing
 include('./templates/setup/header.tpl');
 switch($_GET['step']) {
 	case '3':
@@ -65,6 +87,7 @@ switch($_GET['step']) {
 							array('shared', 0, 0, 'anyone lrswipcda'),
 							));
 			}
+			$config = sprintf($config, 'my database', $_POST['dsn'], $_POST['prefix'], $_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
 		}
 		include('./templates/setup/step3.tpl');
 		break;

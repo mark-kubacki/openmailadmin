@@ -28,6 +28,15 @@
 		</table>
 	<?php } ?>
 	<h3>configuration file</h3>
-	<p>This has been written as your new configuration file, <cite>./inc/config.local.inc.php</cite></p>
-	<p><pre><?php print_r($_POST); ?></pre></p>
+	<p>Please create a configuration file <cite>inc/config.local.inc.php</cite> with this content:</p>
+	<div class="code"><pre><code><?= htmlspecialchars($config) ?></code></pre></div>
+	<h3>finished</h3>
+	<p>Congratulations! After having created that file you can log in as superuser using this data:
+	<dl>
+		<dt>mailbox (equal to username)</dt>
+		<dd><cite><?= $_POST['admin_user'] ?></cite></dd>
+		<dt>password</dt>
+		<dd><cite><?= htmlspecialchars($_POST['admin_pass']) ?></cite></dd>
+	</dl>
+	</p>
 </div>

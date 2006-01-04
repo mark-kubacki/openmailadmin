@@ -12,7 +12,6 @@ h1, h2 {
 h3 {
 	text-decoration: underline;
 }
-
 div.setup_outer {
 	background-image: url(../images/setup/shadow.png);
 	background-color: #f5ede3;
@@ -41,7 +40,6 @@ div.setup_head {
 div.setup_body {
 	padding-top: 2em;
 }
-
 table.settings {
 	border-collapse: collapse;
 	width: 100%;
@@ -60,7 +58,6 @@ table.settings td {
 th.w140 {
 	width: 140px;
 }
-
 .good {
 	color: green;
 }
@@ -70,23 +67,19 @@ th.w140 {
 .bad {
 	color: red;
 }
-
 div.next_step {
 	position: relative;
 	left: 600px;
 	width: 140px;
 }
-
 dt {
 	font-weight: bold;
 }
-
 input {
 	background-color: #ffffff;
 	border: 1px solid;
 	width: 90%;
 }
-
 .hidden {
 	display: none;
 }
@@ -105,4 +98,9 @@ input.fake_a {
 	background-color: inherit;
 	text-decoration: underline;
 	color: blue;
+}
+div.code {
+	border: 1px dashed grey;
+	background-color: white;
+	padding-left: 1em;
 }

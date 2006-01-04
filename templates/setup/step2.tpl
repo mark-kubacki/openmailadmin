@@ -25,7 +25,7 @@
 	</tr>
 	<tr>
 		<td>DSN</td>
-		<td><input type="text" name="dsn" value="" /><span class="ajax_ok">OK</span></td>
+		<td><input type="text" name="dsn" value="" /></td>
 	</tr>
 	<tr>
 		<td>tablenames' prefix</td>
@@ -34,7 +34,7 @@
 	</table>
 
 	<h3>IMAP connection settings</h3>
-	<p><cite>Admin user</cite> and <cite>password</cite> are the settings required for IMAP.
+	<p><cite>Imap admin</cite> and his <cite>password</cite> are the settings required for IMAP.
 	They will be added to DB in step 3. Don't mix them up with your first superuser</p>
 	<table class="settings two">
 	<tr>
@@ -54,11 +54,11 @@
 		<td><input type="text" name="imap_port" value="" title="143" /></td>
 	</tr>
 	<tr>
-		<td>admin user</td>
+		<td>imap admin</td>
 		<td><input type="text" name="imap_user" value="" title="i.e. 'cyrus'" /></td>
 	</tr>
 	<tr>
-		<td>password</td>
+		<td>... password</td>
 		<td><input type="text" name="imap_pass" value="" title="i.e. '<?= md5(time().rand()) ?>'" /></td>
 	</tr>
 	<tr>
@@ -66,13 +66,12 @@
 		<td><input type="text" name="admin_user" value="" title="i.e. 'admin'" /></td>
 	</tr>
 	<tr>
-		<td>password</td>
+		<td>... password</td>
 		<td><input type="text" name="admin_pass" value="" title="i.e. 'supersecret'" /></td>
 	</tr>
 	</table>
 
 	<h3>next step</h3>
-	<p>Please make sure you have JavaScript enabled and a green OK shows up next to your DSN.</p>
 	<div class="next_step"><input type="submit" value="proceed to step 3" class="fake_a" /></div>
 </form>
 </div>
