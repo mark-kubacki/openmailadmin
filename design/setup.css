@@ -3,8 +3,10 @@ body {
 	background-repeat: repeat-x;
 	background-color: #e1d4c0;
 	font-family: Verdana, Geneva, Arial, sans-serif;
-	font-size: 10pt;
 	margin: 0;
+}
+body, div, td, th {
+	font-size: 14px;
 }
 h1, h2 {
 	margin: 0;
@@ -79,16 +81,6 @@ input {
 	background-color: #ffffff;
 	border: 1px solid;
 	width: 90%;
-}
-.hidden {
-	display: none;
-}
-.ajax_ok {
-	background-color: green;
-	color: white;
-	font-size: 9pt;
-	padding: 1px 2px 1px 2px;
-	margin-left: 1em;
 }
 a {
 	color: blue;

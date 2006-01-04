@@ -27,16 +27,15 @@
 		<?php } ?>
 		</table>
 	<?php } ?>
+	<?php if($_POST['admin_user'] == '' || $_POST['imap_user'] == '') { ?>
+	<p>You didn't provide all necessary data. Please hit 'back' on your browser.</p>
+	<?php } else { ?>
 	<h3>configuration file</h3>
 	<p>Please create a configuration file <cite>inc/config.local.inc.php</cite> with this content:</p>
 	<div class="code"><pre><code><?= htmlspecialchars($config) ?></code></pre></div>
 	<h3>finished</h3>
-	<p>Congratulations! After having created that file you can log in as superuser using this data:
-	<dl>
-		<dt>mailbox (equal to username)</dt>
-		<dd><cite><?= $_POST['admin_user'] ?></cite></dd>
-		<dt>password</dt>
-		<dd><cite><?= htmlspecialchars($_POST['admin_pass']) ?></cite></dd>
-	</dl>
+	<p>Congratulations! After having created that file you can log in as superuser with:
+	<cite><?= $_POST['admin_user'] ?></cite>:<cite><?= htmlspecialchars($_POST['admin_pass']) ?></cite>
 	</p>
+	<?php } ?>
 </div>
