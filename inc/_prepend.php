@@ -1,5 +1,5 @@
 <?php
-$version = '0.9.0';
+$version = '0.9.1-alpha';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
@@ -9,7 +9,6 @@ error_reporting(E_ALL);
 
 include('./inc/config.inc.php');
 @(include('./inc/config.local.inc.php'))
-	or @(include('./inc/config.local.inc.php4'))
 	or die('You have to create an configuration file, first. Try <a href="setup.php">setup.php</a>.');
 include('./inc/translation.inc.php');
 include('./inc/format_shadow_classes.inc.php');
@@ -42,12 +41,10 @@ if(!isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])) {
 
 switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
 	case 'fake-imap':
-		include('./inc/lib/fake-cyradm.php');
-		$imap = new fake_imap($cfg['Servers']['IMAP'][$_SESSION['server']], $db);
+		$imap = new Fake_IMAP($cfg['Servers']['IMAP'][$_SESSION['server']], $db);
 		break;
 	default:
-		include('./inc/lib/cyrus.php');
-		$imap = new cyrus($cfg['Servers']['IMAP'][$_SESSION['server']]);
+		$imap = new Cyrus_IMAP($cfg['Servers']['IMAP'][$_SESSION['server']]);
 		break;
 }
 
@@ -62,8 +59,7 @@ $cfg['tablenames']
 $now_on = isset($_GET['cuser']) ? $_GET['cuser'] : $authinfo['mbox'];
 
 // include the backend
-include('./inc/lib/openmailadmin.php');
-$oma 	= new openmailadmin($db);
+$oma	= new openmailadmin($db);
 $oma->authenticated_user	= &$authinfo;
 $oma->current_user		= &$cuser;
 unset($authinfo);

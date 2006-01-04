@@ -68,11 +68,10 @@ class Cyrus_IMAP
 		return $this->separator;
 	}
 
-	/*
-	* Sends commands to cyrus and returns the response.
-	* Unless additional data is provided the return will be either true
-	* or false. On additional data an array will be returned.
-	*/
+	/**
+	 * @param	cmd	Fully formatted command.
+	 * @return		Unless additional data is provided the return will be either true or false. On additional data an array will be returned.
+	 */
 	private function command($cmd) {
 		if(!$this->sp && !$this->imap_login()) {
 			$this->error_msg	= 'Login failed. Check your connection data.';
@@ -96,8 +95,6 @@ class Cyrus_IMAP
 			return ($row{2} == 'O');
 		}
 	}
-
-	/***** mailbox manipulation *****/
 
 	public function createmb($mailboxname) {
 		return $this->command('. create "'.$mailboxname.'"');
@@ -125,10 +122,6 @@ class Cyrus_IMAP
 		return $out;
 	}
 
-	/*
-	* Returns an array with these attributes:
-	* name, delimiter, attributes (don't rely on the latter)
-	*/
 	public function getmailboxes($ref = '', $pat = '*') {
 		$result = array();
 		foreach($this->command('. list "'.$ref.'" '.$pat) as $folder) {
@@ -142,12 +135,6 @@ class Cyrus_IMAP
 		return $result;
 	}
 
-	/***** quota manipulation *****/
-
-	/*
-	* Returns usage as 'used' and quota 'qmax'.
-	* If quota is unlimited or not set both values are 'NOT-SET'.
-	*/
 	public function getquota($mailboxname) {
 		$ret = array();
 		$out = $this->command('. getquota "'.$mailboxname.'"');
@@ -163,12 +150,10 @@ class Cyrus_IMAP
 		return $ret;
 	}
 
-	/*
-	* Sets storage limitations on a given mailbox.
-	* Quota has to be an integer, its dimension is kib. If quota is left out
-	* or null the mailbox' quota will be removed and thus regarded as
-	* 'not set' - that means unlimited.
-	*/
+	/**
+	 * @param	storage	Partition on which quota has to be set. May be ignored.
+	 * @see		IMAP_Administrator::setquota
+	 */
 	public function setquota($mailboxname, $quota = null, $storage = 'STORAGE') {
 		$data = '';
 		if(is_null($quota)) {
@@ -178,8 +163,6 @@ class Cyrus_IMAP
 		}
 		return $this->command('. setquota "'.$mailboxname.'" '.$data);
 	}
-
-	/***** ACL management *****/
 
 	public function getacl($mailboxname) {
 		$reult	= array();
@@ -207,9 +190,6 @@ class Cyrus_IMAP
 		return $this->command('. deleteacl "'.$mailboxname.'" "'.$user.'"');
 	}
 
-	/**
-	 * Adds prefixes and suffixes as well as separators to a username
-	 */
 	public function format_user($username, $folder = null) {
 		if(is_null($folder)) {
 			return('user'.$this->separator.$username.$this->connection_data['VDOM']);

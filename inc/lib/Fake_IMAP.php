@@ -1,6 +1,6 @@
 <?php
 /**
- * For emulating cyrus.php by utilizing database as storage.
+ * For emulating cyrus-imapd client by utilizing database as storage.
  */
 class Fake_IMAP
 	implements IMAP_Administrator
@@ -20,6 +20,10 @@ class Fake_IMAP
 		return $this->separator;
 	}
 
+	/**
+	 * @param	cmd	Fully formatted command.
+	 * @return		Unless additional data is provided the return will be either true or false. On additional data an array will be returned.
+	 */
 	private function command($line) {
 		global $cfg;
 		global $oma;
@@ -193,9 +197,6 @@ class Fake_IMAP
 		return '2.2.12';
 	}
 
-	/**
-	 * Adds prefixes and suffixes as well as separators to a username
-	 */
 	public function format_user($username, $folder = null) {
 		if(is_null($folder)) {
 			return('user'.$this->gethierarchyseparator().$username.$this->connection_data['VDOM']);

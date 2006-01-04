@@ -56,11 +56,13 @@
 <file url="inc/panel_filter.php" id="914C5C93-262E-4EB2-A86B-BFC17EDDDB6E" name="panel_filter.php">
 </file>
 <folder id="FA13EF8A-8D1F-413F-A74F-D69CC0FE4B98" name="lib">
-<file url="inc/lib/fake-cyradm.php" id="1E31943C-3998-469C-B69C-45112B421292" name="fake-cyradm.php">
+<file url="inc/lib/Fake_IMAP.php" id="1E31943C-3998-469C-B69C-45112B421292" name="Fake_IMAP.php">
 </file>
 <file url="inc/lib/openmailadmin.php" id="B89C866E-1408-44AE-9B4B-7D80C981AFBC" name="openmailadmin.php">
 </file>
-<file url="inc/lib/cyrus.php" id="1078973E1AEL52cf15470x24c3" name="cyrus.php">
+<file url="inc/lib/Cyrus_IMAP.php" id="1078973E1AEL52cf15470x24c3" name="Cyrus_IMAP.php">
+</file>
+<file url="inc/lib/IMAP_Administrator.php" id="10895F30EA9L41076cc30x568d" name="IMAP_Administrator.php">
 </file>
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">

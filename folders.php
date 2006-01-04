@@ -81,7 +81,5 @@ if(isset($_GET['folder'])&& in_array($_GET['folder'], $mailbox_list)) {
 	include('./templates/'.$cfg['theme'].'/folders/admin.tpl');
 }
 
-$imap->imap_logout();
-
 include('./inc/_append.php');
 ?>

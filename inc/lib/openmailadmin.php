@@ -18,7 +18,7 @@ class openmailadmin
 	var $regex_valid_email	= '[a-z0-9]{1,}[a-z0-9\.\-\_\+]*@[a-z0-9\.\-\_]{2,}\.[a-z]{2,}';
 	var $regex_valid_domain	= '[a-z0-9\-\_\.]{2,}\.[a-z]{2,}';
 
-	function openmailadmin($adodb_handler) {
+	function __construct(ADOConnection $adodb_handler) {
 		$this->status_reset();
 		$this->db	= $adodb_handler;
 	}
