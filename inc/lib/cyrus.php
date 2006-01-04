@@ -8,29 +8,27 @@
  * - quota:		2047
  * - ACL:		2086
  */
-class cyrus
+class Cyrus_IMAP
+	implements IMAP_Administrator
 {
-	// private:
-	var $sp = false;	// holds the socket ressource, if connected
-	var $connection_data;	// everything neccessary to connect to cyrus
-	var $version;		// version of cyrus-imapd we have connected to
+	private	$sp = false;		// holds the socket ressource, if connected
+	private	$connection_data;	// everything neccessary to connect to cyrus
+	private	$version;		// version of cyrus-imapd we have connected to
+	private	$separator;		// hierarchy separator
 
-	// public:
-	var $error_msg;		// if an error occured, this variable will hold the error messages
-	var $separator;		// hierarchy separator
+	public	$error_msg;		// if an error occured, this variable will hold the error messages
 
-	/*
-	* Constructor. Takes login data as arguments.
-	*/
-	function cyrus($connection_data) {
+	function __construct(array $connection_data) {
 		$this->version		= 'unknown';
 		$this->separator	= '.';
 		$this->connection_data	= $connection_data;
 	}
 
-	/***** connection ****/
+	function __destruct() {
+		$this->imap_logout();
+	}
 
-	function imap_login() {
+	private function imap_login() {
 		$this->sp = fsockopen(	$this->connection_data['HOST'],
 					$this->connection_data['PORT'],
 					$errno, $errstr);
@@ -48,7 +46,7 @@ class cyrus
 		return $this->command('. login "'.$this->connection_data['ADMIN'].'" "'.$this->connection_data['PASS'].'"');
 	}
 
-	function imap_logout() {
+	private function imap_logout() {
 		if($this->sp) {
 			$this->command('. logout');
 			fclose($this->sp);
@@ -56,14 +54,14 @@ class cyrus
 		return true;
 	}
 
-	function getversion() {
+	public function getversion() {
 		if(!$this->sp) {
 			$this->imap_login();
 		}
 		return $this->version;
 	}
 
-	function gethierarchyseparator() {
+	private function gethierarchyseparator() {
 		$result = $this->command('. list "" ""');
 		$tmp = strstr($result['0'], '"');
 		$this->separator = $tmp{1};
@@ -75,7 +73,7 @@ class cyrus
 	* Unless additional data is provided the return will be either true
 	* or false. On additional data an array will be returned.
 	*/
-	function command($cmd) {
+	private function command($cmd) {
 		if(!$this->sp && !$this->imap_login()) {
 			$this->error_msg	= 'Login failed. Check your connection data.';
 			return false;
@@ -101,17 +99,17 @@ class cyrus
 
 	/***** mailbox manipulation *****/
 
-	function createmb($mailboxname) {
+	public function createmb($mailboxname) {
 		return $this->command('. create "'.$mailboxname.'"');
 	}
 
-	function deletemb($mailboxname) {
+	public function deletemb($mailboxname) {
 		// we have to grant ourselve admin-rights on the mailbox before deleting it
 		$this->setacl($mailboxname, $this->connection_data['ADMIN'], 'lrswipcda');
 		return $this->command('. delete "'.$mailboxname.'"');
 	}
 
-	function renamemb($oldname, $newname) {
+	public function renamemb($oldname, $newname) {
 		// This is for preserving already granted rights.
 		$oldacl = $this->getacl($oldname);
 
@@ -131,7 +129,7 @@ class cyrus
 	* Returns an array with these attributes:
 	* name, delimiter, attributes (don't rely on the latter)
 	*/
-	function getmailboxes($ref = '', $pat = '*') {
+	public function getmailboxes($ref = '', $pat = '*') {
 		$result = array();
 		foreach($this->command('. list "'.$ref.'" '.$pat) as $folder) {
 			if(preg_match('/\*\sLIST\s\((.*)\)\s\"(.*?)\"\s\"(.*?)\"/', $folder, $arr)) {
@@ -150,7 +148,7 @@ class cyrus
 	* Returns usage as 'used' and quota 'qmax'.
 	* If quota is unlimited or not set both values are 'NOT-SET'.
 	*/
-	function getquota($mailboxname) {
+	public function getquota($mailboxname) {
 		$ret = array();
 		$out = $this->command('. getquota "'.$mailboxname.'"');
 
@@ -171,7 +169,7 @@ class cyrus
 	* or null the mailbox' quota will be removed and thus regarded as
 	* 'not set' - that means unlimited.
 	*/
-	function setquota($mailboxname, $quota = null, $storage = 'STORAGE') {
+	public function setquota($mailboxname, $quota = null, $storage = 'STORAGE') {
 		$data = '';
 		if(is_null($quota)) {
 			$data = '()';
@@ -183,7 +181,7 @@ class cyrus
 
 	/***** ACL management *****/
 
-	function getacl($mailboxname) {
+	public function getacl($mailboxname) {
 		$reult	= array();
 		$arr	= array();
 		$out = $this->command('. getacl "'.$mailboxname.'"');
@@ -201,18 +199,18 @@ class cyrus
 		return $result;
 	}
 
-	function setacl($mailboxname, $user, $ACL) {
+	public function setacl($mailboxname, $user, $ACL) {
 		return $this->command('. setacl "'.$mailboxname.'" "'.$user.'" '.$ACL);
 	}
 
-	function deleteacl($mailboxname, $user) {
+	private function deleteacl($mailboxname, $user) {
 		return $this->command('. deleteacl "'.$mailboxname.'" "'.$user.'"');
 	}
 
 	/**
 	 * Adds prefixes and suffixes as well as separators to a username
 	 */
-	function format_user($username, $folder = null) {
+	public function format_user($username, $folder = null) {
 		if(is_null($folder)) {
 			return('user'.$this->separator.$username.$this->connection_data['VDOM']);
 		} else {

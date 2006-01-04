@@ -2,31 +2,25 @@
 /**
  * For emulating cyrus.php by utilizing database as storage.
  */
-class fake_imap
+class Fake_IMAP
+	implements IMAP_Administrator
 {
-	var $connection_data;
-	var $db;
-	var $error_msg	= '';
-	var $separator	= '.';
+	private	$connection_data;
+	private	$db;
+	private	$separator	= '.';
 
-	function fake_imap($connection_data, $adodb_handler) {
+	public	$error_msg	= '';
+
+	function __construct(array $connection_data, ADOConnection $adodb_handler) {
 		$this->connection_data	= $connection_data;
 		$this->db		= $adodb_handler;
 	}
 
-	function imap_login() {
-		return true;
-	}
-
-	function imap_logout() {
-		return true;
-	}
-
-	function gethierarchyseparator() {
+	public function gethierarchyseparator() {
 		return $this->separator;
 	}
 
-	function command($line) {
+	private function command($line) {
 		global $cfg;
 		global $oma;
 
@@ -56,7 +50,7 @@ class fake_imap
 		}
 	}
 
-	function createmb($mb) {
+	public function createmb($mb) {
 		global $cfg;
 		global $oma;
 
@@ -83,7 +77,7 @@ class fake_imap
 		}
 	}
 
-	function deletemb($mb) {
+	public function deletemb($mb) {
 		global $cfg;
 		$this->db->Execute('DELETE FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb).' OR mailbox LIKE '.$this->db->qstr($mb.'%'));
 		if($this->db->Affected_Rows() < 1) {
@@ -92,7 +86,7 @@ class fake_imap
 		return true;
 	}
 
-	function renamemb($from_mb, $to_mb) {
+	public function renamemb($from_mb, $to_mb) {
 		global $cfg;
 		$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo']
 			.' SET mailbox=REPLACE(mailbox, '.$this->db->qstr($from_mb).', '.$this->db->qstr($to_mb).'), '
@@ -104,7 +98,7 @@ class fake_imap
 		return true;
 	}
 
-	function getmailboxes($ref = '', $pat = '*') {
+	public function getmailboxes($ref = '', $pat = '*') {
 		$result = array();
 
 		foreach($this->command('. list "" *') as $folder) {
@@ -119,7 +113,7 @@ class fake_imap
 		return $result;
 	}
 
-	function setquota($mb, $many, $storage = '') {
+	public function setquota($mb, $many, $storage = '') {
 		global $cfg;
 		if(is_numeric($many)) {
 			$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax='.intval(max(1, $many)).', used=FLOOR(RAND()*'.intval(max(1, $many)).') WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
@@ -137,7 +131,7 @@ class fake_imap
 		return true;
 	}
 
-	function getquota($mb) {
+	public function getquota($mb) {
 		global $cfg;
 		$row = $this->db->GetRow('SELECT qmax,used FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb));
 		if($row === false || !isset($row['qmax'])) {
@@ -151,7 +145,7 @@ class fake_imap
 		}
 	}
 
-	function setacl($mb, $user, $acl) {
+	public function setacl($mb, $user, $acl) {
 		global $cfg;
 		global $oma;
 
@@ -184,7 +178,7 @@ class fake_imap
 		return false;
 	}
 
-	function getacl($mb) {
+	public function getacl($mb) {
 		global $cfg;
 
 		$acl = $this->db->GetOne('SELECT ACL FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
@@ -195,18 +189,14 @@ class fake_imap
 		}
 	}
 
-	function deleteacl($mb, $user) {
-		return $this->setacl($mb, $user, 'none');
-	}
-
-	function getversion() {
+	public function getversion() {
 		return '2.2.12';
 	}
 
 	/**
 	 * Adds prefixes and suffixes as well as separators to a username
 	 */
-	function format_user($username, $folder = null) {
+	public function format_user($username, $folder = null) {
 		if(is_null($folder)) {
 			return('user'.$this->gethierarchyseparator().$username.$this->connection_data['VDOM']);
 		} else {
