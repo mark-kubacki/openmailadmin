@@ -936,7 +936,6 @@ class openmailadmin
 			$this->error[]	= sprintf(txt('130'), txt('83'));
 			return false;
 		}
-		$mboxname = $this->db->qstr($mboxname);
 		if(!$this->validate_input($props, array('mbox','person','pate','canonical','reg_exp','domains','max_alias','max_regexp','a_admin_domains','a_admin_user','a_super','quota'))) {
 			return false;
 		}
