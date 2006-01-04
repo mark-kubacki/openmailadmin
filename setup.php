@@ -14,6 +14,9 @@ include('./inc/functions.inc.php');
 // definition of configuration file's format
 $config = <<<EOT
 <?php
+/* Created by setup.php (%s) on %s */
+\$cfg['user_ignore']		= array('%s');
+
 // repeat these lines for every server or virtual domain
 \$cfg['Servers']['verbose'][] = '%s';
 \$cfg['Servers']['number'][] = \$i++;
@@ -87,7 +90,7 @@ switch($_GET['step']) {
 							array('shared', 0, 0, 'anyone lrswipcda'),
 							));
 			}
-			$config = sprintf($config, 'my database', $_POST['dsn'], $_POST['prefix'], $_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
+			$config = sprintf($config, '0.9.0', date('r'), $_POST['imap_user'], 'my database', $_POST['dsn'], $_POST['prefix'], $_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
 		}
 		include('./templates/setup/step3.tpl');
 		break;
