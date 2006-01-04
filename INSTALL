@@ -8,16 +8,15 @@ This guide omits integration with your existing MDA and MTA.
 Copy all the files into your '''DocumentRoot'''-folder.
 
 == Step 2 ==
+Point your browser to setup.php.
+You will have to comment out the first line in setup.php.
+
+== Step 3 ==
 Modify following files by changing '''usernames and passwords''':
  * samples/pam/imap
- * inc/database.sql
 And either of these:
  * samples/postfix/*
  * samples/oma_mail.daimon.*
-
-== Step 3 ==
-Create the required '''database and users in MySQL'''.
-Modify database.sql and have it executed inside the new database.
 
 == Step 4 ==
 Copy samples/pam/imap settings to your /etc/pam.d folder
@@ -35,9 +34,9 @@ to utilize [http://pam-mysql.sourceforge.net/ pam_mysql].
 == Step 5 ==
 For security reasons, remove these files from your DocumentRoot-folder:
 {{{
- rm inc/database.sql
  rm -r samples/pam
  rm samples/oma_mail.daimon.* samples/postfix
 }}}
+Don't forget removing comment in setup.php!
 
 '''Done! '''
