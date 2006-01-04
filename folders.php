@@ -12,7 +12,9 @@ if($oma->current_user['mbox'] != $oma->authenticated_user['mbox']) {
 $IMAP		= $cfg['Servers']['IMAP'][$_SESSION['server']];
 $IMAP['ADMIN']	= $oma->authenticated_user['mbox'].$IMAP['VDOM'];
 $IMAP['PASS']	= obfuscator_decrypt($oma->authenticated_user['pass_clear']);
-$imap		= new imapd_adm($IMAP);
+if($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'] == 'cyrus') {
+	$imap		= new cyrus($IMAP);
+}
 
 // ACTION
 if(isset($_POST['frm']) && $_POST['frm'] == 'ACL') {

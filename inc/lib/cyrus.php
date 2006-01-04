@@ -8,8 +8,8 @@
  * - quota:		2047
  * - ACL:		2086
  */
-class imapd_adm {
-
+class cyrus
+{
 	// private:
 	var $sp = false;	// holds the socket ressource, if connected
 	var $connection_data;	// everything neccessary to connect to cyrus
@@ -22,7 +22,7 @@ class imapd_adm {
 	/*
 	* Constructor. Takes login data as arguments.
 	*/
-	function imapd_adm($connection_data) {
+	function cyrus($connection_data) {
 		$this->version		= 'unknown';
 		$this->separator	= '.';
 		$this->connection_data	= $connection_data;

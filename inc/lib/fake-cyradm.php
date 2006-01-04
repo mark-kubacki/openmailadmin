@@ -1,14 +1,17 @@
 <?php
 /**
- * For emulating cyrus.php by utilizing MySQL as storage.
+ * For emulating cyrus.php by utilizing database as storage.
  */
-class imapd_adm {
+class fake_imap
+{
 	var $connection_data;
+	var $db;
 	var $error_msg	= '';
 	var $separator	= '.';
 
-	function imapd_adm($connection_data) {
+	function fake_imap($connection_data, $adodb_handler) {
 		$this->connection_data	= $connection_data;
+		$this->db		= $adodb_handler;
 	}
 
 	function imap_login() {
@@ -31,18 +34,18 @@ class imapd_adm {
 			case '. list "" *':
 				// query for all visible folders
 				$ret = array();
-				$result = mysql_query('SELECT mailbox as folder,'
-					.' (SELECT COUNT(*) FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox LIKE CONCAT(folder, ".%")) AS children'
+				$result = $this->db->Execute('SELECT mailbox as folder,'
+					.' (SELECT COUNT(*) FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox LIKE CONCAT(folder, '.$this->db->qstr('.%').')) AS children'
 					.' FROM '.$cfg['tablenames']['imap_demo']
-					.' WHERE ACL LIKE "% '.$oma->current_user['mbox'].' l%" OR ACL LIKE "'.$oma->current_user['mbox'].' l%" OR ACL LIKE "% anyone l%" OR ACL LIKE "anyone l%"');
-				if(mysql_num_rows($result) > 0) {
-					while($row = mysql_fetch_assoc($result)) {
+					.' WHERE ACL LIKE '.$this->db->qstr('% '.$oma->current_user['mbox'].' l%').' OR ACL LIKE '.$this->db->qstr($oma->current_user['mbox'].' l%').' OR ACL LIKE '.$this->db->qstr('% anyone l%').' OR ACL LIKE '.$this->db->qstr('anyone l%'));
+				if(!$result === false) {
+					while(!$result->EOF) {
 						$ret[] = '* LIST '
-						.($row['children'] == 0 ? '(\HasNoChildren)' : '(\HasChildren)')
-						.' "." "'.$row['folder'].'"';
+						.($result->fields['children'] == 0 ? '(\HasNoChildren)' : '(\HasChildren)')
+						.' "." "'.$result->fields['folder'].'"';
+						$result->MoveNext();
 					}
 					// $ret[] = '. OK Completed (0.003 secs '.mysql_num_rows($result).' calls)';
-					mysql_free_result($result);
 				}
 				return $ret;
 				break;
@@ -58,24 +61,22 @@ class imapd_adm {
 		global $oma;
 
 		if(isset($_GET['folder'])) {
-			$result = mysql_query('SELECT ACL FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox="'.mysql_escape_string($_GET['folder']).'" LIMIT 1');
-			$newacl = mysql_result($result, 0, 0);
-			mysql_free_result($result);
-			$acl = $this->getacl(mysql_escape_string($_GET['folder']));
+			$newacl = $this->db->GetOne('SELECT ACL FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($_GET['folder']));
+			$acl = $this->getacl($_GET['folder']);
 			if(isset($acl[$oma->current_user['mbox']]) && stristr($acl[$oma->current_user['mbox']], 'a')
 			   || isset($acl['anyone']) && stristr($acl['anyone'], 'a')) {
-				mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$newacl.'")');
+				$this->db->Execute('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $newacl));
 			} else {
 				$this->error_msg = 'You need "a"-rights on that mailbox.';
 				return false;
 			}
 		} else if(isset($_POST['mbox'])) {
-			mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$_POST['mbox'].' lrswipcda")');
+			$this->db->Execute('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $_POST['mbox'].' lrswipcda'));
 		} else {
-			mysql_query('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES ("'.$mb.'", "'.$oma->current_user['mbox'].' lrswipcda")');
+			$this->db->Execute('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $oma->current_user['mbox'].' lrswipcda'));
 		}
-		if(mysql_affected_rows() < 1) {
-			$this->error_msg	= mysql_error();
+		if($this->db->Affected_Rows() < 1) {
+			$this->error_msg	= $this->db->ErrorMsg();
 			return false;
 		} else {
 			return true;
@@ -84,8 +85,8 @@ class imapd_adm {
 
 	function deletemb($mb) {
 		global $cfg;
-		mysql_query("DELETE FROM ".$cfg['tablenames']['imap_demo']." WHERE mailbox='$mb' OR mailbox LIKE '$mb.%'");
-		if(mysql_affected_rows() < 1) {
+		$this->db->Execute('DELETE FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb).' OR mailbox LIKE '.$this->db->qstr($mb.'%'));
+		if($this->db->Affected_Rows() < 1) {
 			return false;
 		}
 		return true;
@@ -93,11 +94,11 @@ class imapd_adm {
 
 	function renamemb($from_mb, $to_mb) {
 		global $cfg;
-		mysql_query('UPDATE '.$cfg['tablenames']['imap_demo']
-			.' SET mailbox=REPLACE(mailbox, "'.$from_mb.'", "'.$to_mb.'"), '
-				.'ACL=REPLACE(ACL, "'.str_replace('user.', '', $from_mb).'", "'.str_replace('user.', '', $to_mb).'")'
-			.' WHERE mailbox = "'.$from_mb.'" OR mailbox LIKE "'.$from_mb.'%"');
-		if(mysql_error() != '') {
+		$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo']
+			.' SET mailbox=REPLACE(mailbox, '.$this->db->qstr($from_mb).', '.$this->db->qstr($to_mb).'), '
+				.'ACL=REPLACE(ACL, '.$this->db->qstr(str_replace('user.', '', $from_mb)).', '.$this->db->qstr(str_replace('user.', '', $to_mb)).')'
+			.' WHERE mailbox = '.$this->db->qstr($from_mb).' OR mailbox LIKE '.$this->db->qstr($from_mb.'%'));
+		if($this->db->ErrorMsg() != '') {
 			return false;
 		}
 		return true;
@@ -121,14 +122,14 @@ class imapd_adm {
 	function setquota($mb, $many, $storage = '') {
 		global $cfg;
 		if(is_numeric($many)) {
-			mysql_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax='.intval(max(1, $many)).', used=FLOOR(RAND()*'.intval(max(1, $many)).') WHERE mailbox="'.$mb.'" LIMIT 1');
+			$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax='.intval(max(1, $many)).', used=FLOOR(RAND()*'.intval(max(1, $many)).') WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
 		} else if(is_null($many)) {
-			mysql_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax=0 WHERE mailbox="'.$mb.'" LIMIT 1');
+			$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax=0 WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
 		} else {
 			$this->error_msg	= 'Quota has either to be numeric or null!';
 			return false;
 		}
-		if(mysql_affected_rows() < 1) {
+		if($this->db->Affected_Rows() < 1) {
 			$this->error_msg	= 'Given mailbox does not exist.';
 			return false;
 		}
@@ -138,13 +139,11 @@ class imapd_adm {
 
 	function getquota($mb) {
 		global $cfg;
-		$result = mysql_query("SELECT qmax,used FROM ".$cfg['tablenames']['imap_demo']." WHERE mailbox='$mb' LIMIT 1");
-		if(mysql_num_rows($result) < 1) {
+		$row = $this->db->GetRow('SELECT qmax,used FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb));
+		if($row === false || !isset($row['qmax'])) {
 			$this->error_msg	= 'Given mailbox does not exist.';
 			return array();
 		} else {
-			$row = mysql_fetch_assoc($result);
-			mysql_free_result($result);
 			if($row['qmax'] == 0) {
 				return array('qmax' => 'NOT-SET', 'used' => 'NOT-SET');
 			}
@@ -157,20 +156,17 @@ class imapd_adm {
 		global $oma;
 
 		// does the user exist?
-		$result = mysql_query('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox="'.mysql_escape_string($user).'" LIMIT 1');
-		if(mysql_num_rows($result) > 0) {
-			$user = mysql_result($result, 0, 0);
-			mysql_free_result($result);
-
+		$user = $this->db->GetOne('SELECT mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$this->db->qstr($user));
+		if(!$user === false) {
 			// fetch old ACL
-			$facl = $this->getacl(mysql_escape_string($mb));
+			$facl = $this->getacl($mb);
 			if(isset($facl[$oma->current_user['mbox']]) && stristr($facl[$oma->current_user['mbox']], 'a')
 			   || isset($facl['anyone']) && stristr($facl['anyone'], 'a')) {
 				// modify ACL
 				if($acl == 'none') {
 					unset($facl[$user]);
 				} else {
-					$facl[$user] = mysql_escape_string(trim($acl));	// we can be lax in th demo
+					$facl[$user] = trim($acl);
 				}
 				// unify keys and values for storage
 				$store = '';
@@ -179,7 +175,7 @@ class imapd_adm {
 				}
 
 				// write to MySQL
-				mysql_unbuffered_query('UPDATE '.$cfg['tablenames']['imap_demo'].' SET ACL="'.trim($store).'" WHERE mailbox="'.mysql_escape_string($mb).'" LIMIT 1');
+				$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo'].' SET ACL='.$this->db->qstr(trim($store)).' WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
 				return true;
 			}
 		} else {
@@ -191,12 +187,10 @@ class imapd_adm {
 	function getacl($mb) {
 		global $cfg;
 
-		$result = mysql_query('SELECT ACL FROM '.$cfg['tablenames']['imap_demo']." WHERE mailbox='$mb' LIMIT 1");
-		if(mysql_num_rows($result) < 1) {
+		$acl = $this->db->GetOne('SELECT ACL FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
+		if($acl === false) {
 			return array();
 		} else {
-			$acl = mysql_result($result, 0, 0);
-			mysql_free_result($result);
 			return hsys_getACLInfo(array('* ACL '.$mb.' '.$acl), $mb);
 		}
 	}

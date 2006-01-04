@@ -35,16 +35,22 @@ include('./templates/'.$cfg['theme'].'/common-header.tpl');
 
 // Authentification
 include('./inc/miniauth.inc.php');
+$db->debug	= true;
 
 if(!isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])) {
 	die('You have forgotten to set TYPEs in the configuration files!');
 }
 
 switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
-	case 'fake-imap':	include('./inc/lib/fake-cyradm.php');	break;
-	default:		include('./inc/lib/cyrus.php');		break;
+	case 'fake-imap':
+		include('./inc/lib/fake-cyradm.php');
+		$imap = new fake_imap($cfg['Servers']['IMAP'][$_SESSION['server']], $db);
+		break;
+	default:
+		include('./inc/lib/cyrus.php');
+		$imap = new cyrus($cfg['Servers']['IMAP'][$_SESSION['server']]);
+		break;
 }
-$imap = new imapd_adm($cfg['Servers']['IMAP'][$_SESSION['server']]);
 
 // table names with prefixes
 $cfg['tablenames']
