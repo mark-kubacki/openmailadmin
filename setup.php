@@ -1,9 +1,5 @@
 <?php
-if(is_file('./inc/config.local.inc.php')) {
-	header('HTTP/1.1 303 See Other');
-	header('Location: index.php');
-	die('Setup has already been run.');
-}
+die('Remove this line if you want run setup.');
 
 ob_start('ob_gzhandler');
 

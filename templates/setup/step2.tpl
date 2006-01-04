@@ -43,7 +43,7 @@
 	</tr>
 	<tr>
 		<td>type</td>
-		<td><select name="imap_type"><option value="cyrus">Cyrus imapd</option><option value="fake-cyradm">demo - mysql backend</option></select></td>
+		<td><select name="imap_type"><option value="cyrus">Cyrus imapd</option><option value="fake-imap">demo - database backend</option></select></td>
 	</tr>
 	<tr>
 		<td>host</td>
@@ -55,7 +55,7 @@
 	</tr>
 	<tr>
 		<td>imap admin</td>
-		<td><input type="text" name="imap_user" value="" title="i.e. 'cyrus'" /></td>
+		<td><input type="text" name="imap_user" id="iu" value="" title="i.e. 'cyrus'" onchange="if(document.getElementById('iu').value == document.getElementById('au').value) { alert('Both usernames must differ!');document.getElementById('iu').className=document.getElementById('au').className='bad'; } else { document.getElementById('iu').className=document.getElementById('au').className=''; }" /></td>
 	</tr>
 	<tr>
 		<td>... password</td>
@@ -63,7 +63,7 @@
 	</tr>
 	<tr>
 		<td>mailbox of superuser</td>
-		<td><input type="text" name="admin_user" value="" title="i.e. 'admin'" /></td>
+		<td><input type="text" name="admin_user" id="au" value="" title="i.e. 'admin'" onchange="if(document.getElementById('iu').value == document.getElementById('au').value) { alert('Both usernames must differ!');document.getElementById('iu').className=document.getElementById('au').className='bad'; } else { document.getElementById('iu').className=document.getElementById('au').className=''; }" /></td>
 	</tr>
 	<tr>
 		<td>... password</td>

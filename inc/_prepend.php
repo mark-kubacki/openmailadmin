@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 include('./inc/config.inc.php');
 @(include('./inc/config.local.inc.php'))
 	or @(include('./inc/config.local.inc.php4'))
-	or die('You have to create an configuration file, first.');
+	or die('You have to create an configuration file, first. Try <a href="setup.php">setup.php</a>.');
 include('./inc/translation.inc.php');
 include('./inc/format_shadow_classes.inc.php');
 include('adodb/adodb.inc.php');
