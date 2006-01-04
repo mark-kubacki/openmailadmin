@@ -39,7 +39,10 @@ EOT;
 include('./templates/setup/header.tpl');
 switch($_GET['step']) {
 	case '3':
-		$db	= @ADONewConnection($_POST['dsn']);
+		$db	= false;
+		if($_POST['dsn'] != '') {
+			$db	= @ADONewConnection($_POST['dsn']);
+		}
 		if(!$db) {
 			$failure	= 'Cannot connect to DB. Please correct your DSN';
 		} else {
