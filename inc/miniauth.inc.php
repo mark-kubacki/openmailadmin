@@ -10,11 +10,7 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 } else if(isset($_POST['frm']) && $_POST['frm'] == 'login' && trim($_POST['mboxname']) != '') {
 	if(!(isset($_POST['server']) && is_numeric($_POST['server'])))
 		$_POST['server'] = 0;
-	$db	= ADONewConnection($cfg['Servers']['DB'][$_POST['server']]['TYPE']);
-	$db->Connect(	$cfg['Servers']['DB'][$_POST['server']]['HOST'],
-			$cfg['Servers']['DB'][$_POST['server']]['USER'],
-			$cfg['Servers']['DB'][$_POST['server']]['PASS'],
-			$cfg['Servers']['DB'][$_POST['server']]['DB'])
+	$db	= ADONewConnection($cfg['Servers']['DB'][$_POST['server']]['DSN'])
 		or die('Cannot connect to MySQL Server.');
 	$db->SetFetchMode(ADODB_FETCH_ASSOC);
 
@@ -39,11 +35,7 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 	}
 } else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER['REMOTE_ADDR']) {
 	$authinfo	= $_SESSION;
-	$db	= ADONewConnection($cfg['Servers']['DB'][$_SESSION['server']]['TYPE']);
-	$db->Connect(	$cfg['Servers']['DB'][$_SESSION['server']]['HOST'],
-			$cfg['Servers']['DB'][$_SESSION['server']]['USER'],
-			$cfg['Servers']['DB'][$_SESSION['server']]['PASS'],
-			$cfg['Servers']['DB'][$_SESSION['server']]['DB'])
+	$db	= ADONewConnection($cfg['Servers']['DB'][$_SESSION['server']]['DSN'])
 		or die('Cannot connect to MySQL Server.');
 	$db->SetFetchMode(ADODB_FETCH_ASSOC);
 }

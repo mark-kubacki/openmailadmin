@@ -36,8 +36,7 @@ include('./templates/'.$cfg['theme'].'/common-header.tpl');
 // Authentification
 include('./inc/miniauth.inc.php');
 
-if(!(isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])
-   && isset($cfg['Servers']['DB'][$_SESSION['server']]['TYPE']))) {
+if(!isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])) {
 	die('You have forgotten to set TYPEs in the configuration files!');
 }
 

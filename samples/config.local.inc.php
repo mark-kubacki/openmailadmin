@@ -3,19 +3,15 @@
 $cfg['Servers']['verbose'][] = 'localhost';
 $cfg['Servers']['number'][] = $i++;
 $cfg['Servers']['IMAP'][] = array(
-	'TYPE'	=> 'fake-imap',		// or fake-imap or courier...
+	'TYPE'	=> 'fake-imap',
 	'HOST'	=> 'localhost',
 	'PORT'	=> 143,
 	'ADMIN'	=> 'cyrus',
-	'PASS'	=> '##CyrusSecret##',
+	'PASS'	=> '##secret##',
 	'VDOM'	=> ''
 );
 $cfg['Servers']['DB'][] = array(
-	'TYPE'	=> 'mysql',
-	'HOST'	=> 'localhost',
-	'USER'	=> 'yourMySQL-User',
-	'PASS'	=> 'yourMySQL-Passwd',
-	'DB'	=> 'yourMySQL-DB',
-	'PREFIX'	=> ''
+	'DSN'		=> 'mysql://user:pass@host/db',
+	'PREFIX'	=> '',
 );
 ?>

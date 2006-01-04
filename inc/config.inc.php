@@ -68,30 +68,10 @@ $cfg['motd']		= 'motd.txt';
 // Select one of: shadow, blueray
 $cfg['theme']		= 'shadow';
 
-// Change connection settings in delivered SQL- and pam-files, too!
-// The hierarchy separator is automatically detected.
 $i = 0;
-
-// Copy and modify following lines for every virtual domain or server.
 /*
-$cfg['Servers']['verbose'][] = 'localhost';
-$cfg['Servers']['number'][] = $i++;
-$cfg['Servers']['IMAP'][] = array(
-	'TYPE'  => 'cyrus',			// or fake-imap or courier...
-	'HOST'	=> 'localhost',
-	'PORT'	=> 143,
-	'ADMIN'	=> 'cyrus',			// the root-like user
-	'PASS'	=> '##CyrusSecret##',		// in most cases you needn't modify anything below
-	'VDOM'	=> ''				// set this if you're using cyrus virtual domains
-);
-$cfg['Servers']['DB'][] = array(
-	'TYPE'  => 'mysql',
-	'HOST'	=> 'localhost',
-	'USER'	=> '##MysqlUser##',
-	'PASS'	=> '##MysqlSecret##',
-	'DB'	=> '##MysqlDB##',
-	'PREFIX'	=> ''			// prefix to table names
-);
-*/
+ * Please see samples/config.local.inc.php for appropriate database configuration.
+ * Change connection settings in delivered SQL- and pam-files, too!
+ */
 
 ?>
