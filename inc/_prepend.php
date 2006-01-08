@@ -39,15 +39,6 @@ if(!isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])) {
 	die('You have forgotten to set TYPEs in the configuration files!');
 }
 
-switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
-	case 'fake-imap':
-		$imap = new Fake_IMAP($cfg['Servers']['IMAP'][$_SESSION['server']], $db);
-		break;
-	default:
-		$imap = new Cyrus_IMAP($cfg['Servers']['IMAP'][$_SESSION['server']]);
-		break;
-}
-
 // table names with prefixes
 $cfg['tablenames']
 	= array('user'		=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'user',
@@ -57,6 +48,16 @@ $cfg['tablenames']
 		'imap_demo'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'imap_demo'
 		);
 $now_on = isset($_GET['cuser']) ? $_GET['cuser'] : $authinfo['mbox'];
+
+// IMAP
+switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
+	case 'fake-imap':
+		$imap = new Fake_IMAP($cfg['Servers']['IMAP'][$_SESSION['server']], $db, $cfg['tablenames']);
+		break;
+	default:
+		$imap = new Cyrus_IMAP($cfg['Servers']['IMAP'][$_SESSION['server']]);
+		break;
+}
 
 // include the backend
 $oma	= new openmailadmin($db, $cfg, $imap);

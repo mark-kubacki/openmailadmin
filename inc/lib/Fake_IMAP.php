@@ -7,13 +7,15 @@ class Fake_IMAP
 {
 	private	$connection_data;
 	private	$db;
+	private	$tablenames;
 	private	$separator	= '.';
 
 	public	$error_msg	= '';
 
-	function __construct(array $connection_data, ADOConnection $adodb_handler) {
+	function __construct(array $connection_data, ADOConnection $adodb_handler, array $tablenames) {
 		$this->connection_data	= $connection_data;
 		$this->db		= $adodb_handler;
+		$this->tablenames	= $tablenames;
 	}
 
 	public function gethierarchyseparator() {
@@ -25,7 +27,6 @@ class Fake_IMAP
 	 * @return		Unless additional data is provided the return will be either true or false. On additional data an array will be returned.
 	 */
 	private function command($line) {
-		global $cfg;
 		global $oma;
 
 		switch($line) {
@@ -33,8 +34,8 @@ class Fake_IMAP
 				// query for all visible folders
 				$ret = array();
 				$result = $this->db->Execute('SELECT mailbox as folder,'
-					.' (SELECT COUNT(*) FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox LIKE CONCAT(folder, '.$this->db->qstr('.%').')) AS children'
-					.' FROM '.$cfg['tablenames']['imap_demo']
+					.' (SELECT COUNT(*) FROM '.$this->tablenames['imap_demo'].' WHERE mailbox LIKE CONCAT(folder, '.$this->db->qstr('.%').')) AS children'
+					.' FROM '.$this->tablenames['imap_demo']
 					.' WHERE ACL LIKE '.$this->db->qstr('% '.$oma->current_user['mbox'].' l%').' OR ACL LIKE '.$this->db->qstr($oma->current_user['mbox'].' l%').' OR ACL LIKE '.$this->db->qstr('% anyone l%').' OR ACL LIKE '.$this->db->qstr('anyone l%'));
 				if(!$result === false) {
 					while(!$result->EOF) {
@@ -55,23 +56,22 @@ class Fake_IMAP
 	}
 
 	public function createmb($mb) {
-		global $cfg;
 		global $oma;
 
 		if(isset($_GET['folder'])) {
-			$newacl = $this->db->GetOne('SELECT ACL FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($_GET['folder']));
+			$newacl = $this->db->GetOne('SELECT ACL FROM '.$this->tablenames['imap_demo'].' WHERE mailbox='.$this->db->qstr($_GET['folder']));
 			$acl = $this->getacl($_GET['folder']);
 			if(isset($acl[$oma->current_user['mbox']]) && stristr($acl[$oma->current_user['mbox']], 'a')
 			   || isset($acl['anyone']) && stristr($acl['anyone'], 'a')) {
-				$this->db->Execute('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $newacl));
+				$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $newacl));
 			} else {
 				$this->error_msg = 'You need "a"-rights on that mailbox.';
 				return false;
 			}
 		} else if(isset($_POST['mbox'])) {
-			$this->db->Execute('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $_POST['mbox'].' lrswipcda'));
+			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $_POST['mbox'].' lrswipcda'));
 		} else {
-			$this->db->Execute('INSERT INTO '.$cfg['tablenames']['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $oma->current_user['mbox'].' lrswipcda'));
+			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $oma->current_user['mbox'].' lrswipcda'));
 		}
 		if($this->db->Affected_Rows() < 1) {
 			$this->error_msg	= $this->db->ErrorMsg();
@@ -82,8 +82,7 @@ class Fake_IMAP
 	}
 
 	public function deletemb($mb) {
-		global $cfg;
-		$this->db->Execute('DELETE FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb).' OR mailbox LIKE '.$this->db->qstr($mb.'%'));
+		$this->db->Execute('DELETE FROM '.$this->tablenames['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb).' OR mailbox LIKE '.$this->db->qstr($mb.'%'));
 		if($this->db->Affected_Rows() < 1) {
 			return false;
 		}
@@ -91,8 +90,7 @@ class Fake_IMAP
 	}
 
 	public function renamemb($from_mb, $to_mb) {
-		global $cfg;
-		$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo']
+		$this->db->Execute('UPDATE '.$this->tablenames['imap_demo']
 			.' SET mailbox=REPLACE(mailbox, '.$this->db->qstr($from_mb).', '.$this->db->qstr($to_mb).'), '
 				.'ACL=REPLACE(ACL, '.$this->db->qstr(str_replace('user.', '', $from_mb)).', '.$this->db->qstr(str_replace('user.', '', $to_mb)).')'
 			.' WHERE mailbox = '.$this->db->qstr($from_mb).' OR mailbox LIKE '.$this->db->qstr($from_mb.'%'));
@@ -118,11 +116,10 @@ class Fake_IMAP
 	}
 
 	public function setquota($mb, $many, $storage = '') {
-		global $cfg;
 		if(is_numeric($many)) {
-			$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax='.intval(max(1, $many)).', used=FLOOR(RAND()*'.intval(max(1, $many)).') WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
+			$this->db->Execute('UPDATE '.$this->tablenames['imap_demo'].' SET qmax='.intval(max(1, $many)).', used=FLOOR(RAND()*'.intval(max(1, $many)).') WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
 		} else if(is_null($many)) {
-			$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo'].' SET qmax=0 WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
+			$this->db->Execute('UPDATE '.$this->tablenames['imap_demo'].' SET qmax=0 WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
 		} else {
 			$this->error_msg	= 'Quota has either to be numeric or null!';
 			return false;
@@ -136,8 +133,7 @@ class Fake_IMAP
 	}
 
 	public function getquota($mb) {
-		global $cfg;
-		$row = $this->db->GetRow('SELECT qmax,used FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb));
+		$row = $this->db->GetRow('SELECT qmax,used FROM '.$this->tablenames['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb));
 		if($row === false || !isset($row['qmax'])) {
 			$this->error_msg	= 'Given mailbox does not exist.';
 			return array();
@@ -150,11 +146,10 @@ class Fake_IMAP
 	}
 
 	public function setacl($mb, $user, $acl) {
-		global $cfg;
 		global $oma;
 
 		// does the user exist?
-		$user = $this->db->GetOne('SELECT mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$this->db->qstr($user));
+		$user = $this->db->GetOne('SELECT mbox FROM '.$this->tablenames['user'].' WHERE mbox='.$this->db->qstr($user));
 		if(!$user === false) {
 			// fetch old ACL
 			$facl = $this->getacl($mb);
@@ -173,7 +168,7 @@ class Fake_IMAP
 				}
 
 				// write to MySQL
-				$this->db->Execute('UPDATE '.$cfg['tablenames']['imap_demo'].' SET ACL='.$this->db->qstr(trim($store)).' WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
+				$this->db->Execute('UPDATE '.$this->tablenames['imap_demo'].' SET ACL='.$this->db->qstr(trim($store)).' WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
 				return true;
 			}
 		} else {
@@ -183,9 +178,7 @@ class Fake_IMAP
 	}
 
 	public function getacl($mb) {
-		global $cfg;
-
-		$acl = $this->db->GetOne('SELECT ACL FROM '.$cfg['tablenames']['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
+		$acl = $this->db->GetOne('SELECT ACL FROM '.$this->tablenames['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
 		if($acl === false) {
 			return array();
 		} else {
