@@ -112,17 +112,16 @@ function mkSelfRef($arr_Add = array()) {
 /*
  * Wrapper to $imap->getquota
  */
-function hsys_getQuota($username) {
-	global $imap;
+function hsys_getQuota(IMAP_Administrator $imap, $username) {
 	return $imap->getquota($imap->format_user($username));
 }
 
-function hsys_getMaxQuota($username) {
-	$result = hsys_getQuota($username);
+function hsys_getMaxQuota(IMAP_Administrator $imap, $username) {
+	$result = hsys_getQuota($imap, $username);
 	return $result['qmax'];
 }
-function hsys_getUsedQuota($username) {
-	$result = hsys_getQuota($username);
+function hsys_getUsedQuota(IMAP_Administrator $imap, $username) {
+	$result = hsys_getQuota($imap, $username);
 	return $result['used'];
 }
 
@@ -151,8 +150,8 @@ function hsys_getACLInfo($folder, $name = null) {
 /*
  * Returns quota of the given user formatted.
  */
-function hsys_format_quota($mboxname, $delimiter = '/') {
-	$result = hsys_getQuota($mboxname);
+function hsys_format_quota(IMAP_Administrator $imap, $mboxname, $delimiter = '/') {
+	$result = hsys_getQuota($imap, $mboxname);
 	if($result['qmax'] == 'NOT-SET') {
 		return '-'.$delimiter.'&infin;';
 	} else if(round($result['used']/$result['qmax']*100) > 0) {

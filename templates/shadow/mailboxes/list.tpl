@@ -37,7 +37,7 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 			<?php if(isset($mailbox['n_paten'])) { ?>
 				<td class="std" rowspan="<?= $mailbox['n_paten'] ?>"><?= $mailbox['pate'] ?></td>
 			<?php } ?>
-			<td class="std"><?= hsys_format_quota($mailbox['mbox'], '</td><td class="std">') ?></td>
+			<td class="std"><?= hsys_format_quota($imap, $mailbox['mbox'], '</td><td class="std">') ?></td>
 			<td class="std">
 				<?= $mailbox['num_alias'].'/'.$mailbox['max_alias'] ?><?= ($mailbox['num_regexp'] + $mailbox['max_regexp'] == 0) ? '' : ', '.$mailbox['num_regexp'].'/'.$mailbox['max_regexp'] ?>
 			</td>

@@ -18,10 +18,10 @@ $information[]	= array(txt('5'),	$oma->current_user['mbox'].$cfg['Servers']['IMA
 $information[]	= array(txt('6'),	$oma->current_user['person']);
 $information[]	= array(txt('7'),	$oma->current_user['canonical']);
 $information[]	= array(txt('86'),	$oma->current_user['domains']);
-$information[]	= array(txt('8'),	hsys_getMaxQuota($oma->current_user['mbox']) == 'NOT-SET'
+$information[]	= array(txt('8'),	hsys_getMaxQuota($imap, $oma->current_user['mbox']) == 'NOT-SET'
 					? '&infin;'
-					: hsys_getUsedQuota($oma->current_user['mbox']).' / '.
-						hsys_getMaxQuota($oma->current_user['mbox']).' [kiB]');
+					: hsys_getUsedQuota($imap, $oma->current_user['mbox']).' / '.
+						hsys_getMaxQuota($imap, $oma->current_user['mbox']).' [kiB]');
 $information[]	= array(txt('77'),	$rightstring);
 unset($rightstring);
 include('./templates/'.$cfg['theme'].'/information.tpl');
