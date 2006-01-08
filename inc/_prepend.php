@@ -60,7 +60,7 @@ switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
 }
 
 // include the backend
-$oma	= new openmailadmin($db, $cfg, $imap);
+$oma	= new openmailadmin($db, $cfg['tablenames'], $cfg, $imap);
 $oma->authenticated_user	= &$authinfo;
 $oma->current_user		= &$cuser;
 unset($authinfo);
