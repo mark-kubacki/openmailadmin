@@ -110,22 +110,6 @@ function mkSelfRef($arr_Add = array()) {
 }
 
 /*
- * Wrapper to $imap->getquota
- */
-function hsys_getQuota(IMAP_Administrator $imap, $username) {
-	return $imap->getquota($imap->format_user($username));
-}
-
-function hsys_getMaxQuota(IMAP_Administrator $imap, $username) {
-	$result = hsys_getQuota($imap, $username);
-	return $result['qmax'];
-}
-function hsys_getUsedQuota(IMAP_Administrator $imap, $username) {
-	$result = hsys_getQuota($imap, $username);
-	return $result['used'];
-}
-
-/*
  * Returned array holds usernames as keys and their rights as value.
  * Better provide the folder's name again as it may contain whitespace and
  * therefore lead to strange results:
@@ -145,22 +129,6 @@ function hsys_getACLInfo($folder, $name = null) {
 	}
 
 	return $result;
-}
-
-/*
- * Returns quota of the given user formatted.
- */
-function hsys_format_quota(IMAP_Administrator $imap, $mboxname, $delimiter = '/') {
-	$result = hsys_getQuota($imap, $mboxname);
-	if($result['qmax'] == 'NOT-SET') {
-		return '-'.$delimiter.'&infin;';
-	} else if(round($result['used']/$result['qmax']*100) > 0) {
-		return round($result['used']/$result['qmax']*100).'% '.$delimiter.' '.round($result['qmax']/1024);
-	} else if($result['used'] == 0) {
-		return '0% '.$delimiter.' '.round($result['qmax']/1024);
-	} else {
-		return '>1% '.$delimiter.' '.round($result['qmax']/1024);
-	}
 }
 
 /*

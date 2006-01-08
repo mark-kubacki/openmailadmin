@@ -136,12 +136,12 @@ class Fake_IMAP
 		$row = $this->db->GetRow('SELECT qmax,used FROM '.$this->tablenames['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb));
 		if($row === false || !isset($row['qmax'])) {
 			$this->error_msg	= 'Given mailbox does not exist.';
-			return array();
+			return false;
 		} else {
 			if($row['qmax'] == 0) {
-				return array('qmax' => 'NOT-SET', 'used' => 'NOT-SET');
+				return new Quota();
 			}
-			return $row;
+			return new Quota($row['used'], $row['qmax']);
 		}
 	}
 

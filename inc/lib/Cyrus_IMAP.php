@@ -136,18 +136,15 @@ class Cyrus_IMAP
 	}
 
 	public function getquota($mailboxname) {
-		$ret = array();
 		$out = $this->command('. getquota "'.$mailboxname.'"');
-
 		if($out == false) {
 			// quota not set, thus unlimited
-			$ret = array('used' => 'NOT-SET', 'qmax' => 'NOT-SET');
+			return new Quota();
 		} else if(is_array($out)
 			   && preg_match('/\*\sQUOTA.*\(\w*\s(\d+)\s(\d+)\)/i', $out[0], $arr)) {
-			$ret = array('used' => $arr[1], 'qmax' => $arr[2]);
+			return new Quota($arr[1], $arr[2]);
 		}
-
-		return $ret;
+		return false;
 	}
 
 	public function get_users_quota($username) {

@@ -905,8 +905,8 @@ class openmailadmin
 				$this->error[]	= txt('66');
 				return false;
 			}
-			if(hsys_getMaxQuota($this->imap, $this->current_user['mbox']) != 'NOT-SET'
-			   && $_POST['quota'] > (hsys_getMaxQuota($this->imap, $this->current_user['mbox']) - hsys_getUsedQuota($this->imap, $this->current_user['mbox']))) {
+			$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
+			if($quota->is_set && $_POST['quota'] > $quota->free) {
 				$this->error[]	= txt('65');
 				return false;
 			}
@@ -961,17 +961,17 @@ class openmailadmin
 		$rollback[] = '$this->imap->deletemb($this->imap->format_user(\''.$mboxname.'\'));';
 
 		// Decrease the creator's quota...
-		if($this->authenticated_user['a_super'] == 0 && hsys_getMaxQuota($this->imap, $this->current_user['mbox']) != 'NOT-SET') {
-			$tmp = hsys_getMaxQuota($this->imap, $this->current_user['mbox']);
-			$result = $this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $tmp-$props['quota']);
+		$cur_usr_quota	= $this->imap->getquota($this->imap->format_user($this->current_user['mbox']));
+		if($this->authenticated_user['a_super'] == 0 && $cur_usr_quota->is_set) {
+			$result = $this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $cur_usr_quota->max - $props['quota']);
 			if(!$result) {
 				$this->error[]	= $this->imap->error_msg;
 				// Rollback
 				$this->rollback($rollback);
 				return false;
 			}
-			$rollback[] = '$this->imap->setquota($this->imap->format_user($this->current_user[\'mbox\']), '.$tmp.'));';
-			$this->info[]	= sprintf(txt('69'), hsys_getMaxQuota($this->imap, $this->current_user['mbox'])-$props['quota']);
+			$rollback[] = '$this->imap->setquota($this->imap->format_user($this->current_user[\'mbox\']), '.$cur_usr_quota->max .'));';
+			$this->info[]	= sprintf(txt('69'), $cur_usr_quota->max - $props['quota']);
 		} else {
 			$this->info[]	= txt('71');
 		}
@@ -1102,13 +1102,15 @@ class openmailadmin
 			if($this->authenticated_user['a_super'] == 0) {
 				foreach($mboxnames as $user) {
 					if($user != '') {
-						if(hsys_getMaxQuota($this->imap, $user) != 'NOT-SET')
-							$add_quota += intval($props['quota']) - hsys_getMaxQuota($this->imap, $user);
+						$quota	= $this->imap->get_users_quota($user);
+						if($quota->is_set)
+							$add_quota += intval($props['quota']) - $quota->max;
 					}
 				}
-				if($add_quota != 0 && hsys_getMaxQuota($this->imap, $this->current_user['mbox']) != 'NOT-SET') {
-					$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), hsys_getMaxQuota($this->imap, $this->current_user['mbox'])-$add_quota);
-					$this->info[]	= sprintf(txt('78'), hsys_getMaxQuota($this->imap, $this->current_user['mbox']));
+				$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
+				if($add_quota != 0 && $quota->is_set) {
+					$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $quota->max - $add_quota);
+					$this->info[]	= sprintf(txt('78'), $quota->max - $add_quota);
 				}
 			}
 			reset($mboxnames);
@@ -1160,9 +1162,10 @@ class openmailadmin
 		foreach($mboxnames as $user) {
 			if($user != '') {
 				// We have to sum up all the space which gets freed in case we later want increase the deleter's quota.
+				$quota	= $this->imap->get_users_quota($user);
 				if($this->authenticated_user['a_super'] == 0
-				   && hsys_getMaxQuota($this->imap, $user) != 'NOT-SET') {
-					$toadd = hsys_getMaxQuota($this->imap, $user);
+				   && $quota->is_set) {
+					$toadd = $quota->max;
 				}
 				$result = $this->imap->deletemb($this->imap->format_user($user));
 				if(!$result) {		// failure
@@ -1181,11 +1184,12 @@ class openmailadmin
 		$aux_tmp = $this->db->qstr(implode(',', $processed));
 
 		// Now we have to increase the current user's quota.
+		$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
 		if($this->authenticated_user['a_super'] == 0
 		   && $add_quota > 0
-		   && hsys_getMaxQuota($this->imap, $this->current_user['mbox']) != 'NOT-SET') {
-			$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), hsys_getMaxQuota($this->imap, $this->current_user['mbox'])+$add_quota);
-			$this->info[]	= sprintf(txt('76'), (hsys_getMaxQuota($this->imap, $this->current_user['mbox'])+$add_quota));
+		   && $quota->is_set) {
+			$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $quota->max + $add_quota);
+			$this->info[]	= sprintf(txt('76'), $quota->max + $add_quota);
 		}
 
 		// Calculate how many contingents get freed if we delete the users.
