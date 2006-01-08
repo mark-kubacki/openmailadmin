@@ -14,6 +14,7 @@ $IMAP['ADMIN']	= $oma->authenticated_user['mbox'].$IMAP['VDOM'];
 $IMAP['PASS']	= obfuscator_decrypt($oma->authenticated_user['pass_clear']);
 if($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'] == 'cyrus') {
 	$imap	= new Cyrus_IMAP($IMAP);
+	$oma->imap	= $imap;
 }
 
 // ACTION

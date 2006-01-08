@@ -59,7 +59,7 @@ $cfg['tablenames']
 $now_on = isset($_GET['cuser']) ? $_GET['cuser'] : $authinfo['mbox'];
 
 // include the backend
-$oma	= new openmailadmin($db);
+$oma	= new openmailadmin($db, $cfg, $imap);
 $oma->authenticated_user	= &$authinfo;
 $oma->current_user		= &$cuser;
 unset($authinfo);
