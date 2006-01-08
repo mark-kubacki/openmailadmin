@@ -61,7 +61,7 @@ class Cyrus_IMAP
 		return $this->version;
 	}
 
-	private function gethierarchyseparator() {
+	public function gethierarchyseparator() {
 		$result = $this->command('. list "" ""');
 		$tmp = strstr($result['0'], '"');
 		$this->separator = $tmp{1};
@@ -155,14 +155,11 @@ class Cyrus_IMAP
 	 * @param	storage	Partition on which quota has to be set. May be ignored.
 	 * @see		IMAP_Administrator::setquota
 	 */
-	public function setquota($mailboxname, $quota = null, $storage = 'STORAGE') {
-		$data = '';
-		if(is_null($quota)) {
-			$data = '()';
-		} else if(is_numeric($quota)) {
-			$data = '('.$storage.' '.intval($quota).')';
+	public function setquota($mailboxname, $quota, $storage = 'STORAGE') {
+		if(is_numeric($quota)) {
+			return $this->command('. setquota "'.$mailboxname.'" ('.$storage.' '.intval($quota).')');
 		}
-		return $this->command('. setquota "'.$mailboxname.'" '.$data);
+		return false;
 	}
 
 	public function getacl($mailboxname) {
