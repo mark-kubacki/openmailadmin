@@ -38,10 +38,8 @@ if (!function_exists('array_combine')) {
 /*
  * Removes unneccesary whitespace and invokes ob_end_flush().
  */
-function hsys_ob_end() {
-	global $cfg;
-
-	if($cfg['remove_whitespace']) {
+function hsys_ob_end($remove_whitespace) {
+	if($remove_whitespace) {
 		$output = ob_get_clean();
 		$output = preg_replace(array('/\>\s+\</', '/(\s{1})\s{1,}/', '/\s*\n+\s*(?:(?=.*\<textarea)|(?!.*\<\/textarea))/'), array('><', '$1', ''), $output);
 		@ob_start('ob_gzhandler');
@@ -101,7 +99,6 @@ function getPageList($link, $anz, $perPage, $cur = 0) {
  * creates a nice self-reference
  */
 function mkSelfRef($arr_Add = array()) {
-	global $_GET; global $_SERVER;
 	$qs = array();
 	foreach(array_merge($_GET, $arr_Add) as $key => $value) {
 		$qs[] = urlencode(trim($key)).'='.urlencode(trim($value));

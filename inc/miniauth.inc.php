@@ -50,7 +50,7 @@ if(!isset($authinfo)) {
 
 	include('./templates/'.$cfg['theme'].'/common-footer_nv.tpl');
 	session_regenerate_id();
-	hsys_ob_end();
+	hsys_ob_end($cfg['remove_whitespace']);
 	exit();
 }
 
