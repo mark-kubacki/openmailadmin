@@ -252,8 +252,7 @@ function display_tree($tree) {
  * Responsible for the nice ACL-rights matrix.
  */
 function hsys_ACL_matrix($ACL, $editable = false, $rights = array('l', 'r', 's', 'w', 'i', 'p', 'c', 'd', 'a')) {
-	global $cfg;
-	global $input;
+	global $cfg, $input;
 
 	$presets = array(	'above'		=> txt('110'),
 				'lrs'		=> txt('114').' (lrs)',
