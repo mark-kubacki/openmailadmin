@@ -150,6 +150,10 @@ class Cyrus_IMAP
 		return $ret;
 	}
 
+	public function get_users_quota($username) {
+		return $this->getquota($this->format_user($username));
+	}
+
 	/**
 	 * @param	storage	Partition on which quota has to be set. May be ignored.
 	 * @see		IMAP_Administrator::setquota

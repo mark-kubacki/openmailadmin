@@ -145,6 +145,10 @@ class Fake_IMAP
 		}
 	}
 
+	public function get_users_quota($username) {
+		return $this->getquota($this->format_user($username));
+	}
+
 	public function setacl($mb, $user, $acl) {
 		global $oma;
 

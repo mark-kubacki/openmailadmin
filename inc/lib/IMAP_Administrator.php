@@ -24,9 +24,16 @@ interface IMAP_Administrator
 
 	/**
 	 * @param	mb	Mailbox.
-	 * @return		Hash with keys "used" and "qmax" and values in kiB.<br>If quota is unlimited or not set both values are 'NOT-SET'.
+	 * @return		Instance of class Quota or false.
 	 */
 	function getquota($mb);
+	/**
+	 * This is to avoid perpetual calls to format_user.
+	 *
+	 * @param	username	Username, not mailbox' name.
+	 * @return		Instance of class Quota or false.
+	 */
+	function get_users_quota($username);
 	/**
 	 * @param	mb	Mailbox. May be a submailbox (aka subfolder).
 	 * @param	many	Quota. Has to be an integer kiB as dimension. If left out or null the mailbox' quota will be removed and thus regarded as 'not set' - that means unlimited.
