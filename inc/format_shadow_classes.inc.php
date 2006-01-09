@@ -65,8 +65,6 @@ class _input extends _T_tag {
 	}
 
 	function _generate($type, $name, $value, $arrProperties) {
-		global $_POST;
-
 		$arrProperties['type']	= $type;
 		$arrProperties['name']	= $name;
 		if($type == 'checkbox' || $type == 'radio') {
@@ -107,12 +105,11 @@ class _input extends _T_tag {
 	}
 
 	function textarea($name, $rows = 2, $cols=49) {
-		global $_POST;
 		return($this->_generic('textarea', array('rows' => $rows, 'cols' => $cols, 'name' => $name), isset($_POST[$name]) ? $_POST[$name] : '', true));
 	}
 
 	function select($name, $arr_names, $arr_values = array(), $size = '1', $multiple = 0) {
-		global $_POST; $select_value = '';
+		$select_value = '';
 		foreach($arr_names as $key => $value) {
 			$select_value .= '<option';
 			if(isset($arr_values[$key])) {

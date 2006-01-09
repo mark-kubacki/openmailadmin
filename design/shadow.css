@@ -49,6 +49,12 @@ TABLE.acl_matrix TR TD INPUT {
 TABLE.acl_matrix TR TD:first-child, TABLE.acl_matrix TR TH:first-child {
 	text-align: left;
 }
+TR.recent_login TD + TD + TD + TD + TD + TD {
+	font-weight: bold;
+}
+TR.recent_login:first-child {
+	font-weight: bold;
+}
 TD.box_left {
 	vertical-align: middle;
 	padding: 0 7px 0 7px

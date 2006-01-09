@@ -15,7 +15,11 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 		<td class="std"><b><?= txt('82') ?></b></td>
 	</tr>
 	<?php foreach($mailboxes as $mailbox) { ?>
+		<?php if(time() - $mailbox['lastlogin'] < $cfg['mboxview_sec']) { ?>
+		<tr class="recent_login">
+		<?php } else { ?>
 		<tr>
+		<?php } ?>
 			<td class="std">
 				<?php if($mailbox['mbox'] == $oma->authenticated_user['mbox'] || $mailbox['mbox'] == $oma->current_user['mbox']) { ?>
 					&nbsp;-&nbsp;
@@ -41,7 +45,13 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 			<td class="std">
 				<?= $mailbox['num_alias'].'/'.$mailbox['max_alias'] ?><?= ($mailbox['num_regexp'] + $mailbox['max_regexp'] == 0) ? '' : ', '.$mailbox['num_regexp'].'/'.$mailbox['max_regexp'] ?>
 			</td>
-			<td class="std"><?= date($cfg['date_format'], $mailbox['lastlogin']) ?></td>
+			<td class="std">
+				<?php if($mailbox['lastlogin'] < 3000) { ?>
+					<?= txt('132') ?>
+				<?php } else { ?>
+					<?= date($cfg['date_format'], $mailbox['lastlogin']) ?>
+				<?php } ?>
+			</td>
 		</tr>
 	<?php } ?>
 </table>
