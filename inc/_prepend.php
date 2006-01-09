@@ -1,5 +1,5 @@
 <?php
-$version = '0.9.1-alpha';
+$version = '0.9.2-alpha';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
