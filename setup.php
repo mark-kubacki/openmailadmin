@@ -1,5 +1,5 @@
 <?php
-die('Remove this line if you want run setup.');
+//die('Remove this line if you want run setup.');
 
 ob_start('ob_gzhandler');
 
@@ -122,8 +122,7 @@ switch($_GET['step']) {
 
 		$checks
 		= array(
-				array('PHP version greater than 4.3.0?', eval('return version_compare(PHP_VERSION, "4.3.0", ">");')),
-				array('<cite>file_get_contents</cite> exists?', eval('return function_exists("file_get_contents");')),
+				array('PHP is version 5.1.0 or later?', eval('return version_compare(PHP_VERSION, "5.1.0", ">=");')),
 				array('Socket or IMAP support available?', eval('return function_exists("fsockopen") || function_exists("imap_open");')),
 				array('MySQL or MySQLi, SQLite, PostgreSQL?', eval('return function_exists("mysql_connect") || function_exists("mysqli_connect") || function_exists("sqlite_open") || function_exists("pg_connect");')),
 				array('Is ADOdb installed?', eval('return function_exists("ADONewConnection");')),
