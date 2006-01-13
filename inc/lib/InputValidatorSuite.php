@@ -122,7 +122,7 @@ class InputValidatorSuite
 	 */
 	public function validate($data, $which) {
 		// Now we can set error-messages.
-		$error_occured	= $this->iterate_through_fields($data, $which, $this->inputs, $this->validate);
+		$error_occured	= $this->iterate_through_fields($data, $which);
 		if($error_occured) {
 			if(count($this->invalid) > 0) {
 				$this->add_error(sprintf(txt('130'), implode(', ', $this->invalid)));
@@ -137,25 +137,25 @@ class InputValidatorSuite
 	/**
 	 * To invoke all necessary checks.
 	 */
-	private function iterate_through_fields($data, $which, $inputs, $validate) {
+	private function iterate_through_fields($data, $which) {
 		$error_occured	= false;
 		$this->invalid	= array();
 		$this->missing	= array();
 		foreach($which as $fieldname) {
 			// Do we have to care about that field?
-			if(isset($inputs[$fieldname])) {
+			if(isset($this->inputs[$fieldname])) {
 				// Did the user provide it?
 				if(isset($data[$fieldname]) && $data[$fieldname] != '') {
 					// If so and if we have a rule to check for validity, we have to validate this field.
-					if(isset($validate[$fieldname])) {
-						foreach($validate[$fieldname] as $test) {
+					if(isset($this->validate[$fieldname])) {
+						foreach($this->validate[$fieldname] as $test) {
 							if(!eval('return ('.str_replace(array('~', '#'), array('$data[\''.$fieldname.'\']', $fieldname), $test['val']).');')) {
 								// The given value is invalid.
 								$error_occured = true;
 								if(isset($test['error'])) {
 									$this->add_error($test['error']);
 								} else {
-									$this->invalid[] = $inputs[$fieldname]['cap'];
+									$this->invalid[] = $this->inputs[$fieldname]['cap'];
 								}
 								break;
 							}
@@ -164,12 +164,12 @@ class InputValidatorSuite
 					// $data[$fieldname] = mysql_real_escape_string($data[$fieldname]);
 				} else {
 					// Assign it a valid value, if possible.
-					if(isset($inputs[$fieldname]['def'])) {
-						$data[$fieldname]	= $inputs[$fieldname]['def'];
+					if(isset($this->inputs[$fieldname]['def'])) {
+						$data[$fieldname]	= $this->inputs[$fieldname]['def'];
 					} else {
 						// No value was given and we cannot assign it a default value.
 						$error_occured = true;
-						$this->missing[] = $inputs[$fieldname]['cap'];
+						$this->missing[] = $this->inputs[$fieldname]['cap'];
 					}
 				}
 			}
