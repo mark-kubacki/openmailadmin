@@ -5,11 +5,18 @@
 class InputValidatorSuite
 	extends ErrorHandler
 {
+	protected	$oma;
+	protected	$cfg;
+
 	private	$invalid	= array();
 	private	$missing	= array();
-
 	private	$inputs		= array();
 	private	$validate	= array();
+
+	public function __construct(openmailadmin $oma, array $cfg) {
+		$this->oma	= $oma;
+		$this->cfg	= $cfg;
+	}
 
 	/**
 	 * @param	oma	Openmailadmin; the caller
@@ -17,17 +24,17 @@ class InputValidatorSuite
 	 * @param	data	data to be tested typically $_POST
 	 * @param	which	array of fields' names from data to be checked
 	 */
-	public function validate(openmailadmin $oma, array $cfg, $data, $which) {
+	public function validate($data, $which) {
 		// Fieldname as key, cap as its caption and def as its default value.
 		$this->inputs['mbox']		= array('cap'	=> txt('83'),
 					);
 		$this->inputs['pate']		= array('cap'	=> txt('9'),
-					'def'	=> $oma->current_user['mbox'],
+					'def'	=> $this->oma->current_user['mbox'],
 					);
 		$this->inputs['person']	= array('cap'	=> txt('84'),
 					);
 		$this->inputs['domains']	= array('cap'	=> txt('86'),
-					'def'	=> $oma->current_user['domains'],
+					'def'	=> $this->oma->current_user['domains'],
 					);
 		$this->inputs['canonical']	= array('cap'	=> txt('7'),
 					);
@@ -54,10 +61,10 @@ class InputValidatorSuite
 		$this->inputs['domain']	= array('cap'	=> txt('55'),
 					);
 		$this->inputs['owner']	= array('cap'	=> txt('56'),
-					'def'	=> $oma->current_user['mbox'],
+					'def'	=> $this->oma->current_user['mbox'],
 					);
 		$this->inputs['a_admin']	= array('cap'	=> txt('57'),
-					'def'	=> implode(',', array_unique(array($oma->current_user['mbox'], $oma->authenticated_user['mbox']))),
+					'def'	=> implode(',', array_unique(array($this->oma->current_user['mbox'], $this->oma->authenticated_user['mbox']))),
 					);
 		$this->inputs['categories']	= array('cap'	=> txt('58'),
 					);
@@ -65,10 +72,10 @@ class InputValidatorSuite
 		// Hash with tests vor sanity and possible error-messages on failure.
 		// These will only be processed if a value is given. (I.e. not on the default values from above)
 		// If a test fails the next won't be invoked.
-		$this->validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= $cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
-							'error'	=> sprintf(txt('62'), $cfg['mbox']['min_length'], $cfg['mbox']['max_length']) ),
+		$this->validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= $this->cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $this->cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
+							'error'	=> sprintf(txt('62'), $this->cfg['mbox']['min_length'], $this->cfg['mbox']['max_length']) ),
 						);
-		$this->validate['pate']	= array(array(	'val'	=> '$oma->authenticated_user[\'a_super\'] > 0 || $oma->user_is_descendant(~, $oma->authenticated_user[\'mbox\'])',
+		$this->validate['pate']	= array(array(	'val'	=> '$this->oma->authenticated_user[\'a_super\'] > 0 || $this->oma->user_is_descendant(~, $this->oma->authenticated_user[\'mbox\'])',
 							),
 						);
 		$this->validate['person']	= array(array(	'val'	=> 'strlen(~) <= 100 && strlen(~) >= 4 && preg_match(\'/^[\w\s0-9-_\.\(\)]*$/\', ~)',
@@ -76,7 +83,7 @@ class InputValidatorSuite
 						);
 		$this->validate['domains']	= array(array(	'val'	=> '(~ = trim(~)) && preg_match(\'/^((?:[\w]+|[\w]+\.[\w]+),\s*)*([\w]+|[\w]+\.[\w]+)$/i\', ~)',
 							),
-						array(	'val'	=> '$oma->domain_check($oma->current_user, $oma->current_user[\'mbox\'], ~)',
+						array(	'val'	=> '$this->oma->domain_check($this->oma->current_user, $this->oma->current_user[\'mbox\'], ~)',
 							'error'	=> txt('81')),
 						);
 		$this->validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.openmailadmin::regex_valid_email.\'/i\', ~)',
@@ -93,7 +100,7 @@ class InputValidatorSuite
 						);
 		$this->validate['a_super']	= array(array(	'val'	=> 'is_numeric(~) && settype(~, \'int\') && ~ < 3 && ~ >= 0',
 							),
-						array(	'val'	=> '~ == 0 || $oma->authenticated_user[\'#\'] >= 2 || $oma->authenticated_user[\'a_super\'] > ~ || $oma->authenticated_user[\'#\'] > ~',
+						array(	'val'	=> '~ == 0 || $this->oma->authenticated_user[\'#\'] >= 2 || $this->oma->authenticated_user[\'a_super\'] > ~ || $this->oma->authenticated_user[\'#\'] > ~',
 							'error'	=> txt('16')),
 						);
 		$this->validate['a_admin_domains']	= $this->validate['a_super'];
@@ -102,7 +109,7 @@ class InputValidatorSuite
 		$this->validate['domain']	= array(array(	'val'	=> 'preg_match(\'/^\'.openmailadmin::regex_valid_domain.\'$/i\', ~)',
 							'error'	=> txt('51')),
 						);
-		$this->validate['owner']	= array(array(	'val'	=> 'strlen(~) >= $cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
+		$this->validate['owner']	= array(array(	'val'	=> 'strlen(~) >= $this->cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $this->cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
 							),
 						);
 		$this->validate['a_admin']	= array(array(	'val'	=> 'preg_match(\'/^([a-z0-9]+,\s*)*[a-z0-9]+$/i\', ~)',
@@ -113,7 +120,7 @@ class InputValidatorSuite
 						);
 
 		// Now we can set error-messages.
-		$error_occured	= $this->iterate_through_fields($oma, $cfg, $data, $which, $this->inputs, $this->validate);
+		$error_occured	= $this->iterate_through_fields($data, $which, $this->inputs, $this->validate);
 		if($error_occured) {
 			if(count($this->invalid) > 0) {
 				$this->add_error(sprintf(txt('130'), implode(', ', $this->invalid)));
@@ -128,7 +135,7 @@ class InputValidatorSuite
 	/**
 	 * To invoke all necessary checks.
 	 */
-	private function iterate_through_fields(openmailadmin $oma, array $cfg, $data, $which, $inputs, $validate) {
+	private function iterate_through_fields($data, $which, $inputs, $validate) {
 		$error_occured	= false;
 		$this->invalid	= array();
 		$this->missing	= array();

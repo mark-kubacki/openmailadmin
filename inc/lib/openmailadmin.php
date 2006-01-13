@@ -27,7 +27,7 @@ class openmailadmin
 		$this->tablenames	= $tablenames;
 		$this->cfg		= $cfg;
 		$this->imap		= $imap;
-		$this->validator	= new InputValidatorSuite();
+		$this->validator	= new InputValidatorSuite($this, $cfg);
 	}
 
 	/*
@@ -430,7 +430,7 @@ class openmailadmin
 	 */
 	public function domain_add($domain, $props) {
 		$props['domain'] = $domain;
-		if(!$this->validator->validate($this, $this->cfg, $props, array('domain', 'categories', 'owner', 'a_admin'))) {
+		if(!$this->validator->validate($props, array('domain', 'categories', 'owner', 'a_admin'))) {
 			$this->add_error($this->validator->errors_get());
 			return false;
 		}
@@ -507,7 +507,7 @@ class openmailadmin
 	public function domain_change($domains, $change, $data) {
 		$toc = array();		// to be changed
 
-		if(!$this->validator->validate($this, $this->cfg, $data, $change)) {
+		if(!$this->validator->validate($data, $change)) {
 			$this->add_error($this->validator->errors_get());
 			return false;
 		}
@@ -867,7 +867,7 @@ class openmailadmin
 			$this->add_error(sprintf(txt('130'), txt('83')));
 			return false;
 		}
-		if(!$this->validator->validate($this, $this->cfg, $props, array('mbox','person','pate','canonical','reg_exp','domains','max_alias','max_regexp','a_admin_domains','a_admin_user','a_super','quota'))) {
+		if(!$this->validator->validate($props, array('mbox','person','pate','canonical','reg_exp','domains','max_alias','max_regexp','a_admin_domains','a_admin_user','a_super','quota'))) {
 			$this->add_error($this->validator->errors_get());
 			return false;
 		}
@@ -978,7 +978,7 @@ class openmailadmin
 			$this->add_error(txt('16'));
 			return false;
 		}
-		if(!$this->validator->validate($this, $this->cfg, $props, $change)) {
+		if(!$this->validator->validate($props, $change)) {
 			$this->add_error($this->validator->errors_get());
 			return false;
 		}
