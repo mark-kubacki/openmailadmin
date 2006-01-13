@@ -31,7 +31,7 @@ interface IMAP_Administrator
 	 * This is to avoid perpetual calls to format_user.
 	 *
 	 * @param	username	Username, not mailbox' name.
-	 * @return		Instance of class Quota or false.
+	 * @return		Instance of class Quota.
 	 */
 	function get_users_quota($username);
 	/**

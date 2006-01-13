@@ -144,7 +144,7 @@ class Cyrus_IMAP
 			   && preg_match('/\*\sQUOTA.*\(\w*\s(\d+)\s(\d+)\)/i', $out[0], $arr)) {
 			return new Quota($arr[1], $arr[2]);
 		}
-		return false;
+		return new Quota();
 	}
 
 	public function get_users_quota($username) {
