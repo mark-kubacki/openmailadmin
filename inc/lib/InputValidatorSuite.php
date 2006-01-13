@@ -109,7 +109,23 @@ class InputValidatorSuite
 							),
 						);
 
-		// Check field per field.
+		// Now we can set error-messages.
+		$error_occured	= $this->iterate_through_fields($oma, $cfg, $data, $which, $inputs, $validate);
+		if($error_occured) {
+			if(count($this->invalid) > 0) {
+				$this->add_error(sprintf(txt('130'), implode(', ', $this->invalid)));
+			}
+			if(count($this->missing) > 0) {
+				$this->add_error(sprintf(txt('129'), implode(', ', $this->missing)));
+			}
+		}
+		return(!$error_occured);
+	}
+
+	/**
+	 * To invoke all necessary checks.
+	 */
+	private function iterate_through_fields(openmailadmin $oma, array $cfg, $data, $which, $inputs, $validate) {
 		$error_occured	= false;
 		$this->invalid	= array();
 		$this->missing	= array();
@@ -146,16 +162,7 @@ class InputValidatorSuite
 				}
 			}
 		}
-		// Now we can set error-messages.
-		if($error_occured) {
-			if(count($this->invalid) > 0) {
-				$this->add_error(sprintf(txt('130'), implode(', ', $this->invalid)));
-			}
-			if(count($this->missing) > 0) {
-				$this->add_error(sprintf(txt('129'), implode(', ', $this->missing)));
-			}
-		}
-		return(!$error_occured);
+		return $error_occured;
 	}
 
 }
