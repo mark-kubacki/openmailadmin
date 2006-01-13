@@ -59,11 +59,6 @@ switch($_GET['step']) {
 							$dict->ExecuteSQLArray($sqlarray),
 							);
 			}
-			// add indices; that is not that critical
-			$dict->ExecuteSQLArray($dict->CreateIndexSQL('domain', $_POST['prefix'].'domains', 'domain', array('UNIQUE')));
-			$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'domains', 'owner'));
-			$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual', 'owner'));
-			$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual_regexp', 'owner'));
 			// add sample data - only if table has been created and did not exist
 			if($status['user'][1] == 2) {
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -72,14 +67,18 @@ switch($_GET['step']) {
 						));
 			}
 			if($status['domains'][1] == 2) {
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('domain', $_POST['prefix'].'domains', 'domain', array('UNIQUE')));
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'domains', 'owner'));
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'domains (ID,domain,categories,owner,a_admin) VALUES (?,?,?,?,?)',
 						array(1, 'example.com', 'all, samples', $_POST['admin_user'], $_POST['admin_user']));
 			}
 			if($status['virtual'][1] == 2) {
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual', 'owner'));
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual (address,dest,owner,active,neu) VALUES (?,?,?,?,?)',
 						array('me@example.com', $_POST['admin_user'], $_POST['admin_user'], 1, 1));
 			}
 			if($status['virtual_regexp'][1] == 2) {
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual_regexp', 'owner'));
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual_regexp (ID,reg_exp,dest,owner,active,neu) VALUES (?,?,?,?,?,?)',
 						array(11, '/^(postmaster|abuse|security|root)@example\\.com$/', $_POST['admin_user'], $_POST['admin_user'], 1, 1));
 			}
