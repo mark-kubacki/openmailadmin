@@ -126,10 +126,10 @@ switch($_GET['step']) {
 
 		$checks
 		= array(
-				array('PHP is version 5.1.0 or later?', eval('return version_compare(PHP_VERSION, "5.1.0", ">=");')),
-				array('Socket or IMAP support available?', eval('return function_exists("fsockopen") || function_exists("imap_open");')),
-				array('MySQL or MySQLi, SQLite, PostgreSQL?', eval('return function_exists("mysql_connect") || function_exists("mysqli_connect") || function_exists("sqlite_open") || function_exists("pg_connect");')),
-				array('Is ADOdb installed?', eval('return function_exists("ADONewConnection");')),
+				array('PHP is version 5.1.0 or later?', version_compare(PHP_VERSION, '5.1.0', '>=')),
+				array('Socket or IMAP support available?', function_exists('fsockopen') || function_exists('imap_open')),
+				array('MySQL or MySQLi, SQLite, PostgreSQL?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('sqlite_open') || function_exists('pg_connect')),
+				array('Is ADOdb installed?', function_exists('ADONewConnection')),
 			);
 
 		$reality	= array();
