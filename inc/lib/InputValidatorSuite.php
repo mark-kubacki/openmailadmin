@@ -5,6 +5,9 @@
 class InputValidatorSuite
 	extends ErrorHandler
 {
+	private	$invalid	= array();
+	private	$missing	= array();
+
 	/**
 	 * @param	oma	Openmailadmin; the caller
 	 * @param	cfg	Array with configuration options.
@@ -108,8 +111,8 @@ class InputValidatorSuite
 
 		// Check field per field.
 		$error_occured	= false;
-		$invalid	= array();
-		$missing	= array();
+		$this->invalid	= array();
+		$this->missing	= array();
 		foreach($which as $fieldname) {
 			// Do we have to care about that field?
 			if(isset($inputs[$fieldname])) {
@@ -124,7 +127,7 @@ class InputValidatorSuite
 								if(isset($test['error'])) {
 									$this->add_error($test['error']);
 								} else {
-									$invalid[] = $inputs[$fieldname]['cap'];
+									$this->invalid[] = $inputs[$fieldname]['cap'];
 								}
 								break;
 							}
@@ -138,18 +141,18 @@ class InputValidatorSuite
 					} else {
 						// No value was given and we cannot assign it a default value.
 						$error_occured = true;
-						$missing[] = $inputs[$fieldname]['cap'];
+						$this->missing[] = $inputs[$fieldname]['cap'];
 					}
 				}
 			}
 		}
 		// Now we can set error-messages.
 		if($error_occured) {
-			if(count($invalid) > 0) {
-				$this->add_error(sprintf(txt('130'), implode(', ', $invalid)));
+			if(count($this->invalid) > 0) {
+				$this->add_error(sprintf(txt('130'), implode(', ', $this->invalid)));
 			}
-			if(count($missing) > 0) {
-				$this->add_error(sprintf(txt('129'), implode(', ', $missing)));
+			if(count($this->missing) > 0) {
+				$this->add_error(sprintf(txt('129'), implode(', ', $this->missing)));
 			}
 		}
 		return(!$error_occured);
