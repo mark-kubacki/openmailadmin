@@ -10,21 +10,15 @@ class InputValidatorSuite
 
 	private	$invalid	= array();
 	private	$missing	= array();
+	/** captions and default values of given fields */
 	private	$inputs		= array();
+	/** array with validation instructions and corresponding error-messages */
 	private	$validate	= array();
 
 	public function __construct(openmailadmin $oma, array $cfg) {
 		$this->oma	= $oma;
 		$this->cfg	= $cfg;
-	}
 
-	/**
-	 * @param	oma	Openmailadmin; the caller
-	 * @param	cfg	Array with configuration options.
-	 * @param	data	data to be tested typically $_POST
-	 * @param	which	array of fields' names from data to be checked
-	 */
-	public function validate($data, $which) {
 		// Fieldname as key, cap as its caption and def as its default value.
 		$this->inputs['mbox']		= array('cap'	=> txt('83'),
 					);
@@ -118,7 +112,15 @@ class InputValidatorSuite
 		$this->validate['categories']	= array(array(	'val'	=> '(~ = trim(~)) && preg_match(\'/^((?:[\w]+|[\w]+\.[\w]+),\s*)*([\w]+|[\w]+\.[\w]+)$/i\', ~)',
 							),
 						);
+	}
 
+	/**
+	 * @param	oma	Openmailadmin; the caller
+	 * @param	cfg	Array with configuration options.
+	 * @param	data	data to be tested typically $_POST
+	 * @param	which	array of fields' names from data to be checked
+	 */
+	public function validate($data, $which) {
 		// Now we can set error-messages.
 		$error_occured	= $this->iterate_through_fields($data, $which, $this->inputs, $this->validate);
 		if($error_occured) {
