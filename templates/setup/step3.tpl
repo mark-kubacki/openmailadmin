@@ -26,16 +26,20 @@
 		</tr>
 		<?php } ?>
 		</table>
-	<?php } ?>
-	<?php if($_POST['admin_user'] == '' || $_POST['imap_user'] == '') { ?>
-	<p>You didn't provide all necessary data. Please hit 'back' on your browser.</p>
-	<?php } else { ?>
-	<h3>configuration file</h3>
-	<p>Please create a configuration file <cite>inc/config.local.inc.php</cite> with this content:</p>
-	<div class="code"><pre><code><?= htmlspecialchars($config) ?></code></pre></div>
-	<h3>finished</h3>
-	<p>Congratulations! After having created that file you can log in as superuser with:
-	<cite><?= $_POST['admin_user'] ?></cite>:<cite><?= htmlspecialchars($_POST['admin_pass']) ?></cite>
-	</p>
+		<?php if($_POST['admin_user'] == '' || $_POST['imap_user'] == '') { ?>
+		<p>You didn't provide all necessary data. Please hit 'back' on your browser.</p>
+		<?php } else { ?>
+			<h3>configuration file</h3>
+			<?php if($written) { ?>
+				<p>A configuration file has been created with this content:</p>
+			<?php } else { ?>
+				<p>Please create a configuration file <cite>inc/config.local.inc.php</cite> with this content:</p>
+			<?php } ?>
+			<div class="code"><pre><code><?= htmlspecialchars($config) ?></code></pre></div>
+			<h3>finished</h3>
+			<p>Congratulations! After that you can log in as superuser with:
+			<cite><?= $_POST['admin_user'] ?></cite>:<cite><?= htmlspecialchars($_POST['admin_pass']) ?></cite>
+			</p>
+		<?php } ?>
 	<?php } ?>
 </div>

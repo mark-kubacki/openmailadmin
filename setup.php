@@ -90,6 +90,11 @@ switch($_GET['step']) {
 							));
 			}
 			$config = sprintf($config, '0.9.0', date('r'), $_POST['imap_user'], 'my database', $_POST['dsn'], $_POST['prefix'], $_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
+			if(!file_exists('./inc/config.local.inc.php')) {
+				$written = strlen($config) == file_put_contents('./inc/config.local.inc.php', $config);
+			} else {
+				$written = false;
+			}
 		}
 		include('./templates/setup/step3.tpl');
 		break;
