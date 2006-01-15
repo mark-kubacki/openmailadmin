@@ -15,7 +15,7 @@ class InputValidatorSuite
 	/** array with validation instructions and corresponding error-messages */
 	private	$validate	= array();
 
-	public function __construct(openmailadmin $oma, array $cfg) {
+	public function __construct(openmailadmin $oma = null, array $cfg = array()) {
 		$this->oma	= $oma;
 		$this->cfg	= $cfg;
 

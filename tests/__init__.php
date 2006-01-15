@@ -6,6 +6,7 @@ require_once 'PHPUnit2/TextUI/TestRunner.php';
 
 require_once './tests/oma_InputValidationPair.php';
 require_once './tests/oma_InputValidationCase.php';
+require_once './tests/oma_InputValidatorSuite.php';
 
 class OMA_Test_Suite
 {
@@ -18,6 +19,7 @@ class OMA_Test_Suite
 
 		$suite->addTestSuite('oma_InputValidationPair');
 		$suite->addTestSuite('oma_InputValidationCase');
+		$suite->addTestSuite('oma_InputValidatorSuite');
 
 		return $suite;
 	}

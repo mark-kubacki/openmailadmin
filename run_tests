@@ -7,7 +7,10 @@ if(isset($_SERVER['SERVER_SOFTWARE'])) {
 }
 
 // include('./inc/_prepend.php');
+include('./inc/config.inc.php');
+	@(include('./inc/config.local.inc.php'));
 include('./inc/functions.inc.php');
+include('./inc/translation.inc.php');
 
 if(!defined('PHPUnit2_MAIN_METHOD')) {
 	define('PHPUnit2_MAIN_METHOD',	'OMA_Test_Suite::main');

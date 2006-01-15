@@ -286,6 +286,8 @@
 </file>
 <file url="tests/oma_InputValidationCase.php" id="108CF0B8EB3L70fc707f0x448a" name="oma_InputValidationCase.php">
 </file>
+<file url="tests/oma_InputValidatorSuite.php" id="108CF5B109AL54baa9f00x448a" name="oma_InputValidatorSuite.php">
+</file>
 </folder>
 <file url="run_tests" id="108CEEAE29FL2819a46a0x448a" name="run_tests">
 </file>
