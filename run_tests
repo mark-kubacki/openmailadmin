@@ -1,0 +1,19 @@
+#!/bin/env php
+<?php
+if(isset($_SERVER['SERVER_SOFTWARE'])) {
+	header('HTTP/1.1 303 See Other');
+	header('Location: index.php');
+	die('This is an executable, not suited for being served by any webserver.');
+}
+
+// include('./inc/_prepend.php');
+include('./inc/functions.inc.php');
+
+if(!defined('PHPUnit2_MAIN_METHOD')) {
+	define('PHPUnit2_MAIN_METHOD',	'OMA_Test_Suite::main');
+}
+
+require_once './tests/__init__.php';
+
+// include('./inc/_append.php');
+?>

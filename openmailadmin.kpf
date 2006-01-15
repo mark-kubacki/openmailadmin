@@ -70,6 +70,10 @@
 </file>
 <file url="inc/lib/InputValidatorSuite.php" id="108BAA194A3L54c4f99d0x2684" name="InputValidatorSuite.php">
 </file>
+<file url="inc/lib/InputValidationPair.php" id="108BAD8CFCAL3e95a1340x2684" name="InputValidationPair.php">
+</file>
+<file url="inc/lib/InputValidationCase.php" id="108BADF9BE4L497280a60x2684" name="InputValidationCase.php">
+</file>
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
 </file>
@@ -274,5 +278,15 @@
 </folder>
 </folder>
 <file url="setup.php" id="10890F1EB0DL6da5443b0x276a" name="setup.php">
+</file>
+<folder id="108CEEA93F8L49cbc2440x448a" name="test">
+<file url="tests/__init__.php" id="108CEEFB59EL784930b40x448a" name="__init__.php">
+</file>
+<file url="tests/oma_InputValidationPair.php" id="108CEEFB5AFL65a017ee0x448a" name="oma_InputValidationPair.php">
+</file>
+<file url="tests/oma_InputValidationCase.php" id="108CF0B8EB3L70fc707f0x448a" name="oma_InputValidationCase.php">
+</file>
+</folder>
+<file url="run_tests" id="108CEEAE29FL2819a46a0x448a" name="run_tests">
 </file>
 </project>
