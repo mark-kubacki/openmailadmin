@@ -11,7 +11,7 @@ class oma_InputValidationCase
 	public static function main() {
 		require_once 'PHPUnit2/TextUI/TestRunner.php';
 
-		$suite  = new PHPUnit2_Framework_TestSuite('oma_InputValidationPair');
+		$suite  = new PHPUnit2_Framework_TestSuite('oma_InputValidationCase');
 		$result = PHPUnit2_TextUI_TestRunner::run($suite);
 	}
 
