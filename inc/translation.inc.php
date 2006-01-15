@@ -1,13 +1,16 @@
 <?php
-// Returns corresponding text:
+/**
+ * @param	id	Catalog ID of localized string to be returned.
+ */
 function txt($id) {
 	global $lang, $res, $default_lang;
-	if(isset($res[$lang][$id]))
+	if(isset($res[$lang][$id])) {
 		return $res[$lang][$id];
-	else if(isset($res[$default_lang][$id]))
+	} else if(isset($res[$default_lang][$id])) {
 		return $res[$default_lang][$id];
-	else
+	} else {
 		return '#'.$id;
+	}
 }
 
 // this will determine which language to use
@@ -22,8 +25,8 @@ if(!$cfg['force_default_language']) {
 	}
 }
 
-include_once('inc/lang/'.$lang.'.inc.php');
-include_once('inc/lang/'.$default_lang.'.inc.php');
+include_once('./inc/lang/'.$lang.'.inc.php');
+include_once('./inc/lang/'.$default_lang.'.inc.php');
 // include_once('inc/lang/de.inc.php');
 
 if(txt('encoding') == '#encoding')
