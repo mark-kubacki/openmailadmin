@@ -239,6 +239,7 @@ class openmailadmin
 					else
 						$dest[] = $value;
 				}
+				sort($dest);
 				$row['dest'] = $dest;
 				//turn the alias of catchalls to a star
 				if($row['address']{0} == '@')
@@ -673,6 +674,7 @@ class openmailadmin
 					else
 					$dest[] = $value;
 				}
+				sort($dest);
 				$row['dest'] = $dest;
 				// add the current entry to our list of aliases
 				$regexp[] = $row;
