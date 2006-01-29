@@ -109,7 +109,6 @@ switch($_GET['step']) {
 	case '1':
 		$expectations
 		= array('asp_tags'			=> 0,
-			'short_open_tag'		=> 0,
 			'display_errors'		=> 0,
 			'log_errors'			=> 1,
 			'file_uploads'			=> 0,
