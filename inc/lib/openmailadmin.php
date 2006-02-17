@@ -404,7 +404,7 @@ class openmailadmin
 	 * the reference user? If so, return true.
 	 * $reference is an user, $tobechecked an mailboxname.
 	 */
-	private function domain_check($reference, $tobechecked, $domain_key) {
+	public function domain_check($reference, $tobechecked, $domain_key) {
 		if(!isset($reference['domain_set'])) {
 			$reference['domain_set'] = $this->get_domain_set($reference['mbox'], $reference['domains']);
 		}
