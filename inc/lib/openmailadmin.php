@@ -1037,10 +1037,12 @@ class openmailadmin
 						}
 						$result->MoveNext();
 					}
-					$this->add_error(sprintf(txt('131'),
-								$props[$what], $what == 'max_alias' ? txt('88') : txt('89'),
-								implode(', ', $tmp)));
-					$to_be_processed = array_diff($to_be_processed, $have_skipped);
+					if(count($have_skipped) > 0) {
+						$this->add_error(sprintf(txt('131'),
+									$props[$what], $what == 'max_alias' ? txt('88') : txt('89'),
+									implode(', ', $tmp)));
+						$to_be_processed = array_diff($to_be_processed, $have_skipped);
+					}
 				}
 				if(count($to_be_processed) > 0) {
 					// We don't need further checks if a superuser is logged in.
