@@ -224,7 +224,7 @@ class openmailadmin
 		$result = $this->db->Execute('SELECT address, dest, SUBSTRING_INDEX(address, "@", 1) as alias, SUBSTRING_INDEX(address, "@", -1) as domain, active'
 					.' FROM '.$this->tablenames['virtual']
 					.' WHERE owner='.$this->db->qstr($this->current_user['mbox']).$_SESSION['filter']['str']['address']
-					.' ORDER BY domain, dest, alias'
+					.' ORDER BY domain, alias, dest'
 					.$_SESSION['limit']['str']['address']);
 		if(!$result === false) {
 			while(!$result->EOF) {
