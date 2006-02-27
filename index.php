@@ -28,7 +28,7 @@ include('./templates/'.$cfg['theme'].'/information.tpl');
 
 // ------------------------------ Password --------------------------------------------------------
 if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'change') {
-	$oma->status_reset();
+	$ErrorHandler->status_reset();
 	if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
 		if($oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2'], $_POST['old_pass'])) {
 			// we have to reset the current user's cleartext password
@@ -39,11 +39,11 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'chang
 		$oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2']);
 	}
 
-	if($oma->errors_occured()) {
-		error($oma->errors_get());
+	if($ErrorHandler->errors_occured()) {
+		error($ErrorHandler->errors_get());
 	}
-	if($oma->info_occured()) {
-		info($oma->info_get());
+	if($ErrorHandler->info_occured()) {
+		info($ErrorHandler->info_get());
 	}
 }
 

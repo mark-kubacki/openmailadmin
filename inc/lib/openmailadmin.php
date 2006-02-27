@@ -6,13 +6,13 @@
  * @todo	Refactorings: Extract classes.
  */
 class openmailadmin
-	extends ErrorHandler
 {
 	public	$current_user;		// What user do we edit/display currently?
 	public	$authenticated_user;	// What user did log in?
 
 	private	$db;
 	private $validator;
+	protected	$ErrorHandler;
 
 	private	$tablenames;
 	private	$cfg;
@@ -22,12 +22,12 @@ class openmailadmin
 	const	regex_valid_domain	= '[a-z0-9\-\_\.]{2,}\.[a-z]{2,}';
 
 	function __construct(ADOConnection $adodb_handler, array $tablenames, array $cfg, IMAP_Administrator $imap) {
-		$this->status_reset();
 		$this->db		= $adodb_handler;
 		$this->tablenames	= $tablenames;
 		$this->cfg		= $cfg;
 		$this->imap		= $imap;
 		$this->validator	= new InputValidatorSuite($this, $cfg);
+		$this->ErrorHandler	= ErrorHandler::getInstance();
 	}
 
 	/*
@@ -268,7 +268,7 @@ class openmailadmin
 								.' WHERE domain='.$this->db->qstr($domain)
 								.' AND (owner='.$this->db->qstr($this->current_user['mbox']).' OR owner='.$this->db->qstr($this->authenticated_user['mbox']).')');
 					if($result === false) {			// negative check!
-						$this->add_error(txt('16'));
+						$this->ErrorHandler->add_error(txt('16'));
 						return false;
 					}
 					// There shall be no local part in the address. That is characteristic for catchalls.
@@ -279,11 +279,11 @@ class openmailadmin
 			else if(preg_match('/([A-Z0-9\.\-\_]{'.strlen($alias).'})/i', $alias)) {
 				if(!((isset($this->current_user['reg_exp']) && $this->current_user['reg_exp'] == '')
 					|| preg_match($this->current_user['reg_exp'], $alias.'@'.$domain))) {
-					$this->add_error(txt('12'));
+					$this->ErrorHandler->add_error(txt('12'));
 					return false;
 				}
 			} else {
-				$this->add_error(txt('13'));
+				$this->ErrorHandler->add_error(txt('13'));
 				return false;
 			}
 
@@ -291,13 +291,13 @@ class openmailadmin
 			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
 						array(strtolower($alias.'@'.$domain), implode(',', $arr_destinations), $this->current_user['mbox']));
 			if($this->db->Affected_Rows() < 1) {
-				$this->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			} else {
 				$this->current_user['used_alias']++;
 				return true;
 			}
 		} else {
-			$this->add_error(txt('14'));
+			$this->ErrorHandler->add_error(txt('14'));
 		}
 
 		return false;
@@ -312,10 +312,10 @@ class openmailadmin
 				.' LIMIT '.count($arr_addresses));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
-				$this->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 		} else {
-			$this->add_info(sprintf(txt('15'), implode(',', $arr_addresses)));
+			$this->ErrorHandler->add_info(sprintf(txt('15'), implode(',', $arr_addresses)));
 			$this->current_user['used_alias'] -= $this->db->Affected_Rows();
 			return true;
 		}
@@ -332,7 +332,7 @@ class openmailadmin
 				.' LIMIT '.count($arr_addresses));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
-				$this->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 		} else {
 			return true;
@@ -351,7 +351,7 @@ class openmailadmin
 				.' LIMIT '.count($arr_addresses));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
-				$this->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 		} else {
 			return true;
@@ -416,7 +416,7 @@ class openmailadmin
 		// Indication: A <= B
 		if(count($dom_a) == 0) {
 			// This will be only a warning.
-			$this->add_error(txt('80'));
+			$this->ErrorHandler->add_error(txt('80'));
 		} else if(count($dom_a) > count($reference['domain_set'])
 			   && count(array_diff($dom_a, $reference['domain_set'])) > 0) {
 			// A could have domains which the reference cannot access.
@@ -432,7 +432,6 @@ class openmailadmin
 	public function domain_add($domain, $props) {
 		$props['domain'] = $domain;
 		if(!$this->validator->validate($props, array('domain', 'categories', 'owner', 'a_admin'))) {
-			$this->add_error($this->validator->errors_get());
 			return false;
 		}
 
@@ -444,7 +443,7 @@ class openmailadmin
 		$this->db->Execute('INSERT INTO '.$this->tablenames['domains'].' (domain, categories, owner, a_admin) VALUES (?, ?, ?, ?)',
 				array($domain, $props['categories'], $props['owner'], $props['a_admin']));
 		if($this->db->Affected_Rows() < 1) {
-			$this->add_error($this->db->ErrorMsg());
+			$this->ErrorHandler->add_error($this->db->ErrorMsg());
 		} else {
 			$this->user_invalidate_domain_sets();
 			return true;
@@ -480,10 +479,10 @@ class openmailadmin
 					$this->db->Execute('DELETE FROM '.$this->tablenames['domains'].' WHERE FIND_IN_SET(ID, '.$this->db->qstr(implode(',',$del_ID)).') LIMIT '.count($del_ID));
 					if($this->db->Affected_Rows() < 1) {
 						if($this->db->ErrorNo() != 0) {
-							$this->add_error($this->db->ErrorMsg());
+							$this->ErrorHandler->add_error($this->db->ErrorMsg());
 						}
 					} else {
-						$this->add_info(txt('52').'<br />'.implode(', ', $del_nm));
+						$this->ErrorHandler->add_info(txt('52').'<br />'.implode(', ', $del_nm));
 						// We better deactivate all aliases containing that domain, so users can see the domain was deleted.
 						$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual'].' SET active = 0, neu = 1 WHERE FIND_IN_SET(SUBSTRING(address, LOCATE(\'@\', address)+1), \''.implode(',', $del_nm).'\')');
 						// We can't do such on REGEXP addresses: They may catch more than the given domains.
@@ -491,13 +490,13 @@ class openmailadmin
 						return true;
 					}
 				} else {
-					$this->add_error(txt('16'));
+					$this->ErrorHandler->add_error(txt('16'));
 				}
 			} else {
-				$this->add_error(txt('16'));
+				$this->ErrorHandler->add_error(txt('16'));
 			}
 		} else {
-			$this->add_error(txt('11'));
+			$this->ErrorHandler->add_error(txt('11'));
 		}
 
 		return false;
@@ -509,12 +508,11 @@ class openmailadmin
 		$toc = array();		// to be changed
 
 		if(!$this->validator->validate($data, $change)) {
-			$this->add_error($this->validator->errors_get());
 			return false;
 		}
 
 		if(!is_array($change)) {
-			$this->add_error(txt('53'));
+			$this->ErrorHandler->add_error(txt('53'));
 			return false;
 		}
 		if($this->cfg['admins_delete_domains'] && in_array('owner', $change))
@@ -530,9 +528,9 @@ class openmailadmin
 				.' LIMIT '.count($domains));
 			if($this->db->Affected_Rows() < 1) {
 				if($this->db->ErrorNo() != 0) {
-					$this->add_error($this->db->ErrorMsg());
+					$this->ErrorHandler->add_error($this->db->ErrorMsg());
 				} else {
-					$this->add_error(txt('16'));
+					$this->ErrorHandler->add_error(txt('16'));
 				}
 			}
 		}
@@ -565,14 +563,14 @@ class openmailadmin
 					// canonical
 					$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['user'].' SET canonical = REPLACE(canonical, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE canonical LIKE '.$this->db->qstr('%@'.$domain['name']));
 				} else {
-					$this->add_error($this->db->ErrorMsg());
+					$this->ErrorHandler->add_error($this->db->ErrorMsg());
 				}
 				return true;
 			} else {
-				$this->add_error(txt('91'));
+				$this->ErrorHandler->add_error(txt('91'));
 			}
 		} else {
-			$this->add_error(txt('53'));
+			$this->ErrorHandler->add_error(txt('53'));
 		}
 
 		return false;
@@ -589,7 +587,7 @@ class openmailadmin
 		if($this->authenticated_user['a_super'] < 1
 		   && $username != $this->authenticated_user['mbox']
 		   && !$this->user_is_descendant($username, $this->authenticated_user['mbox'])) {
-			$this->add_error(txt('49'));
+			$this->ErrorHandler->add_error(txt('49'));
 			return false;
 		}
 
@@ -604,11 +602,11 @@ class openmailadmin
 				.' SET pass_crypt='.$this->db->qstr($new_crypt).', pass_md5='.$this->db->qstr($new_md5)
 				.' WHERE mbox='.$this->db->qstr($username).' LIMIT 1');
 		if($this->db->Affected_Rows() > 0) {
-			$this->add_info(txt('48'));
+			$this->ErrorHandler->add_info(txt('48'));
 			return true;
 		} else {
 			if($this->db->ErrorNo() != 0) {
-				$this->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 			return false;
 		}
@@ -624,16 +622,16 @@ class openmailadmin
 		   && !is_null($old_passwd)
 		   && !(passwd_check($old_passwd, $this->current_user['pass_crypt'])
 			|| passwd_check($old_passwd, $this->current_user['pass_md5']))) {
-			$this->add_error(txt('45'));
+			$this->ErrorHandler->add_error(txt('45'));
 		} else if($new != $new_repeat) {
-			$this->add_error(txt('44'));
+			$this->ErrorHandler->add_error(txt('44'));
 		} else if(strlen($new) < $this->cfg['passwd']['min_length']
 			|| strlen($new) > $this->cfg['passwd']['max_length']) {
-			$this->add_error(sprintf(txt('46'), $this->cfg['passwd']['min_length'], $this->cfg['passwd']['max_length']));
+			$this->ErrorHandler->add_error(sprintf(txt('46'), $this->cfg['passwd']['min_length'], $this->cfg['passwd']['max_length']));
 		} else {
 			// Warn about insecure passwords, but let them pass.
 			if(!(preg_match('/[a-z]{1}/', $new) && preg_match('/[A-Z]{1}/', $new) && preg_match('/[0-9]{1}/', $new))) {
-				$this->add_error(txt('47'));
+				$this->ErrorHandler->add_error(txt('47'));
 			}
 			if($this->user_set_password($this->current_user['mbox'], $new)) {
 				return true;
@@ -690,7 +688,7 @@ class openmailadmin
 		// some dull checks;
 		// if someone knows how to find out whether an string is a valid regexp -> write me please
 		if($regexp == '' || $regexp{0} != '/') {
-			$this->add_error(txt('127'));
+			$this->ErrorHandler->add_error(txt('127'));
 			return false;
 		}
 
@@ -700,14 +698,14 @@ class openmailadmin
 				array($regexp, implode(',', $arr_destinations), $this->current_user['mbox']));
 			if($this->db->Affected_Rows() < 1) {
 				if($this->db->ErrorNo() != 0) {
-					$this->add_error($this->db->ErrorMsg());
+					$this->ErrorHandler->add_error($this->db->ErrorMsg());
 				}
 			} else {
 				$this->current_user['used_regexp']++;
 				return true;
 			}
 		} else {
-			$this->add_error(txt('31'));
+			$this->ErrorHandler->add_error(txt('31'));
 		}
 
 		return false;
@@ -722,10 +720,10 @@ class openmailadmin
 				.' LIMIT '.count($arr_regexp_ids));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
-				$this->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 		} else {
-			$this->add_info(txt('32'));
+			$this->ErrorHandler->add_info(txt('32'));
 			$this->current_user['used_regexp'] -= $this->db->Affected_Rows();
 			return true;
 		}
@@ -742,7 +740,7 @@ class openmailadmin
 				.' LIMIT '.count($arr_regexp_ids));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
-				$this->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 		} else {
 			return true;
@@ -760,7 +758,7 @@ class openmailadmin
 				.' LIMIT '.count($arr_regexp_ids));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
-				$this->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 		} else {
 			return true;
@@ -862,15 +860,14 @@ class openmailadmin
 
 		// Check inputs for sanity and consistency.
 		if(!$this->authenticated_user['a_admin_user'] > 0) {
-			$this->add_error(txt('16'));
+			$this->ErrorHandler->add_error(txt('16'));
 			return false;
 		}
 		if(in_array($mboxname, $this->cfg['user_ignore'])) {
-			$this->add_error(sprintf(txt('130'), txt('83')));
+			$this->ErrorHandler->add_error(sprintf(txt('130'), txt('83')));
 			return false;
 		}
 		if(!$this->validator->validate($props, array('mbox','person','pate','canonical','reg_exp','domains','max_alias','max_regexp','a_admin_domains','a_admin_user','a_super','quota'))) {
-			$this->add_error($this->validator->errors_get());
 			return false;
 		}
 
@@ -879,12 +876,12 @@ class openmailadmin
 			// As the current user's contingents will be decreased we have to use his values.
 			if($props['max_alias'] > ($this->current_user['max_alias'] - $this->user_get_used_alias($this->current_user['mbox']))
 			   || $props['max_regexp'] > ($this->current_user['max_regexp'] - $this->user_get_used_regexp($this->current_user['mbox']))) {
-				$this->add_error(txt('66'));
+				$this->ErrorHandler->add_error(txt('66'));
 				return false;
 			}
 			$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
 			if($quota->is_set && $_POST['quota'] > $quota->free) {
-				$this->add_error(txt('65'));
+				$this->ErrorHandler->add_error(txt('65'));
 				return false;
 			}
 		}
@@ -894,7 +891,7 @@ class openmailadmin
 			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
 					array($props['canonical'], $mboxname, $mboxname));
 			if($this->db->Affected_Rows() < 1) {
-				$this->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 				return false;
 			}
 			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['virtual'].' WHERE address='.$this->db->qstr($props['canonical']).' AND owner='.$this->db->qstr($mboxname).' LIMIT 1\');';
@@ -906,7 +903,7 @@ class openmailadmin
 				array($props['mbox'], $props['person'], $props['pate'], $props['canonical'], $props['reg_exp'], $props['domains'], $props['max_alias'], $props['max_regexp'], time(), $props['a_admin_domains'], $props['a_admin_user'], $props['a_super'])
 				);
 		if($this->db->Affected_Rows() < 1) {
-			$this->add_error($this->db->ErrorMsg());
+			$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			// Rollback
 			$this->rollback($rollback);
 			return false;
@@ -923,7 +920,7 @@ class openmailadmin
 		// ... and then create the user on the server.
 		$result = $this->imap->createmb($this->imap->format_user($mboxname));
 		if(!$result) {
-			$this->add_error($this->imap->error_msg);
+			$this->ErrorHandler->add_error($this->imap->error_msg);
 			// Rollback
 			$this->rollback($rollback);
 			return false;
@@ -942,28 +939,28 @@ class openmailadmin
 		if($this->authenticated_user['a_super'] == 0 && $cur_usr_quota->is_set) {
 			$result = $this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $cur_usr_quota->max - $props['quota']);
 			if(!$result) {
-				$this->add_error($this->imap->error_msg);
+				$this->ErrorHandler->add_error($this->imap->error_msg);
 				// Rollback
 				$this->rollback($rollback);
 				return false;
 			}
 			$rollback[] = '$this->imap->setquota($this->imap->format_user($this->current_user[\'mbox\']), '.$cur_usr_quota->max .'));';
-			$this->add_info(sprintf(txt('69'), $cur_usr_quota->max - $props['quota']));
+			$this->ErrorHandler->add_info(sprintf(txt('69'), $cur_usr_quota->max - $props['quota']));
 		} else {
-			$this->add_info(txt('71'));
+			$this->ErrorHandler->add_info(txt('71'));
 		}
 
 		// ... and set the new user's quota.
 		if(is_numeric($props['quota'])) {
 			$result = $this->imap->setquota($this->imap->format_user($mboxname), $props['quota']);
 			if(!$result) {
-				$this->add_error($this->imap->error_msg);
+				$this->ErrorHandler->add_error($this->imap->error_msg);
 				// Rollback
 				$this->rollback($rollback);
 				return false;
 			}
 		}
-		$this->add_info(sprintf(txt('72'), B($mboxname), B($props['person'])));
+		$this->ErrorHandler->add_info(sprintf(txt('72'), B($mboxname), B($props['person'])));
 		if(isset($_SESSION['paten'][$props['pate']])) {
 			$_SESSION['paten'][$props['pate']][] = $mboxname;
 		}
@@ -977,11 +974,10 @@ class openmailadmin
 	public function mailbox_change($mboxnames, $change, $props) {
 		// Ensure sanity of inputs and check requirements.
 		if(!$this->authenticated_user['a_admin_user'] > 0) {
-			$this->add_error(txt('16'));
+			$this->ErrorHandler->add_error(txt('16'));
 			return false;
 		}
 		if(!$this->validator->validate($props, $change)) {
-			$this->add_error($this->validator->errors_get());
 			return false;
 		}
 		$mboxnames = $this->mailbox_filter_manipulable($this->authenticated_user['mbox'], $mboxnames);
@@ -1038,7 +1034,7 @@ class openmailadmin
 						$result->MoveNext();
 					}
 					if(count($have_skipped) > 0) {
-						$this->add_error(sprintf(txt('131'),
+						$this->ErrorHandler->add_error(sprintf(txt('131'),
 									$props[$what], $what == 'max_alias' ? txt('88') : txt('89'),
 									implode(', ', $tmp)));
 						$to_be_processed = array_diff($to_be_processed, $have_skipped);
@@ -1069,7 +1065,7 @@ class openmailadmin
 							.' LIMIT 1');
 						} else {
 							// Else, we have to show an error message.
-							$this->add_error(txt('66'));
+							$this->ErrorHandler->add_error(txt('66'));
 						}
 					}
 				}
@@ -1090,7 +1086,7 @@ class openmailadmin
 				$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
 				if($add_quota != 0 && $quota->is_set) {
 					$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $quota->max - $add_quota);
-					$this->add_info(sprintf(txt('78'), $quota->max - $add_quota));
+					$this->ErrorHandler->add_info(sprintf(txt('78'), $quota->max - $add_quota));
 				}
 			}
 			reset($mboxnames);
@@ -1098,7 +1094,7 @@ class openmailadmin
 				if($user != '') {
 					$result = $this->imap->setquota($this->imap->format_user($user), intval($props['quota']));
 					if(!$result) {
-						$this->add_error($this->imap->error_msg);
+						$this->ErrorHandler->add_error($this->imap->error_msg);
 					}
 				}
 			}
@@ -1115,7 +1111,7 @@ class openmailadmin
 				$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual_regexp'].' SET dest=REPLACE(dest, '.$this->db->qstr($mboxnames['0']).', '.$this->db->qstr($props['mbox']).'), neu = 1 WHERE dest REGEXP '.$this->db->qstr($mboxnames['0'].'[^@]{1,}').' OR dest LIKE '.$this->db->qstr('%'.$mboxnames['0']));
 				$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual_regexp'].' SET owner='.$this->db->qstr($props['mbox']).' WHERE owner='.$this->db->qstr($mboxnames['0']));
 			} else {
-				$this->add_error($this->imap->error_msg.'<br />'.txt('94'));
+				$this->ErrorHandler->add_error($this->imap->error_msg.'<br />'.txt('94'));
 			}
 		}
 
@@ -1149,7 +1145,7 @@ class openmailadmin
 				}
 				$result = $this->imap->deletemb($this->imap->format_user($user));
 				if(!$result) {		// failure
-					$this->add_error($this->imap->error_msg);
+					$this->ErrorHandler->add_error($this->imap->error_msg);
 				} else {		// success
 					$add_quota += $toadd;
 					$processed[] = $user;
@@ -1169,7 +1165,7 @@ class openmailadmin
 		   && $add_quota > 0
 		   && $quota->is_set) {
 			$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $quota->max + $add_quota);
-			$this->add_info(sprintf(txt('76'), $quota->max + $add_quota));
+			$this->ErrorHandler->add_info(sprintf(txt('76'), $quota->max + $add_quota));
 		}
 
 		// Calculate how many contingents get freed if we delete the users.
@@ -1202,7 +1198,7 @@ class openmailadmin
 			.' SET pate='.$this->db->qstr($this->current_user['mbox'])
 			.' WHERE FIND_IN_SET(pate, '.$aux_tmp.')');
 
-		$this->add_info(sprintf(txt('75'), $aux_tmp));
+		$this->ErrorHandler->add_info(sprintf(txt('75'), $aux_tmp));
 		if(isset($_SESSION['paten'])) unset($_SESSION['paten']); // inefficient, but maybe we come up with something more elegant
 
 		return true;
@@ -1220,7 +1216,7 @@ class openmailadmin
 					.' LIMIT '.count($tobechanged));
 			if($this->db->Affected_Rows() < 1) {
 				if($this->db->ErrorNo() != 0) {
-					$this->add_error($this->db->ErrorMsg());
+					$this->ErrorHandler->add_error($this->db->ErrorMsg());
 				}
 			} else {
 				return true;

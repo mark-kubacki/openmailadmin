@@ -11,7 +11,6 @@ if($oma->authenticated_user['a_admin_domains'] > 0) {
 			   && !(isset($_POST['dom']) && count($_POST['dom']) > 0) ) {
 			error(txt('11'));
 		} else {
-			$oma->status_reset();
 			switch($_POST['action']) {
 				case 'new':
 					$oma->domain_add($_POST['domain'], $_POST);
@@ -24,11 +23,11 @@ if($oma->authenticated_user['a_admin_domains'] > 0) {
 					break;
 			}
 
-			if($oma->errors_occured()) {
-				error($oma->errors_get());
+			if($ErrorHandler->errors_occured()) {
+				error($ErrorHandler->errors_get());
 			}
-			if($oma->info_occured()) {
-				info($oma->info_get());
+			if($ErrorHandler->info_occured()) {
+				info($ErrorHandler->info_get());
 			}
 		}
 	}

@@ -3,10 +3,10 @@
  * Here will all checks take place.
  */
 class InputValidatorSuite
-	extends ErrorHandler
 {
 	protected	$oma;
 	protected	$cfg;
+	protected	$ErrorHandler;
 
 	private	$invalid	= array();
 	private	$missing	= array();
@@ -18,6 +18,7 @@ class InputValidatorSuite
 	public function __construct(openmailadmin $oma = null, array $cfg = array()) {
 		$this->oma	= $oma;
 		$this->cfg	= $cfg;
+		$this->ErrorHandler	= ErrorHandler::getInstance();
 
 		// Fieldname as key, cap as its caption and def as its default value.
 		$this->inputs['mbox']		= array('cap'	=> txt('83'),
@@ -125,10 +126,10 @@ class InputValidatorSuite
 		$error_occured	= $this->iterate_through_fields($data, $which);
 		if($error_occured) {
 			if(count($this->invalid) > 0) {
-				$this->add_error(sprintf(txt('130'), implode(', ', $this->invalid)));
+				$this->ErrorHandler->add_error(sprintf(txt('130'), implode(', ', $this->invalid)));
 			}
 			if(count($this->missing) > 0) {
-				$this->add_error(sprintf(txt('129'), implode(', ', $this->missing)));
+				$this->ErrorHandler->add_error(sprintf(txt('129'), implode(', ', $this->missing)));
 			}
 		}
 		return(!$error_occured);
@@ -153,7 +154,7 @@ class InputValidatorSuite
 								// The given value is invalid.
 								$error_occured = true;
 								if(isset($test['error'])) {
-									$this->add_error($test['error']);
+									$this->ErrorHandler->add_error($test['error']);
 								} else {
 									$this->invalid[] = $this->inputs[$fieldname]['cap'];
 								}

@@ -12,7 +12,6 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $oma->authenticated_user['
 			&& !(isset($_POST['user']) && is_array($_POST['user']))) {
 		error(txt('11'));
 	} else {
-		$oma->status_reset();
 		switch($_POST['action']) {
 			case 'new':
 				$oma->mailbox_create($_POST['mbox'], $_POST);
@@ -28,11 +27,11 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $oma->authenticated_user['
 				break;
 		}
 
-		if($oma->errors_occured()) {
-			error($oma->errors_get());
+		if($ErrorHandler->errors_occured()) {
+			error($ErrorHandler->errors_get());
 		}
-		if($oma->info_occured()) {
-			info($oma->info_get());
+		if($ErrorHandler->info_occured()) {
+			info($ErrorHandler->info_get());
 		}
 	}
 }

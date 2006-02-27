@@ -27,7 +27,6 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 		if($_POST['action'] != 'new' && (!isset($_POST['address']) || !is_array($_POST['address']))) {
 			error(txt('11'));
 		} else {
-			$oma->status_reset();
 			switch($_POST['action']) {
 				case 'new':
 					$oma->address_create(trim($_POST['alias']), $_POST['domain'], $destination);
@@ -44,11 +43,11 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 			}
 			unset($destination);
 
-			if($oma->errors_occured()) {
-				error($oma->errors_get());
+			if($ErrorHandler->errors_occured()) {
+				error($ErrorHandler->errors_get());
 			}
-			if($oma->info_occured()) {
-				info($oma->info_get());
+			if($ErrorHandler->info_occured()) {
+				info($ErrorHandler->info_get());
 			}
 		}
 	}

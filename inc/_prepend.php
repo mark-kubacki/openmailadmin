@@ -63,6 +63,7 @@ switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
 $oma	= new openmailadmin($db, $cfg['tablenames'], $cfg, $imap);
 $oma->authenticated_user	= &$authinfo;
 $oma->current_user		= &$cuser;
+$ErrorHandler	= ErrorHandler::getInstance();
 unset($authinfo);
 unset($cuser);
 
