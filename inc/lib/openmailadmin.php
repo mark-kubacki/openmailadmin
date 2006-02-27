@@ -262,7 +262,7 @@ class openmailadmin
 		$result = $this->db->Execute('SELECT address, dest, SUBSTRING_INDEX(address, "@", 1) as alias, SUBSTRING_INDEX(address, "@", -1) as domain, active'
 					.' FROM '.$cfg['tablenames']['virtual']
 					.' WHERE owner='.$this->db->qstr($this->current_user['mbox']).$_SESSION['filter']['str']['address']
-					.' ORDER BY domain, dest, alias'
+					.' ORDER BY domain, alias, dest'
 					.$_SESSION['limit']['str']['address']);
 		if(!$result === false) {
 			while(!$result->EOF) {
@@ -277,6 +277,7 @@ class openmailadmin
 					else
 						$dest[] = $value;
 				}
+				sort($dest);
 				$row['dest'] = $dest;
 				//turn the alias of catchalls to a star
 				if($row['address']{0} == '@')
@@ -728,6 +729,7 @@ class openmailadmin
 					else
 					$dest[] = $value;
 				}
+				sort($dest);
 				$row['dest'] = $dest;
 				// add the current entry to our list of aliases
 				$regexp[] = $row;
@@ -1105,10 +1107,12 @@ class openmailadmin
 						}
 						$result->MoveNext();
 					}
-					$this->error[]	= sprintf(txt('131'),
-								$props[$what], $what == 'max_alias' ? txt('88') : txt('89'),
-								implode(', ', $tmp));
-					$to_be_processed = array_diff($to_be_processed, $have_skipped);
+					if(count($have_skipped) > 0) {
+						$this->error[]	= sprintf(txt('131'),
+									$props[$what], $what == 'max_alias' ? txt('88') : txt('89'),
+									implode(', ', $tmp));
+						$to_be_processed = array_diff($to_be_processed, $have_skipped);
+					}
 				}
 				if(count($to_be_processed) > 0) {
 					// We don't need further checks if a superuser is logged in.

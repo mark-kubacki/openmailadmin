@@ -1,13 +1,18 @@
 = Quick Install Guide =
-If this is your first installation, please read this carefully first:
+If this is your first installation, we suggest you read this carefully:
   http://www.openmailadmin.org/wiki/Documentation/Installation/Detailed
 
-This guide omits integration with your existing MDA and MTA.
+This guide is meant as draft for those who already installed OMA once.
 
+= Install Openmailadmin =
 == Step 1 ==
 Copy all the files into your '''DocumentRoot'''-folder.
 
 == Step 2 ==
+Run setup.php.
+
+= Integrate with your MTA and MDA =
+== Step 3 ==
 Modify following files by changing '''usernames and passwords''':
  * samples/pam/imap
  * inc/database.sql
@@ -30,7 +35,8 @@ Copy samples/pam/imap settings to your /etc/pam.d folder
 }}}
 
 We assume you have configured [http://asg.web.cmu.edu/sasl/ SASL]
-to utilize [http://pam-mysql.sourceforge.net/ pam_mysql].
+to utilize [http://pam-mysql.sourceforge.net/ pam_mysql] or
+the auxprop plugin for systems without PAM (such as BSD).
 
 == Step 5 ==
 For security reasons, remove these files from your DocumentRoot-folder:
