@@ -25,7 +25,7 @@
 		<dl>
 			<dt><?= txt('108') ?></dt>
 			<dd>
-			    <	?php hsys_ACL_matrix($ACLs, true) ?>
+			    <?php hsys_ACL_matrix($ACLs, true) ?>
 			</dd>
 		</dl>
 	<?= $input->hidden('frm', 'ACL') ?>
