@@ -110,7 +110,7 @@ $res['en']	= array(
 
 '97'	=>	'Filter',
 '98'	=>	'contains',
-'99'	=>	'begins with',
+'99'	=>	'starts with',
 '100'	=>	'ends with',
 '101'	=>	'Entries',
 '102'	=>	'Server',
