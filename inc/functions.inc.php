@@ -88,7 +88,7 @@ function getPageList($link, $anz, $perPage, $cur = 0) {
 	$link = str_replace('%25d', '%d', $link);
 	for($i = 1; $i <= $pages; $i++) {
 		if($i == $cur)
-			$str[] = B(sprintf($link, $i, $i));
+			$str[] = '<em>'.sprintf($link, $i, $i).'</em>';
 		else
 			$str[] = sprintf($link, $i, $i);
 	}

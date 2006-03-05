@@ -959,7 +959,7 @@ class openmailadmin
 				return false;
 			}
 		}
-		$this->ErrorHandler->add_info(sprintf(txt('72'), B($mboxname), B($props['person'])));
+		$this->ErrorHandler->add_info(sprintf(txt('72'), $mboxname, $props['person']));
 		if(isset($_SESSION['paten'][$props['pate']])) {
 			$_SESSION['paten'][$props['pate']][] = $mboxname;
 		}

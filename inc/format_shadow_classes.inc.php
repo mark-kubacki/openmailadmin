@@ -219,13 +219,6 @@ class _table_shadow extends _table {
 	}
 };
 
-/**
- * @deprecated		Relict of former templating system.
- */
-function B($txt) {
-	return('<b>'.$txt.'</b>');
-}
-
 // add a attribute to the given element
 function addProp($element, $prop = array()) {
 	if(count($prop) < 1) {
