@@ -14,6 +14,10 @@ include('./inc/format_shadow_classes.inc.php');
 include('adodb/adodb.inc.php');
 include('./inc/functions.inc.php');
 
+if(is_readable('./templates/'.$cfg['theme'].'/__aux.php')) {
+	include('./templates/'.$cfg['theme'].'/__aux.php');
+}
+
 // Initialization
 	$table	= new _table_shadow();
 	$input	= new _input();
