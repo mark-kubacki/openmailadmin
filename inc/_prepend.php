@@ -10,7 +10,6 @@ include('./inc/config.inc.php');
 @(include('./inc/config.local.inc.php'))
 	or die('You have to create an configuration file, first. Try <a href="setup.php">setup.php</a>.');
 include('./inc/translation.inc.php');
-include('./inc/format_shadow_classes.inc.php');
 include('adodb/adodb.inc.php');
 include('./inc/functions.inc.php');
 
@@ -19,7 +18,7 @@ if(is_readable('./templates/'.$cfg['theme'].'/__aux.php')) {
 }
 
 // Initialization
-	$input	= new _input();
+	$input	= new HTMLInputTagGenerator();
 
 	if($cfg['max_elements_per_page'])
 		$amount_set 	= array_unique(array('10', '25', '50', '100', '--', $cfg['max_elements_per_page']));

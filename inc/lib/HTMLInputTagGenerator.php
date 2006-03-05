@@ -1,27 +1,32 @@
 <?php
 /**
- * Except for the _T_tag abstract class every class has to contain:
- * Uber-Classes:
- * 	SpecialTag	e.g. td($content)	directly a tag or subtype (input: checkbox)
- * Solitaire-Classes:
- * 	_([specific])				generates and returns the tag for displaying
- * 	display([specific], $arrProperties)	same as above plus one argument (may differ!!!)
- *
- * @deprecated		Relict of former templating system.
+ * Regard this as huge factory for generating strings of HTML "input" tags.
  */
-class _T_tag {
+class HTMLInputTagGenerator
+{
 	var		$images_dir;			// storage of images (for most derived classes need it)
-	var		$arrClass;			// CSS Class of tag
-	var		$arrProperties;			// tag's properties
+	var		$arrClass	= array();	// CSS Class of tag
+	var		$arrProperties	= array();	// tag's properties
 
 	// constructor
-	function _T_tag() {
+	function HTMLInputTagGenerator() {
 		$this->images_dir	= '';
-		$this->arrClass		= array();
-		$this->arrProperties	= array();
+		$this->arrClass['text']		= 'text';
+		$this->arrClass['password']	= 'password';
+		$this->arrClass['image']	= 'image';
+		$this->arrClass['submit']	= 'submit';
+		$this->arrClass['checkbox']	= 'checkbox';
+		$this->arrClass['textarea']	= 'textarea';
+		$this->arrClass['select']	= 'select';
+		$this->arrProperties['image']	= array('border' 	=> '0',
+							'alt'		=> ''
+							);
+		$this->arrProperties['input']	= array();
+		$this->arrProperties['textarea']	= array();
+		$this->arrProperties['select']	= array();
 	}
 
-	// synthesize the tag
+	/** For synthesizing generic tags. */
 	function _generic($tag, $arrProperties, $strContent = '', $container = true, $part = 'a') {
 		$ret = '';
 		if($part != 'e') {
@@ -41,27 +46,6 @@ class _T_tag {
 			$ret	.= '</'.$tag.'>';
 		}
 		return $ret;
-	}
-};
-
-/**
- * @deprecated		Relict of former templating system.
- */
-class _input extends _T_tag {
-	function _input() {
-		$this->arrClass['text']		= 'text';
-		$this->arrClass['password']	= 'password';
-		$this->arrClass['image']	= 'image';
-		$this->arrClass['submit']	= 'submit';
-		$this->arrClass['checkbox']	= 'checkbox';
-		$this->arrClass['textarea']	= 'textarea';
-		$this->arrClass['select']	= 'select';
-		$this->arrProperties['image']	= array('border' 	=> '0',
-							'alt'		=> ''
-							);
-		$this->arrProperties['input']	= array();
-		$this->arrProperties['textarea']	= array();
-		$this->arrProperties['select']	= array();
 	}
 
 	function _generate($type, $name, $value, $arrProperties) {
@@ -135,6 +119,6 @@ class _input extends _T_tag {
 	function hidden($name, $value) {
 		return($this->_generate('hidden', $name, $value, array()));
 	}
-};
 
+}
 ?>

@@ -31,8 +31,6 @@
 </file>
 <file url="inc/config.inc.php" id="9B9BDBB0-1F3A-44F6-84A7-63505A07B4D8" name="config.inc.php">
 </file>
-<file url="inc/format_shadow_classes.inc.php" id="91093092-F01F-4006-9B4A-E8F0CFE099A0" name="format_shadow_classes.inc.php">
-</file>
 <file url="inc/functions.inc.php" id="FF4A43E0-6562-462C-A2A5-2CE8D0DB58B3" name="functions.inc.php">
 </file>
 <file url="inc/miniauth.inc.php" id="088B2CB9-EB0A-4543-9FE0-D72A095FB266" name="miniauth.inc.php">
@@ -75,6 +73,8 @@
 <file url="inc/lib/InputValidationPair.php" id="108BAD8CFCAL3e95a1340x2684" name="InputValidationPair.php">
 </file>
 <file url="inc/lib/InputValidationCase.php" id="108BADF9BE4L497280a60x2684" name="InputValidationCase.php">
+</file>
+<file url="inc/lib/HTMLInputTagGenerator.php" id="109CAAB2124L2c27b55c0x2926" name="HTMLInputTagGenerator.php">
 </file>
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
