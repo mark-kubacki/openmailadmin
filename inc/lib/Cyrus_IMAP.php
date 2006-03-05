@@ -189,6 +189,7 @@ class Cyrus_IMAP
 	}
 
 	public function format_user($username, $folder = null) {
+		$this->gethierarchyseparator();
 		if(is_null($folder)) {
 			if(isset($this->connection_data['VDOM']) && $this->connection_data['VDOM'] != '') {
 				return($this->connection_data['VDOM'].'!user'.$this->separator.$username);
