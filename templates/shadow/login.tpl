@@ -6,7 +6,7 @@
 <br />
 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
 <?= caption(txt('122').' - '.txt('121')) ?>
-<?= $table->outer_shadow_start() ?>
+<?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1">
 	<tr>
 		<td class="std" width="80"><b><?= txt('5') ?></b></td>
@@ -27,6 +27,6 @@
 		<td class="std"><?= $input->hidden('frm', 'login') ?><?= $input->submit(txt('27')) ?></td>
 	</tr>
 </table>
-<?= $table->outer_shadow_stop() ?>
+<?php outer_shadow_stop(); ?>
 <br />
 </form>

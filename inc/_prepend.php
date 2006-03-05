@@ -19,9 +19,7 @@ if(is_readable('./templates/'.$cfg['theme'].'/__aux.php')) {
 }
 
 // Initialization
-	$table	= new _table_shadow();
 	$input	= new _input();
-	$table->images_dir	= $cfg['images_dir'];
 
 	if($cfg['max_elements_per_page'])
 		$amount_set 	= array_unique(array('10', '25', '50', '100', '--', $cfg['max_elements_per_page']));

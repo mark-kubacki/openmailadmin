@@ -20,7 +20,7 @@ for($i = 0; isset($regexp[$i]); $i++) {
 ?>
 <form action="<?= mkSelfRef() ?>" method="post">
 <?= caption(txt('33').'&nbsp;'.$oma->current_user['used_regexp'].'/'.$oma->current_user['max_regexp'], getPageList('<a href="'.mkSelfRef(array('regx_page' => '%d')).'">%d</a>', $oma->current_user['used_regexp'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['regx_page']), 580) ?>
-<?= $table->outer_shadow_start() ?>
+<?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1">
 	<tr>
 		<td class="std" colspan="2" width="580"><b><?= txt('34') ?></b>&nbsp;&nbsp;&nbsp;<?= $oma->current_user['reg_exp'] ?></td>
@@ -36,4 +36,4 @@ for($i = 0; isset($regexp[$i]); $i++) {
 		</tr>
 	<?php } ?>
 </table>
-<?= $table->outer_shadow_stop() ?>
+<?php outer_shadow_stop(); ?>

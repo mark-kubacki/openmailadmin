@@ -137,21 +137,4 @@ class _input extends _T_tag {
 	}
 };
 
-/**
- * @deprecated		Relict of former templating system.
- */
-class _table_shadow {
-	var		$images_dir;			// storage of images (for most derived classes need it)
-
-	function outer_shadow_start() {
-		return('<table border="0" cellpadding="0" cellspacing="0"><tr><td>');
-	}
-
-	function outer_shadow_stop() {
-		$ret	= '</td><td valign="top" class="sh_hor"><img border="0" src="'.$this->images_dir.'/sh_lu.gif" width="6" height="6" alt="\" /></td></tr>';
-		$ret	.= '<tr><td class="sh_ver"><img border="0" src="'.$this->images_dir.'/sh_ro.gif" width="6" height="6" alt="+" /></td><td align="right" class="sh_ver"><img border="0" src="'.$this->images_dir.'/sh_lo.gif" width="6" height="6" alt="\" /></td></tr></table><br />';
-		return $ret;
-	}
-};
-
 ?>

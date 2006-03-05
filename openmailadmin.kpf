@@ -204,6 +204,12 @@
 <file url="templates/shadow/regexp/list.tpl" id="B94C8B24-C819-4951-B41A-E6B91762C9C6" name="list.tpl">
 </file>
 </folder>
+<file url="templates/shadow/outer_shadow_stop.tpl" id="109CA95CF3DL59a25f170x2926" name="outer_shadow_stop.tpl">
+</file>
+<file url="templates/shadow/outer_shadow_start.tpl" id="109CA983E6FL6f9a49f60x2926" name="outer_shadow_start.tpl">
+</file>
+<file url="templates/shadow/__aux.php" id="109CA985E37L38df2e210x2926" name="__aux.php">
+</file>
 </folder>
 <folder id="FAA95CBC-1688-4AA3-ADE9-EC9B78E90AEE" name="blueray">
 <preference-set id="">

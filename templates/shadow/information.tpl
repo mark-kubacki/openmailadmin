@@ -1,5 +1,5 @@
 <?= caption(txt('3')) ?>
-<?= $table->outer_shadow_start() ?>
+<?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1">
 	<?php foreach($information as $entry) { ?>
 	<tr>
@@ -17,5 +17,5 @@
 		</td>
 	</tr>
 </table>
-<?= $table->outer_shadow_stop() ?>
+<?php outer_shadow_stop(); ?>
 <br />

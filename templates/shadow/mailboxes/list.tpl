@@ -5,7 +5,7 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 	<form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
 <?= caption(txt('79'), getPageList('<a href="'.mkSelfRef(array('mbox_page' => '%d')).'">%d</a>', $oma->current_user['n_mbox'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['mbox_page']), 580) ?>
-<?= $table->outer_shadow_start() ?>
+<?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1" width="580">
 	<tr>
 		<td class="std"><b><?= txt('5') ?></b></td>
@@ -55,4 +55,4 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 		</tr>
 	<?php } ?>
 </table>
-<?= $table->outer_shadow_stop() ?>
+<?php outer_shadow_stop(); ?>
