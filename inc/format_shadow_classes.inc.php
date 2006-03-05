@@ -186,16 +186,4 @@ function caption($text, $right=null, $width=null) {
 	include('./templates/'.$cfg['theme'].'/caption.tpl');
 }
 
-/**
- * @deprecated		Relict of former templating system.
- */
-function table_array_matrix($array) {
-	$output = '<table border="0" cellspacing="0" cellpadding="0" width="100%">';
-	foreach($array as $key=>$value) {
-		$output .= '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
-	}
-	$output .= '</table>';
-	return $output;
-}
-
 ?>
