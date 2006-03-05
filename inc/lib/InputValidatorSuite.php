@@ -121,7 +121,7 @@ class InputValidatorSuite
 	 * @param	data	data to be tested typically $_POST
 	 * @param	which	array of fields' names from data to be checked
 	 */
-	public function validate($data, $which) {
+	public function validate(&$data, $which) {
 		// Now we can set error-messages.
 		$error_occured	= $this->iterate_through_fields($data, $which);
 		if($error_occured) {
@@ -138,7 +138,7 @@ class InputValidatorSuite
 	/**
 	 * To invoke all necessary checks.
 	 */
-	private function iterate_through_fields($data, $which) {
+	private function iterate_through_fields(&$data, $which) {
 		$error_occured	= false;
 		$this->invalid	= array();
 		$this->missing	= array();
