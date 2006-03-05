@@ -75,6 +75,42 @@ function ChngS($elem) {
 	return(addProp($elem, array('onchange' => 'submit()')));
 }
 
+// add a attribute to the given element
+function addProp($element, $prop = array()) {
+	if(count($prop) < 1) {
+		return $element;
+	} else {
+		$ret = '';
+		foreach($prop as $key => $value)
+			$ret	.= ' '.strtolower($key).'="'.$value.'"';
+		return preg_replace('/(<[a-z]+)\s(.*)/', '$1'.$ret.' $2', $element, 1);
+	}
+}
+
+/*
+ * displays a nice error
+ */
+function error($text, $width=580) {
+	global $cfg;
+	include('./templates/'.$cfg['theme'].'/error_box.tpl');
+}
+
+/*
+ * displays a nice info-box
+ */
+function info($text, $width=580) {
+	global $cfg;
+	include('./templates/'.$cfg['theme'].'/info_box.tpl');
+}
+
+/*
+ * displays a nice caption
+ */
+function caption($text, $right=null, $width=null) {
+	global $cfg;
+	include('./templates/'.$cfg['theme'].'/caption.tpl');
+}
+
 /*
  * returns a list of page references
  */
