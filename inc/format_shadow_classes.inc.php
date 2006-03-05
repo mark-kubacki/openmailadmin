@@ -140,33 +140,7 @@ class _input extends _T_tag {
 /**
  * @deprecated		Relict of former templating system.
  */
-class _table extends _T_tag {
-	function _table() {
-		$this->arrProperties['td']	=	array();
-		$this->arrProperties['tr']	=	array();
-		$this->arrProperties['table']	=	array(	'border'	=> '0',
-								'cellpadding'	=> '1',
-								'cellspacing'	=> '1');
-	}
-
-	function table($strContent, $part = 'a', $arrProperties = array()) {
-		return($this->_generic('table', $arrProperties, $strContent, true, $part));
-	}
-
-	function tr($strContent, $part = 'a', $arrProperties = array()) {
-		return($this->_generic('tr', $arrProperties, $strContent, true, $part));
-	}
-
-	function td($strContent, $part = 'a', $arrProperties = array()) {
-		return($this->_generic('td', $arrProperties, $strContent, true, $part));
-	}
-
-};
-
-/**
- * @deprecated		Relict of former templating system.
- */
-class _table_shadow extends _table {
+class _table_shadow extends _T_tag {
 	function outer_shadow_start() {
 		return('<table border="0" cellpadding="0" cellspacing="0"><tr><td>');
 	}
