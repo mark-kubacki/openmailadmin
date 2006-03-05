@@ -6,7 +6,7 @@ count_same_cols($domains, 'a_admin', 'n_admin');
 	<form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
 <?= caption(txt('54'), getPageList('<a href="'.mkSelfRef(array('dom_page' => '%d')).'">%d</a>', $oma->current_user['n_domains'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['dom_page'])) ?>
-<?= $table->outer_shadow_start() ?>
+<?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1">
 	<tr>
 		<td class="std" width="190"><b><?= txt('55') ?></b></td>
@@ -30,4 +30,4 @@ count_same_cols($domains, 'a_admin', 'n_admin');
 		</tr>
 	<?php } ?>
 </table>
-<?= $table->outer_shadow_stop() ?>
+<?php outer_shadow_stop(); ?>

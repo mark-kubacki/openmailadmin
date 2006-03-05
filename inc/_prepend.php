@@ -1,5 +1,4 @@
 <?php
-$version = '0.9.1';
 ob_start('ob_gzhandler');
 // For security reasons error messages should not be displayed.
 ini_set('log_errors', '1');
@@ -12,17 +11,16 @@ include('./inc/config.inc.php');
 	or @(include('./inc/config.local.inc.php4'))
 	or die('You have to create an configuration file, first. Try <a href="setup.php">setup.php</a>.');
 include('./inc/translation.inc.php');
-include('./inc/format_shadow_classes.inc.php');
 include('adodb/adodb.inc.php');
 include('./inc/functions.inc.php');
+include('./inc/lib/HTMLInputTagGenerator.php');
+
+if(is_readable('./templates/'.$cfg['theme'].'/__aux.php')) {
+	include('./templates/'.$cfg['theme'].'/__aux.php');
+}
 
 // Initialization
-	$table	= new _table_shadow();
-	$tbled	= new _table();
-	$input	= new _input();
-	$table->images_dir	= $cfg['images_dir'];
-	$tbled->images_dir	= $cfg['images_dir'];
-	$tbled->arrProperties['td']	= array('class'	=> 'ed');
+	$input	= new HTMLInputTagGenerator();
 
 	if($cfg['max_elements_per_page'])
 		$amount_set 	= array_unique(array('10', '25', '50', '100', '--', $cfg['max_elements_per_page']));

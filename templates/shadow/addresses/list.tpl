@@ -17,7 +17,7 @@ for($i = 0; isset($alias[$i]); $i++) {
 ?>
 <form action="<?= mkSelfRef() ?>" method="post">
 <?= caption(txt('17').'&nbsp;'.$oma->current_user['used_alias'].'/'.$oma->current_user['max_alias'], getPageList('<a href="'.mkSelfRef(array('addr_page' => '%d')).'">%d</a>', $oma->current_user['used_alias'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['addr_page']), 580) ?>
-<?= $table->outer_shadow_start() ?>
+<?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1">
 	<tr>
 		<td class="std" colspan="2" width="320"><b><?= txt('18') ?></b></td>
@@ -31,4 +31,4 @@ for($i = 0; isset($alias[$i]); $i++) {
 		</tr>
 	<?php } ?>
 </table>
-<?= $table->outer_shadow_stop() ?>
+<?php outer_shadow_stop(); ?>

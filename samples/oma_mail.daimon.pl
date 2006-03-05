@@ -17,8 +17,7 @@ my %DB = (  'TYPE'	=> 'mysql',
 	'DB'	=> 'yourMySQL-DB' );
 
 ################ no need for modifying anything below ##########################
-my $dbh;
-my $sth;
+my ($dbh, $sth);
 
 $dbh = DBI->connect('DBI:'.$DB{'TYPE'}.':'.$DB{'DB'}.':'.$DB{'HOST'}, $DB{'USER'}, $DB{'PASS'})
 	|| die 'Cannot connect to database.';
@@ -29,7 +28,7 @@ if(! -e $MTA{'virtual'} || rand(6)<1 || amountOfNewEntries('virtual') > 0) {
 if(! -e $MTA{'regexp'} || rand(6)<1 || amountOfNewEntries('virtual_regexp') > 0) {
 	writeFile('regexp', 'virtual_regexp', 'reg_exp', 'dest', 'LENGTH(reg_exp) DESC');
 }
-if(! -e $MTA{'domains'} || rand(48)<1) {
+if(! -e $MTA{'domains'} || rand(48)<1 || amountOfNewEntries('domains') > 0) {
 	writeDomains();
 }
 if(defined $passwd_cache && (!(-e $passwd_cache) || rand(24)<1)) {

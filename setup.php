@@ -88,9 +88,9 @@ switch($_GET['step']) {
 							array('shared', 0, 0, 'anyone lrswipcda'),
 							));
 			}
-			$config = sprintf($config, '0.9.0', date('r'), $_POST['imap_user'], 'my database', $_POST['dsn'], $_POST['prefix'], $_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
+			$config = sprintf($config, '0.9.2', date('r'), $_POST['imap_user'], 'my database', $_POST['dsn'], $_POST['prefix'], $_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
 			if(!file_exists('./inc/config.local.inc.php')) {
-				$written = strlen($config) == file_put_contents('./inc/config.local.inc.php', $config);
+				$written = strlen($config) == @file_put_contents('./inc/config.local.inc.php', $config);
 			} else {
 				$written = false;
 			}

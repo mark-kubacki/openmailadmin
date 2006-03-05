@@ -213,8 +213,13 @@ class cyrus
 	 * Adds prefixes and suffixes as well as separators to a username
 	 */
 	function format_user($username, $folder = null) {
+		$this->gethierarchyseparator();
 		if(is_null($folder)) {
-			return('user'.$this->separator.$username.$this->connection_data['VDOM']);
+			if(isset($this->connection_data['VDOM']) && $this->connection_data['VDOM'] != '') {
+				return($this->connection_data['VDOM'].'!user'.$this->separator.$username);
+			} else {
+				return('user'.$this->separator.$username);
+			}
 		} else {
 			return($this->format_user($username).$this->separator.$folder);
 		}

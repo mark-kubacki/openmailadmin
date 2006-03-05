@@ -77,7 +77,7 @@ class openmailadmin
 		global $cfg;
 		$tmp	= array();
 
-		$result = $this->db->Execute('SELECT mbox FROM '.$cfg['tablenames']['user'].' WHERE active = 1 AND mbox_exists = 1');
+		$result = $this->db->Execute('SELECT mbox FROM '.$cfg['tablenames']['user'].' WHERE active = 1');
 		while(!$result->EOF) {
 			$tmp[] = $result->fields['mbox'];
 			$result->MoveNext();
@@ -996,7 +996,6 @@ class openmailadmin
 			$this->rollback($rollback);
 			return false;
 		} else {
-			$this->db->Execute('UPDATE LOW_PRIORITY '.$cfg['tablenames']['user'].' SET mbox_exists=1 WHERE mbox='.$this->db->qstr($mboxname).' LIMIT 1');
 			if(isset($cfg['folders']['create_default']) && is_array($cfg['folders']['create_default'])) {
 				foreach($cfg['folders']['create_default'] as $new_folder) {
 					$imap->createmb($imap->format_user($mboxname, $new_folder));
@@ -1031,7 +1030,7 @@ class openmailadmin
 				return false;
 			}
 		}
-		$this->info[]	= sprintf(txt('72'), B($mboxname), B($props['person']));
+		$this->info[]	= sprintf(txt('72'), $mboxname, $props['person']);
 		if(isset($_SESSION['paten'][$props['pate']])) {
 			$_SESSION['paten'][$props['pate']][] = $mboxname;
 		}

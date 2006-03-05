@@ -1,6 +1,6 @@
 <form action="<?= mkSelfRef() ?>" method="post">
 <?= caption(txt('40')) ?>
-<?= $table->outer_shadow_start() ?>
+<?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1">
 	<?php if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) { ?>
 	<tr>
@@ -24,6 +24,6 @@
 		</td>
 	</tr>
 </table>
-<?= $table->outer_shadow_stop() ?>
+<?php outer_shadow_stop(); ?>
 </form>
 <br />

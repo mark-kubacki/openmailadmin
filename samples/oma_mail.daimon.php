@@ -56,8 +56,10 @@ if(!is_file($MTA['regexp']) || $amount_new > 0 || time()%6<1) {
 }
 
 // domains
-if(!is_file($MTA['domains']) || time()%48<1) {
-	make_hashfile_of_query($MTA['domains'], 'SELECT domain FROM '.$DB['PREFIX'].'domains ORDER BY (SELECT count(*) FROM '.$DB['PREFIX'].'virtual WHERE address LIKE CONCAT(\'%\', \'@\', domain)) DESC');
+$amount_new	= $db->GetOne('SELECT COUNT(*) FROM '.$DB['PREFIX'].'domains WHERE neu=1');
+if(!is_file($MTA['domains']) || $amount_new > 0 || time()%96<1) {
+	make_hashfile_of_query($MTA['domains'], 'SELECT domain,domain FROM '.$DB['PREFIX'].'domains ORDER BY (SELECT count(*) FROM '.$DB['PREFIX'].'virtual WHERE address LIKE CONCAT(\'%\', \'@\', domain)) DESC');
+	$db->Execute('UPDATE LOW_PRIORITY IGNORE '.$DB['PREFIX'].'domains SET neu=0 WHERE neu=1');
 }
 
 // for pam_pwdfile
