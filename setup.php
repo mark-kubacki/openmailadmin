@@ -121,6 +121,7 @@ switch($_GET['step']) {
 		= array('magic_quotes_gpc'		=> 0,
 			'magic_quotes_runtime'		=> 0,
 			'register_globals'		=> 0,
+			'short_open_tag'		=> 1,
 			);
 
 		$checks
