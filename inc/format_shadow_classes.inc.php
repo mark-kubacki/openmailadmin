@@ -140,19 +140,6 @@ class _input extends _T_tag {
 /**
  * @deprecated		Relict of former templating system.
  */
-class _font extends _T_tag {
-	function display($strContent, $arrProperties = array()) {
-		return($this->_generic('font', $arrProperties, $strContent));
-	}
-
-	function _($strContent) {
-		return($this->display($strContent));
-	}
-};
-
-/**
- * @deprecated		Relict of former templating system.
- */
 class _table extends _T_tag {
 	function _table() {
 		$this->arrProperties['td']	=	array();
