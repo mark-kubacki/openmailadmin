@@ -16,11 +16,8 @@ include('./inc/functions.inc.php');
 
 // Initialization
 	$table	= new _table_shadow();
-	$tbled	= new _table();
 	$input	= new _input();
 	$table->images_dir	= $cfg['images_dir'];
-	$tbled->images_dir	= $cfg['images_dir'];
-	$tbled->arrProperties['td']	= array('class'	=> 'ed');
 
 	if($cfg['max_elements_per_page'])
 		$amount_set 	= array_unique(array('10', '25', '50', '100', '--', $cfg['max_elements_per_page']));
