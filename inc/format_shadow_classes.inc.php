@@ -167,34 +167,6 @@ class _table extends _T_tag {
  * @deprecated		Relict of former templating system.
  */
 class _table_shadow extends _table {
-	var		$old_netscape;
-
-	function _table_shadow() {
-		$this->old_netscape		=	false;
-		$this->arrClass['caption']	=	'caption';
-		$this->arrClass['caption_dea']	=	'caption_dea';
-		$this->arrProperties['td']	=	array(	'class'		=> 'std');
-		$this->arrProperties['tr']	=	array();
-		$this->arrProperties['table']	=	array(	'border'	=> '0',
-								'cellpadding'	=> '1',
-								'cellspacing'	=> '1');
-	}
-
-	function echo_caption($strCaption, $right = null, $width = null, $active=true) {
-		echo('<table border="0" cellpadding="0" cellspacing="0"');
-			if(!is_null($width))
-				echo(' width="'.$width.'"');
-			echo('><tr><td>');
-		echo('<table border="0" cellpadding="2" cellspacing="0"><tr><td class="'.($active ? $this->arrClass['caption'] : $this->arrClass['caption_dea']).'">&nbsp;');
-		echo($strCaption);
-		echo('&nbsp;</td></tr></table>');
-		echo('</td><td valign="top" class="sh_hor" style="width: 6px"><img border="0" src="'.$this->images_dir.'/sh_lu.gif" width="6" height="6" alt="\" /></td>');
-			if(!is_null($right) && $right != '')
-				echo('<td align="right" width="95%" class="ed">'.$right.'</td>');	// will be tight enough
-			echo('</tr></table>');
-		return true;
-	}
-
 	function outer_shadow_start() {
 		return('<table border="0" cellpadding="0" cellspacing="0"><tr><td>');
 	}
