@@ -9,3 +9,4 @@
 	<link rel="stylesheet" href="<?= $cfg['design_dir'] ?>/shadow.css" type="text/css" title="shadow" />
 	</head>
 <body onload="init_tree(); init_oma()">
+<div class="body">

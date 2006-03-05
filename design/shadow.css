@@ -1,9 +1,14 @@
 BODY {
 	font-family: Verdana, Geneva, Arial, sans-serif;
 	font-size: 10pt;
-	margin-left: 50px;
-	margin-top: 50px;
 	background-color: #ffffff;
+}
+div.body {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 2%;
+	min-width: 600px;
+	width: 600px;
 }
 A {
 	text-decoration: none;
