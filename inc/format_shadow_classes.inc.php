@@ -140,7 +140,9 @@ class _input extends _T_tag {
 /**
  * @deprecated		Relict of former templating system.
  */
-class _table_shadow extends _T_tag {
+class _table_shadow {
+	var		$images_dir;			// storage of images (for most derived classes need it)
+
 	function outer_shadow_start() {
 		return('<table border="0" cellpadding="0" cellspacing="0"><tr><td>');
 	}
