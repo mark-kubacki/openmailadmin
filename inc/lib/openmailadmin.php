@@ -49,7 +49,7 @@ class openmailadmin
 	private function get_mailbox_names() {
 		$tmp	= array();
 
-		$result = $this->db->Execute('SELECT mbox FROM '.$this->tablenames['user'].' WHERE active = 1 AND mbox_exists = 1');
+		$result = $this->db->Execute('SELECT mbox FROM '.$this->tablenames['user'].' WHERE active = 1');
 		while(!$result->EOF) {
 			$tmp[] = $result->fields['mbox'];
 			$result->MoveNext();
@@ -925,7 +925,6 @@ class openmailadmin
 			$this->rollback($rollback);
 			return false;
 		} else {
-			$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['user'].' SET mbox_exists=1 WHERE mbox='.$this->db->qstr($mboxname).' LIMIT 1');
 			if(isset($this->cfg['folders']['create_default']) && is_array($this->cfg['folders']['create_default'])) {
 				foreach($this->cfg['folders']['create_default'] as $new_folder) {
 					$this->imap->createmb($this->imap->format_user($mboxname, $new_folder));
