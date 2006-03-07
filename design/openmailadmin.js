@@ -49,6 +49,34 @@ function set_style_display(elements, to) {
 	}
 }
 
+function get_admin_panels_form_fields_container(input_name) {
+	var inp = get_all_inputs_of_admin_panel();
+	inp = sieve_by(inp, "name", input_name);
+	return inp[0].parentNode.parentNode;
+}
+
+function get_admin_panel_fields(arr_names) {
+	var tmp = new Array();
+	for (var i = 0; i < arr_names.length; i++) {
+		try {
+		tmp.push(get_admin_panels_form_fields_container(arr_names[i]));
+		} catch(e) {
+		}
+	}
+	return tmp;
+}
+
+function admin_panel_fields_show_xor_hide(arr_show, arr_hide) {
+	set_style_display(get_admin_panel_fields(arr_show), "");
+	set_style_display(get_admin_panel_fields(arr_hide), "none");
+}
+
+function get_admin_panel_owner() {
+	var inputs = get_all_inputs_of_admin_panel();
+	inputs = sieve_by(inputs, "name", "frm");
+	return inputs[0].getAttribute("value", "false");
+}
+
 /******************************************************************************
  * now come action handler
  ******************************************************************************/
@@ -90,6 +118,42 @@ function hide_all_checkboxes_in_admin_panel (e) {
 
 function show_all_checkboxes_in_admin_panel (e){
 	set_style_display(get_all_checkboxes_in_admin_panel(), "");
+}
+
+function get_current_show_xor_hide_table(panel_owner, current_action) {
+	var tbl = new Object();
+	tbl['virtual']			= new Object();
+	tbl['virtual']['new']		= new Array(new Array('dest_is_mbox', 'alias'), new Array());
+	tbl['virtual']['delete']	= new Array(new Array(), new Array('dest_is_mbox', 'alias'));
+	tbl['virtual']['dest']		= new Array(new Array('dest_is_mbox'), new Array('alias'));
+	tbl['virtual']['active']	= tbl['virtual']['delete'];
+	tbl['ACL']			= new Object();
+	tbl['ACL']['new']		= new Array(new Array('subname'), new Array('dummy'));
+	tbl['ACL']['delete']		= new Array(new Array(), new Array('subname', 'dummy'));
+	tbl['ACL']['rights']		= new Array(new Array('dummy'), new Array('subname'));
+	tbl['virtual_regexp']		= new Object();
+	tbl['virtual_regexp']['new']	= new Array(new Array('reg_exp', 'dest_is_mbox'), new Array('probe'));
+	tbl['virtual_regexp']['delete']	= new Array(new Array(), new Array('probe', 'reg_exp', 'dest_is_mbox'));
+	tbl['virtual_regexp']['dest']	= new Array(new Array('dest_is_mbox'), new Array('reg_exp', 'probe'));
+	tbl['virtual_regexp']['active']	= tbl['virtual_regexp']['delete']
+	tbl['virtual_regexp']['probe']	= new Array(new Array('reg_exp', 'probe'), new Array('dest_is_mbox'));
+	tbl['domains']			= new Object();
+	tbl['domains']['new']		= new Array(new Array('domain', 'owner', 'a_admin', 'categories'), new Array());
+	tbl['domains']['delete']	= new Array(new Array(), new Array('domain', 'owner', 'a_admin', 'categories'));
+	tbl['domains']['change']	= tbl['domains']['new'];
+	tbl['user']			= new Object();
+	tbl['user']['new']		= new Array(new Array('mbox', 'dummy2', 'person', 'canonical', 'domains', 'quota', 'max_alias', 'max_regexp', 'dummy'), new Array());
+	tbl['user']['change']		= tbl['user']['new']
+	tbl['user']['delete']		= new Array(new Array(), new Array('mbox', 'dummy2', 'person', 'canonical', 'domains', 'quota', 'max_alias', 'max_regexp', 'dummy'));
+	tbl['user']['active']		= tbl['user']['delete']
+
+	return tbl[panel_owner][current_action];
+}
+
+function show_only_necessary_fields (e) {
+	var cur	= get_current_show_xor_hide_table(get_admin_panel_owner(),
+						  this.getAttribute("value", "false"));
+	admin_panel_fields_show_xor_hide(cur[0], cur[1]);
 }
 
 /******************************************************************************
@@ -170,6 +234,10 @@ function init_oma() {
 			}
 		}
 
-		alert(get_admin_panel_owner());
+		var tmp = get_admin_panels_action_options();
+		for (var i = 0; i < tmp.length; i++) {
+			tmp[i].req_fields_action = show_only_necessary_fields;
+			XBrowserAddHandler(tmp[i], "click", "req_fields_action");
+		}
 	}
 }

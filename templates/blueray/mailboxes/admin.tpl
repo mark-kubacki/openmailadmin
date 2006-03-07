@@ -24,7 +24,7 @@
 	<?php if(count($selectable_paten) > 1) { ?>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'pate') ?><?= txt('9') ?></dt>
-		<dd><?= $input->select('pate', $selectable_paten) ?></dd>
+		<dd><?= $input->hidden('dummy2', 'pate') ?><?= $input->select('pate', $selectable_paten) ?></dd>
 	</dl>
 	<?php } ?>
 	<dl>
@@ -56,6 +56,7 @@
 	<?php if($oma->authenticated_user['a_super'] > 1 || $oma->authenticated_user['a_admin_user'] > 1 || $oma->authenticated_user['a_admin_domains'] > 1) { ?>
 	<div id="admin_acl">
 		<table class="admin">
+			<?= $input->hidden('dummy', 'rights') ?>
 			<tr>
 				<th class="left"><?= txt('77') ?></th>
 				<th><?= txt('95') ?></th>

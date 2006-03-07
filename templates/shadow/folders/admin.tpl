@@ -25,6 +25,7 @@
 		<tr>
 			<td class="ed"><b><?= txt('108') ?></b></td>
 			<td class="ed">
+				<?= $input->hidden('dummy', 'ACL') ?>
 				<?php hsys_ACL_matrix($ACLs, true) ?>
 			</td>
 		</tr>
