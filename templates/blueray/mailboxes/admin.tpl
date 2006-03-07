@@ -21,10 +21,12 @@
 		</dt>
 		<dd><?= $input->text('mbox', 16) ?></dd>
 	</dl>
+	<?php if(count($selectable_paten) > 1) { ?>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'pate') ?><?= txt('9') ?></dt>
 		<dd><?= $input->select('pate', $selectable_paten) ?></dd>
 	</dl>
+	<?php } ?>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'person') ?><?= txt('84') ?></dt>
 		<dd><?= $input->text('person', 100) ?></dd>
@@ -45,10 +47,12 @@
 		<dt><?= $input->checkbox('change[]', 'max_alias') ?><?= txt('88') ?></dt>
 		<dd><?= $input->text('max_alias', 4) ?></dd>
 	</dl>
+	<?php if($oma->authenticated_user['max_regexp'] > 0) { ?>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'max_regexp') ?><?= txt('89') ?></dt>
 		<dd><?= $input->text('max_regexp', 4) ?></dd>
 	</dl>
+	<?php } ?>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'reg_exp') ?><?= txt('34') ?></dt>
 		<dd><?= $input->text('reg_exp', 100) ?></dd>
@@ -102,6 +106,9 @@
 	</div>
 	<?php } ?>
 	<span class="quasi_btn" id="admin_hide">&laquo; <?= txt('60') ?></span>
+	<?php if(count($selectable_paten) <= 1) { ?>
+		<?= $input->hidden('pate', $oma->current_user['mbox']) ?>
+	<?php } ?>
 	<?= $input->hidden('frm', 'user') ?>
 	<?= $input->submit(txt('27')) ?>
 </div>

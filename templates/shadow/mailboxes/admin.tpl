@@ -25,10 +25,12 @@
 		</td>
 		<td class="ed"><?= $input->text('mbox', 16) ?></td>
 	</tr>
+	<?php if(count($selectable_paten) > 1) { ?>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'pate') ?><b><?= txt('9') ?></b></td>
 		<td class="ed"><?= $input->select('pate', $selectable_paten) ?></td>
 	</tr>
+	<?php } ?>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'person') ?><b><?= txt('84') ?></b></td>
 		<td class="ed"><?= $input->text('person', 100) ?></td>
@@ -49,10 +51,12 @@
 		<td class="ed"><?= $input->checkbox('change[]', 'max_alias') ?><b><?= txt('88') ?></b></td>
 		<td class="ed"><?= $input->text('max_alias', 4) ?></td>
 	</tr>
+	<?php if($oma->authenticated_user['max_regexp'] > 0) { ?>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'max_regexp') ?><b><?= txt('89') ?></b></td>
 		<td class="ed"><?= $input->text('max_regexp', 4) ?></td>
 	</tr>
+	<?php } ?>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'reg_exp') ?><b><?= txt('34') ?></b></td>
 		<td class="ed"><?= $input->text('reg_exp', 100) ?></td>
@@ -109,7 +113,12 @@
 	<?php } ?>
 	<tr>
 		<td class="ed"><span class="quasi_btn" id="admin_hide">&laquo; <?= txt('60') ?></span></td>
-		<td class="ed" align="right"><?= $input->hidden('frm', 'user') ?><?= $input->submit(txt('27'))?>&nbsp;</td>
+		<td class="ed" align="right">
+			<?php if(count($selectable_paten) <= 1) { ?>
+			<?= $input->hidden('pate', $oma->current_user['mbox']) ?>
+			<?php } ?>
+			<?= $input->hidden('frm', 'user') ?><?= $input->submit(txt('27'))?>&nbsp;
+		</td>
 	</tr>
 </table>
 </div>
