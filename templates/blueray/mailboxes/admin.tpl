@@ -6,9 +6,9 @@
 		<dd>
 			<ul>
 			<li><?= $input->radio('action', 'new') ?> <?= txt('21') ?></li>
-			<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 			<li><?= $input->radio('action', 'change') ?><?= txt('59') ?></li>
 			<li><?= $input->radio('action', 'active') ?><?= txt('24') ?></li>
+			<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 			</ul>
 		</dd>
 	</dl>

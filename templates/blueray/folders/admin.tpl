@@ -11,8 +11,8 @@
 			<dd>
 				<ul>
 				<li><?= $input->radio('action', 'new') ?><?= txt('21') ?></li>
-				<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 				<li><?= $input->radio('action', 'rights') ?><?= txt('106') ?></li>
+				<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 				</ul>
 			</dd>
 		</dl>
