@@ -62,8 +62,8 @@ switch($_GET['step']) {
 			// add sample data - only if table has been created and did not exist
 			if($status['user'][1] == 2) {
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', crypt($_POST['admin_pass'], substr($_POST['admin_pass'],0,2)), md5($_POST['admin_pass']), '', 'all', 1, 1, time(), time(), 10000, 100, 2, 2, 2),
-						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', crypt($_POST['imap_pass'], substr($_POST['imap_pass'],0,2)), md5($_POST['imap_pass']), '', 'none', 1, 1, time(), time(), 0, 0, 0, 0, 1),
+					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', crypt($_POST['admin_pass'], substr($_POST['admin_pass'],0,2)), md5($_POST['admin_pass']), '', 'all', 1, time(), time(), 10000, 100, 2, 2, 2),
+						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', crypt($_POST['imap_pass'], substr($_POST['imap_pass'],0,2)), md5($_POST['imap_pass']), '', 'none', 1, time(), time(), 0, 0, 0, 0, 1),
 						));
 			}
 			if($status['domains'][1] == 2) {
