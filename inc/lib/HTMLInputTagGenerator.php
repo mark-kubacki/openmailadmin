@@ -70,9 +70,9 @@ class HTMLInputTagGenerator
 				$arrProperties['checked'] = '1';
 			$arrProperties['value'] = $value;
 		} else {
-			if(is_null($value) && $type != 'password' && isset($_POST[$name]))
+			if($type != 'password' && isset($_POST[$name]))
 				$arrProperties['value']	= $_POST[$name];
-			else
+			else if(!is_null($value))
 				$arrProperties['value']	= $value;
 		}
 		if(!isset($arrProperties['class']) && isset($this->arrClass[$type]))
