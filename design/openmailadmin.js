@@ -59,7 +59,7 @@ function get_admin_panel_fields(arr_names) {
 	var tmp = new Array();
 	for (var i = 0; i < arr_names.length; i++) {
 		try {
-		tmp.push(get_admin_panels_form_fields_container(arr_names[i]));
+			tmp.push(get_admin_panels_form_fields_container(arr_names[i]));
 		} catch(e) {
 		}
 	}
@@ -235,9 +235,22 @@ function init_oma() {
 		}
 
 		var tmp = get_admin_panels_action_options();
+		var checked = "none";
 		for (var i = 0; i < tmp.length; i++) {
 			tmp[i].req_fields_action = show_only_necessary_fields;
 			XBrowserAddHandler(tmp[i], "click", "req_fields_action");
+			if(tmp[i].checked) {
+				checked = tmp[i].value;
+			}
+		}
+		if(checked != "none") {
+			var cur	= get_current_show_xor_hide_table(get_admin_panel_owner(),
+								  checked);
+			admin_panel_fields_show_xor_hide(cur[0], cur[1]);
+		} else {
+			var cur	= get_current_show_xor_hide_table(get_admin_panel_owner(),
+								  "delete");
+			admin_panel_fields_show_xor_hide(cur[0], cur[1]);
 		}
 	}
 }
