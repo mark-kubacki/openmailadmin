@@ -95,11 +95,11 @@ class HTMLInputTagGenerator
 		return($this->_generate('submit', $name, $name, array()));
 	}
 
-	public function text($name, $maxlength = '') {
+	public function text($name, $maxlength = '', $default = null) {
 		if($maxlength != '' && is_numeric($maxlength))
-			return($this->_generate('text', $name, null, array('maxlength' => $maxlength)));
+			return($this->_generate('text', $name, $default, array('maxlength' => $maxlength)));
 		else
-			return($this->_generate('text', $name, null, array()));
+			return($this->_generate('text', $name, $default, array()));
 	}
 
 	public function textarea($name, $rows = 2, $cols=49) {
