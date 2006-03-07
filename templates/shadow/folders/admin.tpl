@@ -11,8 +11,8 @@
 			<td class="ed">
 				<ul class="ed">
 					<li><?= $input->radio('action', 'new') ?><?= txt('21') ?></li>
-					<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 					<li><?= $input->radio('action', 'rights') ?><?= txt('106') ?></li>
+					<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 				</ul>
 			</td>
 		</tr>
@@ -25,6 +25,7 @@
 		<tr>
 			<td class="ed"><b><?= txt('108') ?></b></td>
 			<td class="ed">
+				<?= $input->hidden('dummy', 'ACL') ?>
 				<?php hsys_ACL_matrix($ACLs, true) ?>
 			</td>
 		</tr>

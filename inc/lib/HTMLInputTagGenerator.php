@@ -71,9 +71,9 @@ class HTMLInputTagGenerator
 				$arrProperties['checked'] = '1';
 			$arrProperties['value'] = $value;
 		} else {
-			if(is_null($value) && $type != 'password' && isset($_POST[$name]))
+			if($type != 'password' && isset($_POST[$name]))
 				$arrProperties['value']	= $_POST[$name];
-			else
+			else if(!is_null($value))
 				$arrProperties['value']	= $value;
 		}
 		if(!isset($arrProperties['class']) && isset($this->arrClass[$type]))
@@ -96,11 +96,11 @@ class HTMLInputTagGenerator
 		return($this->_generate('submit', $name, $name, array()));
 	}
 
-	function text($name, $maxlength = '') {
+	function text($name, $maxlength = '', $default = null) {
 		if($maxlength != '' && is_numeric($maxlength))
-			return($this->_generate('text', $name, null, array('maxlength' => $maxlength)));
+			return($this->_generate('text', $name, $default, array('maxlength' => $maxlength)));
 		else
-			return($this->_generate('text', $name, null, array()));
+			return($this->_generate('text', $name, $default, array()));
 	}
 
 	function textarea($name, $rows = 2, $cols=49) {

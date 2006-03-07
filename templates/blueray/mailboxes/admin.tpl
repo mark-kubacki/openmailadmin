@@ -6,9 +6,11 @@
 		<dd>
 			<ul>
 			<li><?= $input->radio('action', 'new') ?> <?= txt('21') ?></li>
-			<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
+			<?php if(count($mailboxes) > 0) { ?>
 			<li><?= $input->radio('action', 'change') ?><?= txt('59') ?></li>
 			<li><?= $input->radio('action', 'active') ?><?= txt('24') ?></li>
+			<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
+			<?php } ?>
 			</ul>
 		</dd>
 	</dl>
@@ -21,10 +23,12 @@
 		</dt>
 		<dd><?= $input->text('mbox', 16) ?></dd>
 	</dl>
+	<?php if(count($selectable_paten) > 1) { ?>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'pate') ?><?= txt('9') ?></dt>
-		<dd><?= $input->select('pate', $selectable_paten) ?></dd>
+		<dd><?= $input->hidden('dummy2', 'pate') ?><?= $input->select('pate', $selectable_paten) ?></dd>
 	</dl>
+	<?php } ?>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'person') ?><?= txt('84') ?></dt>
 		<dd><?= $input->text('person', 100) ?></dd>
@@ -35,7 +39,7 @@
 	</dl>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'domains') ?><?= txt('86') ?></dt>
-		<dd><?= $input->text('domains', 100) ?></dd>
+		<dd><?= $input->text('domains', 100, $oma->current_user['domains']) ?></dd>
 	</dl>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'quota') ?><?= txt('87') ?></dt>
@@ -45,17 +49,16 @@
 		<dt><?= $input->checkbox('change[]', 'max_alias') ?><?= txt('88') ?></dt>
 		<dd><?= $input->text('max_alias', 4) ?></dd>
 	</dl>
+	<?php if($oma->authenticated_user['max_regexp'] > 0) { ?>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'max_regexp') ?><?= txt('89') ?></dt>
 		<dd><?= $input->text('max_regexp', 4) ?></dd>
 	</dl>
-	<dl>
-		<dt><?= $input->checkbox('change[]', 'reg_exp') ?><?= txt('34') ?></dt>
-		<dd><?= $input->text('reg_exp', 100) ?></dd>
-	</dl>
+	<?php } ?>
 	<?php if($oma->authenticated_user['a_super'] > 1 || $oma->authenticated_user['a_admin_user'] > 1 || $oma->authenticated_user['a_admin_domains'] > 1) { ?>
 	<div id="admin_acl">
 		<table class="admin">
+			<?= $input->hidden('dummy', 'rights') ?>
 			<tr>
 				<th class="left"><?= txt('77') ?></th>
 				<th><?= txt('95') ?></th>
@@ -102,6 +105,9 @@
 	</div>
 	<?php } ?>
 	<span class="quasi_btn" id="admin_hide">&laquo; <?= txt('60') ?></span>
+	<?php if(count($selectable_paten) <= 1) { ?>
+		<?= $input->hidden('pate', $oma->current_user['mbox']) ?>
+	<?php } ?>
 	<?= $input->hidden('frm', 'user') ?>
 	<?= $input->submit(txt('27')) ?>
 </div>

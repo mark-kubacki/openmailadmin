@@ -23,9 +23,6 @@ for($i = 0; isset($regexp[$i]); $i++) {
 <?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1">
 	<tr>
-		<td class="std" colspan="2" width="580"><b><?= txt('34') ?></b>&nbsp;&nbsp;&nbsp;<?= $oma->current_user['reg_exp'] ?></td>
-	</tr>
-	<tr>
 		<td class="std" width="430"><b><?= txt('18') ?></b></td>
 		<td class="std" width="150"><b><?= txt('19') ?></b></td>
 	</tr>

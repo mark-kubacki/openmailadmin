@@ -6,11 +6,13 @@
 		<td class="ed" width="180"><b><?= txt('20') ?></b></td>
 		<td class="ed" width="400">
 			<ul class="ed">
+				<li><?= $input->radio('action', 'probe') ?><?= txt('37') ?></li>
 				<li><?= $input->radio('action', 'new') ?> <?= txt('21') ?></li>
-				<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
+				<?php if(count($regexp) > 0) { ?>
 				<li><?= $input->radio('action', 'dest') ?><?= txt('23') ?></li>
 				<li><?= $input->radio('action', 'active') ?><?= txt('24') ?></li>
-				<li><?= $input->radio('action', 'probe') ?><?= txt('37') ?></li>
+				<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
+				<?php } ?>
 			</ul>
 		</td>
 	</tr>

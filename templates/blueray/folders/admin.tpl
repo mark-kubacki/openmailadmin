@@ -11,8 +11,8 @@
 			<dd>
 				<ul>
 				<li><?= $input->radio('action', 'new') ?><?= txt('21') ?></li>
-				<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 				<li><?= $input->radio('action', 'rights') ?><?= txt('106') ?></li>
+				<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 				</ul>
 			</dd>
 		</dl>
@@ -25,7 +25,8 @@
 		<dl>
 			<dt><?= txt('108') ?></dt>
 			<dd>
-			    <?php hsys_ACL_matrix($ACLs, true) ?>
+				<?= $input->hidden('dummy', 'ACL') ?>
+				<?php hsys_ACL_matrix($ACLs, true) ?>
 			</dd>
 		</dl>
 	<?= $input->hidden('frm', 'ACL') ?>
