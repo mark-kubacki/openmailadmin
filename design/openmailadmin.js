@@ -11,10 +11,23 @@ function sieve_by(arr_elemts, what, only_accepted_value) {
 	return result;
 }
 
-function get_all_inputs_of_admin_panel() {
+function does_admin_panel_exists() {
 	var panel = document.getElementById("admin_panel");
-	var boxes = panel.getElementsByTagName("input");
-	return boxes;
+	if(panel != null) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function get_all_inputs_of_admin_panel() {
+	try {
+		var panel = document.getElementById("admin_panel");
+		var boxes = panel.getElementsByTagName("input");
+		return boxes;
+	} catch(e) {
+		return new Array();
+	}
 }
 
 function get_all_checkboxes_in_admin_panel() {
@@ -143,16 +156,20 @@ function init_oma() {
 		XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
 	}
 
-	if(does_admin_panel_hold_change_option()) {
-		hide_all_checkboxes_in_admin_panel(null);
-		var tmp = get_admin_panels_action_options();
-		for (var i = 0; i < tmp.length; i++) {
-			if(tmp[i].getAttribute("value", "false") == "change") {
-				tmp[i].show_action = show_all_checkboxes_in_admin_panel;
-			} else {
-				tmp[i].show_action = hide_all_checkboxes_in_admin_panel;
+	if(does_admin_panel_exists()) {
+		if(does_admin_panel_hold_change_option()) {
+			hide_all_checkboxes_in_admin_panel(null);
+			var tmp = get_admin_panels_action_options();
+			for (var i = 0; i < tmp.length; i++) {
+				if(tmp[i].getAttribute("value", "false") == "change") {
+					tmp[i].show_action = show_all_checkboxes_in_admin_panel;
+				} else {
+					tmp[i].show_action = hide_all_checkboxes_in_admin_panel;
+				}
+				XBrowserAddHandler(tmp[i], "click", "show_action");
 			}
-			XBrowserAddHandler(tmp[i], "click", "show_action");
 		}
+
+		alert(get_admin_panel_owner());
 	}
 }
