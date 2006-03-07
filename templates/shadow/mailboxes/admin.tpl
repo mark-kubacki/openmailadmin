@@ -57,10 +57,6 @@
 		<td class="ed"><?= $input->text('max_regexp', 4) ?></td>
 	</tr>
 	<?php } ?>
-	<tr>
-		<td class="ed"><?= $input->checkbox('change[]', 'reg_exp') ?><b><?= txt('34') ?></b></td>
-		<td class="ed"><?= $input->text('reg_exp', 100) ?></td>
-	</tr>
 	<?php if($oma->authenticated_user['a_super'] > 1 || $oma->authenticated_user['a_admin_user'] > 1 || $oma->authenticated_user['a_admin_domains'] > 1) { ?>
 	<tr>
 		<td class="ed" colspan="2">

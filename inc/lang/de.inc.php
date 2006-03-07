@@ -14,8 +14,6 @@ $res['de']	= array(
 
 '10'	=>	'Warnung: Keine gültige Email-Adresse gefunden. Mailbox eingesetzt.',
 '11'	=>	'Kein Element für diese Aktion ausgewählt.',
-'12'	=>	'Der Mailverwalter erlaubt es ihnen nicht, eine Adresse dieser Form für sich zu beanspruchen.<br />'
-		.'Bitte bei Fragen an den Paten oder den Verwalter wenden.',
 '13'	=>	'Ungültiges Alias.',
 '14'	=>	'Maximale Anzahl an Aliasen erreicht.',
 '15'	=>	'Adressen gelöscht: %s.',
@@ -38,7 +36,6 @@ $res['de']	= array(
 '31'	=>	'Maximale Anzahl an Ausdrücken erreicht.',
 '32'	=>	'Ausdrücke gelöscht.',
 '33'	=>	'Sonderadressen',
-'34'	=>	'Über-Ausdruck',
 '35'	=>	'Ausdruck',
 '36'	=>	'Der eingetippte Ausdruck umfängt die Prüf-Adresse.',
 '37'	=>	'prüfen',

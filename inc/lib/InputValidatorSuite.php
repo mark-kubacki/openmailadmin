@@ -40,9 +40,6 @@ class InputValidatorSuite
 		$this->inputs['max_regexp']	= array('cap'	=> txt('89'),
 					'def'	=> 0,
 					);
-		$this->inputs['reg_exp']	= array('cap'	=> txt('34'),
-					'def'	=> '',
-					);
 		$this->inputs['a_super']	= array('cap'	=> txt('68'),
 					'def'	=> 0,
 					);

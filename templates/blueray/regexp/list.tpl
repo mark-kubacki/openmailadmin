@@ -4,9 +4,6 @@
 <span class="pagelist"><?= getPageList('<a href="'.mkSelfRef(array('regx_page' => '%d')).'">%d</a>', $oma->current_user['used_regexp'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['regx_page']) ?></span>
 <table class="data">
 	<tr>
-		<th colspan="2"><?= txt('34') ?>&nbsp;&nbsp;&nbsp;<?= $oma->current_user['reg_exp'] ?></th>
-	</tr>
-	<tr>
 		<th><?= txt('18') ?></td>
 		<th><?= txt('19') ?></td>
 	</tr>

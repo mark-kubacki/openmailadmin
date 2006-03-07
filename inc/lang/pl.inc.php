@@ -14,8 +14,6 @@ $res['pl']	= array(
 
 '10'	=>	'Uwaga: Nie znaleziono poprawnego adresu email. Konto użytkownika zostało wpisane.',
 '11'	=>	'Żaden element był wybrany do tej akcji.',
-'12'	=>	'Nie posiadasz autoryzacji do wybrania adresu tej formy.<br />'
-		.'Zapytaj odpowiedzalnego albo administratora.',
 '13'	=>	'Niepoprawny alias.',
 '14'	=>	'Maxymalna ilość aliasów osiągnięta.',
 '15'	=>	'Te adresy zostały wymazane: %s.',
@@ -38,7 +36,6 @@ $res['pl']	= array(
 '31'	=>	'Maxymalna liczba wyrażen osiągnięta.',
 '32'	=>	'Wyrażenia zostały wymażone.',
 '33'	=>	'Pochodne adresy',
-'34'	=>	'Über-wyrażenie',
 '35'	=>	'Wyrażenie',
 '36'	=>	'Wybrane wyrażenie obejmuje adres podany do zbadania.',
 '37'	=>	'testój',

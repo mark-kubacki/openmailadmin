@@ -14,8 +14,6 @@ $res['en']	= array(
 
 '10'	=>	'Warning: No valid email address found. Mailbox inserted.',
 '11'	=>	'This command needs at least one selected element.',
-'12'	=>	'You are not allowed to chose an address of this kind.<br />'
-		.'On questions ask your Paten or administrator.',
 '13'	=>	'Invalid alias.',
 '14'	=>	'Alias limit reached.',
 '15'	=>	'These addresses have been deleted: %s.',
@@ -38,7 +36,6 @@ $res['en']	= array(
 '31'	=>	'Expression-limit reached.',
 '32'	=>	'Expressions deleted.',
 '33'	=>	'Regex-addresses',
-'34'	=>	'Über-expression',
 '35'	=>	'Expression',
 '36'	=>	'Given expression matches probe-address.',
 '37'	=>	'probe',

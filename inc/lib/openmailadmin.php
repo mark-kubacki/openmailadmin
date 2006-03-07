@@ -276,13 +276,7 @@ class openmailadmin
 				}
 			}
 			// Will his new address be a valid one?
-			else if(preg_match('/([A-Z0-9\.\-\_]{'.strlen($alias).'})/i', $alias)) {
-				if(!((isset($this->current_user['reg_exp']) && $this->current_user['reg_exp'] == '')
-					|| preg_match($this->current_user['reg_exp'], $alias.'@'.$domain))) {
-					$this->ErrorHandler->add_error(txt('12'));
-					return false;
-				}
-			} else {
+			else if(! preg_match('/([A-Z0-9\.\-\_]{'.strlen($alias).'})/i', $alias)) {
 				$this->ErrorHandler->add_error(txt('13'));
 				return false;
 			}
@@ -867,7 +861,7 @@ class openmailadmin
 			$this->ErrorHandler->add_error(sprintf(txt('130'), txt('83')));
 			return false;
 		}
-		if(!$this->validator->validate($props, array('mbox','person','pate','canonical','reg_exp','domains','max_alias','max_regexp','a_admin_domains','a_admin_user','a_super','quota'))) {
+		if(!$this->validator->validate($props, array('mbox','person','pate','canonical','domains','max_alias','max_regexp','a_admin_domains','a_admin_user','a_super','quota'))) {
 			return false;
 		}
 
@@ -898,9 +892,9 @@ class openmailadmin
 		}
 
 		// on success write the new user to database
-		$this->db->Execute('INSERT INTO '.$this->tablenames['user'].' (mbox, person, pate, canonical, reg_exp, domains, max_alias, max_regexp, created, a_admin_domains, a_admin_user, a_super)'
+		$this->db->Execute('INSERT INTO '.$this->tablenames['user'].' (mbox, person, pate, canonical, domains, max_alias, max_regexp, created, a_admin_domains, a_admin_user, a_super)'
 				.' VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
-				array($props['mbox'], $props['person'], $props['pate'], $props['canonical'], $props['reg_exp'], $props['domains'], $props['max_alias'], $props['max_regexp'], time(), $props['a_admin_domains'], $props['a_admin_user'], $props['a_super'])
+				array($props['mbox'], $props['person'], $props['pate'], $props['canonical'], $props['domains'], $props['max_alias'], $props['max_regexp'], time(), $props['a_admin_domains'], $props['a_admin_user'], $props['a_super'])
 				);
 		if($this->db->Affected_Rows() < 1) {
 			$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -987,7 +981,7 @@ class openmailadmin
 
 		// Create an array holding every property we have to change.
 		$to_change	= array();
-		foreach(array('person', 'canonical', 'pate', 'domains', 'reg_exp', 'a_admin_domains', 'a_admin_user', 'a_super')
+		foreach(array('person', 'canonical', 'pate', 'domains', 'a_admin_domains', 'a_admin_user', 'a_super')
 			as $property) {
 			if(in_array($property, $change)) {
 				if(is_numeric($props[$property])) {

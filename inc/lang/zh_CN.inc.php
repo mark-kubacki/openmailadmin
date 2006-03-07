@@ -14,8 +14,6 @@ $res['zh-cn']	= array(
 
 '10'	=>	'警告：您输入的电子邮件地址无效.插入了账号名.',
 '11'	=>	'必须至少选择一个对象.',
-//'12'	=>	'Der Mailverwalter erlaubt es ihnen nicht, eine Adresse dieser Form für sich zu beanspruchen.<br />'
-//		.'Bitte bei Fragen an den Paten oder den Verwalter wenden.',
 '13'	=>	'不是有效的电子邮件地址.',
 '14'	=>	'已达别名设置最大数量.',
 '15'	=>	'电子邮件地址删除成功: %s.',
@@ -38,7 +36,6 @@ $res['zh-cn']	= array(
 '31'	=>	'已达正规表达式设置最大数量.',
 '32'	=>	'正规表达式删除成功.',
 '33'	=>	'正规表达式',
-'34'	=>	'附加限制 (正规表达式)',
 '35'	=>	'正则表达式',
 '36'	=>	'匹配正则表达式.',
 '37'	=>	'计算表达式',

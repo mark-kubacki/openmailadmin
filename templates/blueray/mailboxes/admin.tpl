@@ -53,10 +53,6 @@
 		<dd><?= $input->text('max_regexp', 4) ?></dd>
 	</dl>
 	<?php } ?>
-	<dl>
-		<dt><?= $input->checkbox('change[]', 'reg_exp') ?><?= txt('34') ?></dt>
-		<dd><?= $input->text('reg_exp', 100) ?></dd>
-	</dl>
 	<?php if($oma->authenticated_user['a_super'] > 1 || $oma->authenticated_user['a_admin_user'] > 1 || $oma->authenticated_user['a_admin_domains'] > 1) { ?>
 	<div id="admin_acl">
 		<table class="admin">
