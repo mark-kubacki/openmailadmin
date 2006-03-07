@@ -893,7 +893,7 @@ class openmailadmin
 
 		// on success write the new user to database
 		$this->db->Execute('INSERT INTO '.$this->tablenames['user'].' (mbox, person, pate, canonical, domains, max_alias, max_regexp, created, a_admin_domains, a_admin_user, a_super)'
-				.' VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+				.' VALUES (?,?,?,?,?,?,?,?,?,?,?)',
 				array($props['mbox'], $props['person'], $props['pate'], $props['canonical'], $props['domains'], $props['max_alias'], $props['max_regexp'], time(), $props['a_admin_domains'], $props['a_admin_user'], $props['a_super'])
 				);
 		if($this->db->Affected_Rows() < 1) {
