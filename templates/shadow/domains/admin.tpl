@@ -20,15 +20,15 @@
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'owner') ?><b><?= txt('56') ?></b></td>
-		<td class="ed"><?= $input->_generate('text', 'owner', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '16')) ?></td>
+		<td class="ed"><?= $input->_generate('text', 'owner', $oma->current_user['mbox'], array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '16')) ?></td>
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'a_admin') ?><b><?= txt('57') ?></b></td>
-		<td class="ed"><?= $input->_generate('text', 'a_admin', null, array('class' => 'textwhite', 'style' => 'width: 98%')) ?></td>
+		<td class="ed"><?= $input->_generate('text', 'a_admin', $oma->current_user['mbox'], array('class' => 'textwhite', 'style' => 'width: 98%')) ?></td>
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'categories') ?><b><?= txt('58') ?></b></td>
-		<td class="ed"><?= $input->_generate('text', 'categories', null, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '100')) ?></td>
+		<td class="ed"><?= $input->_generate('text', 'categories', 'all, '.$oma->current_user['mbox'], array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '100')) ?></td>
 	</tr>
 	<tr>
 		<td class="ed"><span class="quasi_btn" id="admin_hide">&laquo; <?= txt('60') ?></span></td>

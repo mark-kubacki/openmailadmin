@@ -39,7 +39,7 @@
 	</dl>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'domains') ?><?= txt('86') ?></dt>
-		<dd><?= $input->text('domains', 100) ?></dd>
+		<dd><?= $input->text('domains', 100, $oma->current_user['domains']) ?></dd>
 	</dl>
 	<dl>
 		<dt><?= $input->checkbox('change[]', 'quota') ?><?= txt('87') ?></dt>

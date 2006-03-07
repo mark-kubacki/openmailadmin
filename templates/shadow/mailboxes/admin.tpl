@@ -43,7 +43,7 @@
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'domains') ?><b><?= txt('86') ?></b></td>
-		<td class="ed"><?= $input->text('domains', 100) ?></td>
+		<td class="ed"><?= $input->text('domains', 100, $oma->current_user['domains']) ?></td>
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'quota') ?><b><?= txt('87') ?></b></td>
