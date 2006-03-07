@@ -1,4 +1,42 @@
 /******************************************************************************
+ * aux functions
+ ******************************************************************************/
+function sieve_by(arr_elemts, what, only_accepted_value) {
+	var result = new Array();
+	for(var i = 0; i < arr_elemts.length; i++) {
+		if(arr_elemts[i].getAttribute(what, "false") == only_accepted_value) {
+			result.push(arr_elemts[i]);
+		}
+	}
+	return result;
+}
+
+function get_all_inputs_of_admin_panel() {
+	var panel = document.getElementById("admin_panel");
+	var boxes = panel.getElementsByTagName("input");
+	return boxes;
+}
+
+function get_all_checkboxes_in_admin_panel() {
+	var boxes = get_all_inputs_of_admin_panel();
+	boxes = sieve_by(boxes, "type", "checkbox");
+	return boxes;
+}
+
+function get_admin_panels_action_options() {
+	var boxes = get_all_inputs_of_admin_panel();
+	boxes = sieve_by(boxes, "type", "radio");
+	boxes = sieve_by(boxes, "name", "action");
+	return boxes;
+}
+
+function set_style_display(elements, to) {
+	for (var i = 0; i < elements.length; i++) {
+		elements[i].style.display = to;
+	}
+}
+
+/******************************************************************************
  * now come action handler
  ******************************************************************************/
 function admin_panel_showhide (e) {
@@ -33,8 +71,16 @@ function check_corresponding_box (e) {
 	this.parentNode.parentNode.firstChild.firstChild.checked=true;
 }
 
+function hide_all_checkboxes_in_admin_panel (e) {
+	set_style_display(get_all_checkboxes_in_admin_panel(), "none");
+}
+
+function show_all_checkboxes_in_admin_panel (e){
+	set_style_display(get_all_checkboxes_in_admin_panel(), "");
+}
+
 /******************************************************************************
- * aux functions for initialization
+ * for initialization
  ******************************************************************************/
 function get_inputs_with_nearby_checkboxes(root) {
 	var result = new Array();
@@ -53,6 +99,14 @@ function get_inputs_with_nearby_checkboxes(root) {
 		}
 	}
 	return result;
+}
+
+function does_admin_panel_hold_change_option() {
+	var tmp = get_admin_panels_action_options()
+	tmp = sieve_by(tmp, "type", "radio");
+	tmp = sieve_by(tmp, "name", "action");
+	tmp = sieve_by(tmp, "value", "change");
+	return tmp.length > 0;
 }
 
 /******************************************************************************
@@ -87,5 +141,18 @@ function init_oma() {
 	for (var i = 0; i < tinp.length; i++) {
 		tinp[i].check_corresponding_box = check_corresponding_box;
 		XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
+	}
+
+	if(does_admin_panel_hold_change_option()) {
+		hide_all_checkboxes_in_admin_panel(null);
+		var tmp = get_admin_panels_action_options();
+		for (var i = 0; i < tmp.length; i++) {
+			if(tmp[i].getAttribute("value", "false") == "change") {
+				tmp[i].show_action = show_all_checkboxes_in_admin_panel;
+			} else {
+				tmp[i].show_action = hide_all_checkboxes_in_admin_panel;
+			}
+			XBrowserAddHandler(tmp[i], "click", "show_action");
+		}
 	}
 }
