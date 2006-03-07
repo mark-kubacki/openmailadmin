@@ -7,7 +7,7 @@
 		<td class="ed" width="400">
 			<ul class="ed">
 			<li><?= $input->radio('action', 'new') ?> <?= txt('21') ?></li>
-			<?php if($oma->editable_domains > 0) { ?>
+			<?php if(count($domains) > 0) { ?>
 				<li><?= $input->radio('action', 'change') ?><?= txt('59') ?></li>
 				<li><?= $input->radio('action', 'delete') ?><?= txt('22') ?></li>
 			<?php } ?>
