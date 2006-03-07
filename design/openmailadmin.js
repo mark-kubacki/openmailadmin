@@ -1,3 +1,6 @@
+/******************************************************************************
+ * now come action handler
+ ******************************************************************************/
 function admin_panel_showhide (e) {
 	switch(this.id) {
 		case "admin_show":
@@ -30,6 +33,31 @@ function check_corresponding_box (e) {
 	this.parentNode.parentNode.firstChild.firstChild.checked=true;
 }
 
+/******************************************************************************
+ * aux functions for initialization
+ ******************************************************************************/
+function get_inputs_with_nearby_checkboxes(root) {
+	var result = new Array();
+	var tinp = root.getElementsByTagName("input");
+	for (var i = 0; i < tinp.length; i++) {
+		// If this is already a checkbox there is no need of checking another one.
+		if(tinp[i].getAttribute("type", "false") == "checkbox") {
+			continue;
+		}
+		try {
+			if(tinp[i].parentNode.parentNode.firstChild.firstChild != null
+			   && tinp[i].parentNode.parentNode.firstChild.firstChild.getAttribute("type", "false") == "checkbox") {
+				result.push(tinp[i]);
+			}
+		} catch (e) {
+		}
+	}
+	return result;
+}
+
+/******************************************************************************
+ * initialization
+ ******************************************************************************/
 function init_oma() {
 	/* Initialise admin-panel buttons. */
 	if(document.getElementById("admin_hide") != null) {
@@ -55,19 +83,9 @@ function init_oma() {
 		}
 	}
 	/* inputs whose visible neighbours are checkboxes */
-	var tinp = document.getElementsByTagName("input");
+	var tinp = get_inputs_with_nearby_checkboxes(document);
 	for (var i = 0; i < tinp.length; i++) {
-		// If this is already a checkbox there is no need of checking another one.
-		if(tinp[i].getAttribute("type", "false") == "checkbox") {
-			continue;
-		}
-		try {
-			if(tinp[i].parentNode.parentNode.firstChild.firstChild != null
-			   && tinp[i].parentNode.parentNode.firstChild.firstChild.getAttribute("type", "false") == "checkbox") {
-				tinp[i].check_corresponding_box = check_corresponding_box;
-				XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
-			}
-		} catch (e) {
-		}
+		tinp[i].check_corresponding_box = check_corresponding_box;
+		XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
 	}
 }
