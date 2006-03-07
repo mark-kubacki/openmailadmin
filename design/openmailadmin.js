@@ -196,7 +196,7 @@ function init_oma() {
 		document.getElementById("admin_show").admin_panel_showhide = admin_panel_showhide;
 		XBrowserAddHandler(document.getElementById("admin_hide"),"click","admin_panel_showhide");
 		XBrowserAddHandler(document.getElementById("admin_show"),"click","admin_panel_showhide");
-		document.getElementById("admin_panel").style.display = "none";
+		document.getElementById("admin_show").style.display = "none";
 	}
 	/* newsletter quasi-buttons */
 	var spans = document.getElementsByTagName("span");
