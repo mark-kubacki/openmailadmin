@@ -195,14 +195,6 @@ function get_inputs_with_nearby_checkboxes(root) {
 	return result;
 }
 
-function does_admin_panel_hold_change_option() {
-	var tmp = get_admin_panels_action_options()
-	tmp = sieve_by(tmp, "type", "radio");
-	tmp = sieve_by(tmp, "name", "action");
-	tmp = sieve_by(tmp, "value", "change");
-	return tmp.length > 0;
-}
-
 /******************************************************************************
  * initialization
  ******************************************************************************/
@@ -280,8 +272,11 @@ function init_oma() {
 	init_change_sensitive_inputs();
 
 	if(does_admin_panel_exist()) {
-		if(does_admin_panel_hold_change_option()) {
-			hide_all_checkboxes_in_admin_panel(null);
+		var current_panel = get_admin_panel_owner();
+		if(current_panel == "user" || current_panel == "domains") {
+			if(get_last_used_action() != "change") {
+				hide_all_checkboxes_in_admin_panel(null);
+			}
 			init_showing_checkboxes_on_demand();
 		}
 		init_showing_only_necessary_fields();
