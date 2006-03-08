@@ -888,7 +888,7 @@ class openmailadmin
 				$this->ErrorHandler->add_error(txt('133'));
 				return false;
 			}
-			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['virtual'].' WHERE address='.$this->db->qstr($props['canonical']).' AND owner='.$this->db->qstr($mboxname).' LIMIT 1\');';
+			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['virtual'].' WHERE address='.addslashes($this->db->qstr($props['canonical'])).' AND owner='.addslashes($this->db->qstr($mboxname)).' LIMIT 1\')';
 		}
 
 		// on success write the new user to database
@@ -902,11 +902,11 @@ class openmailadmin
 			$this->rollback($rollback);
 			return false;
 		}
-		$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['user'].' WHERE mbox='.$this->db->qstr($mboxname).' LIMIT 1\');';
+		$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['user'].' WHERE mbox='.addslashes($this->db->qstr($mboxname)).' LIMIT 1\')';
 
 		// Decrease current users's contingents...
 		if($this->authenticated_user['a_super'] == 0) {
-			$rollback[] = '$this->db->Execute(\'UPDATE '.$this->tablenames['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox='.$this->db->qstr($this->current_user['mbox']).' LIMIT 1\');';
+			$rollback[] = '$this->db->Execute(\'UPDATE '.$this->tablenames['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox='.addslashes($this->db->qstr($this->current_user['mbox'])).' LIMIT 1\')';
 			$this->db->Execute('UPDATE '.$this->tablenames['user']
 				.' SET max_alias='.($this->current_user['max_alias']-intval($props['max_alias'])).', max_regexp='.($this->current_user['max_regexp']-intval($props['max_regexp']))
 				.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']).' LIMIT 1');
@@ -925,7 +925,7 @@ class openmailadmin
 				}
 			}
 		}
-		$rollback[] = '$this->imap->deletemb($this->imap->format_user(\''.$mboxname.'\'));';
+		$rollback[] = '$this->imap->deletemb($this->imap->format_user(\''.$mboxname.'\'))';
 
 		// Decrease the creator's quota...
 		$cur_usr_quota	= $this->imap->getquota($this->imap->format_user($this->current_user['mbox']));
@@ -937,7 +937,7 @@ class openmailadmin
 				$this->rollback($rollback);
 				return false;
 			}
-			$rollback[] = '$this->imap->setquota($this->imap->format_user($this->current_user[\'mbox\']), '.$cur_usr_quota->max .'));';
+			$rollback[] = '$this->imap->setquota($this->imap->format_user($this->current_user[\'mbox\']), '.$cur_usr_quota->max .'))';
 			$this->ErrorHandler->add_info(sprintf(txt('69'), $cur_usr_quota->max - $props['quota']));
 		} else {
 			$this->ErrorHandler->add_info(txt('71'));
