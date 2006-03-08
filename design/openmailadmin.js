@@ -52,7 +52,11 @@ function set_style_display(elements, to) {
 function get_admin_panels_form_fields_container(input_name) {
 	var inp = get_all_inputs_of_admin_panel();
 	inp = sieve_by(inp, "name", input_name);
-	return inp[0].parentNode.parentNode;
+	if(inp[0] != null) {
+		return inp[0].parentNode.parentNode;
+	} else {
+		throw "Field not found.";
+	}
 }
 
 function get_admin_panel_fields(arr_names) {
