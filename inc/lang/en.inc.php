@@ -142,6 +142,8 @@ $res['en']	= array(
 '130'	=>	'These form fields contain invalid values: %s.',
 '131'	=>	'These accounts use more than %d %s: %s.',
 '132'	=>	'never',
+'133'	=>	'Given address is already in use.',
+'134'	=>	'Given domain has already been claimed.',
 );
 
 ?>

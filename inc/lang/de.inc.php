@@ -142,6 +142,8 @@ $res['de']	= array(
 '130'	=>	'Diese Felder enthalten ungültige Werte: %s.',
 '131'	=>	'Diese Accounts halten mehr als %d %s: %s.',
 '132'	=>	'nie',
+'133'	=>	'Die Adresse ist bereits vergeben.',
+'134'	=>	'Die Domäne wurde bereits vergeben.',
 );
 
 ?>

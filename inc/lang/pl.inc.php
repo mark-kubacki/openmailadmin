@@ -142,6 +142,8 @@ $res['pl']	= array(
 '130'	=>	'Te pola nie zawierają prawidłowych wartości: %s.',
 '131'	=>	'Te konta posiadają więcej niż %d %s: %s.',
 '132'	=>	'nigdy',
+'133'	=>	'Adres został już przydzielony.',
+'134'	=>	'Domena została już przydzielona.',
 );
 
 ?>

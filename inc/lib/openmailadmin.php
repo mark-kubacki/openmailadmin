@@ -285,7 +285,7 @@ class openmailadmin
 			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
 						array(strtolower($alias.'@'.$domain), implode(',', $arr_destinations), $this->current_user['mbox']));
 			if($this->db->Affected_Rows() < 1) {
-				$this->ErrorHandler->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error(txt('133'));
 			} else {
 				$this->current_user['used_alias']++;
 				return true;
@@ -437,7 +437,7 @@ class openmailadmin
 		$this->db->Execute('INSERT INTO '.$this->tablenames['domains'].' (domain, categories, owner, a_admin) VALUES (?, ?, ?, ?)',
 				array($domain, $props['categories'], $props['owner'], $props['a_admin']));
 		if($this->db->Affected_Rows() < 1) {
-			$this->ErrorHandler->add_error($this->db->ErrorMsg());
+			$this->ErrorHandler->add_error(txt('134'));
 		} else {
 			$this->user_invalidate_domain_sets();
 			return true;
@@ -692,7 +692,7 @@ class openmailadmin
 				array($regexp, implode(',', $arr_destinations), $this->current_user['mbox']));
 			if($this->db->Affected_Rows() < 1) {
 				if($this->db->ErrorNo() != 0) {
-					$this->ErrorHandler->add_error($this->db->ErrorMsg());
+					$this->ErrorHandler->add_error(txt('133'));
 				}
 			} else {
 				$this->current_user['used_regexp']++;
@@ -885,7 +885,7 @@ class openmailadmin
 			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
 					array($props['canonical'], $mboxname, $mboxname));
 			if($this->db->Affected_Rows() < 1) {
-				$this->ErrorHandler->add_error($this->db->ErrorMsg());
+				$this->ErrorHandler->add_error(txt('133'));
 				return false;
 			}
 			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['virtual'].' WHERE address='.$this->db->qstr($props['canonical']).' AND owner='.$this->db->qstr($mboxname).' LIMIT 1\');';
@@ -897,7 +897,7 @@ class openmailadmin
 				array($props['mbox'], $props['person'], $props['pate'], $props['canonical'], $props['domains'], $props['max_alias'], $props['max_regexp'], time(), $props['a_admin_domains'], $props['a_admin_user'], $props['a_super'])
 				);
 		if($this->db->Affected_Rows() < 1) {
-			$this->ErrorHandler->add_error($this->db->ErrorMsg());
+			$this->ErrorHandler->add_error(txt('92'));
 			// Rollback
 			$this->rollback($rollback);
 			return false;
