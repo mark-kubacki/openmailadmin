@@ -193,8 +193,7 @@ function does_admin_panel_hold_change_option() {
 /******************************************************************************
  * initialization
  ******************************************************************************/
-function init_oma() {
-	/* Initialise admin-panel buttons. */
+function init_admin_panel_buttons() {
 	if(document.getElementById("admin_hide") != null) {
 		document.getElementById("admin_hide").admin_panel_showhide = admin_panel_showhide;
 		document.getElementById("admin_show").admin_panel_showhide = admin_panel_showhide;
@@ -202,7 +201,9 @@ function init_oma() {
 		XBrowserAddHandler(document.getElementById("admin_show"),"click","admin_panel_showhide");
 		document.getElementById("admin_show").style.display = "none";
 	}
-	/* newsletter quasi-buttons */
+}
+
+function init_newsletter_buttons() {
 	var spans = document.getElementsByTagName("span");
 	for (var i = 0; i < spans.length; i++) {
 		if(spans[i].className == "quasi_btn") {
@@ -217,12 +218,20 @@ function init_oma() {
 			}
 		}
 	}
-	/* inputs whose visible neighbours are checkboxes */
+}
+
+function init_change_sensitive_inputs() {
 	var tinp = get_inputs_with_nearby_checkboxes(document);
 	for (var i = 0; i < tinp.length; i++) {
 		tinp[i].check_corresponding_box = check_corresponding_box;
 		XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
 	}
+}
+
+function init_oma() {
+	init_admin_panel_buttons();
+	init_newsletter_buttons();
+	init_change_sensitive_inputs();
 
 	if(does_admin_panel_exists()) {
 		if(does_admin_panel_hold_change_option()) {
