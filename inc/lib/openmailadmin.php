@@ -865,7 +865,7 @@ class openmailadmin
 			return false;
 		}
 
-		// contingents (only if non-superuser)
+		// check contingents (only if non-superuser)
 		if($this->authenticated_user['a_super'] == 0) {
 			// As the current user's contingents will be decreased we have to use his values.
 			if($props['max_alias'] > ($this->current_user['max_alias'] - $this->user_get_used_alias($this->current_user['mbox']))
@@ -874,7 +874,7 @@ class openmailadmin
 				return false;
 			}
 			$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
-			if($quota->is_set && $_POST['quota'] > $quota->free) {
+			if($quota->is_set && $props['quota']*1024 > $quota->free) {
 				$this->ErrorHandler->add_error(txt('65'));
 				return false;
 			}
@@ -930,7 +930,7 @@ class openmailadmin
 		// Decrease the creator's quota...
 		$cur_usr_quota	= $this->imap->getquota($this->imap->format_user($this->current_user['mbox']));
 		if($this->authenticated_user['a_super'] == 0 && $cur_usr_quota->is_set) {
-			$result = $this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $cur_usr_quota->max - $props['quota']);
+			$result = $this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $cur_usr_quota->max - $props['quota']*1024);
 			if(!$result) {
 				$this->ErrorHandler->add_error($this->imap->error_msg);
 				// Rollback
@@ -938,14 +938,14 @@ class openmailadmin
 				return false;
 			}
 			$rollback[] = '$this->imap->setquota($this->imap->format_user($this->current_user[\'mbox\']), '.$cur_usr_quota->max .'))';
-			$this->ErrorHandler->add_info(sprintf(txt('69'), $cur_usr_quota->max - $props['quota']));
+			$this->ErrorHandler->add_info(sprintf(txt('69'), floor(($cur_usr_quota->max - $props['quota']*1024)/1024) ));
 		} else {
 			$this->ErrorHandler->add_info(txt('71'));
 		}
 
 		// ... and set the new user's quota.
 		if(is_numeric($props['quota'])) {
-			$result = $this->imap->setquota($this->imap->format_user($mboxname), $props['quota']);
+			$result = $this->imap->setquota($this->imap->format_user($mboxname), $props['quota']*1024);
 			if(!$result) {
 				$this->ErrorHandler->add_error($this->imap->error_msg);
 				// Rollback
@@ -1073,19 +1073,19 @@ class openmailadmin
 					if($user != '') {
 						$quota	= $this->imap->get_users_quota($user);
 						if($quota->is_set)
-							$add_quota += intval($props['quota']) - $quota->max;
+							$add_quota += intval($props['quota'])*1024 - $quota->max;
 					}
 				}
 				$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
 				if($add_quota != 0 && $quota->is_set) {
 					$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $quota->max - $add_quota);
-					$this->ErrorHandler->add_info(sprintf(txt('78'), $quota->max - $add_quota));
+					$this->ErrorHandler->add_info(sprintf(txt('78'), floor(($quota->max - $add_quota)/1024) ));
 				}
 			}
 			reset($mboxnames);
 			foreach($mboxnames as $user) {
 				if($user != '') {
-					$result = $this->imap->setquota($this->imap->format_user($user), intval($props['quota']));
+					$result = $this->imap->setquota($this->imap->format_user($user), intval($props['quota'])*1024);
 					if(!$result) {
 						$this->ErrorHandler->add_error($this->imap->error_msg);
 					}
@@ -1158,7 +1158,7 @@ class openmailadmin
 		   && $add_quota > 0
 		   && $quota->is_set) {
 			$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $quota->max + $add_quota);
-			$this->ErrorHandler->add_info(sprintf(txt('76'), $quota->max + $add_quota));
+			$this->ErrorHandler->add_info(sprintf(txt('76'), floor(($quota->max + $add_quota)/1024) ));
 		}
 
 		// Calculate how many contingents get freed if we delete the users.
