@@ -4,3 +4,9 @@
 <Files .svn>
     Deny From All
 </Files>
+
+php_flag	asp_tags		Off
+php_flag	short_open_tag		On
+php_flag	file_uploads		Off
+php_flag	magic_quotes_gpc	Off
+php_flag	magic_quotes_runtime	Off

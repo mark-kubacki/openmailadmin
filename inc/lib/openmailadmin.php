@@ -325,7 +325,7 @@ class openmailadmin
 			$this->db->Execute('INSERT INTO '.$cfg['tablenames']['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
 						array(strtolower($alias.'@'.$domain), implode(',', $arr_destinations), $this->current_user['mbox']));
 			if($this->db->Affected_Rows() < 1) {
-				$this->error[]	= $this->db->ErrorMsg();
+				$this->error[]	= txt('133');
 			} else {
 				$this->current_user['used_alias']++;
 				return true;
@@ -486,7 +486,7 @@ class openmailadmin
 		$this->db->Execute('INSERT INTO '.$cfg['tablenames']['domains'].' (domain, categories, owner, a_admin) VALUES (?, ?, ?, ?)',
 				array($domain, $props['categories'], $props['owner'], $props['a_admin']));
 		if($this->db->Affected_Rows() < 1) {
-			$this->error[]	= $this->db->ErrorMsg();
+			$this->error[]	= txt('134');
 		} else {
 			$this->user_invalidate_domain_sets();
 			return true;
@@ -751,7 +751,7 @@ class openmailadmin
 				array($regexp, implode(',', $arr_destinations), $this->current_user['mbox']));
 			if($this->db->Affected_Rows() < 1) {
 				if($this->db->ErrorNo() != 0) {
-					$this->error[]	= $this->db->ErrorMsg();
+					$this->error[]	= txt('133');
 				}
 			} else {
 				$this->current_user['used_regexp']++;
@@ -936,7 +936,7 @@ class openmailadmin
 			return false;
 		}
 
-		// contingents (only if non-superuser)
+		// check contingents (only if non-superuser)
 		if($this->authenticated_user['a_super'] == 0) {
 			// As the current user's contingents will be decreased we have to use his values.
 			if($props['max_alias'] > ($this->current_user['max_alias'] - $this->user_get_used_alias($this->current_user['mbox']))
@@ -945,7 +945,7 @@ class openmailadmin
 				return false;
 			}
 			if(hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET'
-			   && $_POST['quota'] > (hsys_getMaxQuota($this->current_user['mbox']) - hsys_getUsedQuota($this->current_user['mbox']))) {
+			   && $props['quota']*1024 > (hsys_getMaxQuota($this->current_user['mbox']) - hsys_getUsedQuota($this->current_user['mbox']))) {
 				$this->error[]	= txt('65');
 				return false;
 			}
@@ -956,10 +956,10 @@ class openmailadmin
 			$this->db->Execute('INSERT INTO '.$cfg['tablenames']['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
 					array($props['canonical'], $mboxname, $mboxname));
 			if($this->db->Affected_Rows() < 1) {
-				$this->error[]	= $this->db->ErrorMsg();
+				$this->error[]	= txt('133');
 				return false;
 			}
-			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$cfg['tablenames']['virtual'].' WHERE address='.$this->db->qstr($props['canonical']).' AND owner='.$this->db->qstr($mboxname).' LIMIT 1\');';
+			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$cfg['tablenames']['virtual'].' WHERE address='.addslashes($this->db->qstr($props['canonical'])).' AND owner='.addslashes($this->db->qstr($mboxname)).' LIMIT 1\')';
 		}
 
 		// on success write the new user to database
@@ -968,16 +968,16 @@ class openmailadmin
 				array($props['mbox'], $props['person'], $props['pate'], $props['canonical'], $props['domains'], $props['max_alias'], $props['max_regexp'], time(), $props['a_admin_domains'], $props['a_admin_user'], $props['a_super'])
 				);
 		if($this->db->Affected_Rows() < 1) {
-			$this->error[]	= $this->db->ErrorMsg();
+			$this->error[]	= txt('92');
 			// Rollback
 			$this->rollback($rollback);
 			return false;
 		}
-		$rollback[] = '$this->db->Execute(\'DELETE FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$this->db->qstr($mboxname).' LIMIT 1\');';
+		$rollback[] = '$this->db->Execute(\'DELETE FROM '.$cfg['tablenames']['user'].' WHERE mbox='.addslashes($this->db->qstr($mboxname)).' LIMIT 1\')';
 
 		// Decrease current users's contingents...
 		if($this->authenticated_user['a_super'] == 0) {
-			$rollback[] = '$this->db->Execute(\'UPDATE '.$cfg['tablenames']['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox='.$this->db->qstr($this->current_user['mbox']).' LIMIT 1\');';
+			$rollback[] = '$this->db->Execute(\'UPDATE '.$cfg['tablenames']['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox='.addslashes($this->db->qstr($this->current_user['mbox'])).' LIMIT 1\')';
 			$this->db->Execute('UPDATE '.$cfg['tablenames']['user']
 				.' SET max_alias='.($this->current_user['max_alias']-intval($props['max_alias'])).', max_regexp='.($this->current_user['max_regexp']-intval($props['max_regexp']))
 				.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']).' LIMIT 1');
@@ -996,12 +996,12 @@ class openmailadmin
 				}
 			}
 		}
-		$rollback[] = '$imap->deletemb($imap->format_user(\''.$mboxname.'\'));';
+		$rollback[] = '$imap->deletemb($imap->format_user(\''.$mboxname.'\'))';
 
 		// Decrease the creator's quota...
 		if($this->authenticated_user['a_super'] == 0 && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET') {
 			$tmp = hsys_getMaxQuota($this->current_user['mbox']);
-			$result = $imap->setquota($imap->format_user($this->current_user['mbox']), $tmp-$props['quota']);
+			$result = $imap->setquota($imap->format_user($this->current_user['mbox']), $tmp-$props['quota']*1024);
 			if(!$result) {
 				$this->error[]	= $imap->error_msg;
 				// Rollback
@@ -1009,14 +1009,14 @@ class openmailadmin
 				return false;
 			}
 			$rollback[] = '$imap->setquota($imap->format_user($this->current_user[\'mbox\']), '.$tmp.'));';
-			$this->info[]	= sprintf(txt('69'), hsys_getMaxQuota($this->current_user['mbox'])-$props['quota']);
+			$this->info[]	= sprintf(txt('69'), floor((hsys_getMaxQuota($this->current_user['mbox'])-$props['quota']*1024)/1024) );
 		} else {
 			$this->info[]	= txt('71');
 		}
 
 		// ... and set the new user's quota.
 		if(is_numeric($props['quota'])) {
-			$result = $imap->setquota($imap->format_user($mboxname), $props['quota']);
+			$result = $imap->setquota($imap->format_user($mboxname), $props['quota']*1024);
 			if(!$result) {
 				$this->error[]	= $imap->error_msg;
 				// Rollback
@@ -1146,18 +1146,18 @@ class openmailadmin
 				foreach($mboxnames as $user) {
 					if($user != '') {
 						if(hsys_getMaxQuota($user) != 'NOT-SET')
-							$add_quota += intval($props['quota']) - hsys_getMaxQuota($user);
+							$add_quota += intval($props['quota'])*1024 - hsys_getMaxQuota($user);
 					}
 				}
 				if($add_quota != 0 && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET') {
 					$imap->setquota($imap->format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox'])-$add_quota);
-					$this->info[]	= sprintf(txt('78'), hsys_getMaxQuota($this->current_user['mbox']));
+					$this->info[]	= sprintf(txt('78'), floor(hsys_getMaxQuota($this->current_user['mbox'])/1024));
 				}
 			}
 			reset($mboxnames);
 			foreach($mboxnames as $user) {
 				if($user != '') {
-					$result = $imap->setquota($imap->format_user($user), intval($props['quota']));
+					$result = $imap->setquota($imap->format_user($user), intval($props['quota'])*1024);
 					if(!$result) {
 						$this->error[]	= $imap->error_msg;
 					}
@@ -1231,7 +1231,7 @@ class openmailadmin
 		   && $add_quota > 0
 		   && hsys_getMaxQuota($this->current_user['mbox']) != 'NOT-SET') {
 			$imap->setquota($imap->format_user($this->current_user['mbox']), hsys_getMaxQuota($this->current_user['mbox'])+$add_quota);
-			$this->info[]	= sprintf(txt('76'), (hsys_getMaxQuota($this->current_user['mbox'])+$add_quota));
+			$this->info[]	= sprintf(txt('76'), floor((hsys_getMaxQuota($this->current_user['mbox'])+$add_quota)/1024) );
 		}
 
 		// Calculate how many contingents get freed if we delete the users.

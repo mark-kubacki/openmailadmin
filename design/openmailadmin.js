@@ -11,7 +11,7 @@ function sieve_by(arr_elemts, what, only_accepted_value) {
 	return result;
 }
 
-function does_admin_panel_exists() {
+function does_admin_panel_exist() {
 	var panel = document.getElementById("admin_panel");
 	if(panel != null) {
 		return true;
@@ -52,7 +52,11 @@ function set_style_display(elements, to) {
 function get_admin_panels_form_fields_container(input_name) {
 	var inp = get_all_inputs_of_admin_panel();
 	inp = sieve_by(inp, "name", input_name);
-	return inp[0].parentNode.parentNode;
+	if(inp[0] != null) {
+		return inp[0].parentNode.parentNode;
+	} else {
+		throw "Field not found.";
+	}
 }
 
 function get_admin_panel_fields(arr_names) {
@@ -75,6 +79,19 @@ function get_admin_panel_owner() {
 	var inputs = get_all_inputs_of_admin_panel();
 	inputs = sieve_by(inputs, "name", "frm");
 	return inputs[0].getAttribute("value", "false");
+}
+
+function get_last_used_action() {
+	var tmp = get_admin_panels_action_options();
+	var checked = "none";
+	for (var i = 0; i < tmp.length; i++) {
+		tmp[i].req_fields_action = show_only_necessary_fields;
+		XBrowserAddHandler(tmp[i], "click", "req_fields_action");
+		if(tmp[i].checked) {
+			checked = tmp[i].value;
+		}
+	}
+	return checked;
 }
 
 /******************************************************************************
@@ -178,19 +195,10 @@ function get_inputs_with_nearby_checkboxes(root) {
 	return result;
 }
 
-function does_admin_panel_hold_change_option() {
-	var tmp = get_admin_panels_action_options()
-	tmp = sieve_by(tmp, "type", "radio");
-	tmp = sieve_by(tmp, "name", "action");
-	tmp = sieve_by(tmp, "value", "change");
-	return tmp.length > 0;
-}
-
 /******************************************************************************
  * initialization
  ******************************************************************************/
-function init_oma() {
-	/* Initialise admin-panel buttons. */
+function init_admin_panel_buttons() {
 	if(document.getElementById("admin_hide") != null) {
 		document.getElementById("admin_hide").admin_panel_showhide = admin_panel_showhide;
 		document.getElementById("admin_show").admin_panel_showhide = admin_panel_showhide;
@@ -198,7 +206,9 @@ function init_oma() {
 		XBrowserAddHandler(document.getElementById("admin_show"),"click","admin_panel_showhide");
 		document.getElementById("admin_show").style.display = "none";
 	}
-	/* newsletter quasi-buttons */
+}
+
+function init_newsletter_buttons() {
 	var spans = document.getElementsByTagName("span");
 	for (var i = 0; i < spans.length; i++) {
 		if(spans[i].className == "quasi_btn") {
@@ -213,44 +223,63 @@ function init_oma() {
 			}
 		}
 	}
-	/* inputs whose visible neighbours are checkboxes */
+}
+
+function init_change_sensitive_inputs() {
 	var tinp = get_inputs_with_nearby_checkboxes(document);
 	for (var i = 0; i < tinp.length; i++) {
 		tinp[i].check_corresponding_box = check_corresponding_box;
 		XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
 	}
+}
 
-	if(does_admin_panel_exists()) {
-		if(does_admin_panel_hold_change_option()) {
-			hide_all_checkboxes_in_admin_panel(null);
-			var tmp = get_admin_panels_action_options();
-			for (var i = 0; i < tmp.length; i++) {
-				if(tmp[i].getAttribute("value", "false") == "change") {
-					tmp[i].show_action = show_all_checkboxes_in_admin_panel;
-				} else {
-					tmp[i].show_action = hide_all_checkboxes_in_admin_panel;
-				}
-				XBrowserAddHandler(tmp[i], "click", "show_action");
-			}
-		}
-
-		var tmp = get_admin_panels_action_options();
-		var checked = "none";
-		for (var i = 0; i < tmp.length; i++) {
-			tmp[i].req_fields_action = show_only_necessary_fields;
-			XBrowserAddHandler(tmp[i], "click", "req_fields_action");
-			if(tmp[i].checked) {
-				checked = tmp[i].value;
-			}
-		}
-		if(checked != "none") {
-			var cur	= get_current_show_xor_hide_table(get_admin_panel_owner(),
-								  checked);
-			admin_panel_fields_show_xor_hide(cur[0], cur[1]);
+function init_showing_checkboxes_on_demand() {
+	var tmp = get_admin_panels_action_options();
+	for (var i = 0; i < tmp.length; i++) {
+		if(tmp[i].getAttribute("value", "false") == "change") {
+			tmp[i].show_action = show_all_checkboxes_in_admin_panel;
 		} else {
-			var cur	= get_current_show_xor_hide_table(get_admin_panel_owner(),
-								  "delete");
-			admin_panel_fields_show_xor_hide(cur[0], cur[1]);
+			tmp[i].show_action = hide_all_checkboxes_in_admin_panel;
 		}
+		XBrowserAddHandler(tmp[i], "click", "show_action");
+	}
+}
+
+function init_showing_only_necessary_fields() {
+	var tmp = get_admin_panels_action_options();
+	for (var i = 0; i < tmp.length; i++) {
+		tmp[i].req_fields_action = show_only_necessary_fields;
+		XBrowserAddHandler(tmp[i], "click", "req_fields_action");
+	}
+}
+
+function init_set_visibility_for_last_action() {
+	var checked = get_last_used_action();
+	if(checked != "none") {
+		var cur	= get_current_show_xor_hide_table(get_admin_panel_owner(),
+							  checked);
+		admin_panel_fields_show_xor_hide(cur[0], cur[1]);
+	} else {
+		var cur	= get_current_show_xor_hide_table(get_admin_panel_owner(),
+							  "delete");
+		admin_panel_fields_show_xor_hide(cur[0], cur[1]);
+	}
+}
+
+function init_oma() {
+	init_admin_panel_buttons();
+	init_newsletter_buttons();
+	init_change_sensitive_inputs();
+
+	if(does_admin_panel_exist()) {
+		var current_panel = get_admin_panel_owner();
+		if(current_panel == "user" || current_panel == "domains") {
+			if(get_last_used_action() != "change") {
+				hide_all_checkboxes_in_admin_panel(null);
+			}
+			init_showing_checkboxes_on_demand();
+		}
+		init_showing_only_necessary_fields();
+		init_set_visibility_for_last_action();
 	}
 }
