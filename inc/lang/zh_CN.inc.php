@@ -100,7 +100,7 @@ $res['zh-cn']	= array(
 '91'	=>	'您一次只能对一个对象进行更名。<br />',
 '92'	=>	'该用户名已存在。<br />',
 '93'	=>	'新用户名和旧用户名必须予以区分。<br />',
-'94'	=>	'下列内容必需写在<cite>imapd.conf</cite> :<br /><code>允许用户更改: 是</code>',
+'94'	=>	'下列内容必需写在<cite>imapd.conf</cite> :<br /><code>allowusermoves: yes</code>',
 '95'	=>	'不是',
 
 '96'	=>	'邮件列表 (%d个新邮件)',
