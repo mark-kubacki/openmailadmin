@@ -20,7 +20,7 @@ $information[]	= array(txt('6'),	$oma->current_user['person']);
 $information[]	= array(txt('7'),	$oma->current_user['canonical']);
 $information[]	= array(txt('86'),	$oma->current_user['domains']);
 $information[]	= array(txt('8'),	$quota->is_set
-					? $quota->used.' / '.$quota->max.' [kiB] '
+					? intval(round($quota->used/1024)).' / '.floor($quota->max/1024).' [MiB] '
 					: '&infin;');
 $information[]	= array(txt('77'),	$rightstring);
 unset($rightstring);
