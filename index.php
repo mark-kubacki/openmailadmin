@@ -20,8 +20,8 @@ $information[]	= array(txt('7'),	$oma->current_user['canonical']);
 $information[]	= array(txt('86'),	$oma->current_user['domains']);
 $information[]	= array(txt('8'),	hsys_getMaxQuota($oma->current_user['mbox']) == 'NOT-SET'
 					? '&infin;'
-					: hsys_getUsedQuota($oma->current_user['mbox']).' / '.
-						hsys_getMaxQuota($oma->current_user['mbox']).' [kiB]');
+					: intval(round(hsys_getUsedQuota($oma->current_user['mbox'])/1024)).' / '.
+						floor(hsys_getMaxQuota($oma->current_user['mbox'])/1024).' [MiB]');
 $information[]	= array(txt('77'),	$rightstring);
 unset($rightstring);
 include('./templates/'.$cfg['theme'].'/information.tpl');
