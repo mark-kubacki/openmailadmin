@@ -47,7 +47,7 @@ sub writePasswdCache {
 	my @row;
 
 	$sth = $dbh->prepare(q{
-		SELECT mbox, pass_crypt
+		SELECT mbox, pass_md5
 		FROM user
 		});
 	$sth->execute();

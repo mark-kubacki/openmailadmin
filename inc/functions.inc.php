@@ -52,10 +52,7 @@ function hsys_ob_end($remove_whitespace) {
  * Valid password?
  */
 function passwd_check($input, $hash) {
-	if(crypt($input, $hash) == $hash || md5($input) == $hash) {
-		return true;
-	}
-	return false;
+	return (md5($input) == $hash);
 }
 
 /*
