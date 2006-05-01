@@ -117,9 +117,9 @@ class Fake_IMAP
 
 	public function setquota($mb, $many, $storage = '') {
 		if(is_numeric($many)) {
-			$this->db->Execute('UPDATE '.$this->tablenames['imap_demo'].' SET qmax='.intval(max(1, $many)).', used=FLOOR(RAND()*'.intval(max(1, $many)).') WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
+			$this->db->Execute('UPDATE '.$this->tablenames['imap_demo'].' SET qmax='.intval(max(1, $many)).', used=FLOOR(RAND()*'.intval(max(1, $many)).') WHERE mailbox='.$this->db->qstr($mb));
 		} else if(is_null($many)) {
-			$this->db->Execute('UPDATE '.$this->tablenames['imap_demo'].' SET qmax=0 WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
+			$this->db->Execute('UPDATE '.$this->tablenames['imap_demo'].' SET qmax=0 WHERE mailbox='.$this->db->qstr($mb));
 		} else {
 			$this->error_msg	= 'Quota has either to be numeric or null!';
 			return false;
@@ -172,7 +172,7 @@ class Fake_IMAP
 				}
 
 				// write to MySQL
-				$this->db->Execute('UPDATE '.$this->tablenames['imap_demo'].' SET ACL='.$this->db->qstr(trim($store)).' WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
+				$this->db->Execute('UPDATE '.$this->tablenames['imap_demo'].' SET ACL='.$this->db->qstr(trim($store)).' WHERE mailbox='.$this->db->qstr($mb));
 				return true;
 			}
 		} else {

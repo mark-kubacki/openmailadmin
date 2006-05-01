@@ -302,8 +302,7 @@ class openmailadmin
 	public function address_delete($arr_addresses) {
 		$this->db->Execute('DELETE FROM '.$this->tablenames['virtual']
 				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
-				.' AND FIND_IN_SET(address, '.$this->db->qstr(implode(',', $arr_addresses)).')'
-				.' LIMIT '.count($arr_addresses));
+				.' AND FIND_IN_SET(address, '.$this->db->qstr(implode(',', $arr_addresses)).')');
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -322,8 +321,7 @@ class openmailadmin
 	public function address_change_destination($arr_addresses, $arr_destinations) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET dest='.$this->db->qstr(implode(',', $arr_destinations)).', neu=1'
 				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
-				.' AND FIND_IN_SET(address, '.$this->db->qstr(implode(',', $arr_addresses)).')'
-				.' LIMIT '.count($arr_addresses));
+				.' AND FIND_IN_SET(address, '.$this->db->qstr(implode(',', $arr_addresses)).')');
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -341,8 +339,7 @@ class openmailadmin
 	public function address_toggle_active($arr_addresses) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active=NOT active, neu=1'
 				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
-				.' AND FIND_IN_SET(address, '.$this->db->qstr(implode(',', $arr_addresses)).')'
-				.' LIMIT '.count($arr_addresses));
+				.' AND FIND_IN_SET(address, '.$this->db->qstr(implode(',', $arr_addresses)).')');
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -470,7 +467,7 @@ class openmailadmin
 					$result->MoveNext();
 				}
 				if(isset($del_ID)) {
-					$this->db->Execute('DELETE FROM '.$this->tablenames['domains'].' WHERE FIND_IN_SET(ID, '.$this->db->qstr(implode(',',$del_ID)).') LIMIT '.count($del_ID));
+					$this->db->Execute('DELETE FROM '.$this->tablenames['domains'].' WHERE FIND_IN_SET(ID, '.$this->db->qstr(implode(',',$del_ID)).')');
 					if($this->db->Affected_Rows() < 1) {
 						if($this->db->ErrorNo() != 0) {
 							$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -478,7 +475,7 @@ class openmailadmin
 					} else {
 						$this->ErrorHandler->add_info(txt('52').'<br />'.implode(', ', $del_nm));
 						// We better deactivate all aliases containing that domain, so users can see the domain was deleted.
-						$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual'].' SET active = 0, neu = 1 WHERE FIND_IN_SET(SUBSTRING(address, LOCATE(\'@\', address)+1), \''.implode(',', $del_nm).'\')');
+						$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active = 0, neu = 1 WHERE FIND_IN_SET(SUBSTRING(address, LOCATE(\'@\', address)+1), \''.implode(',', $del_nm).'\')');
 						// We can't do such on REGEXP addresses: They may catch more than the given domains.
 						$this->user_invalidate_domain_sets();
 						return true;
@@ -518,8 +515,7 @@ class openmailadmin
 		if(count($toc) > 0) {
 			$this->db->Execute('UPDATE '.$this->tablenames['domains']
 				.' SET '.implode(',', $toc)
-				.' WHERE (owner='.$this->db->qstr($this->authenticated_user['mbox']).' or a_admin LIKE '.$this->db->qstr('%'.$this->authenticated_user['mbox'].'%').') AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $domains)).')'
-				.' LIMIT '.count($domains));
+				.' WHERE (owner='.$this->db->qstr($this->authenticated_user['mbox']).' or a_admin LIKE '.$this->db->qstr('%'.$this->authenticated_user['mbox'].'%').') AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $domains)).')');
 			if($this->db->Affected_Rows() < 1) {
 				if($this->db->ErrorNo() != 0) {
 					$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -532,8 +528,7 @@ class openmailadmin
 		if(!$this->cfg['admins_delete_domains'] && in_array('owner', $change)) {
 			$this->db->Execute('UPDATE '.$this->tablenames['domains']
 				.' SET owner='.$this->db->qstr($data['owner'])
-				.' WHERE owner='.$this->db->qstr($this->authenticated_user['mbox']).' AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $domains)).')'
-				.' LIMIT '.count($domains));
+				.' WHERE owner='.$this->db->qstr($this->authenticated_user['mbox']).' AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $domains)).')');
 		}
 		$this->user_invalidate_domain_sets();
 		// No domain be renamed?
@@ -550,12 +545,12 @@ class openmailadmin
 				// ... and then, change every old address.
 				if($this->db->Affected_Rows() == 1) {
 					// address
-					$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual'].' SET neu = 1, address = REPLACE(address, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE address LIKE '.$this->db->qstr('%@'.$domain['name']));
+					$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET neu = 1, address = REPLACE(address, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE address LIKE '.$this->db->qstr('%@'.$domain['name']));
 					// dest
-					$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual'].' SET neu = 1, dest = REPLACE(dest, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->db->qstr('%@'.$domain['name'].'%'));
-					$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual_regexp'].' SET neu = 1, dest = REPLACE(dest, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->db->qstr('%@'.$domain['name'].'%'));
+					$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET neu = 1, dest = REPLACE(dest, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->db->qstr('%@'.$domain['name'].'%'));
+					$this->db->Execute('UPDATE '.$this->tablenames['virtual_regexp'].' SET neu = 1, dest = REPLACE(dest, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->db->qstr('%@'.$domain['name'].'%'));
 					// canonical
-					$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['user'].' SET canonical = REPLACE(canonical, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE canonical LIKE '.$this->db->qstr('%@'.$domain['name']));
+					$this->db->Execute('UPDATE '.$this->tablenames['user'].' SET canonical = REPLACE(canonical, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE canonical LIKE '.$this->db->qstr('%@'.$domain['name']));
 				} else {
 					$this->ErrorHandler->add_error($this->db->ErrorMsg());
 				}
@@ -592,7 +587,7 @@ class openmailadmin
 		}
 		$this->db->Execute('UPDATE '.$this->tablenames['user']
 				.' SET pass_md5='.$this->db->qstr($new_md5)
-				.' WHERE mbox='.$this->db->qstr($username).' LIMIT 1');
+				.' WHERE mbox='.$this->db->qstr($username));
 		if($this->db->Affected_Rows() > 0) {
 			$this->ErrorHandler->add_info(txt('48'));
 			return true;
@@ -707,8 +702,7 @@ class openmailadmin
 	public function regexp_delete($arr_regexp_ids) {
 		$this->db->Execute('DELETE FROM '.$this->tablenames['virtual_regexp']
 				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
-				.' AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $arr_regexp_ids)).')'
-				.' LIMIT '.count($arr_regexp_ids));
+				.' AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $arr_regexp_ids)).')');
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -727,8 +721,7 @@ class openmailadmin
 	public function regexp_change_destination($arr_regexp_ids, $arr_destinations) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual_regexp'].' SET dest='.$this->db->qstr(implode(',', $arr_destinations)).', neu = 1'
 				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
-				.' AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $arr_regexp_ids)).')'
-				.' LIMIT '.count($arr_regexp_ids));
+				.' AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $arr_regexp_ids)).')');
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -745,8 +738,7 @@ class openmailadmin
 	public function regexp_toggle_active($arr_regexp_ids) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual_regexp'].' SET active = NOT active, neu = 1'
 				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
-				.' AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $arr_regexp_ids)).')'
-				.' LIMIT '.count($arr_regexp_ids));
+				.' AND FIND_IN_SET(ID, '.$this->db->qstr(implode(',', $arr_regexp_ids)).')');
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -885,7 +877,7 @@ class openmailadmin
 				$this->ErrorHandler->add_error(txt('133'));
 				return false;
 			}
-			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['virtual'].' WHERE address='.addslashes($this->db->qstr($props['canonical'])).' AND owner='.addslashes($this->db->qstr($mboxname)).' LIMIT 1\')';
+			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['virtual'].' WHERE address='.addslashes($this->db->qstr($props['canonical'])).' AND owner='.addslashes($this->db->qstr($mboxname)).'\')';
 		}
 
 		// on success write the new user to database
@@ -899,14 +891,14 @@ class openmailadmin
 			$this->rollback($rollback);
 			return false;
 		}
-		$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['user'].' WHERE mbox='.addslashes($this->db->qstr($mboxname)).' LIMIT 1\')';
+		$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['user'].' WHERE mbox='.addslashes($this->db->qstr($mboxname)).'\')';
 
 		// Decrease current users's contingents...
 		if($this->authenticated_user['a_super'] == 0) {
-			$rollback[] = '$this->db->Execute(\'UPDATE '.$this->tablenames['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox='.addslashes($this->db->qstr($this->current_user['mbox'])).' LIMIT 1\')';
+			$rollback[] = '$this->db->Execute(\'UPDATE '.$this->tablenames['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox='.addslashes($this->db->qstr($this->current_user['mbox'])).'\')';
 			$this->db->Execute('UPDATE '.$this->tablenames['user']
 				.' SET max_alias='.($this->current_user['max_alias']-intval($props['max_alias'])).', max_regexp='.($this->current_user['max_regexp']-intval($props['max_regexp']))
-				.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']).' LIMIT 1');
+				.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']));
 		}
 		// ... and then create the user on the server.
 		$result = $this->imap->createmb($this->imap->format_user($mboxname));
@@ -993,8 +985,7 @@ class openmailadmin
 		if(count($to_change) > 0) {
 			$this->db->Execute('UPDATE '.$this->tablenames['user']
 				.' SET '.implode(',', $to_change)
-				.' WHERE FIND_IN_SET(mbox, '.$this->db->qstr($aux_tmp).')'
-				.' LIMIT '.count($mboxnames));
+				.' WHERE FIND_IN_SET(mbox, '.$this->db->qstr($aux_tmp).')');
 		}
 
 		// Manipulate contingents (except quota).
@@ -1035,8 +1026,7 @@ class openmailadmin
 					if($this->authenticated_user['a_super'] > 0) {
 					$this->db->Execute('UPDATE '.$this->tablenames['user']
 						.' SET '.$what.'='.$props[$what]
-						.' WHERE FIND_IN_SET(mbox, '.$this->db->qstr(implode(',', $to_be_processed)).')'
-						.' LIMIT '.count($to_be_processed));
+						.' WHERE FIND_IN_SET(mbox, '.$this->db->qstr(implode(',', $to_be_processed)).')');
 					} else {
 						// Now, calculate whether the current user has enough free contingents.
 						$has_to_be_free = $this->db->GetOne('SELECT SUM('.$props[$what].'-'.$what.')'
@@ -1046,13 +1036,11 @@ class openmailadmin
 							// If so, set new contingents on the users...
 							$this->db->Execute('UPDATE '.$this->tablenames['user']
 							.' SET '.$what.'='.$props[$what]
-							.' WHERE FIND_IN_SET(mbox, '.$this->db->qstr(implode(',', $to_be_processed)).')'
-							.' LIMIT '.count($to_be_processed));
+							.' WHERE FIND_IN_SET(mbox, '.$this->db->qstr(implode(',', $to_be_processed)).')');
 							// ... and add/remove the difference from the current user.
 							$this->db->Execute('UPDATE '.$this->tablenames['user']
 							.' SET '.$what.'='.$what.'-'.$has_to_be_free
-							.' WHERE mbox='.$this->db->qstr($this->current_user['mbox'])
-							.' LIMIT 1');
+							.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']));
 						} else {
 							// Else, we have to show an error message.
 							$this->ErrorHandler->add_error(txt('66'));
@@ -1093,13 +1081,13 @@ class openmailadmin
 		// Renaming of (single) user.
 		if(in_array('mbox', $change)) {
 			if($this->imap->renamemb($this->imap->format_user($mboxnames['0']), $this->imap->format_user($props['mbox']))) {
-				$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['user'].' SET mbox='.$this->db->qstr($props['mbox']).' WHERE mbox='.$this->db->qstr($mboxnames['0']).' LIMIT 1');
-				$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['domains'].' SET owner='.$this->db->qstr($props['mbox']).' WHERE owner='.$this->db->qstr($mboxnames['0']));
-				$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['domains'].' SET a_admin = REPLACE(a_admin, '.$this->db->qstr($mboxnames['0']).', '.$this->db->qstr($props['mbox']).') WHERE a_admin LIKE '.$this->db->qstr('%'.$mboxnames['0'].'%'));
-				$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual'].' SET dest=REPLACE(dest, '.$this->db->qstr($mboxnames['0']).', '.$this->db->qstr($props['mbox']).'), neu = 1 WHERE dest REGEXP '.$this->db->qstr($mboxnames['0'].'[^@]{1,}').' OR dest LIKE '.$this->db->qstr('%'.$mboxnames['0']));
-				$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual'].' SET owner='.$this->db->qstr($props['mbox']).' WHERE owner='.$this->db->qstr($mboxnames['0']));
-				$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual_regexp'].' SET dest=REPLACE(dest, '.$this->db->qstr($mboxnames['0']).', '.$this->db->qstr($props['mbox']).'), neu = 1 WHERE dest REGEXP '.$this->db->qstr($mboxnames['0'].'[^@]{1,}').' OR dest LIKE '.$this->db->qstr('%'.$mboxnames['0']));
-				$this->db->Execute('UPDATE LOW_PRIORITY '.$this->tablenames['virtual_regexp'].' SET owner='.$this->db->qstr($props['mbox']).' WHERE owner='.$this->db->qstr($mboxnames['0']));
+				$this->db->Execute('UPDATE '.$this->tablenames['user'].' SET mbox='.$this->db->qstr($props['mbox']).' WHERE mbox='.$this->db->qstr($mboxnames['0']));
+				$this->db->Execute('UPDATE '.$this->tablenames['domains'].' SET owner='.$this->db->qstr($props['mbox']).' WHERE owner='.$this->db->qstr($mboxnames['0']));
+				$this->db->Execute('UPDATE '.$this->tablenames['domains'].' SET a_admin = REPLACE(a_admin, '.$this->db->qstr($mboxnames['0']).', '.$this->db->qstr($props['mbox']).') WHERE a_admin LIKE '.$this->db->qstr('%'.$mboxnames['0'].'%'));
+				$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET dest=REPLACE(dest, '.$this->db->qstr($mboxnames['0']).', '.$this->db->qstr($props['mbox']).'), neu = 1 WHERE dest REGEXP '.$this->db->qstr($mboxnames['0'].'[^@]{1,}').' OR dest LIKE '.$this->db->qstr('%'.$mboxnames['0']));
+				$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET owner='.$this->db->qstr($props['mbox']).' WHERE owner='.$this->db->qstr($mboxnames['0']));
+				$this->db->Execute('UPDATE '.$this->tablenames['virtual_regexp'].' SET dest=REPLACE(dest, '.$this->db->qstr($mboxnames['0']).', '.$this->db->qstr($props['mbox']).'), neu = 1 WHERE dest REGEXP '.$this->db->qstr($mboxnames['0'].'[^@]{1,}').' OR dest LIKE '.$this->db->qstr('%'.$mboxnames['0']));
+				$this->db->Execute('UPDATE '.$this->tablenames['virtual_regexp'].' SET owner='.$this->db->qstr($props['mbox']).' WHERE owner='.$this->db->qstr($mboxnames['0']));
 			} else {
 				$this->ErrorHandler->add_error($this->imap->error_msg.'<br />'.txt('94'));
 			}
@@ -1181,7 +1169,7 @@ class openmailadmin
 		if($this->authenticated_user['a_super'] == 0 && isset($will_be_free['nr_alias'])) {
 			$this->db->Execute('UPDATE '.$this->tablenames['user']
 			.' SET max_alias='.($this->current_user['max_alias']+$will_be_free['nr_alias']).', max_regexp='.($this->current_user['max_regexp']+$will_be_free['nr_regexp'])
-			.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']).' LIMIT 1');
+			.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']));
 		}
 		// patenkinder (will be inherited by the one deleting)
 		$this->db->Execute('UPDATE '.$this->tablenames['user']
@@ -1202,8 +1190,7 @@ class openmailadmin
 		if(count($tobechanged) > 0) {
 			$this->db->Execute('UPDATE '.$this->tablenames['user']
 					.' SET active = NOT active'
-					.' WHERE FIND_IN_SET(mbox, '.$this->db->qstr(implode(',', $tobechanged)).')'
-					.' LIMIT '.count($tobechanged));
+					.' WHERE FIND_IN_SET(mbox, '.$this->db->qstr(implode(',', $tobechanged)).')');
 			if($this->db->Affected_Rows() < 1) {
 				if($this->db->ErrorNo() != 0) {
 					$this->ErrorHandler->add_error($this->db->ErrorMsg());
