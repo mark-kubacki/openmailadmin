@@ -474,7 +474,9 @@ class openmailadmin
 					} else {
 						$this->ErrorHandler->add_info(txt('52').'<br />'.implode(', ', $del_nm));
 						// We better deactivate all aliases containing that domain, so users can see the domain was deleted.
-						$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active = 0, neu = 1 WHERE '.db_find_in_set($this->db, 'SUBSTRING(address, LOCATE('.$this->db->qstr('@').', address)+1)', $del_nm));
+						foreach($del_nm as $domainname) {
+							$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active = 0, neu = 1 WHERE address LIKE '.$this->db->qstr('%'.$domainname));
+						}
 						// We can't do such on REGEXP addresses: They may catch more than the given domains.
 						$this->user_invalidate_domain_sets();
 						return true;
