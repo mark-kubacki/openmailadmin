@@ -221,11 +221,11 @@ class openmailadmin
 	public function get_addresses() {
 		$alias = array();
 
-		$result = $this->db->Execute('SELECT address, dest, SUBSTRING_INDEX(address, "@", 1) as alias, SUBSTRING_INDEX(address, "@", -1) as domain, active'
+		$result = $this->db->SelectLimit('SELECT address, dest, SUBSTRING_INDEX(address, "@", 1) as alias, SUBSTRING_INDEX(address, "@", -1) as domain, active'
 					.' FROM '.$this->tablenames['virtual']
 					.' WHERE owner='.$this->db->qstr($this->current_user['mbox']).$_SESSION['filter']['str']['address']
-					.' ORDER BY domain, alias, dest'
-					.$_SESSION['limit']['str']['address']);
+					.' ORDER BY domain, alias, dest',
+					$_SESSION['limit'], $_SESSION['offset']['address']);
 		if(!$result === false) {
 			while(!$result->EOF) {
 				$row	= $result->fields;
@@ -367,10 +367,9 @@ class openmailadmin
 			$query .= ' WHERE (owner='.$this->db->qstr($this->current_user['mbox']).' or a_admin LIKE '.$this->db->qstr('%'.$this->current_user['mbox'].'%').')'
 				 .$_SESSION['filter']['str']['domain'];
 		}
-		$query .= ' ORDER BY owner, length(a_admin), domain'
-			 .$_SESSION['limit']['str']['domain'];
+		$query .= ' ORDER BY owner, length(a_admin), domain';
 
-		$result = $this->db->Execute($query);
+		$result = $this->db->SelectLimit($query, $_SESSION['limit'], $_SESSION['offset']['mbox']);
 		if(!$result === false) {
 			while(!$result->EOF) {
 				$row	= $result->fields;
@@ -635,9 +634,10 @@ class openmailadmin
 	public function get_regexp($match_against = null) {
 		$regexp = array();
 
-		$result = $this->db->Execute('SELECT * FROM '.$this->tablenames['virtual_regexp']
+		$result = $this->db->SelectLimit('SELECT * FROM '.$this->tablenames['virtual_regexp']
 				.' WHERE owner='.$this->db->qstr($this->current_user['mbox']).$_SESSION['filter']['str']['regexp']
-				.' ORDER BY dest'.$_SESSION['limit']['str']['regexp']);
+				.' ORDER BY dest',
+				$_SESSION['limit'], $_SESSION['offset']['regexp']);
 		if(!$result === false) {
 			while(!$result->EOF) {
 				$row	= $result->fields;
@@ -765,14 +765,15 @@ class openmailadmin
 		} else {
 			$where_clause = ' WHERE pate='.$this->db->qstr($this->current_user['mbox']);
 		}
-		$result = $this->db->Execute('SELECT mbox, person, canonical, pate, max_alias, max_regexp, active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
+		$result = $this->db->SelectLimit('SELECT mbox, person, canonical, pate, max_alias, max_regexp, active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
 						.'(SELECT count(*) FROM '.$this->tablenames['virtual']
 						.' WHERE '.$this->tablenames['virtual'].'.owner=mbox) AS num_alias, '
 						.'(SELECT count(*) FROM '.$this->tablenames['virtual_regexp']
 						.' WHERE '.$this->tablenames['virtual_regexp'].'.owner=mbox) AS num_regexp'
 					.' FROM '.$this->tablenames['user']
 					.$where_clause.$_SESSION['filter']['str']['mbox']
-					.' ORDER BY pate, mbox'.$_SESSION['limit']['str']['mbox']);
+					.' ORDER BY pate, mbox',
+					$_SESSION['limit'], $_SESSION['offset']['mbox']);
 
 		if(!$result === false) {
 			while(!$result->EOF) {

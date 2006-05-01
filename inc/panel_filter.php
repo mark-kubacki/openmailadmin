@@ -1,51 +1,43 @@
 <?php
 // ------------------------------ Filter ----------------------------------------------------------
-// set the limiting-suffix for SQL
-if(!isset($_SESSION['limit']['upper'])) {
-	$_SESSION['limit']['upper'] = $cfg['max_elements_per_page'];
+// calculate LIMIT and OFFSET for SQL
+if(!isset($_SESSION['limit'])) {
+	$_SESSION['limit'] = $cfg['max_elements_per_page'];
 }
-if(!isset($_SESSION['limit'][$oma->current_user['mbox']]) || isset($_POST['limit'])) {
-	$_SESSION['limit'][$oma->current_user['mbox']]
-		= array('address' => 0, 'regexp' => 0, 'domain' => 0, 'mbox' => 0,
+if(!isset($_SESSION['offset']) || isset($_POST['limit'])) {
+	$_SESSION['offset']
+		= array('address' => -1, 'regexp' => -1, 'domain' => -1, 'mbox' => -1,
 			'addr_page' => 0, 'regx_page' => 0, 'dom_page' => 0, 'mbox_page' => 0);
 }
 if(isset($_POST['limit'])) {
 	if(is_numeric($_POST['limit'])) {
-		$_SESSION['limit']['upper']	= intval($_POST['limit']);
+		$_SESSION['limit']	= intval($_POST['limit']);
 	} else {
-		$_SESSION['limit']['upper']	= false; // equals 'no limit'
+		$_SESSION['limit']	= -1;
 	}
 }
 if(isset($_GET['addr_page']) && is_numeric($_GET['addr_page'])) {
-	$_SESSION['limit'][$oma->current_user['mbox']]['address'] = max(0, (intval($_GET['addr_page']) - 1) * $_SESSION['limit']['upper']);
-	$_SESSION['limit'][$oma->current_user['mbox']]['addr_page'] = intval($_GET['addr_page']);
+	$_SESSION['offset']['address'] = max(-1, (intval($_GET['addr_page']) - 1) * $_SESSION['limit']);
+	$_SESSION['offset']['addr_page'] = intval($_GET['addr_page']);
 	unset($_GET['addr_page']);
 }
 if(isset($_GET['regx_page']) && is_numeric($_GET['regx_page'])) {
-	$_SESSION['limit'][$oma->current_user['mbox']]['regexp'] = max(0, (intval($_GET['regx_page']) - 1) * $_SESSION['limit']['upper']);
-	$_SESSION['limit'][$oma->current_user['mbox']]['regx_page'] = intval($_GET['regx_page']);
+	$_SESSION['offset']['regexp'] = max(-1, (intval($_GET['regx_page']) - 1) * $_SESSION['limit']);
+	$_SESSION['offset']['regx_page'] = intval($_GET['regx_page']);
 	unset($_GET['regx_page']);
 }
 if(isset($_GET['dom_page']) && is_numeric($_GET['dom_page'])) {
-	$_SESSION['limit'][$oma->current_user['mbox']]['domain'] = max(0, (intval($_GET['dom_page']) - 1) * $_SESSION['limit']['upper']);
-	$_SESSION['limit'][$oma->current_user['mbox']]['dom_page'] = intval($_GET['dom_page']);
+	$_SESSION['offset']['domain'] = max(-1, (intval($_GET['dom_page']) - 1) * $_SESSION['limit']);
+	$_SESSION['offset']['dom_page'] = intval($_GET['dom_page']);
 	unset($_GET['dom_page']);
 }
 if(isset($_GET['mbox_page']) && is_numeric($_GET['mbox_page'])) {
-	$_SESSION['limit'][$oma->current_user['mbox']]['mbox'] = max(0, (intval($_GET['mbox_page']) - 1) * $_SESSION['limit']['upper']);
-	$_SESSION['limit'][$oma->current_user['mbox']]['mbox_page'] = intval($_GET['mbox_page']);
+	$_SESSION['offset']['mbox'] = max(-1, (intval($_GET['mbox_page']) - 1) * $_SESSION['limit']);
+	$_SESSION['offset']['mbox_page'] = intval($_GET['mbox_page']);
 	unset($_GET['mbox_page']);
 }
-if($_SESSION['limit']['upper']) {
-	$_SESSION['limit']['str']['address']= ' LIMIT '.$_SESSION['limit'][$oma->current_user['mbox']]['address'].','.$_SESSION['limit']['upper'];
-	$_SESSION['limit']['str']['regexp']	= ' LIMIT '.$_SESSION['limit'][$oma->current_user['mbox']]['regexp'].','.$_SESSION['limit']['upper'];
-	$_SESSION['limit']['str']['domain']	= ' LIMIT '.$_SESSION['limit'][$oma->current_user['mbox']]['domain'].','.$_SESSION['limit']['upper'];
-	$_SESSION['limit']['str']['mbox']	= ' LIMIT '.$_SESSION['limit'][$oma->current_user['mbox']]['mbox'].','.$_SESSION['limit']['upper'];
-} else {
-	$_SESSION['limit']['str'] = array('address' => '', 'regexp' => '', 'domain' => '', 'mbox' => '');
-}
-if(isset($_SESSION['limit']['upper']) && $_SESSION['limit']['upper']) {
-	$_POST['limit'] = $_SESSION['limit']['upper'];
+if(isset($_SESSION['limit']) && $_SESSION['limit']) {
+	$_POST['limit'] = $_SESSION['limit'];
 }
 // now on creating additional WHERE
 if(isset($_POST['filtr']) && !isset($_POST['filtr_addr'])) {
