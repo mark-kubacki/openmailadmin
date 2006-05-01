@@ -182,7 +182,7 @@ class Fake_IMAP
 	}
 
 	public function getacl($mb) {
-		$acl = $this->db->GetOne('SELECT ACL FROM '.$this->tablenames['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb).' LIMIT 1');
+		$acl = $this->db->GetOne('SELECT ACL FROM '.$this->tablenames['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb));
 		if($acl === false) {
 			return array();
 		} else {
