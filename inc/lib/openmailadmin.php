@@ -105,7 +105,7 @@ class openmailadmin
 		$pattern  = $this->regex_valid_email;
 		$pattern .= '|'.$this->current_user['mbox'].'|'.txt('5').'|'.strtolower(txt('5'));
 		if($cfg['allow_mbox_as_target']) {
-			$mailboxes = &$this->get_mailbox_names();
+			$mailboxes = $this->get_mailbox_names();
 			if(count($mailboxes) > 0) {
 				$pattern .= '|'.implode('|', $mailboxes);
 			}
