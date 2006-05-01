@@ -16,8 +16,7 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 
 	$authinfo = $db->GetRow('SELECT * FROM '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user WHERE mbox='.$db->qstr($_POST['mboxname']).' AND active=1');
 	if(!$authinfo === false) {
-		if(($authinfo['pass_md5'] == '' && passwd_check($_POST['password'], $authinfo['pass_crypt']))
-		   || passwd_check($_POST['password'], $authinfo['pass_md5'])) {
+		if(passwd_check($_POST['password'], $authinfo['pass_md5'])) {
 			$authinfo['pass_clear'] = obfuscator_encrypt($_POST['password']);
 			unset($_POST['password']);
 			$db->Execute('UPDATE LOW_PRIORITY '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login='.time().' WHERE mbox='.$db->qstr($authinfo['mbox']).' LIMIT 1');

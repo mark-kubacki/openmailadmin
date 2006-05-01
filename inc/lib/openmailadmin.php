@@ -640,14 +640,12 @@ class openmailadmin
 		}
 
 		if($plaintext_password != '') {
-			$new_crypt	= crypt($plaintext_password, substr($plaintext_password,0,2));
 			$new_md5	= md5($plaintext_password);
 		} else {
-			$new_crypt = '';
 			$new_md5 = '';
 		}
 		$this->db->Execute('UPDATE '.$cfg['tablenames']['user']
-				.' SET pass_crypt='.$this->db->qstr($new_crypt).', pass_md5='.$this->db->qstr($new_md5)
+				.' SET pass_md5='.$this->db->qstr($new_md5)
 				.' WHERE mbox='.$this->db->qstr($username).' LIMIT 1');
 		if($this->db->Affected_Rows() > 0) {
 			$this->info[]	= txt('48');
@@ -670,8 +668,7 @@ class openmailadmin
 
 		if($this->current_user['mbox'] == $this->authenticated_user['mbox']
 		   && !is_null($old_passwd)
-		   && !(passwd_check($old_passwd, $this->current_user['pass_crypt'])
-			|| passwd_check($old_passwd, $this->current_user['pass_md5']))) {
+		   && !passwd_check($old_passwd, $this->current_user['pass_md5'])) {
 			$this->error[]	= txt('45');
 		} else if($new != $new_repeat) {
 			$this->error[]	= txt('44');

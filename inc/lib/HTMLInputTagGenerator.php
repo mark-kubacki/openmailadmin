@@ -10,6 +10,7 @@ class HTMLInputTagGenerator
 	var		$arrClass	= array();
 	/** Key of this array contains tag's name and value its tag-properties. */
 	var		$arrProperties	= array();
+	var		$arrDontSetValuesFor	= array('hidden', 'password');
 
 	function HTMLInputTagGenerator() {
 		$this->arrClass['text']		= 'text';
@@ -71,7 +72,7 @@ class HTMLInputTagGenerator
 				$arrProperties['checked'] = '1';
 			$arrProperties['value'] = $value;
 		} else {
-			if($type != 'password' && isset($_POST[$name]))
+			if(!in_array($type, $this->arrDontSetValuesFor) && isset($_POST[$name]))
 				$arrProperties['value']	= $_POST[$name];
 			else if(!is_null($value))
 				$arrProperties['value']	= $value;

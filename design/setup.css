@@ -1,6 +1,10 @@
+html, body {
+	height: 100%;
+}
 body {
-	background-image: url(../images/setup/body.png);
-	background-repeat: repeat-x;
+	background-image: url(../images/setup/shadow.png);
+	background-position: top center;
+	background-repeat: repeat-y;
 	background-color: #e1d4c0;
 	font-family: Verdana, Geneva, Arial, sans-serif;
 	margin: 0;
@@ -15,17 +19,16 @@ h3 {
 	text-decoration: underline;
 }
 div.setup_outer {
-	background-image: url(../images/setup/shadow.png);
-	background-color: #f5ede3;
-	width: 820px;
+	background-image: url(../images/setup/body.png);
+	background-repeat: repeat-x;
+	width: 100%;
 	height: 100%;
 	margin-bottom: 0;
-	margin-left: auto;
-	margin-right: auto;
 }
 div.setup_head_outer {
 	background-image: url(../images/setup/head_sh.png);
-	background-color: #003366;
+	background-position: top center;
+	background-repeat: repeat-y;
 	color: #ffffff;
 	margin: 0;
 	height: 67px;
@@ -41,6 +44,7 @@ div.setup_head {
 }
 div.setup_body {
 	padding-top: 2em;
+	width: 720px;
 }
 table.settings {
 	border-collapse: collapse;

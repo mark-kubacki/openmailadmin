@@ -61,9 +61,9 @@ switch($_GET['step']) {
 			}
 			// add sample data - only if table has been created and did not exist
 			if($status['user'][1] == 2) {
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', crypt($_POST['admin_pass'], substr($_POST['admin_pass'],0,2)), md5($_POST['admin_pass']), 'all', 1, time(), time(), 10000, 100, 2, 2, 2),
-						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', crypt($_POST['imap_pass'], substr($_POST['imap_pass'],0,2)), md5($_POST['imap_pass']), 'none', 1, time(), time(), 0, 0, 0, 0, 1),
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', md5($_POST['admin_pass']), 'all', 1, time(), time(), 10000, 100, 2, 2, 2),
+						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', md5($_POST['imap_pass']), 'none', 1, time(), time(), 0, 0, 0, 0, 1),
 						));
 			}
 			if($status['domains'][1] == 2) {
@@ -101,17 +101,18 @@ switch($_GET['step']) {
 		$available_db	= array();
 		if(function_exists('mysql_connect'))	$available_db[] = array('mysql', 'mysql://user:pwd@host/mydb');
 		if(function_exists('mysqli_connect'))	$available_db[] = array('mysqli', 'mysqli://user:pwd@host/mydb');
-		if(function_exists('sqlite_open'))	$available_db[] = array('sqlite', 'sqlite://..%2Fmydb.db');
+		if(function_exists('oci_connect'))	$available_db[] = array('oci8', 'oci8://user:pwd@host/sid');
 		if(function_exists('pg_connect'))	$available_db[] = array('postgres', 'postgres://user:pwd@host/mydb');
+		if(function_exists('sqlite_open'))	$available_db[] = array('sqlite', 'sqlite://..%2Fmydb.db');
 		include('./templates/setup/step2.tpl');
 		break;
 	default:
 	case '1':
 		$expectations
 		= array('asp_tags'			=> 0,
+			'file_uploads'			=> 0,
 			'display_errors'		=> 0,
 			'log_errors'			=> 1,
-			'file_uploads'			=> 0,
 			'ignore_repeated_errors'	=> 1,
 			'ignore_repeated_source'	=> 1,
 			'safe_mode'			=> 1,
@@ -129,7 +130,7 @@ switch($_GET['step']) {
 				array('PHP version greater than 4.3.0?', version_compare(PHP_VERSION, '4.3.0', '>')),
 				array('<cite>file_get_contents</cite> exists?', function_exists('file_get_contents')),
 				array('Socket or IMAP support available?', function_exists('fsockopen') || function_exists('imap_open')),
-				array('MySQL or MySQLi, SQLite, PostgreSQL?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('sqlite_open') || function_exists('pg_connect')),
+				array('MySQL or MySQLi, SQLite, PostgreSQL, Oracle (OCI8)?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('sqlite_open') || function_exists('pg_connect') || function_exists('oci_connect')),
 				array('Is ADOdb installed?', function_exists('ADONewConnection')),
 			);
 
