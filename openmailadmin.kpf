@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Komodo Project File - DO NOT EDIT -->
-<project id="C1D5BB04-324E-4D66-8DAD-07515F34B90E" name="openmailadmin" kpf_version="2">
+<project id="C1D5BB04-324E-4D66-8DAD-07515F34B90E" name="openmailadmin.kpf" kpf_version="2">
 <preference-set id="">
   <string id="import_dirname">D:\xampp\htdocs\openmailadmin</string>
 </preference-set>
