@@ -1,5 +1,5 @@
 <?php
-//die('Remove this line if you want run setup.');
+die('Remove this line if you want run setup.');
 
 ob_start('ob_gzhandler');
 
