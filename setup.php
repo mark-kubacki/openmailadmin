@@ -109,9 +109,9 @@ switch($_GET['step']) {
 	case '1':
 		$expectations
 		= array('asp_tags'			=> 0,
+			'file_uploads'			=> 0,
 			'display_errors'		=> 0,
 			'log_errors'			=> 1,
-			'file_uploads'			=> 0,
 			'ignore_repeated_errors'	=> 1,
 			'ignore_repeated_source'	=> 1,
 			'safe_mode'			=> 1,
@@ -121,6 +121,7 @@ switch($_GET['step']) {
 		= array('magic_quotes_gpc'		=> 0,
 			'magic_quotes_runtime'		=> 0,
 			'register_globals'		=> 0,
+			'short_open_tag'		=> 1,
 			);
 
 		$checks
