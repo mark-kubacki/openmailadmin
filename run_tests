@@ -6,6 +6,14 @@ if(isset($_SERVER['SERVER_SOFTWARE'])) {
 	die('This is an executable, not suited for being served by any webserver.');
 }
 
+echo("Executing checks for raw syntax errors...\n");
+$ret = 0;
+passthru('for I in $(find -name \'*.php\') $(find -name \'*.tpl\'); do php -l $I; done | grep -v \'No syntax\'', $ret);
+if($ret == 0) {
+	echo('Syntax errors were detected. Please correct them first.');
+	die;
+}
+
 // include('./inc/_prepend.php');
 include('./inc/config.inc.php');
 	@(include('./inc/config.local.inc.php'));
