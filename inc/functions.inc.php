@@ -349,4 +349,19 @@ function count_same_cols(&$arr, $fieldname, $tagname) {
 	}
 }
 
+/**
+ * This one is missing in ADOdb.
+ *
+ * @param	needle		fieldname of table (won't be quoted!)
+ * @param	haystack	Array with elements to be found.
+ * @returns	string		to be included in query
+ */
+function db_find_in_set(ADOConnection $db, $needle, array $haystack) {
+	$quoted	= array();
+	foreach($haystack as $element) {
+		array_push($quoted, $db->qstr($element));
+	}
+	return $needle.' IN ('.implode(', ', $quoted).')';
+}
+
 ?>

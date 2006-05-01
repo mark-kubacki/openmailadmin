@@ -4,7 +4,7 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 <?php if($oma->authenticated_user['a_admin_user'] >= 1) { ?>
 	<form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
-<?= caption(txt('79'), getPageList('<a href="'.mkSelfRef(array('mbox_page' => '%d')).'">%d</a>', $oma->current_user['n_mbox'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['mbox_page']), 580) ?>
+<?= caption(txt('79'), getPageList('<a href="'.mkSelfRef(array('mbox_page' => '%d')).'">%d</a>', $oma->current_user['n_mbox'], $_SESSION['limit'], $_SESSION['offset']['mbox_page']), 580) ?>
 <?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1" width="580">
 	<tr>

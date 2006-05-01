@@ -19,7 +19,7 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 		if(passwd_check($_POST['password'], $authinfo['pass_md5'])) {
 			$authinfo['pass_clear'] = obfuscator_encrypt($_POST['password']);
 			unset($_POST['password']);
-			$db->Execute('UPDATE LOW_PRIORITY '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login='.time().' WHERE mbox='.$db->qstr($authinfo['mbox']).' LIMIT 1');
+			$db->Execute('UPDATE '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login='.time().' WHERE mbox='.$db->qstr($authinfo['mbox']));
 			session_regenerate_id();
 			$_SESSION			= $authinfo;
 			$_SESSION['server']		= $_POST['server'];

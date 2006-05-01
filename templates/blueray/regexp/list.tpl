@@ -1,7 +1,7 @@
 <form action="<?= mkSelfRef() ?>" method="post">
 <div id="data">
 <h2><?= txt('33') ?> <?= $oma->current_user['used_regexp'] ?>/<?= $oma->current_user['max_regexp'] ?></h2>
-<span class="pagelist"><?= getPageList('<a href="'.mkSelfRef(array('regx_page' => '%d')).'">%d</a>', $oma->current_user['used_regexp'], $_SESSION['limit']['upper'], $_SESSION['limit'][$oma->current_user['mbox']]['regx_page']) ?></span>
+<span class="pagelist"><?= getPageList('<a href="'.mkSelfRef(array('regx_page' => '%d')).'">%d</a>', $oma->current_user['used_regexp'], $_SESSION['limit'], $_SESSION['offset']['regx_page']) ?></span>
 <table class="data">
 	<tr>
 		<th><?= txt('18') ?></td>

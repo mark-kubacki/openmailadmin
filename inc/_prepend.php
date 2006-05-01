@@ -22,7 +22,7 @@ if(is_readable('./templates/'.$cfg['theme'].'/__aux.php')) {
 // Initialization
 	$input	= new HTMLInputTagGenerator();
 
-	if($cfg['max_elements_per_page'])
+	if(isset($cfg['max_elements_per_page']))
 		$amount_set 	= array_unique(array('10', '25', '50', '100', '--', $cfg['max_elements_per_page']));
 	else
 		$amount_set 	= array('10', '25', '50', '100', '--');
