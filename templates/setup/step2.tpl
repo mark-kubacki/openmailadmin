@@ -61,6 +61,18 @@
 		<td>... password</td>
 		<td><input type="text" name="imap_pass" value="" title="i.e. '<?= md5(time().rand()) ?>'" /></td>
 	</tr>
+	</table>
+	
+	<h3>first superuser</h3>
+	<p>This will be the first superuser.</p>
+	<p>As he won't have any special rights if connected through IMAP oder POP,
+	you can enter the data for your first mailbox without worrying much.
+	Just make sure you have created that account manually befor logging in.</p>
+	<table class="settings three">
+	<tr>
+		<th class="w140">field</th>
+		<th>value</th>
+	</tr>
 	<tr>
 		<td>mailbox of superuser</td>
 		<td><input type="text" name="admin_user" id="au" value="" title="i.e. 'admin'" onchange="if(document.getElementById('iu').value == document.getElementById('au').value) { alert('Both usernames must differ!');document.getElementById('iu').className=document.getElementById('au').className='bad'; } else { document.getElementById('iu').className=document.getElementById('au').className=''; }" /></td>

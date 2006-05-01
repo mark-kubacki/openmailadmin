@@ -40,6 +40,7 @@
 			<p>Congratulations! After that you can log in as superuser with:
 			<cite><?= $_POST['admin_user'] ?></cite>:<cite><?= htmlspecialchars($_POST['admin_pass']) ?></cite>
 			</p>
+			<div class="next_step"><a href="index.php" title="go to OMA">go ahead and log in</a></div>
 		<?php } ?>
 	<?php } ?>
 </div>
