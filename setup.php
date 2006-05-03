@@ -1,5 +1,7 @@
 <?php
-//die('Remove this line if you want run setup.');
+if(is_file('./inc/config.local.inc.php')) {
+	die('A configuration file does already exist. Please proceed to <a href="index.php">login screen</a>.');
+}
 
 ob_start('ob_gzhandler');
 
