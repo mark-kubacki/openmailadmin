@@ -101,7 +101,7 @@ switch($_GET['step']) {
 		$available_db	= array();
 		if(function_exists('mysql_connect'))	$available_db[] = array('mysql', 'mysql://user:pwd@host/mydb');
 		if(function_exists('mysqli_connect'))	$available_db[] = array('mysqli', 'mysqli://user:pwd@host/mydb');
-		if(function_exists('oci_connect'))	$available_db[] = array('oci8', 'oci8://user:pwd@host/sid');
+		if(function_exists('ocilogon'))	$available_db[] = array('oci8', 'oci8://user:pwd@host/sid');
 		if(function_exists('pg_connect'))	$available_db[] = array('postgres', 'postgres://user:pwd@host/mydb');
 		if(function_exists('sqlite_open'))	$available_db[] = array('sqlite', 'sqlite://..%2Fmydb.db');
 		include('./templates/setup/step2.tpl');
@@ -130,7 +130,7 @@ switch($_GET['step']) {
 				array('PHP version greater than 4.3.0?', version_compare(PHP_VERSION, '4.3.0', '>')),
 				array('<cite>file_get_contents</cite> exists?', function_exists('file_get_contents')),
 				array('Socket or IMAP support available?', function_exists('fsockopen') || function_exists('imap_open')),
-				array('MySQL or MySQLi, SQLite, PostgreSQL, Oracle (OCI8)?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('sqlite_open') || function_exists('pg_connect') || function_exists('oci_connect')),
+				array('MySQL or MySQLi, SQLite, PostgreSQL, Oracle (OCI8)?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('sqlite_open') || function_exists('pg_connect') || function_exists('ocilogon')),
 				array('Is ADOdb installed?', function_exists('ADONewConnection')),
 			);
 
