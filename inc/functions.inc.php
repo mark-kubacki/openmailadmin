@@ -356,7 +356,7 @@ function count_same_cols(&$arr, $fieldname, $tagname) {
  * @param	haystack	Array with elements to be found.
  * @returns	string		to be included in query
  */
-function db_find_in_set(ADOConnection $db, $needle, array $haystack) {
+function db_find_in_set($db, $needle, $haystack) {
 	$quoted	= array();
 	foreach($haystack as $element) {
 		array_push($quoted, $db->qstr($element));
