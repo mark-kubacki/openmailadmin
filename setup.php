@@ -63,6 +63,9 @@ switch($_GET['step']) {
 			}
 			// add sample data - only if table has been created and did not exist
 			if($status['user'][1] == 2) {
+				if($_POST['imap_user'] == '') {
+					$_POST['imap_user'] = '---';
+				}
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
 					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', md5($_POST['admin_pass']), 'all', 1, time(), time(), 10000, 100, 2, 2, 2),
 						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', md5($_POST['imap_pass']), 'none', 1, time(), time(), 0, 0, 0, 0, 1),
