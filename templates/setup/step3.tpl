@@ -26,7 +26,8 @@
 		</tr>
 		<?php } ?>
 		</table>
-		<?php if($_POST['admin_user'] == '' || $_POST['imap_user'] == '') { ?>
+		<?php if($_POST['admin_user'] == ''
+			|| ($_POST['imap_type'] != 'fake-imap' && ($_POST['imap_user'] == '')) ) { ?>
 		<p>You didn't provide all necessary data. Please hit 'back' on your browser.</p>
 		<?php } else { ?>
 			<h3>configuration file</h3>

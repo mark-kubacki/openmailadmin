@@ -1,5 +1,7 @@
 <?php
-die('Remove this line if you want run setup.');
+if(is_file('./inc/config.local.inc.php')) {
+	die('A configuration file does already exist. Please proceed to <a href="index.php">login screen</a>.');
+}
 
 ob_start('ob_gzhandler');
 
@@ -61,6 +63,9 @@ switch($_GET['step']) {
 			}
 			// add sample data - only if table has been created and did not exist
 			if($status['user'][1] == 2) {
+				if($_POST['imap_user'] == '') {
+					$_POST['imap_user'] = '---';
+				}
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
 					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', md5($_POST['admin_pass']), 'all', 1, time(), time(), 10000, 100, 2, 2, 2),
 						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', md5($_POST['imap_pass']), 'none', 1, time(), time(), 0, 0, 0, 0, 1),
@@ -88,7 +93,10 @@ switch($_GET['step']) {
 							array('shared', 0, 0, 'anyone lrswipcda'),
 							));
 			}
-			$config = sprintf($config, '0.9.3', date('r'), $_POST['imap_user'], 'my database', $_POST['dsn'], $_POST['prefix'], $_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
+			$config = sprintf($config, '0.9.3', date('r'),
+				$_POST['imap_user'] != '' ? $_POST['imap_user'] : '---',
+				'my database', $_POST['dsn'], $_POST['prefix'],
+				$_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
 			if(!file_exists('./inc/config.local.inc.php')) {
 				$written = strlen($config) == @file_put_contents('./inc/config.local.inc.php', $config);
 			} else {

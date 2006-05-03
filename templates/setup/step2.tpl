@@ -43,21 +43,24 @@
 	</tr>
 	<tr>
 		<td>type</td>
-		<td><select name="imap_type"><option value="cyrus">Cyrus imapd</option><option value="fake-imap">demo - database backend</option></select></td>
+		<td><select name="imap_type" onchange="var state=this.value=='fake-imap'?'none':''; document.getElementById('ih').style.display=document.getElementById('ip').style.display=document.getElementById('iau').style.display=document.getElementById('iap').style.display=state;">
+			<option value="cyrus">Cyrus imapd</option>
+			<option value="fake-imap">demo - database backend</option>
+			</select></td>
 	</tr>
-	<tr>
+	<tr id="ih">
 		<td>host</td>
 		<td><input type="text" name="imap_host" name="imap_host" value="" title="127.0.0.1" /></td>
 	</tr>
-	<tr>
+	<tr id="ip">
 		<td>port</td>
 		<td><input type="text" name="imap_port" value="" title="143" /></td>
 	</tr>
-	<tr>
+	<tr id="iau">
 		<td>imap admin</td>
 		<td><input type="text" name="imap_user" id="iu" value="" title="i.e. 'cyrus'" onchange="if(document.getElementById('iu').value == document.getElementById('au').value) { alert('Both usernames must differ!');document.getElementById('iu').className=document.getElementById('au').className='bad'; } else { document.getElementById('iu').className=document.getElementById('au').className=''; }" /></td>
 	</tr>
-	<tr>
+	<tr id="iap">
 		<td>... password</td>
 		<td><input type="text" name="imap_pass" value="" title="i.e. '<?= md5(time().rand()) ?>'" /></td>
 	</tr>
