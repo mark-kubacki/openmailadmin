@@ -778,8 +778,8 @@ class openmailadmin
 						.'COUNT(DISTINCT virt.address) AS num_alias, '
 						.'COUNT(DISTINCT rexp.ID) AS num_regexp '
 					.'FROM '.$this->tablenames['user'].' usr '
-						.'LEFT OUTER JOIN oma5_virtual virt ON (mbox=virt.owner) '
-						.'LEFT OUTER JOIN oma5_virtual_regexp rexp ON (mbox=rexp.owner) '
+						.'LEFT OUTER JOIN '.$this->tablenames['virtual'].' virt ON (mbox=virt.owner) '
+						.'LEFT OUTER JOIN '.$this->tablenames['virtual_regexp'].' rexp ON (mbox=rexp.owner) '
 					.$where_clause.$_SESSION['filter']['str']['mbox']
 					.' GROUP BY mbox, person, canonical, pate,  max_alias, max_regexp, usr.active, last_login, a_super, a_admin_domains, a_admin_user '
 					.'ORDER BY pate, mbox',
