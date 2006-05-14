@@ -216,15 +216,15 @@ class openmailadmin
 
 /* ******************************* addresses ******************************** */
 	/*
-	 * Returns a long list with all addresses (the virtual table).
+	 * Returns a long list with all addresses (the virtuals' table).
 	 */
 	public function get_addresses() {
 		$alias = array();
 
-		$result = $this->db->SelectLimit('SELECT address, dest, SUBSTRING_INDEX(address, "@", 1) as alias, SUBSTRING_INDEX(address, "@", -1) as domain, active'
+		$result = $this->db->SelectLimit('SELECT address, dest, active'
 					.' FROM '.$this->tablenames['virtual']
 					.' WHERE owner='.$this->db->qstr($this->current_user['mbox']).$_SESSION['filter']['str']['address']
-					.' ORDER BY domain, alias, dest',
+					.' ORDER BY address, dest',
 					$_SESSION['limit'], $_SESSION['offset']['address']);
 		if(!$result === false) {
 			while(!$result->EOF) {
@@ -241,13 +241,19 @@ class openmailadmin
 				}
 				sort($dest);
 				$row['dest'] = $dest;
+				// detect where the "@" is
+				$at = strpos($row['address'], '@');
 				//turn the alias of catchalls to a star
-				if($row['address']{0} == '@')
+				if($at == 0)
 					$row['alias'] = '*';
+				else
+					$row['alias'] = substr($row['address'], 0, $at);
+				$row['domain'] = substr($row['address'], $at+1);
 				// add the current entry to our list of aliases
 				$alias[] = $row;
 				$result->MoveNext();
 			}
+			usort($alias, create_function('$a, $b', 'return ($a["domain"] == $b["domain"] ? strcmp($a["alias"], $b["alias"]) : strcmp($a["domain"], $b["domain"]));'));
 		}
 		return $alias;
 	}
