@@ -773,14 +773,16 @@ class openmailadmin
 		} else {
 			$where_clause = ' WHERE pate='.$this->db->qstr($this->current_user['mbox']);
 		}
-		$result = $this->db->SelectLimit('SELECT mbox, person, canonical, pate, max_alias, max_regexp, active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
-						.'(SELECT count(*) FROM '.$this->tablenames['virtual']
-						.' WHERE '.$this->tablenames['virtual'].'.owner=mbox) AS num_alias, '
-						.'(SELECT count(*) FROM '.$this->tablenames['virtual_regexp']
-						.' WHERE '.$this->tablenames['virtual_regexp'].'.owner=mbox) AS num_regexp'
-					.' FROM '.$this->tablenames['user']
+
+		$result = $this->db->SelectLimit('SELECT mbox, person, canonical, pate, max_alias, max_regexp, usr.active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
+						.'COUNT(DISTINCT virt.address) AS num_alias, '
+						.'COUNT(DISTINCT rexp.ID) AS num_regexp '
+					.'FROM '.$this->tablenames['user'].' usr '
+						.'LEFT OUTER JOIN oma5_virtual virt ON (mbox=virt.owner) '
+						.'LEFT OUTER JOIN oma5_virtual_regexp rexp ON (mbox=rexp.owner) '
 					.$where_clause.$_SESSION['filter']['str']['mbox']
-					.' ORDER BY pate, mbox',
+					.' GROUP BY mbox, person, canonical, pate,  max_alias, max_regexp, usr.active, last_login, a_super, a_admin_domains, a_admin_user '
+					.'ORDER BY pate, mbox',
 					$_SESSION['limit'], $_SESSION['offset']['mbox']);
 
 		if(!$result === false) {
