@@ -1,6 +1,6 @@
 <div id="header">
 	<div id="header_img"><img src="<?= $cfg['images_dir'] ?>/blueray/logo_img.png" alt="Openmailadmin logo - the ray" /></div>
-	<h1>Openmailadmin.org</h1>
+	<h1>Openmailadmin</h1>
 	<div id="header_info">
 		<?= txt('6') ?> <a href="<?= mkSelfRef(array('cuser' => $oma->authenticated_user['mbox'])) ?>" title="<?= txt('6') ?>"><?= $oma->authenticated_user['person'] ?></a> | <a href="index.php?login=change" title="<?= txt('124') ?>"><?= txt('124') ?></a>
 	</div>
