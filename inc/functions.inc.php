@@ -13,13 +13,6 @@ function hsys_ob_end($remove_whitespace) {
 }
 
 /*
- * Valid password?
- */
-function passwd_check($input, $hash) {
-	return (md5($input) == $hash);
-}
-
-/*
  * Returns true if given string is in set.
  */
 function find_in_set($str, $strlist) {

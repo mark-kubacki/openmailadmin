@@ -13,27 +13,22 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 	$db	= ADONewConnection($cfg['Servers']['DB'][$_POST['server']]['DSN'])
 		or die('Cannot connect to MySQL Server.');
 	$db->SetFetchMode(ADODB_FETCH_ASSOC);
-
-	$authinfo = $db->GetRow('SELECT * FROM '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user WHERE mbox='.$db->qstr($_POST['mboxname']).' AND active=1');
-	if(!$authinfo === false) {
-		if(passwd_check($_POST['password'], $authinfo['pass_md5'])) {
-			$authinfo['pass_clear'] = obfuscator_encrypt($_POST['password']);
-			unset($_POST['password']);
-			$db->Execute('UPDATE '.$cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user SET last_login='.time().' WHERE mbox='.$db->qstr($authinfo['mbox']));
-			session_regenerate_id();
-			$_SESSION			= $authinfo;
-			$_SESSION['server']		= $_POST['server'];
-			$_SESSION['REMOTE_ADDR']	= $_SERVER['REMOTE_ADDR'];
-		} else {
-			unset($authinfo);
-			$login_error = txt('0');
-		}
-	} else {
-		unset($authinfo);
-		$login_error = txt('0');
+	
+	User::$db		= $db;
+	User::$tablenames	= array('user' => $cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user');
+	
+	try {
+		$authinfo = User::authenticate($_POST['mboxname'], $_POST['password']);
+		unset($_POST['password']);
+		session_regenerate_id();
+		$_SESSION['authinfo']		= $authinfo;
+		$_SESSION['server']		= $_POST['server'];
+		$_SESSION['REMOTE_ADDR']	= $_SERVER['REMOTE_ADDR'];
+	} catch (Exception $e) {
+		$login_error = $e->getMessage();
 	}
 } else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER['REMOTE_ADDR']) {
-	$authinfo	= $_SESSION;
+	$authinfo	= $_SESSION['authinfo'];
 	$db	= ADONewConnection($cfg['Servers']['DB'][$_SESSION['server']]['DSN'])
 		or die('Cannot connect to MySQL Server.');
 	$db->SetFetchMode(ADODB_FETCH_ASSOC);

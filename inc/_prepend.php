@@ -43,7 +43,7 @@ $cfg['tablenames']
 		'virtual_regexp'=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'virtual_regexp',
 		'imap_demo'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'imap_demo'
 		);
-$now_on = isset($_GET['cuser']) ? $_GET['cuser'] : $authinfo['mbox'];
+$now_on = isset($_GET['cuser']) ? $_GET['cuser'] : $authinfo->mbox;
 
 // IMAP
 switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
@@ -57,66 +57,62 @@ switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
 
 // include the backend
 $oma	= new openmailadmin($db, $cfg['tablenames'], $cfg, $imap);
-$oma->authenticated_user	= &$authinfo;
-$oma->current_user		= &$cuser;
-$ErrorHandler	= ErrorHandler::getInstance();
+$oma->authenticated_user	= $authinfo;
 unset($authinfo);
-unset($cuser);
+$ErrorHandler	= ErrorHandler::getInstance();
 
 // Query for the current user...
-$result = $db->GetRow('SELECT * FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$db->qstr($now_on));
-if(!$result === false) {
-	$oma->current_user = $result;
-	if(!($oma->authenticated_user['a_super'] >= 1
-	   || $oma->current_user['mbox'] == $oma->authenticated_user['mbox']
-	   || $oma->current_user['pate'] == $oma->authenticated_user['mbox']
-	   || $oma->user_is_descendant($oma->current_user['mbox'], $oma->authenticated_user['mbox']))) {
-		error(txt('2'));
-		include('./templates/'.$cfg['theme'].'/common-footer_nv.tpl');
-		exit();
+try {
+	$oma->current_user	= new User($now_on);
+	if(!($oma->authenticated_user->is_superuser()
+	   || $oma->current_user->mbox == $oma->authenticated_user->mbox
+	   || $oma->current_user->pate == $oma->authenticated_user->mbox
+	   || $oma->user_is_descendant($oma->current_user->mbox, $oma->authenticated_user->mbox))) {
+		throw new Exception(txt(2));
 	}
-} else {
-	error(txt('2'));
+} catch (Exception $e) {
+	error($e->getMessage());
+	include('./templates/'.$cfg['theme'].'/common-footer_nv.tpl');
 	exit();
 }
 
 // ... and his paten.
-if($oma->current_user['mbox'] == $oma->current_user['pate']) {
-	$cpate = array('person' => txt('29'), 'mbox' => $oma->current_user['mbox']);
+if($oma->current_user->mbox == $oma->current_user->pate) {
+	$cpate = array('person' => txt('29'), 'mbox' => $oma->current_user->mbox);
 } else {
-	$cpate = $db->GetRow('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$db->qstr($oma->current_user['pate']));
+	$cpate = $db->GetRow('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$db->qstr($oma->current_user->pate));
 	if($cpate === false) {
-		$cpate	= array('person' => txt('28'), 'mbox' => $oma->current_user['mbox']);
+		$cpate	= array('person' => txt('28'), 'mbox' => $oma->current_user->mbox);
 	}
 }
 
 // Display navigation menu.
 $arr_navmenu = array();
-	$arr_navmenu[]	= array('link'		=> 'index.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+	$arr_navmenu[]	= array('link'		=> 'index.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
 					'caption'	=> txt('1'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'index.php'));
-if($oma->current_user['max_alias'] > 0 || $oma->authenticated_user['a_super'] >= 1 || $oma->user_get_used_alias($oma->current_user['mbox'])) {
-	$arr_navmenu[]	= array('link'		=> 'addresses.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+if($oma->current_user->max_alias > 0 || $oma->authenticated_user->a_super >= 1 || $oma->user_get_used_alias($oma->current_user->mbox)) {
+	$arr_navmenu[]	= array('link'		=> 'addresses.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
 					'caption'	=> txt('17'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'addresses.php'));
 }
-if($oma->current_user['mbox'] == $oma->authenticated_user['mbox']) {
-	$arr_navmenu[]	= array('link'		=> 'folders.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+if($oma->current_user->mbox == $oma->authenticated_user->mbox) {
+	$arr_navmenu[]	= array('link'		=> 'folders.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
 					'caption'	=> txt('103'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'folders.php'));
 }
-if($oma->current_user['max_regexp'] > 0 || $oma->authenticated_user['a_super'] >= 1 || $oma->user_get_used_regexp($oma->current_user['mbox'])) {
-	$arr_navmenu[]	= array('link'		=> 'regexp.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+if($oma->current_user->max_regexp > 0 || $oma->authenticated_user->a_super >= 1 || $oma->user_get_used_regexp($oma->current_user->mbox)) {
+	$arr_navmenu[]	= array('link'		=> 'regexp.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
 					'caption'	=> txt('33'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'regexp.php'));
 }
-if($oma->authenticated_user['a_admin_domains'] >= 1 || $oma->user_get_number_domains($oma->current_user['mbox']) > 0) {
-	$arr_navmenu[]	= array('link'		=> 'domains.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+if($oma->authenticated_user->a_admin_domains >= 1 || $oma->user_get_number_domains($oma->current_user->mbox) > 0) {
+	$arr_navmenu[]	= array('link'		=> 'domains.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
 					'caption'	=> txt('54'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'domains.php'));
 }
-if($oma->authenticated_user['a_admin_user'] >= 1 || $oma->user_get_number_mailboxes($oma->current_user['mbox']) > 0) {
-	$arr_navmenu[]	= array('link'		=> 'mailboxes.php'.($oma->current_user['mbox'] != $oma->authenticated_user['mbox'] ? '?cuser='.$oma->current_user['mbox'] : ''),
+if($oma->authenticated_user->a_admin_user >= 1 || $oma->user_get_number_mailboxes($oma->current_user->mbox) > 0) {
+	$arr_navmenu[]	= array('link'		=> 'mailboxes.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
 					'caption'	=> txt('79'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php'));
 }
