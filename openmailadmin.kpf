@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Komodo Project File - DO NOT EDIT -->
-<project id="C1D5BB04-324E-4D66-8DAD-07515F34B90E" name="openmailadmin.kpf" kpf_version="2">
+<project id="C1D5BB04-324E-4D66-8DAD-07515F34B90E" name="openmailadmin" kpf_version="2">
 <preference-set id="">
   <string id="import_dirname">D:\xampp\htdocs\openmailadmin</string>
 </preference-set>
@@ -210,67 +210,6 @@
 </file>
 <file url="templates/shadow/__aux.php" id="109CA985E37L38df2e210x2926" name="__aux.php">
 </file>
-</folder>
-<folder id="FAA95CBC-1688-4AA3-ADE9-EC9B78E90AEE" name="blueray">
-<preference-set id="">
-  <string id="import_dirname">D:\SD\openMailAdmin\templates\blueray</string>
-</preference-set>
-<file url="templates/blueray/common-footer.tpl" id="DC07F314-C1AC-4B1D-B519-82AF12343B66" name="common-footer.tpl">
-</file>
-<file url="templates/blueray/common-footer_nv.tpl" id="A2B831BB-E8F4-4D2B-B02E-9D09A6533336" name="common-footer_nv.tpl">
-</file>
-<file url="templates/blueray/common-header.tpl" id="397EEDB4-7A83-4104-B982-6CC2A97BF72A" name="common-header.tpl">
-</file>
-<file url="templates/blueray/error_box.tpl" id="B7663E62-BDC1-4B12-96CC-8D80481CC198" name="error_box.tpl">
-</file>
-<file url="templates/blueray/filter_panel.tpl" id="1B54BF26-30F8-4DC3-B524-1BBE4D5CD028" name="filter_panel.tpl">
-</file>
-<file url="templates/blueray/information.tpl" id="1EC01DA5-CB43-45F0-A178-B2D964702A67" name="information.tpl">
-</file>
-<file url="templates/blueray/info_box.tpl" id="CCD7E52A-8A6B-4094-B8E2-0FB75855E746" name="info_box.tpl">
-</file>
-<file url="templates/blueray/login.tpl" id="A3CB2486-DB5B-4A1C-ACBB-F7B7E11A687D" name="login.tpl">
-</file>
-<file url="templates/blueray/motd.tpl" id="3DD88013-27BD-428F-A791-EE444C1516B0" name="motd.tpl">
-</file>
-<file url="templates/blueray/password.tpl" id="854368DD-3786-4D7A-9B5C-250271AAF833" name="password.tpl">
-</file>
-<folder url="templates/blueray/addresses" id="03949908-C126-4809-A876-A529550FDF47" name="addresses">
-<file url="templates/blueray/addresses/admin.tpl" id="01C9E416-D89D-43FC-9557-D4AE65BDE410" name="admin.tpl">
-</file>
-<file url="templates/blueray/addresses/list.tpl" id="1F2595D2-51F5-4899-BFBB-57AF67D577AD" name="list.tpl">
-</file>
-</folder>
-<folder url="templates/blueray/domains" id="5F25E834-CC22-4F70-B132-4FF044983D3C" name="domains">
-<file url="templates/blueray/domains/admin.tpl" id="6A02900C-FB96-493D-A052-864A100F4FC4" name="admin.tpl">
-</file>
-<file url="templates/blueray/domains/list.tpl" id="29AF0CC7-A49A-42AB-9C55-DC193AA40789" name="list.tpl">
-</file>
-</folder>
-<folder url="templates/blueray/folders" id="BAC80B1E-3E86-4F23-88F5-3E6C299BB5B6" name="folders">
-<file url="templates/blueray/folders/admin.tpl" id="7754164C-BCFA-47EE-8201-FED725E6F905" name="admin.tpl">
-</file>
-<file url="templates/blueray/folders/list.tpl" id="FE25B52B-A8D2-4EDA-AECB-83F405963FF4" name="list.tpl">
-</file>
-<file url="templates/blueray/folders/acl_matrix.tpl" id="107AE5AA40FL19d499e00x275d" name="acl_matrix.tpl">
-</file>
-</folder>
-<folder url="templates/blueray/mailboxes" id="9F5CBE6A-1487-4788-BFD0-2C1E4282EEB9" name="mailboxes">
-<file url="templates/blueray/mailboxes/admin.tpl" id="925EF3D3-3783-4C73-BB80-7108D51B91D2" name="admin.tpl">
-</file>
-<file url="templates/blueray/mailboxes/list.tpl" id="D707E154-EE05-464B-8794-9413814A5FD3" name="list.tpl">
-</file>
-</folder>
-<folder url="templates/blueray/navigation" id="565D7E52-00E5-4D2D-88FA-E3D70A39229F" name="navigation">
-<file url="templates/blueray/navigation/navigation.tpl" id="91CC8867-A0A6-44C8-9DC4-6A3A267A8B6C" name="navigation.tpl">
-</file>
-</folder>
-<folder url="templates/blueray/regexp" id="E5C9B82D-7BA4-429A-87A0-EC16E263CCA9" name="regexp">
-<file url="templates/blueray/regexp/admin.tpl" id="1440FC27-993F-48A4-A4D5-C6A362C6C582" name="admin.tpl">
-</file>
-<file url="templates/blueray/regexp/list.tpl" id="DDFE83BE-3305-4DDF-B0D3-85E2A3AB4A7B" name="list.tpl">
-</file>
-</folder>
 </folder>
 <folder id="10890BA9C93L2e53f7580x276a" name="setup">
 <file url="templates/setup/footer.tpl" id="10890BC2B13L4e50bc640x276a" name="footer.tpl">
