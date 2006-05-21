@@ -72,7 +72,7 @@ class openmailadmin
 	public function get_valid_destinations($possible) {
 		// Define what addresses we will accept.
 		$pattern  = openmailadmin::regex_valid_email;
-		$pattern .= '|'.$this->current_user['mbox'].'|'.txt('5').'|'.strtolower(txt('5'));
+		$pattern .= '|'.$this->current_user->mbox.'|'.txt('5').'|'.strtolower(txt('5'));
 		if($this->cfg['allow_mbox_as_target']) {
 			$mailboxes = &$this->get_mailbox_names();
 			if(count($mailboxes) > 0) {
@@ -88,7 +88,7 @@ class openmailadmin
 				// Replace every occurence of 'mailbox' with the correct name.
 				array_walk($matched[0],
 					create_function('&$item,$index',
-							'if(strtolower($item) == \''.strtolower(txt('5')).'\') $item = \''.$this->current_user['mbox'].'\';'
+							'if(strtolower($item) == \''.strtolower(txt('5')).'\') $item = \''.$this->current_user->mbox.'\';'
 							));
 				return $matched[0];
 			}
@@ -223,7 +223,7 @@ class openmailadmin
 
 		$result = $this->db->SelectLimit('SELECT address, dest, active'
 					.' FROM '.$this->tablenames['virtual']
-					.' WHERE owner='.$this->db->qstr($this->current_user['mbox']).$_SESSION['filter']['str']['address']
+					.' WHERE owner='.$this->db->qstr($this->current_user->mbox).$_SESSION['filter']['str']['address']
 					.' ORDER BY address, dest',
 					$_SESSION['limit'], $_SESSION['offset']['address']);
 		if(!$result === false) {
@@ -234,7 +234,7 @@ class openmailadmin
 				foreach(explode(',', $row['dest']) as $value) {
 					$value = trim($value);
 					// replace the current user's name with "mailbox"
-					if($value == $this->current_user['mbox'])
+					if($value == $this->current_user->mbox)
 						$dest[] = txt('5');
 					else
 						$dest[] = $value;
@@ -263,8 +263,8 @@ class openmailadmin
 	 */
 	public function address_create($alias, $domain, $arr_destinations) {
 		// May the user create another address?
-		if($this->current_user['used_alias'] < $this->current_user['max_alias']
-		   || $this->authenticated_user['a_super'] >= 1) {
+		if($this->current_user->used_alias < $this->current_user->max_alias
+		   || $this->authenticated_user->a_super >= 1) {
 			// If he did choose a catchall, may he create such an address?
 			if($alias == '*' && $this->cfg['address']['allow_catchall']) {
 				if($this->cfg['address']['restrict_catchall']) {
@@ -272,7 +272,7 @@ class openmailadmin
 					// owner of that given domain, we can permit creation of that catchall.
 					$result = $this->db->GetOne('SELECT domain FROM '.$this->tablenames['domains']
 								.' WHERE domain='.$this->db->qstr($domain)
-								.' AND (owner='.$this->db->qstr($this->current_user['mbox']).' OR owner='.$this->db->qstr($this->authenticated_user['mbox']).')');
+								.' AND (owner='.$this->db->qstr($this->current_user->mbox).' OR owner='.$this->db->qstr($this->authenticated_user->mbox).')');
 					if($result === false) {			// negative check!
 						$this->ErrorHandler->add_error(txt('16'));
 						return false;
@@ -289,11 +289,11 @@ class openmailadmin
 
 			// Finally, create that address.
 			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
-						array(strtolower($alias.'@'.$domain), implode(',', $arr_destinations), $this->current_user['mbox']));
+						array(strtolower($alias.'@'.$domain), implode(',', $arr_destinations), $this->current_user->mbox));
 			if($this->db->Affected_Rows() < 1) {
 				$this->ErrorHandler->add_error(txt('133'));
 			} else {
-				$this->current_user['used_alias']++;
+				$this->current_user->used_alias++;
 				return true;
 			}
 		} else {
@@ -307,7 +307,7 @@ class openmailadmin
 	 */
 	public function address_delete($arr_addresses) {
 		$this->db->Execute('DELETE FROM '.$this->tablenames['virtual']
-				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
+				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
 				.' AND '.db_find_in_set($this->db, 'address', $arr_addresses));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
@@ -315,7 +315,7 @@ class openmailadmin
 			}
 		} else {
 			$this->ErrorHandler->add_info(sprintf(txt('15'), implode(',', $arr_addresses)));
-			$this->current_user['used_alias'] -= $this->db->Affected_Rows();
+			$this->current_user->used_alias -= $this->db->Affected_Rows();
 			return true;
 		}
 
@@ -326,7 +326,7 @@ class openmailadmin
 	 */
 	public function address_change_destination($arr_addresses, $arr_destinations) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET dest='.$this->db->qstr(implode(',', $arr_destinations)).', neu=1'
-				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
+				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
 				.' AND '.db_find_in_set($this->db, 'address', $arr_addresses));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
@@ -344,7 +344,7 @@ class openmailadmin
 	 */
 	public function address_toggle_active($arr_addresses) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active=NOT active, neu=1'
-				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
+				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
 				.' AND '.db_find_in_set($this->db, 'address', $arr_addresses));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
@@ -367,10 +367,10 @@ class openmailadmin
 		$domains = array();
 
 		$query  = 'SELECT * FROM '.$this->tablenames['domains'];
-		if($this->authenticated_user['a_super'] > 0) {
+		if($this->authenticated_user->a_super > 0) {
 			$query .= ' WHERE 1=1 '.$_SESSION['filter']['str']['domain'];
 		} else {
-			$query .= ' WHERE (owner='.$this->db->qstr($this->current_user['mbox']).' or a_admin LIKE '.$this->db->qstr('%'.$this->current_user['mbox'].'%').')'
+			$query .= ' WHERE (owner='.$this->db->qstr($this->current_user->mbox).' or a_admin LIKE '.$this->db->qstr('%'.$this->current_user->mbox.'%').')'
 				 .$_SESSION['filter']['str']['domain'];
 		}
 		$query .= ' ORDER BY owner, length(a_admin), domain';
@@ -379,8 +379,8 @@ class openmailadmin
 		if(!$result === false) {
 			while(!$result->EOF) {
 				$row	= $result->fields;
-				if($row['owner'] == $this->authenticated_user['mbox']
-				   || find_in_set($this->authenticated_user['mbox'], $row['a_admin'])) {
+				if($row['owner'] == $this->authenticated_user->mbox
+				   || find_in_set($this->authenticated_user->mbox, $row['a_admin'])) {
 					$row['selectable']	= true;
 					++$this->editable_domains;
 				} else {
@@ -391,7 +391,7 @@ class openmailadmin
 			}
 		}
 
-		$this->current_user['n_domains'] = $this->user_get_number_domains($this->current_user['mbox']);
+		$this->current_user->n_domains = $this->user_get_number_domains($this->current_user->mbox);
 
 		return $domains;
 	}
@@ -433,8 +433,8 @@ class openmailadmin
 
 		if(!stristr($props['categories'], 'all'))
 			$props['categories'] = 'all,'.$props['categories'];
-		if(!stristr($props['a_admin'], $this->current_user['mbox']))
-			$props['a_admin'] .= ','.$this->current_user['mbox'];
+		if(!stristr($props['a_admin'], $this->current_user->mbox))
+			$props['a_admin'] .= ','.$this->current_user->mbox;
 
 		$this->db->Execute('INSERT INTO '.$this->tablenames['domains'].' (domain, categories, owner, a_admin) VALUES (?, ?, ?, ?)',
 				array($domain, $props['categories'], $props['owner'], $props['a_admin']));
@@ -457,12 +457,12 @@ class openmailadmin
 			if($this->cfg['admins_delete_domains']) {
 				$result = $this->db->SelectLimit('SELECT ID, domain'
 					.' FROM '.$this->tablenames['domains']
-					.' WHERE (owner='.$this->db->qstr($this->authenticated_user['mbox']).' OR a_admin LIKE '.$this->db->qstr('%'.$this->authenticated_user['mbox'].'%').') AND '.db_find_in_set($this->db, 'ID', $domains),
+					.' WHERE (owner='.$this->db->qstr($this->authenticated_user->mbox).' OR a_admin LIKE '.$this->db->qstr('%'.$this->authenticated_user->mbox.'%').') AND '.db_find_in_set($this->db, 'ID', $domains),
 					count($domains));
 			} else {
 				$result = $this->db->SelectLimit('SELECT ID, domain'
 					.' FROM '.$this->tablenames['domains']
-					.' WHERE owner='.$this->db->qstr($this->authenticated_user['mbox']).' AND '.db_find_in_set($this->db, 'ID', $domains),
+					.' WHERE owner='.$this->db->qstr($this->authenticated_user->mbox).' AND '.db_find_in_set($this->db, 'ID', $domains),
 					count($domains));
 			}
 			if(!$result === false) {
@@ -522,7 +522,7 @@ class openmailadmin
 		if(count($toc) > 0) {
 			$this->db->Execute('UPDATE '.$this->tablenames['domains']
 				.' SET '.implode(',', $toc)
-				.' WHERE (owner='.$this->db->qstr($this->authenticated_user['mbox']).' or a_admin LIKE '.$this->db->qstr('%'.$this->authenticated_user['mbox'].'%').') AND '.db_find_in_set($this->db, 'ID', $domains));
+				.' WHERE (owner='.$this->db->qstr($this->authenticated_user->mbox).' or a_admin LIKE '.$this->db->qstr('%'.$this->authenticated_user->mbox.'%').') AND '.db_find_in_set($this->db, 'ID', $domains));
 			if($this->db->Affected_Rows() < 1) {
 				if($this->db->ErrorNo() != 0) {
 					$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -535,7 +535,7 @@ class openmailadmin
 		if(!$this->cfg['admins_delete_domains'] && in_array('owner', $change)) {
 			$this->db->Execute('UPDATE '.$this->tablenames['domains']
 				.' SET owner='.$this->db->qstr($data['owner'])
-				.' WHERE owner='.$this->db->qstr($this->authenticated_user['mbox']).' AND '.db_find_in_set($this->db, 'ID', $domains));
+				.' WHERE owner='.$this->db->qstr($this->authenticated_user->mbox).' AND '.db_find_in_set($this->db, 'ID', $domains));
 		}
 		$this->user_invalidate_domain_sets();
 		// No domain be renamed?
@@ -545,7 +545,7 @@ class openmailadmin
 		// Otherwise (and if only one) try adapting older addresses.
 		if(count($domains) == 1) {
 			// Grep the old name, we will need it later for replacement.
-			$domain = $this->db->GetRow('SELECT ID, domain AS name FROM '.$this->tablenames['domains'].' WHERE ID = '.$this->db->qstr($domains[0]).' AND (owner='.$this->db->qstr($this->authenticated_user['mbox']).' or a_admin LIKE '.$this->db->qstr('%'.$this->authenticated_user['mbox'].'%').')');
+			$domain = $this->db->GetRow('SELECT ID, domain AS name FROM '.$this->tablenames['domains'].' WHERE ID = '.$this->db->qstr($domains[0]).' AND (owner='.$this->db->qstr($this->authenticated_user->mbox).' or a_admin LIKE '.$this->db->qstr('%'.$this->authenticated_user->mbox.'%').')');
 			if(!$domain === false) {
 				// First, update the name. (Corresponding field is marked as unique, therefore we will not receive doublettes.)...
 				$this->db->Execute('UPDATE '.$this->tablenames['domains'].' SET domain = '.$this->db->qstr($data['domain']).' WHERE ID = '.$domain['ID']);
@@ -580,9 +580,9 @@ class openmailadmin
 	 */
 	private function user_set_password($username, $plaintext_password) {
 		// Check whether the authenticated user has the right to do that.
-		if($this->authenticated_user['a_super'] < 1
-		   && $username != $this->authenticated_user['mbox']
-		   && !$this->user_is_descendant($username, $this->authenticated_user['mbox'])) {
+		if($this->authenticated_user->a_super < 1
+		   && $username != $this->authenticated_user->mbox
+		   && !$this->user_is_descendant($username, $this->authenticated_user->mbox)) {
 			$this->ErrorHandler->add_error(txt('49'));
 			return false;
 		}
@@ -612,9 +612,9 @@ class openmailadmin
 	 * authenticated user are the same.
 	 */
 	public function user_change_password($new, $new_repeat, $old_passwd = null) {
-		if($this->current_user['mbox'] == $this->authenticated_user['mbox']
+		if($this->current_user->mbox == $this->authenticated_user->mbox
 		   && !is_null($old_passwd)
-		   && !passwd_check($old_passwd, $this->current_user['pass_md5'])) {
+		   && !passwd_check($old_passwd, $this->current_user->pass_md5)) {
 			$this->ErrorHandler->add_error(txt('45'));
 		} else if($new != $new_repeat) {
 			$this->ErrorHandler->add_error(txt('44'));
@@ -626,7 +626,7 @@ class openmailadmin
 			if(!(preg_match('/[a-z]{1}/', $new) && preg_match('/[A-Z]{1}/', $new) && preg_match('/[0-9]{1}/', $new))) {
 				$this->ErrorHandler->add_error(txt('47'));
 			}
-			if($this->user_set_password($this->current_user['mbox'], $new)) {
+			if($this->user_set_password($this->current_user->mbox, $new)) {
 				return true;
 			}
 		}
@@ -643,7 +643,7 @@ class openmailadmin
 		$regexp = array();
 
 		$result = $this->db->SelectLimit('SELECT * FROM '.$this->tablenames['virtual_regexp']
-				.' WHERE owner='.$this->db->qstr($this->current_user['mbox']).$_SESSION['filter']['str']['regexp']
+				.' WHERE owner='.$this->db->qstr($this->current_user->mbox).$_SESSION['filter']['str']['regexp']
 				.' ORDER BY dest',
 				$_SESSION['limit'], $_SESSION['offset']['regexp']);
 		if(!$result === false) {
@@ -661,7 +661,7 @@ class openmailadmin
 				foreach(explode(',', $row['dest']) as $value) {
 					$value = trim($value);
 					// replace the current user's name with "mailbox"
-					if($value == $this->current_user['mbox'])
+					if($value == $this->current_user->mbox)
 					$dest[] = txt('5');
 					else
 					$dest[] = $value;
@@ -686,16 +686,16 @@ class openmailadmin
 			return false;
 		}
 
-		if($this->current_user['used_regexp'] < $this->current_user['max_regexp']
-		   || $this->authenticated_user['a_super'] > 0) {
+		if($this->current_user->used_regexp < $this->current_user->max_regexp
+		   || $this->authenticated_user->a_super > 0) {
 			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual_regexp'].' (reg_exp, dest, owner) VALUES (?, ?, ?)',
-				array($regexp, implode(',', $arr_destinations), $this->current_user['mbox']));
+				array($regexp, implode(',', $arr_destinations), $this->current_user->mbox));
 			if($this->db->Affected_Rows() < 1) {
 				if($this->db->ErrorNo() != 0) {
 					$this->ErrorHandler->add_error(txt('133'));
 				}
 			} else {
-				$this->current_user['used_regexp']++;
+				$this->current_user->used_regexp++;
 				return true;
 			}
 		} else {
@@ -709,7 +709,7 @@ class openmailadmin
 	 */
 	public function regexp_delete($arr_regexp_ids) {
 		$this->db->Execute('DELETE FROM '.$this->tablenames['virtual_regexp']
-				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
+				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
 				.' AND '.db_find_in_set($this->db, 'ID', $arr_regexp_ids));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
@@ -717,7 +717,7 @@ class openmailadmin
 			}
 		} else {
 			$this->ErrorHandler->add_info(txt('32'));
-			$this->current_user['used_regexp'] -= $this->db->Affected_Rows();
+			$this->current_user->used_regexp -= $this->db->Affected_Rows();
 			return true;
 		}
 
@@ -728,7 +728,7 @@ class openmailadmin
 	 */
 	public function regexp_change_destination($arr_regexp_ids, $arr_destinations) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual_regexp'].' SET dest='.$this->db->qstr(implode(',', $arr_destinations)).', neu = 1'
-				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
+				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
 				.' AND '.db_find_in_set($this->db, 'ID', $arr_regexp_ids));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
@@ -745,7 +745,7 @@ class openmailadmin
 	 */
 	public function regexp_toggle_active($arr_regexp_ids) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual_regexp'].' SET active = NOT active, neu = 1'
-				.' WHERE owner='.$this->db->qstr($this->current_user['mbox'])
+				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
 				.' AND '.db_find_in_set($this->db, 'ID', $arr_regexp_ids));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
@@ -767,11 +767,11 @@ class openmailadmin
 	public function get_mailboxes() {
 		$mailboxes = array();
 
-		if($this->current_user['mbox'] == $this->authenticated_user['mbox']
-		   && $this->authenticated_user['a_super'] >= 1) {
+		if($this->current_user->mbox == $this->authenticated_user->mbox
+		   && $this->authenticated_user->a_super >= 1) {
 			$where_clause = ' WHERE TRUE';
 		} else {
-			$where_clause = ' WHERE pate='.$this->db->qstr($this->current_user['mbox']);
+			$where_clause = ' WHERE pate='.$this->db->qstr($this->current_user->mbox);
 		}
 
 		$result = $this->db->SelectLimit('SELECT mbox, person, canonical, pate, max_alias, max_regexp, usr.active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
@@ -792,7 +792,7 @@ class openmailadmin
 				$result->MoveNext();
 			}
 		}
-		$this->current_user['n_mbox'] = $this->user_get_number_mailboxes($this->current_user['mbox']);
+		$this->current_user->n_mbox = $this->user_get_number_mailboxes($this->current_user->mbox);
 
 		return $mailboxes;
 	}
@@ -803,7 +803,7 @@ class openmailadmin
 	public function get_selectable_paten($whose) {
 		if(!isset($_SESSION['paten'][$whose])) {
 			$selectable_paten = array();
-			if($this->authenticated_user['a_super'] >= 1) {
+			if($this->authenticated_user->a_super >= 1) {
 				$result = $this->db->Execute('SELECT mbox FROM '.$this->tablenames['user']);
 			} else {
 				$result = $this->db->Execute('SELECT mbox FROM '.$this->tablenames['user'].' WHERE pate='.$this->db->qstr($whose));
@@ -814,7 +814,7 @@ class openmailadmin
 				$result->MoveNext();
 			}
 			$selectable_paten[] = $whose;
-			$selectable_paten[] = $this->authenticated_user['mbox'];
+			$selectable_paten[] = $this->authenticated_user->mbox;
 
 			// Array_unique() will do alphabetical sorting.
 			$_SESSION['paten'][$whose] = array_unique($selectable_paten);
@@ -832,7 +832,7 @@ class openmailadmin
 		$allowed = array();
 
 		// Does the authenticated user have the right to do that?
-		if($this->authenticated_user['a_super'] >= 1) {
+		if($this->authenticated_user->a_super >= 1) {
 			$allowed = array_diff($desired_mboxes, $this->cfg['user_ignore']);
 		} else {
 			foreach($desired_mboxes as $mbox) {
@@ -853,7 +853,7 @@ class openmailadmin
 		$rollback	= array();
 
 		// Check inputs for sanity and consistency.
-		if(!$this->authenticated_user['a_admin_user'] > 0) {
+		if(!$this->authenticated_user->a_admin_user > 0) {
 			$this->ErrorHandler->add_error(txt('16'));
 			return false;
 		}
@@ -866,14 +866,14 @@ class openmailadmin
 		}
 
 		// check contingents (only if non-superuser)
-		if($this->authenticated_user['a_super'] == 0) {
+		if($this->authenticated_user->a_super == 0) {
 			// As the current user's contingents will be decreased we have to use his values.
-			if($props['max_alias'] > ($this->current_user['max_alias'] - $this->user_get_used_alias($this->current_user['mbox']))
-			   || $props['max_regexp'] > ($this->current_user['max_regexp'] - $this->user_get_used_regexp($this->current_user['mbox']))) {
+			if($props['max_alias'] > ($this->current_user->max_alias - $this->user_get_used_alias($this->current_user->mbox))
+			   || $props['max_regexp'] > ($this->current_user->max_regexp - $this->user_get_used_regexp($this->current_user->mbox))) {
 				$this->ErrorHandler->add_error(txt('66'));
 				return false;
 			}
-			$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
+			$quota	= $this->imap->get_users_quota($this->current_user->mbox);
 			if($quota->is_set && $props['quota']*1024 > $quota->free) {
 				$this->ErrorHandler->add_error(txt('65'));
 				return false;
@@ -905,11 +905,11 @@ class openmailadmin
 		$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['user'].' WHERE mbox='.addslashes($this->db->qstr($mboxname)).'\')';
 
 		// Decrease current users's contingents...
-		if($this->authenticated_user['a_super'] == 0) {
-			$rollback[] = '$this->db->Execute(\'UPDATE '.$this->tablenames['user'].' SET max_alias='.$this->current_user['max_alias'].', max_regexp='.$this->current_user['max_regexp'].' WHERE mbox='.addslashes($this->db->qstr($this->current_user['mbox'])).'\')';
+		if($this->authenticated_user->a_super == 0) {
+			$rollback[] = '$this->db->Execute(\'UPDATE '.$this->tablenames['user'].' SET max_alias='.$this->current_user->max_alias.', max_regexp='.$this->current_user->max_regexp.' WHERE mbox='.addslashes($this->db->qstr($this->current_user->mbox)).'\')';
 			$this->db->Execute('UPDATE '.$this->tablenames['user']
-				.' SET max_alias='.($this->current_user['max_alias']-intval($props['max_alias'])).', max_regexp='.($this->current_user['max_regexp']-intval($props['max_regexp']))
-				.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']));
+				.' SET max_alias='.($this->current_user->max_alias-intval($props['max_alias'])).', max_regexp='.($this->current_user->max_regexp-intval($props['max_regexp']))
+				.' WHERE mbox='.$this->db->qstr($this->current_user->mbox));
 		}
 		// ... and then create the user on the server.
 		$result = $this->imap->createmb($this->imap->format_user($mboxname));
@@ -928,16 +928,16 @@ class openmailadmin
 		$rollback[] = '$this->imap->deletemb($this->imap->format_user(\''.$mboxname.'\'))';
 
 		// Decrease the creator's quota...
-		$cur_usr_quota	= $this->imap->getquota($this->imap->format_user($this->current_user['mbox']));
-		if($this->authenticated_user['a_super'] == 0 && $cur_usr_quota->is_set) {
-			$result = $this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $cur_usr_quota->max - $props['quota']*1024);
+		$cur_usr_quota	= $this->imap->getquota($this->imap->format_user($this->current_user->mbox));
+		if($this->authenticated_user->a_super == 0 && $cur_usr_quota->is_set) {
+			$result = $this->imap->setquota($this->imap->format_user($this->current_user->mbox), $cur_usr_quota->max - $props['quota']*1024);
 			if(!$result) {
 				$this->ErrorHandler->add_error($this->imap->error_msg);
 				// Rollback
 				$this->rollback($rollback);
 				return false;
 			}
-			$rollback[] = '$this->imap->setquota($this->imap->format_user($this->current_user[\'mbox\']), '.$cur_usr_quota->max .'))';
+			$rollback[] = '$this->imap->setquota($this->imap->format_user($this->current_user->mbox), '.$cur_usr_quota->max .'))';
 			$this->ErrorHandler->add_info(sprintf(txt('69'), floor(($cur_usr_quota->max - $props['quota']*1024)/1024) ));
 		} else {
 			$this->ErrorHandler->add_info(txt('71'));
@@ -966,14 +966,14 @@ class openmailadmin
 	 */
 	public function mailbox_change($mboxnames, $change, $props) {
 		// Ensure sanity of inputs and check requirements.
-		if(!$this->authenticated_user['a_admin_user'] > 0) {
+		if(!$this->authenticated_user->a_admin_user > 0) {
 			$this->ErrorHandler->add_error(txt('16'));
 			return false;
 		}
 		if(!$this->validator->validate($props, $change)) {
 			return false;
 		}
-		$mboxnames = $this->mailbox_filter_manipulable($this->authenticated_user['mbox'], $mboxnames);
+		$mboxnames = $this->mailbox_filter_manipulable($this->authenticated_user->mbox, $mboxnames);
 		if(!count($mboxnames) > 0) {
 			return false;
 		}
@@ -1033,7 +1033,7 @@ class openmailadmin
 				}
 				if(count($to_be_processed) > 0) {
 					// We don't need further checks if a superuser is logged in.
-					if($this->authenticated_user['a_super'] > 0) {
+					if($this->authenticated_user->a_super > 0) {
 					$this->db->Execute('UPDATE '.$this->tablenames['user']
 						.' SET '.$what.'='.$props[$what]
 						.' WHERE '.db_find_in_set($this->db, 'mbox', $to_be_processed));
@@ -1042,7 +1042,7 @@ class openmailadmin
 						$has_to_be_free = $this->db->GetOne('SELECT SUM('.$props[$what].'-'.$what.')'
 								.' FROM '.$this->tablenames['user']
 								.' WHERE '.db_find_in_set($this->db, 'mbox', $to_be_processed));
-						if($has_to_be_free <= $this->user_get_used_alias($this->current_user['mbox'])) {
+						if($has_to_be_free <= $this->user_get_used_alias($this->current_user->mbox)) {
 							// If so, set new contingents on the users...
 							$this->db->Execute('UPDATE '.$this->tablenames['user']
 							.' SET '.$what.'='.$props[$what]
@@ -1050,7 +1050,7 @@ class openmailadmin
 							// ... and add/remove the difference from the current user.
 							$this->db->Execute('UPDATE '.$this->tablenames['user']
 							.' SET '.$what.'='.$what.'-'.$has_to_be_free
-							.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']));
+							.' WHERE mbox='.$this->db->qstr($this->current_user->mbox));
 						} else {
 							// Else, we have to show an error message.
 							$this->ErrorHandler->add_error(txt('66'));
@@ -1063,7 +1063,7 @@ class openmailadmin
 		// Change Quota.
 		if(in_array('quota', $change)) {
 			$add_quota = 0;
-			if($this->authenticated_user['a_super'] == 0) {
+			if($this->authenticated_user->a_super == 0) {
 				foreach($mboxnames as $user) {
 					if($user != '') {
 						$quota	= $this->imap->get_users_quota($user);
@@ -1071,9 +1071,9 @@ class openmailadmin
 							$add_quota += intval($props['quota'])*1024 - $quota->max;
 					}
 				}
-				$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
+				$quota	= $this->imap->get_users_quota($this->current_user->mbox);
 				if($add_quota != 0 && $quota->is_set) {
-					$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $quota->max - $add_quota);
+					$this->imap->setquota($this->imap->format_user($this->current_user->mbox), $quota->max - $add_quota);
 					$this->ErrorHandler->add_info(sprintf(txt('78'), floor(($quota->max - $add_quota)/1024) ));
 				}
 			}
@@ -1114,7 +1114,7 @@ class openmailadmin
 	 * If ressources are freed, the current user will get them.
 	 */
 	public function mailbox_delete($mboxnames) {
-		$mboxnames = $this->mailbox_filter_manipulable($this->authenticated_user['mbox'], $mboxnames);
+		$mboxnames = $this->mailbox_filter_manipulable($this->authenticated_user->mbox, $mboxnames);
 		if(count($mboxnames) == 0) {
 			return false;
 		}
@@ -1127,7 +1127,7 @@ class openmailadmin
 			if($user != '') {
 				// We have to sum up all the space which gets freed in case we later want increase the deleter's quota.
 				$quota	= $this->imap->get_users_quota($user);
-				if($this->authenticated_user['a_super'] == 0
+				if($this->authenticated_user->a_super == 0
 				   && $quota->is_set) {
 					$toadd = $quota->max;
 				}
@@ -1147,16 +1147,16 @@ class openmailadmin
 		}
 
 		// Now we have to increase the current user's quota.
-		$quota	= $this->imap->get_users_quota($this->current_user['mbox']);
-		if($this->authenticated_user['a_super'] == 0
+		$quota	= $this->imap->get_users_quota($this->current_user->mbox);
+		if($this->authenticated_user->a_super == 0
 		   && $add_quota > 0
 		   && $quota->is_set) {
-			$this->imap->setquota($this->imap->format_user($this->current_user['mbox']), $quota->max + $add_quota);
+			$this->imap->setquota($this->imap->format_user($this->current_user->mbox), $quota->max + $add_quota);
 			$this->ErrorHandler->add_info(sprintf(txt('76'), floor(($quota->max + $add_quota)/1024) ));
 		}
 
 		// Calculate how many contingents get freed if we delete the users.
-		if($this->authenticated_user['a_super'] == 0) {
+		if($this->authenticated_user->a_super == 0) {
 			$result = $this->db->GetRow('SELECT SUM(max_alias) AS nr_alias, SUM(max_regexp) AS nr_regexp'
 					.' FROM '.$this->tablenames['user']
 					.' WHERE '.db_find_in_set($this->db, 'mbox', $processed));
@@ -1172,17 +1172,17 @@ class openmailadmin
 		$this->db->Execute('DELETE FROM '.$this->tablenames['virtual_regexp'].' WHERE '.db_find_in_set($this->db, 'owner', $processed));
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual_regexp'].' SET active=0, neu=1 WHERE '.db_find_in_set($this->db, 'dest', $processed));
 		// domain (if the one to be deleted owns domains, the deletor will inherit them)
-		$this->db->Execute('UPDATE '.$this->tablenames['domains'].' SET owner='.$this->db->qstr($this->current_user['mbox']).' WHERE '.db_find_in_set($this->db, 'owner', $processed));
+		$this->db->Execute('UPDATE '.$this->tablenames['domains'].' SET owner='.$this->db->qstr($this->current_user->mbox).' WHERE '.db_find_in_set($this->db, 'owner', $processed));
 		// user
 		$this->db->Execute('DELETE FROM '.$this->tablenames['user'].' WHERE '.db_find_in_set($this->db, 'mbox', $processed));
-		if($this->authenticated_user['a_super'] == 0 && isset($will_be_free['nr_alias'])) {
+		if($this->authenticated_user->a_super == 0 && isset($will_be_free['nr_alias'])) {
 			$this->db->Execute('UPDATE '.$this->tablenames['user']
-			.' SET max_alias='.($this->current_user['max_alias']+$will_be_free['nr_alias']).', max_regexp='.($this->current_user['max_regexp']+$will_be_free['nr_regexp'])
-			.' WHERE mbox='.$this->db->qstr($this->current_user['mbox']));
+			.' SET max_alias='.($this->current_user->max_alias+$will_be_free['nr_alias']).', max_regexp='.($this->current_user->max_regexp+$will_be_free['nr_regexp'])
+			.' WHERE mbox='.$this->db->qstr($this->current_user->mbox));
 		}
 		// patenkinder (will be inherited by the one deleting)
 		$this->db->Execute('UPDATE '.$this->tablenames['user']
-			.' SET pate='.$this->db->qstr($this->current_user['mbox'])
+			.' SET pate='.$this->db->qstr($this->current_user->mbox)
 			.' WHERE '.db_find_in_set($this->db, 'pate', $processed));
 
 		$this->ErrorHandler->add_info(sprintf(txt('75'), implode(',', $processed)));
@@ -1195,7 +1195,7 @@ class openmailadmin
 	 * active <-> inactive
 	 */
 	public function mailbox_toggle_active($mboxnames) {
-		$tobechanged = $this->mailbox_filter_manipulable($this->current_user['mbox'], $mboxnames);
+		$tobechanged = $this->mailbox_filter_manipulable($this->current_user->mbox, $mboxnames);
 		if(count($tobechanged) > 0) {
 			$this->db->Execute('UPDATE '.$this->tablenames['user']
 					.' SET active = NOT active'

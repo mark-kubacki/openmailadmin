@@ -7,6 +7,7 @@ class InputValidatorSuite
 	protected	$oma;
 	protected	$cfg;
 	protected	$ErrorHandler;
+	protected	$initialized	= false;
 
 	private	$invalid	= array();
 	private	$missing	= array();
@@ -19,17 +20,21 @@ class InputValidatorSuite
 		$this->oma	= $oma;
 		$this->cfg	= $cfg;
 		$this->ErrorHandler	= ErrorHandler::getInstance();
+	}
+
+	private function initialize() {
+		$this->initialized	= true;
 
 		// Fieldname as key, cap as its caption and def as its default value.
 		$this->inputs['mbox']		= array('cap'	=> txt('83'),
 					);
 		$this->inputs['pate']		= array('cap'	=> txt('9'),
-					'def'	=> $this->oma->current_user['mbox'],
+					'def'	=> $this->oma->current_user->mbox,
 					);
 		$this->inputs['person']	= array('cap'	=> txt('84'),
 					);
 		$this->inputs['domains']	= array('cap'	=> txt('86'),
-					'def'	=> $this->oma->current_user['domains'],
+					'def'	=> $this->oma->current_user->domains,
 					);
 		$this->inputs['canonical']	= array('cap'	=> txt('7'),
 					);
@@ -53,10 +58,10 @@ class InputValidatorSuite
 		$this->inputs['domain']	= array('cap'	=> txt('55'),
 					);
 		$this->inputs['owner']	= array('cap'	=> txt('56'),
-					'def'	=> $this->oma->current_user['mbox'],
+					'def'	=> $this->oma->current_user->mbox,
 					);
 		$this->inputs['a_admin']	= array('cap'	=> txt('57'),
-					'def'	=> implode(',', array_unique(array($this->oma->current_user['mbox'], $this->oma->authenticated_user['mbox']))),
+					'def'	=> implode(',', array_unique(array($this->oma->current_user->mbox, $this->oma->authenticated_user->mbox))),
 					);
 		$this->inputs['categories']	= array('cap'	=> txt('58'),
 					);
@@ -67,7 +72,7 @@ class InputValidatorSuite
 		$this->validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= $this->cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $this->cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
 							'error'	=> sprintf(txt('62'), $this->cfg['mbox']['min_length'], $this->cfg['mbox']['max_length']) ),
 						);
-		$this->validate['pate']	= array(array(	'val'	=> '$this->oma->authenticated_user[\'a_super\'] > 0 || $this->oma->user_is_descendant(~, $this->oma->authenticated_user[\'mbox\'])',
+		$this->validate['pate']	= array(array(	'val'	=> '$this->oma->authenticated_user->is_superuser() || $this->oma->user_is_descendant(~, $this->oma->authenticated_user->mbox)',
 							),
 						);
 		$this->validate['person']	= array(array(	'val'	=> 'strlen(~) <= 100 && strlen(~) >= 4 && preg_match(\'/^[\w\s0-9-_\.\(\)]*$/\', ~)',
@@ -75,7 +80,7 @@ class InputValidatorSuite
 						);
 		$this->validate['domains']	= array(array(	'val'	=> '(~ = trim(~)) && preg_match(\'/^((?:[\w]+|[\w]+\.[\w]+),\s*)*([\w]+|[\w]+\.[\w]+)$/i\', ~)',
 							),
-						array(	'val'	=> '$this->oma->domain_check($this->oma->current_user, $this->oma->current_user[\'mbox\'], ~)',
+						array(	'val'	=> '$this->oma->domain_check($this->oma->current_user, $this->oma->current_user->mbox, ~)',
 							'error'	=> txt('81')),
 						);
 		$this->validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.openmailadmin::regex_valid_email.\'/i\', ~)',
@@ -92,7 +97,7 @@ class InputValidatorSuite
 						);
 		$this->validate['a_super']	= array(array(	'val'	=> 'is_numeric(~) && settype(~, \'int\') && ~ < 3 && ~ >= 0',
 							),
-						array(	'val'	=> '~ == 0 || $this->oma->authenticated_user[\'#\'] >= 2 || $this->oma->authenticated_user[\'a_super\'] > ~ || $this->oma->authenticated_user[\'#\'] > ~',
+						array(	'val'	=> '~ == 0 || $this->oma->authenticated_user-># >= 2 || $this->oma->authenticated_user->a_super > ~ || $this->oma->authenticated_user-># > ~',
 							'error'	=> txt('16')),
 						);
 		$this->validate['a_admin_domains']	= $this->validate['a_super'];
@@ -119,6 +124,9 @@ class InputValidatorSuite
 	 * @param	which	array of fields' names from data to be checked
 	 */
 	public function validate(&$data, $which) {
+		if(!$this->initialized) {
+			$this->initialize();
+		}
 		// Now we can set error-messages.
 		$error_occured	= $this->iterate_through_fields($data, $which);
 		if($error_occured) {

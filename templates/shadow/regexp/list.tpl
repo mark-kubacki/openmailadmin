@@ -19,7 +19,7 @@ for($i = 0; isset($regexp[$i]); $i++) {
 }
 ?>
 <form action="<?= mkSelfRef() ?>" method="post">
-<?= caption(txt('33').'&nbsp;'.$oma->current_user['used_regexp'].'/'.$oma->current_user['max_regexp'], getPageList('<a href="'.mkSelfRef(array('regx_page' => '%d')).'">%d</a>', $oma->current_user['used_regexp'], $_SESSION['limit'], $_SESSION['offset']['regx_page']), 580) ?>
+<?= caption(txt('33').'&nbsp;'.$oma->current_user->used_regexp.'/'.$oma->current_user->max_regexp, getPageList('<a href="'.mkSelfRef(array('regx_page' => '%d')).'">%d</a>', $oma->current_user->used_regexp, $_SESSION['limit'], $_SESSION['offset']['regx_page']), 580) ?>
 <?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1">
 	<tr>

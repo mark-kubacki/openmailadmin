@@ -43,7 +43,7 @@
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'domains') ?><b><?= txt('86') ?></b></td>
-		<td class="ed"><?= $input->text('domains', 100, $oma->current_user['domains']) ?></td>
+		<td class="ed"><?= $input->text('domains', 100, $oma->current_user->domains) ?></td>
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'quota') ?><b><?= txt('87') ?></b></td>
@@ -53,13 +53,13 @@
 		<td class="ed"><?= $input->checkbox('change[]', 'max_alias') ?><b><?= txt('88') ?></b></td>
 		<td class="ed"><?= $input->text('max_alias', 4) ?></td>
 	</tr>
-	<?php if($oma->authenticated_user['max_regexp'] > 0) { ?>
+	<?php if($oma->authenticated_user->max_regexp > 0) { ?>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'max_regexp') ?><b><?= txt('89') ?></b></td>
 		<td class="ed"><?= $input->text('max_regexp', 4) ?></td>
 	</tr>
 	<?php } ?>
-	<?php if($oma->authenticated_user['a_super'] > 1 || $oma->authenticated_user['a_admin_user'] > 1 || $oma->authenticated_user['a_admin_domains'] > 1) { ?>
+	<?php if($oma->authenticated_user->a_super > 1 || $oma->authenticated_user->a_admin_user > 1 || $oma->authenticated_user->a_admin_domains > 1) { ?>
 	<tr>
 		<td class="ed" colspan="2">
 			<?= $input->hidden('dummy', 'rights') ?>
@@ -70,37 +70,37 @@
 					<td class="ed" width="133"><?= txt('73') ?></td>
 					<td class="ed" width="133"><?= txt('74') ?></td>
 				</tr>
-				<?php if($oma->authenticated_user['a_super'] > 0) { ?>
+				<?php if($oma->authenticated_user->a_super > 0) { ?>
 				<tr>
 					<td class="ed"><?= $input->checkbox('change[]', 'a_super') ?><?= txt('68') ?></td>
 					<td class="ed"><?= $input->radio('a_super', '0') ?></td>
 					<td class="ed"><?= $input->radio('a_super', '1') ?></td>
 					<td class="ed">
-						<?php if($oma->authenticated_user['a_super'] > 1) { ?>
+						<?php if($oma->authenticated_user->a_super > 1) { ?>
 						<?= $input->radio('a_super', '2') ?>
 						<?php } ?>
 					</td>
 				</tr>
 				<?php } ?>
-				<?php if($oma->authenticated_user['a_admin_domains'] > 0) { ?>
+				<?php if($oma->authenticated_user->a_admin_domains > 0) { ?>
 				<tr>
 					<td class="ed"><?= $input->checkbox('change[]', 'a_admin_domains') ?><?= txt('50') ?></td>
 					<td class="ed"><?= $input->radio('a_admin_domains', '0') ?></td>
 					<td class="ed"><?= $input->radio('a_admin_domains', '1') ?></td>
 					<td class="ed">
-						<?php if($oma->authenticated_user['a_admin_domains'] > 1) { ?>
+						<?php if($oma->authenticated_user->a_admin_domains > 1) { ?>
 						<?= $input->radio('a_admin_domains', '2') ?>
 						<?php } ?>
 					</td>
 				</tr>
 				<?php } ?>
-				<?php if($oma->authenticated_user['a_admin_user'] > 0) { ?>
+				<?php if($oma->authenticated_user->a_admin_user > 0) { ?>
 				<tr>
 					<td class="ed"><?= $input->checkbox('change[]', 'a_admin_user') ?><?= txt('70') ?></td>
 					<td class="ed"><?= $input->radio('a_admin_user', '0') ?></td>
 					<td class="ed"><?= $input->radio('a_admin_user', '1') ?></td>
 					<td class="ed">
-						<?php if($oma->authenticated_user['a_admin_user'] > 1) { ?>
+						<?php if($oma->authenticated_user->a_admin_user > 1) { ?>
 						<?= $input->radio('a_admin_user', '2') ?>
 						<?php } ?>
 					</td>
@@ -114,7 +114,7 @@
 		<td class="ed"><span class="quasi_btn" id="admin_hide">&laquo; <?= txt('60') ?></span></td>
 		<td class="ed" align="right">
 			<?php if(count($selectable_paten) <= 1) { ?>
-			<?= $input->hidden('pate', $oma->current_user['mbox']) ?>
+			<?= $input->hidden('pate', $oma->current_user->mbox) ?>
 			<?php } ?>
 			<?= $input->hidden('frm', 'user') ?><?= $input->submit(txt('27'))?>&nbsp;
 		</td>

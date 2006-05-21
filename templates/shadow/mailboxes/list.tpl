@@ -1,10 +1,10 @@
 <?php
 count_same_cols($mailboxes, 'pate', 'n_paten');
 ?>
-<?php if($oma->authenticated_user['a_admin_user'] >= 1) { ?>
+<?php if($oma->authenticated_user->a_admin_user >= 1) { ?>
 	<form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
-<?= caption(txt('79'), getPageList('<a href="'.mkSelfRef(array('mbox_page' => '%d')).'">%d</a>', $oma->current_user['n_mbox'], $_SESSION['limit'], $_SESSION['offset']['mbox_page']), 580) ?>
+<?= caption(txt('79'), getPageList('<a href="'.mkSelfRef(array('mbox_page' => '%d')).'">%d</a>', $oma->current_user->n_mbox, $_SESSION['limit'], $_SESSION['offset']['mbox_page']), 580) ?>
 <?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1" width="580">
 	<tr>
@@ -21,7 +21,7 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 		<tr>
 		<?php } ?>
 			<td class="std">
-				<?php if($mailbox['mbox'] == $oma->authenticated_user['mbox'] || $mailbox['mbox'] == $oma->current_user['mbox']) { ?>
+				<?php if($mailbox['mbox'] == $oma->authenticated_user->mbox || $mailbox['mbox'] == $oma->current_user->mbox) { ?>
 					&nbsp;-&nbsp;
 				<?php } else { ?>
 					<?= $input->checkbox('user[]', $mailbox['mbox']) ?>

@@ -36,7 +36,7 @@ class Fake_IMAP
 				$result = $this->db->Execute('SELECT mailbox as folder,'
 					.' (SELECT COUNT(*) FROM '.$this->tablenames['imap_demo'].' WHERE mailbox LIKE CONCAT(folder, '.$this->db->qstr('.%').')) AS children'
 					.' FROM '.$this->tablenames['imap_demo']
-					.' WHERE ACL LIKE '.$this->db->qstr('% '.$oma->current_user['mbox'].' l%').' OR ACL LIKE '.$this->db->qstr($oma->current_user['mbox'].' l%').' OR ACL LIKE '.$this->db->qstr('% anyone l%').' OR ACL LIKE '.$this->db->qstr('anyone l%'));
+					.' WHERE ACL LIKE '.$this->db->qstr('% '.$oma->current_user->mbox.' l%').' OR ACL LIKE '.$this->db->qstr($oma->current_user->mbox.' l%').' OR ACL LIKE '.$this->db->qstr('% anyone l%').' OR ACL LIKE '.$this->db->qstr('anyone l%'));
 				if(!$result === false) {
 					while(!$result->EOF) {
 						$ret[] = '* LIST '
@@ -61,7 +61,7 @@ class Fake_IMAP
 		if(isset($_GET['folder'])) {
 			$newacl = $this->db->GetOne('SELECT ACL FROM '.$this->tablenames['imap_demo'].' WHERE mailbox='.$this->db->qstr($_GET['folder']));
 			$acl = $this->getacl($_GET['folder']);
-			if(isset($acl[$oma->current_user['mbox']]) && stristr($acl[$oma->current_user['mbox']], 'a')
+			if(isset($acl[$oma->current_user->mbox]) && stristr($acl[$oma->current_user->mbox], 'a')
 			   || isset($acl['anyone']) && stristr($acl['anyone'], 'a')) {
 				$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $newacl));
 			} else {
@@ -71,7 +71,7 @@ class Fake_IMAP
 		} else if(isset($_POST['mbox'])) {
 			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $_POST['mbox'].' lrswipcda'));
 		} else {
-			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $oma->current_user['mbox'].' lrswipcda'));
+			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $oma->current_user->mbox.' lrswipcda'));
 		}
 		if($this->db->Affected_Rows() < 1) {
 			$this->error_msg	= $this->db->ErrorMsg();
@@ -157,7 +157,7 @@ class Fake_IMAP
 		if(!$user === false) {
 			// fetch old ACL
 			$facl = $this->getacl($mb);
-			if(isset($facl[$oma->current_user['mbox']]) && stristr($facl[$oma->current_user['mbox']], 'a')
+			if(isset($facl[$oma->current_user->mbox]) && stristr($facl[$oma->current_user->mbox], 'a')
 			   || isset($facl['anyone']) && stristr($facl['anyone'], 'a')) {
 				// modify ACL
 				if($acl == 'none') {

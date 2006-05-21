@@ -2,8 +2,8 @@
 include('./inc/_prepend.php');
 include('./inc/panel_filter.php');
 
-$oma->current_user['domain_set'] = $oma->get_domain_set($oma->current_user['mbox'], $oma->current_user['domains']);
-$oma->current_user['used_alias'] = $oma->user_get_used_alias($oma->current_user['mbox']);
+$oma->current_user->domain_set = $oma->get_domain_set($oma->current_user->mbox, $oma->current_user->domains);
+$oma->current_user->used_alias = $oma->user_get_used_alias($oma->current_user->mbox);
 
 // ------------------------------ Addresses -------------------------------------------------------
 // PERFORM ACTION
@@ -14,11 +14,11 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 		if($_POST['action'] == 'new' || $_POST['action'] == 'dest') {
 			// Set at least one valid destination.
 			if(isset($_POST['dest_is_mbox']) && $_POST['dest_is_mbox'] == '1') {
-				$destination = array($oma->current_user['mbox']);
+				$destination = array($oma->current_user->mbox);
 			} else {
 				$destination = $oma->get_valid_destinations($_POST['dest']);
 				if(count($destination) < 1) {
-					$destination = array($oma->current_user['mbox']);
+					$destination = array($oma->current_user->mbox);
 					error(txt('10'));
 				}
 			}

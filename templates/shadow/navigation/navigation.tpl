@@ -11,13 +11,13 @@
 <table border="0" cellspacing="0" cellpadding="0" width="580">
 	<tr>
 		<td class="ed">
-			<b><?= txt('128') ?>: </b><a href="<?= mkSelfRef(array('cuser' => $oma->authenticated_user['mbox'])) ?>"><?= $oma->authenticated_user['person'] ?></a><?php
-				if($oma->authenticated_user['pate'] != $oma->authenticated_user['mbox']) { ?>, <b><?= txt('9')?>: </b>
-				<?php $oma->authenticated_user['user']['pate'] = $oma->get_user_row($oma->authenticated_user['pate']); ?><?= $oma->authenticated_user['user']['pate']['person'] ?>
+			<b><?= txt('128') ?>: </b><a href="<?= mkSelfRef(array('cuser' => $oma->authenticated_user->mbox)) ?>"><?= $oma->authenticated_user->person ?></a><?php
+				if($oma->authenticated_user->pate != $oma->authenticated_user->mbox) { ?>, <b><?= txt('9')?>: </b>
+				<?php $oma->authenticated_user->user['pate'] = $oma->get_user_row($oma->authenticated_user->pate); ?><?= $oma->authenticated_user->user['pate']['person'] ?>
 				<?php } ?>
-			<?php if($oma->current_user['mbox'] != $oma->authenticated_user['mbox']) { ?><br />
-				<b><?= txt('113') ?>: </b><a href="<?= mkSelfRef(array('cuser' => $oma->current_user['mbox'])) ?>"><?= $oma->current_user['person'] ?></a><?php
-				if($cpate['mbox'] != $oma->authenticated_user['mbox']) { ?>, <b><?= txt('9')?>: </b>
+			<?php if($oma->current_user->mbox != $oma->authenticated_user->mbox) { ?><br />
+				<b><?= txt('113') ?>: </b><a href="<?= mkSelfRef(array('cuser' => $oma->current_user->mbox)) ?>"><?= $oma->current_user->person ?></a><?php
+				if($cpate['mbox'] != $oma->authenticated_user->mbox) { ?>, <b><?= txt('9')?>: </b>
 				<a href="<?= mkSelfRef(array('cuser' => $cpate['mbox'])) ?>"><?= $cpate['person'] ?></a>
 				<?php } ?>
 			<?php } ?>

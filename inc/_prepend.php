@@ -43,7 +43,9 @@ $cfg['tablenames']
 		'virtual_regexp'=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'virtual_regexp',
 		'imap_demo'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'imap_demo'
 		);
-$now_on = isset($_GET['cuser']) ? $_GET['cuser'] : $authinfo->mbox;
+// Objects' initialization
+User::$db		= $db;
+User::$tablenames	= $cfg['tablenames'];
 
 // IMAP
 switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
@@ -62,10 +64,11 @@ unset($authinfo);
 $ErrorHandler	= ErrorHandler::getInstance();
 
 // Query for the current user...
-try {
-	$oma->current_user	= new User($now_on);
+if(!(isset($_GET['cuser']) && $_GET['cuser'] != $oma->authenticated_user->mbox)) {
+	$oma->current_user	= $oma->authenticated_user;
+} else try {
+	$oma->current_user	= new User($_GET['cuser']);
 	if(!($oma->authenticated_user->is_superuser()
-	   || $oma->current_user->mbox == $oma->authenticated_user->mbox
 	   || $oma->current_user->pate == $oma->authenticated_user->mbox
 	   || $oma->user_is_descendant($oma->current_user->mbox, $oma->authenticated_user->mbox))) {
 		throw new Exception(txt(2));

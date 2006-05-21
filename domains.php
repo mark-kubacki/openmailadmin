@@ -3,7 +3,7 @@ include('./inc/_prepend.php');
 include('./inc/panel_filter.php');
 
 // ------------------------------ Domains ---------------------------------------------------------
-if($oma->authenticated_user['a_admin_domains'] > 0) {
+if($oma->authenticated_user->a_admin_domains > 0) {
 	if(isset($_POST['frm']) && $_POST['frm'] == 'domains') {
 		if(!isset($_POST['action'])) {
 			error(txt('112'));
@@ -39,7 +39,7 @@ $domains = $oma->get_domains();
 // DISPLAY
 include('./templates/'.$cfg['theme'].'/domains/list.tpl');
 
-if($oma->authenticated_user['a_admin_domains'] > 0) {
+if($oma->authenticated_user->a_admin_domains > 0) {
 	// ADMIN PANEL
 	include('./templates/'.$cfg['theme'].'/domains/admin.tpl');
 }

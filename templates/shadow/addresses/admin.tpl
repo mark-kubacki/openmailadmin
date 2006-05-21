@@ -19,7 +19,7 @@
 			<td class="ed"><b><?= txt('18') ?></b></td>
 			<td class="ed">
 				<?= $input->_generate('text', 'alias', null, array('class' => 'textwhite', 'maxlength' => '190')) ?>
-				@<?= $input->select('domain', $oma->current_user['domain_set']) ?>
+				@<?= $input->select('domain', $oma->current_user->domain_set) ?>
 			</td>
 		</tr>
 		<tr>

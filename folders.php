@@ -2,7 +2,7 @@
 include('./inc/_prepend.php');
 
 // ------------------------------ Folder & ACL ----------------------------------------------------
-if($oma->current_user['mbox'] != $oma->authenticated_user['mbox']) {
+if($oma->current_user->mbox != $oma->authenticated_user->mbox) {
 	error(txt('104'));
 	include('./inc/_append.php');
 	exit();
@@ -10,8 +10,8 @@ if($oma->current_user['mbox'] != $oma->authenticated_user['mbox']) {
 
 // we shall log in as the current user
 $IMAP		= $cfg['Servers']['IMAP'][$_SESSION['server']];
-$IMAP['ADMIN']	= $oma->authenticated_user['mbox'].$IMAP['VDOM'];
-$IMAP['PASS']	= obfuscator_decrypt($oma->authenticated_user['pass_clear']);
+$IMAP['ADMIN']	= $oma->authenticated_user->mbox.$IMAP['VDOM'];
+$IMAP['PASS']	= $oma->authenticated_user->get_plaintext_password();
 if($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'] == 'cyrus') {
 	$imap	= new Cyrus_IMAP($IMAP);
 	$oma->imap	= $imap;
@@ -76,7 +76,7 @@ if(isset($_GET['folder'])&& in_array($_GET['folder'], $mailbox_list)) {
 	$ACLs = $imap->getacl($_GET['folder']);
 	ksort($ACLs);
 	reset($ACLs);
-	$has_acl_a = isset($ACLs[$oma->authenticated_user['mbox'].$IMAP['VDOM']]) && stristr($ACLs[$oma->authenticated_user['mbox'].$IMAP['VDOM']], 'a')
+	$has_acl_a = isset($ACLs[$oma->authenticated_user->mbox.$IMAP['VDOM']]) && stristr($ACLs[$oma->authenticated_user->mbox.$IMAP['VDOM']], 'a')
 			|| isset($ACLs['anyone']) && stristr($ACLs['anyone'], 'a');
 
 	include('./templates/'.$cfg['theme'].'/folders/admin.tpl');

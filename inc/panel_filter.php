@@ -51,13 +51,13 @@ if(isset($_POST['filtr']) && isset($_POST['filtr_addr']) && $_POST['filtr'] == '
 	$_SESSION['filter']['str'] = array('address' => '', 'regexp' => '', 'domain' => '', 'mbox' => '');
 	switch($_POST['cond']) {
 		case 'has':
-			$filtr_post = $db->qstr('%'.str_replace(txt('5'), $oma->current_user['mbox'], $_POST['cont']).'%');
+			$filtr_post = $db->qstr('%'.str_replace(txt('5'), $oma->current_user->mbox, $_POST['cont']).'%');
 			break;
 		case 'begins':
-			$filtr_post = $db->qstr(str_replace(txt('5'), $oma->current_user['mbox'], $_POST['cont']).'%');
+			$filtr_post = $db->qstr(str_replace(txt('5'), $oma->current_user->mbox, $_POST['cont']).'%');
 			break;
 		case 'ends':
-			$filtr_post = $db->qstr('%'.str_replace(txt('5'), $oma->current_user['mbox'], $_POST['cont']));
+			$filtr_post = $db->qstr('%'.str_replace(txt('5'), $oma->current_user->mbox, $_POST['cont']));
 			break;
 	}
 	switch($_POST['what']) {
