@@ -7,12 +7,12 @@
  * @see		obfuscator_decrypt(), obfuscator_encrypt()
  */
 class User
+	extends DataCarrier
 {
 	public static		$db;
 	public static		$tablenames;
 
 	private		$username	= null;
-	private		$data		= array();
 	protected	$pass_clear	= null;
 
 	/**
@@ -24,38 +24,14 @@ class User
 		if($data === false) {
 			throw new Exception(txt(2));
 		}
-		$this->data	= $data;
-	}
-
-	/**
-	 * This is from Openmaillist's DataCarrier.
-	 *
-	 * @throw		If no value for $key has yet been set.
-	 */
-	protected function __get($key) {
-		if(array_key_exists($key, $this->data)) {
-			return $this->data[$key];
-		} else {
-			throw new Exception('Variable does not exist or has not been set.');
-		}
-	}
-
-	protected function __set($key, $value) {
-		if(is_null($value)) {
-			if(array_key_exists($key, $this->data)) {
-				unset($this->data[$key]);
-			}
-		} else {
-			$this->data[$key] = $value;
-		}
-		return true;
+		$this->become($data);
 	}
 
 	/**
 	 * @return	Boolean		whether plaintext password matches stored hash.
 	 */
 	public function check_password($plaintext_password) {
-		return (md5($plaintext_password) == $this->data['pass_md5']);
+		return (md5($plaintext_password) == $this->pass_md5);
 	}
 
 	/**
