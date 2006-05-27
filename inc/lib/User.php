@@ -49,6 +49,10 @@ class User
 		$this->pass_clear = obfuscator_encrypt($plaintext_password);
 	}
 
+	private function update_last_login() {
+		self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE mbox='.self::$db->qstr($this->username));
+	}
+
 	/**
 	 * Use this to get a new user only if given plaintext password matches.
 	 *
@@ -60,7 +64,7 @@ class User
 	public static function authenticate($username, $password) {
 		$usr	= new User($username);
 		if($usr->check_password($password)) {
-			self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE mbox='.self::$db->qstr($username));
+			$usr->update_last_login();
 			$usr->set_plaintext_password($password);
 			return $usr;
 		}
