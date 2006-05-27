@@ -36,7 +36,7 @@ abstract class DataCarrier
 	/**
 	 * Use this to avoid calling setter several times.
 	 */
-	public function become(array $data) {
+	protected function become(array $data) {
 		$this->data	= $data;
 	}
 
