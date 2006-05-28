@@ -306,7 +306,7 @@ function count_same_cols(&$arr, $fieldname, $tagname) {
  * This is so we can use classes and interfaces without typeing long include lists.
  */
 function __autoload($class_name) {
-	$subfolders	= array('', 'interfaces/', 'components/', 'plugins/');
+	$subfolders	= array('', 'interfaces/', 'abstract/', 'components/', 'plugins/');
 	foreach($subfolders as $sub) {
 		if(is_readable('./inc/lib/'.$sub.$class_name.'.php')) {
 			require_once('./inc/lib/'.$sub.$class_name.'.php');
