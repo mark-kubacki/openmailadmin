@@ -12,6 +12,8 @@ abstract class ComponentLayer
 	public static		$ErrorHandler;
 	/** ComponentManager */
 	public static		$mgr;
+	/** Array with configuration settings. */
+	public static		$cfg;
 
 }
 ?>
