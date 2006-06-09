@@ -185,6 +185,10 @@ class Cyrus_IMAP
 		$arr	= array();
 		$out = $this->command('. getacl "'.$mailboxname.'"');
 
+		if($out === false) {
+			return array();
+		}
+
 		// In order to prevent confusion due to mailboxnames which may
 		// look like ACL strings we have to eliminate the mailboxnames.
 		$out = str_replace($mailboxname, '##', $out);
