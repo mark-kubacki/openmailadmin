@@ -47,6 +47,10 @@ interface IMAP_Administrator
 	 */
 	function getmailboxes($ref = '', $pat = '*');
 	/**
+	 * @return	Array	with all available rights as letters.
+	 */
+	public function get_acl_available();
+	/**
 	 * @param	mb	mailbox
 	 * @return		Array with usernames as keys and corresponding AC as value.
 	 */

@@ -102,7 +102,7 @@ class Cyrus_IMAP
 
 	public function deletemb($mailboxname) {
 		// we have to grant ourselve admin-rights on the mailbox before deleting it
-		$this->setacl($mailboxname, $this->connection_data['ADMIN'], 'lrswipcda');
+		$this->setacl($mailboxname, $this->connection_data['ADMIN'], $this->get_acl_letters());
 		return $this->command('. delete "'.$mailboxname.'"');
 	}
 
@@ -110,7 +110,7 @@ class Cyrus_IMAP
 		// This is for preserving already granted rights.
 		$oldacl = $this->getacl($oldname);
 
-		$this->setacl($oldname, $this->connection_data['ADMIN'], 'lrswipcda');
+		$this->setacl($oldname, $this->connection_data['ADMIN'], $this->get_acl_letters());
 		$out = $this->command('. rename "'.$oldname.'" "'.$newname.'"');
 
 		if(isset($oldacl[$this->connection_data['ADMIN']])) {
@@ -162,6 +162,24 @@ class Cyrus_IMAP
 		return false;
 	}
 
+	/**
+	 * @returns		Array	with all available rights as letters.
+	 */
+	public function get_acl_available() {
+		$assumed = array('l', 'r', 's', 'w', 'i', 'p', 'c', 'd', 'a');
+		if(version_compare($this->getversion(), '2.3.0', '>=')) {
+			$assumed = array('l', 'r', 's', 'w', 'i', 'p', 'k', 'x', 't', 'e', 'c', 'd', 'a');
+		}
+		return $assumed;
+	}
+	
+	/**
+	 * @returns		String	with all available letters which represent rights.
+	 */
+	private function get_acl_letters() {
+		return implode('', $this->get_acl_available());
+	}
+
 	public function getacl($mailboxname) {
 		$reult	= array();
 		$arr	= array();
@@ -172,7 +190,7 @@ class Cyrus_IMAP
 		$out = str_replace($mailboxname, '##', $out);
 
 		if(preg_match('/\*\sACL\s[^\s]*\s(.*)/', $out[0], $arr)) {
-			if(preg_match_all('/([^\s]*)\s([lrswipcda]*)\s?/', $arr[1], $arr)) {
+			if(preg_match_all('/([^\s]*)\s(['.$this->get_acl_letters().']*)\s?/', $arr[1], $arr)) {
 				$result = array_combine($arr[1], $arr[2]);
 			}
 		}

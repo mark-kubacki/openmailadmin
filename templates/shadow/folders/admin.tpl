@@ -26,7 +26,7 @@
 			<td class="ed"><b><?= txt('108') ?></b></td>
 			<td class="ed">
 				<?= $input->hidden('dummy', 'ACL') ?>
-				<?php hsys_ACL_matrix($ACLs, true) ?>
+				<?php hsys_ACL_matrix($ACLs, true, $oma->imap->get_acl_available()) ?>
 			</td>
 		</tr>
 		<tr>
@@ -43,7 +43,7 @@
 		<tr>
 			<td class="ed"><b><?= txt('108') ?></b></td>
 			<td class="ed">
-				<?php hsys_ACL_matrix($ACLs) ?>
+				<?php hsys_ACL_matrix($ACLs, false, $oma->imap->get_acl_available()) ?>
 			</td>
 		</tr>
 	</table>

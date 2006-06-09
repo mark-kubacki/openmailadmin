@@ -149,6 +149,11 @@ class Fake_IMAP
 		return $this->getquota($this->format_user($username));
 	}
 
+	public function get_acl_available() {
+		$assumed = array('l', 'r', 's', 'w', 'i', 'p', 'c', 'd', 'a');
+		return $assumed;
+	}
+
 	public function setacl($mb, $user, $acl) {
 		global $oma;
 

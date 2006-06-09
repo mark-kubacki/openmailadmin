@@ -106,6 +106,7 @@ function mkSelfRef($arr_Add = array()) {
  * "INBOX.this nouser read" user lrs -> 2 users detected (user "nouser" is incorrect)
  */
 function hsys_getACLInfo($folder, $name = null) {
+	global $oma;
 	$result = array(); $arr = array();
 
 	if(!is_null($name)) {
@@ -113,7 +114,7 @@ function hsys_getACLInfo($folder, $name = null) {
 	}
 
 	if(preg_match('/\*\sACL\s[^\s]*\s(.*)/', $folder[0], $arr)) {
-		if(preg_match_all('/([^\s]*)\s([lrswipcda]*)\s?/', $arr[1], $arr)) {
+		if(preg_match_all('/([^\s]*)\s(['.implode('', $oma->imap->get_acl_string()).']*)\s?/', $arr[1], $arr)) {
 			$result = array_combine($arr[1], $arr[2]);
 		}
 	}
@@ -218,7 +219,7 @@ function hsys_ACL_matrix($ACL, $editable = false, $rights = array('l', 'r', 's',
 				'lrswipcd'	=> txt('116').' (lrswipcd)',
 				'lrsip'		=> txt('117').' (lrsip)',
 				'lrswipd'	=> txt('118').' (lrswipd)',
-				'lrswipcda'	=> txt('119').' (lrswipcda)',
+				implode('', $rights)	=> txt('119').' ('.implode('', $rights).')',
 				'none'		=> txt('120'));
 
 	include('./templates/'.$cfg['theme'].'/folders/acl_matrix.tpl');
