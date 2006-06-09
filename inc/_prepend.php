@@ -81,11 +81,12 @@ if(!(isset($_GET['cuser']) && $_GET['cuser'] != $oma->authenticated_user->mbox))
 
 // ... and his paten.
 if($oma->current_user->mbox == $oma->current_user->pate) {
-	$cpate = array('person' => txt('29'), 'mbox' => $oma->current_user->mbox);
+	$cpate = $oma->current_user;
 } else {
-	$cpate = $db->GetRow('SELECT person, mbox FROM '.$cfg['tablenames']['user'].' WHERE mbox='.$db->qstr($oma->current_user->pate));
-	if($cpate === false) {
-		$cpate	= array('person' => txt('28'), 'mbox' => $oma->current_user->mbox);
+	try {
+		$cpate = new User($oma->current_user->pate);
+	} catch (Exception $e) {
+		$cpate = $oma->current_user;
 	}
 }
 
