@@ -62,6 +62,8 @@
 </file>
 <file url="inc/lib/Cyrus_IMAP.php" id="1078973E1AEL52cf15470x24c3" name="Cyrus_IMAP.php">
 </file>
+<file url="inc/lib/IMAP_Administrator.php" id="10895F30EA9L41076cc30x568d" name="IMAP_Administrator.php">
+</file>
 <file url="inc/lib/Quota.php" id="108ABC394CEL594970bd0x3672" name="Quota.php">
 </file>
 <file url="inc/lib/ErrorHandler.php" id="108BA878C7BL12f76c280x2684" name="ErrorHandler.php">
@@ -76,32 +78,6 @@
 </file>
 <file url="inc/lib/User.php" id="10B56D41A1BL6b8c90a0x1f05" name="User.php">
 </file>
-<file url="inc/lib/DataCarrier.php" id="10B76B2FAD8L7488eeca0x2891" name="DataCarrier.php">
-</file>
-<folder id="10B76E53D23L54ecbd9c0x2891" name="components">
-</folder>
-<folder id="10B76E65B34L6ba17e40x2891" name="interfaces">
-<file url="inc/lib/interfaces/IMAP_Administrator.php" id="10895F30EA9L41076cc30x568d" name="IMAP_Administrator.php">
-</file>
-<file url="inc/lib/interfaces/DomainManager.php" id="10B76F88A2AL6e6dc47c0x50a9" name="DomainManager.php">
-</file>
-<file url="inc/lib/interfaces/ComponentManager.php" id="10B7AE1A0D2L1b0a7dcf0x20ce" name="ComponentManager.php">
-</file>
-</folder>
-<folder id="10B77051409L303504b50x50a9" name="layers">
-<file url="inc/lib/layers/DomainCore.php" id="10B770856D3L5405c15c0x50a9" name="DomainCore.php">
-</file>
-<file url="inc/lib/layers/DomainPermission.php" id="10B770856E6L493f4ff90x50a9" name="DomainPermission.php">
-</file>
-<file url="inc/lib/layers/DomainValidation.php" id="10B770856F4L1134ff960x50a9" name="DomainValidation.php">
-</file>
-</folder>
-<folder id="10B7ACC6E87L4a1b19ab0x20ce" name="abstract">
-<file url="inc/lib/abstract/DomainCoreDecorator.php" id="10B7ACED527L120880ad0x20ce" name="DomainCoreDecorator.php">
-</file>
-<file url="inc/lib/abstract/ComponentLayer.php" id="10B7AE16B7AL37f40aba0x20ce" name="ComponentLayer.php">
-</file>
-</folder>
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
 </file>

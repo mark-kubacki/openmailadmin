@@ -7,12 +7,12 @@
  * @see		obfuscator_decrypt(), obfuscator_encrypt()
  */
 class User
-	extends DataCarrier
 {
 	public static		$db;
 	public static		$tablenames;
 
 	private		$username	= null;
+	private		$data		= array();
 	protected	$pass_clear	= null;
 
 	/**
@@ -24,14 +24,38 @@ class User
 		if($data === false) {
 			throw new Exception(txt(2));
 		}
-		$this->become($data);
+		$this->data	= $data;
+	}
+
+	/**
+	 * This is from Openmaillist's DataCarrier.
+	 *
+	 * @throw		If no value for $key has yet been set.
+	 */
+	protected function __get($key) {
+		if(array_key_exists($key, $this->data)) {
+			return $this->data[$key];
+		} else {
+			throw new Exception('Variable does not exist or has not been set.');
+		}
+	}
+
+	protected function __set($key, $value) {
+		if(is_null($value)) {
+			if(array_key_exists($key, $this->data)) {
+				unset($this->data[$key]);
+			}
+		} else {
+			$this->data[$key] = $value;
+		}
+		return true;
 	}
 
 	/**
 	 * @return	Boolean		whether plaintext password matches stored hash.
 	 */
 	public function check_password($plaintext_password) {
-		return (md5($plaintext_password) == $this->pass_md5);
+		return (md5($plaintext_password) == $this->data['pass_md5']);
 	}
 
 	/**
@@ -49,10 +73,6 @@ class User
 		$this->pass_clear = obfuscator_encrypt($plaintext_password);
 	}
 
-	private function update_last_login() {
-		self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE mbox='.self::$db->qstr($this->username));
-	}
-
 	/**
 	 * Use this to get a new user only if given plaintext password matches.
 	 *
@@ -64,7 +84,7 @@ class User
 	public static function authenticate($username, $password) {
 		$usr	= new User($username);
 		if($usr->check_password($password)) {
-			$usr->update_last_login();
+			self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE mbox='.self::$db->qstr($username));
 			$usr->set_plaintext_password($password);
 			return $usr;
 		}
