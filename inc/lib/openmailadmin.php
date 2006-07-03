@@ -395,14 +395,16 @@ class openmailadmin
 
 		return $domains;
 	}
-	/*
+	/**
 	 * May the new user only select from domains which have been assigned to
 	 * the reference user? If so, return true.
-	 * $reference is an user, $tobechecked an mailboxname.
+	 *
+	 * @param	reference	Instance of User
+	 * @param	tobechecked	Mailbox-name.
 	 */
-	public function domain_check($reference, $tobechecked, $domain_key) {
-		if(!isset($reference['domain_set'])) {
-			$reference['domain_set'] = $this->get_domain_set($reference['mbox'], $reference['domains']);
+	public function domain_check(User $reference, $tobechecked, $domain_key) {
+		if(!isset($reference->domain_set)) {
+			$reference->domain_set = $this->get_domain_set($reference->mbox, $reference->domains);
 		}
 		// new domain-key must not lead to more domains than the user already has to choose from
 		// A = Domains the new user will be able to choose from.
@@ -413,8 +415,8 @@ class openmailadmin
 		if(count($dom_a) == 0) {
 			// This will be only a warning.
 			$this->ErrorHandler->add_error(txt('80'));
-		} else if(count($dom_a) > count($reference['domain_set'])
-			   && count(array_diff($dom_a, $reference['domain_set'])) > 0) {
+		} else if(count($dom_a) > count($reference->domain_set)
+			   && count(array_diff($dom_a, $reference->domain_set)) > 0) {
 			// A could have domains which the reference cannot access.
 			return false;
 		}
