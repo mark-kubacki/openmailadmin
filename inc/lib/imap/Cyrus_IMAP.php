@@ -15,13 +15,15 @@ class Cyrus_IMAP
 	private	$connection_data;	// everything neccessary to connect to cyrus
 	private	$version;		// version of cyrus-imapd we have connected to
 	private	$separator;		// hierarchy separator
+	private	$_logger = null;	// logging facility, as defined in PEAR::Log
 
 	public	$error_msg;		// if an error occured, this variable will hold the error messages
 
-	function __construct(array $connection_data) {
+	function __construct(array $connection_data, Log $logger) {
 		$this->version		= 'unknown';
 		$this->separator	= '.';
 		$this->connection_data	= $connection_data;
+		$this->_logger		= $logger;
 	}
 
 	function __destruct() {
@@ -29,20 +31,25 @@ class Cyrus_IMAP
 	}
 
 	private function imap_login() {
+		$this->_logger->debug('I: On opening socket for IMAP connection.');
 		$this->sp = fsockopen(	$this->connection_data['HOST'],
 					$this->connection_data['PORT'],
 					$errno, $errstr);
 		$this->error_msg = $errstr;
 
 		if(!$this->sp) {
+			$this->_logger->error('I: Socket for IMAP connection couldn\'t be opened: "'.$errstr.'"');
 			return false;
 		}
 
 		$txt = fgets($this->sp, 1024);
+		$this->_logger->debug('S: '.$txt);
 		if(preg_match('/IMAP4\sv(\d+\.\d+\.\d+)/', $txt, $arr)) {
 			$this->version = $arr[1];
+			$this->_logger->debug('I: Version of IMAP server is: "'.$this->version.'"');
 		}
 
+		$this->_logger->notice('C: -- on logging in with username "'.$this->connection_data['ADMIN'].'" --');
 		return $this->command('. login "'.$this->connection_data['ADMIN'].'" "'.$this->connection_data['PASS'].'"');
 	}
 
@@ -65,6 +72,7 @@ class Cyrus_IMAP
 		$result = $this->command('. list "" ""');
 		$tmp = strstr($result['0'], '"');
 		$this->separator = $tmp{1};
+		$this->_logger->debug('I: Hierarchy separator is "'.$this->separator.'".');
 		return $this->separator;
 	}
 
@@ -81,8 +89,12 @@ class Cyrus_IMAP
 		$out = array();
 
 		fputs($this->sp, $cmd."\n");
+		if(!($cmd{2} == 'l' && strstr($cmd, '. login'))) {
+			$this->_logger->debug('C: '.$cmd);
+		}
 		do {
 			$row = fgets($this->sp, 1024);
+			$this->_logger->debug('S: '.$row);
 			$out[] = $row;
 		} while($row{0} != '.');
 
@@ -172,7 +184,7 @@ class Cyrus_IMAP
 		}
 		return $assumed;
 	}
-	
+
 	/**
 	 * @returns		String	with all available letters which represent rights.
 	 */
@@ -211,16 +223,19 @@ class Cyrus_IMAP
 	}
 
 	public function format_user($username, $folder = null) {
+		$ret = '';
 		$this->gethierarchyseparator();
 		if(is_null($folder)) {
 			if(isset($this->connection_data['VDOM']) && $this->connection_data['VDOM'] != '') {
-				return($this->connection_data['VDOM'].'!user'.$this->separator.$username);
+				$ret = $this->connection_data['VDOM'].'!user'.$this->separator.$username;
 			} else {
-				return('user'.$this->separator.$username);
+				$ret = 'user'.$this->separator.$username;
 			}
 		} else {
-			return($this->format_user($username).$this->separator.$folder);
+			$ret = $this->format_user($username).$this->separator.$folder;
 		}
+		$this->_logger->notice('I: ("'.$username.'", '.(is_null($folder) ? 'null' : '"'.$folder.'"').') has been formatted as "'.$ret.'"');
+		return $ret;
 	}
 
 }
