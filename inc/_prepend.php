@@ -25,7 +25,7 @@ if(is_readable('./templates/'.$cfg['theme'].'/__aux.php')) {
 		$amount_set 	= array('10', '25', '50', '100', '--');
 
 // MAIN
-header('Content-type: text/html; charset='.$encoding);
+header('Content-type: text/html; charset=utf-8');
 include('./templates/'.$cfg['theme'].'/common-header.tpl');
 
 // Authentification

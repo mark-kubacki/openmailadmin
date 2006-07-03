@@ -1,6 +1,5 @@
 <?php
 $res['de']	= array(
-'encoding'	=>	'utf-8',
 '0'	=>	'<strong>Identifikation fehlgeschlagen</strong>'
 		.'<p>Entweder der Benutzer existiert nicht oder das Passwort ist falsch.<br />'
 		.'Der zuständige Pate kann das Passwort neu setzen.</p>',

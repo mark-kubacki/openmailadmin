@@ -1,6 +1,5 @@
 <?php
 $res['pl']	= array(
-'encoding'	=>	'utf-8',
 '0'	=>	'<strong>Błędne dane</strong>'
 		.'<p>Albo użytkownik nie istnieje albo hasło nie pasuje do niego.</p>',
 '1'	=>	'Informacje o twoim koncie',

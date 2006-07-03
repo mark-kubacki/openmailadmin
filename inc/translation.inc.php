@@ -27,11 +27,5 @@ if(!$cfg['force_default_language']) {
 
 include_once('./inc/lang/'.$lang.'.inc.php');
 include_once('./inc/lang/'.$default_lang.'.inc.php');
-// include_once('inc/lang/de.inc.php');
-
-if(txt('encoding') == '#encoding')
-	$encoding = 'ISO-8859-1';
-else
-	$encoding = txt('encoding');
 
 ?>

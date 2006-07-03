@@ -1,6 +1,5 @@
 ﻿<?php
 $res['zh-cn']	= array(
-'encoding'	=>	'utf-8',
 '0'	=>	'<strong>验证失败</strong>'
 		.'<p>您可能提供的用户名不存在或者密码输入错误。</p>',
 '1'	=>	'账号信息',
