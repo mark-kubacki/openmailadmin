@@ -307,7 +307,12 @@ function count_same_cols(&$arr, $fieldname, $tagname) {
  * This is so we can use classes and interfaces without typeing long include lists.
  */
 function __autoload($class_name) {
-	require_once('./inc/lib/'.$class_name.'.php');
+	$subfolders	= array('', 'imap/');
+	foreach($subfolders as $sub) {
+		if(is_readable('./inc/lib/'.$sub.$class_name.'.php')) {
+			require_once('./inc/lib/'.$sub.$class_name.'.php');
+		}
+	}
 }
 
 /**
