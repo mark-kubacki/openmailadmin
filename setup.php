@@ -136,6 +136,7 @@ switch($_GET['step']) {
 		$checks
 		= array(
 				array('PHP is version 5.1.0 or later?', version_compare(PHP_VERSION, '5.1.0', '>=')),
+				array('Multibyte String support active?', function_exists('mb_convert_encoding')),
 				array('Socket or IMAP support available?', function_exists('fsockopen') || function_exists('imap_open')),
 				array('MySQL or MySQLi, SQLite, PostgreSQL, Oracle (OCI8)?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('sqlite_open') || function_exists('pg_connect') || function_exists('oci_connect')),
 				array('Is ADOdb installed?', function_exists('ADONewConnection')),

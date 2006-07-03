@@ -4,7 +4,7 @@
 	<table border="0" cellpadding="1" cellspacing="1">
 		<tr>
 			<td class="ed" width="180"><?= txt('105') ?></td>
-			<td class="ed" width="400"><?= $_GET['folder'] ?></td>
+			<td class="ed" width="400"><?= mb_convert_encoding($_GET['folder'], 'UTF-8', 'UTF7-IMAP') ?></td>
 		</tr>
 		<tr>
 			<td class="ed"><b><?= txt('20') ?></b></td>

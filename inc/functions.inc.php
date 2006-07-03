@@ -185,7 +185,8 @@ function display_tree($tree) {
 			} else {
 				echo('<span class="ina_mbox">');
 			}
-			echo('<a href="'.mkSelfRef(array('folder' => $value['^'])).'">'.$key.'</a></span>');
+			// imap_utf7_decode is highly buggy!
+			echo('<a href="'.mkSelfRef(array('folder' => $value['^'])).'">'.mb_convert_encoding($key, 'UTF-8', 'UTF7-IMAP').'</a></span>');
 			unset($value['^']);
 		} else { // ... or just a step?
 			if($of_interest) {
