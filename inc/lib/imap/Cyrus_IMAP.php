@@ -21,7 +21,7 @@ class Cyrus_IMAP
 
 	function __construct(array $connection_data, Log $logger) {
 		$this->version		= 'unknown';
-		$this->separator	= '.';
+		$this->separator	= null;
 		$this->connection_data	= $connection_data;
 		$this->_logger		= $logger;
 	}
@@ -68,11 +68,18 @@ class Cyrus_IMAP
 		return $this->version;
 	}
 
-	public function gethierarchyseparator() {
+	private function initial_gethierarchyseparator() {
 		$result = $this->command('. list "" ""');
 		$tmp = strstr($result['0'], '"');
 		$this->separator = $tmp{1};
 		$this->_logger->debug('I: Hierarchy separator is "'.$this->separator.'".');
+		return $this->separator;
+	}
+
+	public function gethierarchyseparator() {
+		if(is_null($this->separator)) {
+			$this->initial_gethierarchyseparator();
+		}
 		return $this->separator;
 	}
 
