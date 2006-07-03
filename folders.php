@@ -12,8 +12,8 @@ if($oma->current_user->mbox != $oma->authenticated_user->mbox) {
 $IMAP		= $cfg['Servers']['IMAP'][$_SESSION['server']];
 $IMAP['ADMIN']	= $oma->authenticated_user->mbox.$IMAP['VDOM'];
 $IMAP['PASS']	= $oma->authenticated_user->get_plaintext_password();
-if($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'] == 'cyrus') {
-	$imap	= new Cyrus_IMAP($IMAP);
+if($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'] != 'fake-imap') {
+	$imap = IMAP_get_instance($IMAP, $cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']);
 	$oma->imap	= $imap;
 }
 

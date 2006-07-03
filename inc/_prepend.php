@@ -48,14 +48,8 @@ User::$db		= $db;
 User::$tablenames	= $cfg['tablenames'];
 
 // IMAP
-switch($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']) {
-	case 'fake-imap':
-		$imap = new Fake_IMAP($cfg['Servers']['IMAP'][$_SESSION['server']], $db, $cfg['tablenames']);
-		break;
-	default:
-		$imap = new Cyrus_IMAP($cfg['Servers']['IMAP'][$_SESSION['server']]);
-		break;
-}
+$imap = IMAP_get_instance($cfg['Servers']['IMAP'][$_SESSION['server']],
+			$cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE']);
 
 // include the backend
 $oma	= new openmailadmin($db, $cfg['tablenames'], $cfg, $imap);
