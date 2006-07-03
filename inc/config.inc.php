@@ -3,6 +3,11 @@
 // Your modifications go to config.local.inc.php!
 $version	= '0.10.0-alpha';
 
+// This is for logging. Unless you experience bugs and want to help fixing them,
+// leave these settings as they are.
+$cfg['logger']['facility']	= 'null';
+$cfg['logger']['name']		= '';
+
 // If language detection fails, use that language as fallback.
 $default_lang = 	$lang	= 'en';
 $cfg['force_default_language']	= false;

@@ -334,6 +334,7 @@ function db_find_in_set(ADOConnection $db, $needle, array $haystack) {
  * Factory for IMAP instances.
  */
 function IMAP_get_instance(array $imap_cfg, $facility = 'fake-imap') {
+	global $cfg;
 	switch($facility) {
 		case 'fake-imap':
 			global $db;
@@ -342,7 +343,7 @@ function IMAP_get_instance(array $imap_cfg, $facility = 'fake-imap') {
 		case 'cyrus':
 			require_once('Log.php');	// from PEAR!
 			$imap = new Cyrus_IMAP($imap_cfg,
-						Log::singleton('null', '', 'Cyrus_IMAP'));
+						Log::singleton($cfg['logger']['facility'], $cfg['logger']['name'], 'Cyrus_IMAP'));
 			break;
 		default:
 			throw new Exception('IMAP facility "'.$facility.'" is not implemented.');
