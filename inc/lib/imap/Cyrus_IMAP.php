@@ -102,7 +102,7 @@ class Cyrus_IMAP
 			return $out;
 		} else {
 			if($row{2} != 'O') {
-				$this->error_msg	= substr($row, 6);
+				$this->error_msg	= substr($row, 5);
 			}
 			return ($row{2} == 'O');
 		}
