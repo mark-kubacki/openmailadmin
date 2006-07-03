@@ -29,7 +29,9 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'ACL') {
 				$_POST['subname']	= trim($_POST['subname']);
 				if(preg_match('/[\w\s\d\+\-\_\.\:\~\=]{'.strlen($_POST['subname']).'}/', $_POST['subname'])) {
 					$to_be_created = addslashes($_GET['folder'].$imap->gethierarchyseparator().$_POST['subname']);
-					$imap->createmb($to_be_created);
+					if(!$imap->createmb($to_be_created)) {
+						error($imap->error_msg);
+					}
 				} else {
 					error(txt('109'));
 				}
@@ -72,7 +74,7 @@ for($i = 0; $i < count($raw_folder_list); $i++) {
 include('./templates/'.$cfg['theme'].'/folders/list.tpl');
 
 // ADMIN PANEL (not hidden by default)
-if(isset($_GET['folder'])&& in_array($_GET['folder'], $mailbox_list)) {
+if(isset($_GET['folder']) && in_array($_GET['folder'], $mailbox_list)) {
 	$ACLs = $imap->getacl($_GET['folder']);
 	ksort($ACLs);
 	reset($ACLs);
