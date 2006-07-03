@@ -27,8 +27,8 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'ACL') {
 			if(isset($_GET['folder'])) {
 				$_GET['folder']	= trim($_GET['folder']);
 				$_POST['subname']	= trim($_POST['subname']);
-				if(preg_match('/[\w\s\d\+\-\_\.\:\~\=]{'.strlen($_POST['subname']).'}/', $_POST['subname'])) {
-					$to_be_created = addslashes($_GET['folder'].$imap->gethierarchyseparator().$_POST['subname']);
+				if(preg_match('/[\w\s\d\+\-\_\.\:\~\=]{'.mb_strlen($_POST['subname'], 'UTF-8').'}/u', $_POST['subname'])) {
+					$to_be_created = addslashes($_GET['folder'].$imap->gethierarchyseparator().mb_convert_encoding($_POST['subname'], 'UTF7-IMAP', 'UTF-8'));
 					if(!$imap->createmb($to_be_created)) {
 						error($imap->error_msg);
 					}
