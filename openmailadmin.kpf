@@ -64,10 +64,6 @@
 </file>
 <file url="inc/lib/InputValidatorSuite.php" id="108BAA194A3L54c4f99d0x2684" name="InputValidatorSuite.php">
 </file>
-<file url="inc/lib/InputValidationPair.php" id="108BAD8CFCAL3e95a1340x2684" name="InputValidationPair.php">
-</file>
-<file url="inc/lib/InputValidationCase.php" id="108BADF9BE4L497280a60x2684" name="InputValidationCase.php">
-</file>
 <file url="inc/lib/HTMLInputTagGenerator.php" id="109CAAB2124L2c27b55c0x2926" name="HTMLInputTagGenerator.php">
 </file>
 <file url="inc/lib/User.php" id="10B56D41A1BL6b8c90a0x1f05" name="User.php">
@@ -232,10 +228,6 @@
 </file>
 <folder id="108CEEA93F8L49cbc2440x448a" name="test">
 <file url="tests/__init__.php" id="108CEEFB59EL784930b40x448a" name="__init__.php">
-</file>
-<file url="tests/oma_InputValidationPair.php" id="108CEEFB5AFL65a017ee0x448a" name="oma_InputValidationPair.php">
-</file>
-<file url="tests/oma_InputValidationCase.php" id="108CF0B8EB3L70fc707f0x448a" name="oma_InputValidationCase.php">
 </file>
 <file url="tests/oma_InputValidatorSuite.php" id="108CF5B109AL54baa9f00x448a" name="oma_InputValidatorSuite.php">
 </file>
