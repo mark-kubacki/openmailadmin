@@ -94,6 +94,47 @@ function get_last_used_action() {
 	return checked;
 }
 
+function getElementsByClass(node,searchClass,tag) {
+	var classElements = new Array();
+	var els = node.getElementsByTagName(tag);
+	var elsLen = els.length;
+	var pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)");
+	for (i = 0; i < elsLen; i++) {
+		if (pattern.test(els[i].className)) {
+			classElements.push(els[i]);
+		}
+	}
+	return classElements;
+}
+
+// following two functions are from: http://www.quirksmode.org/js/findpos.html
+function findPosX(obj) {
+	var curleft = 0;
+	if (obj.offsetParent) {
+		while (obj.offsetParent) {
+			curleft += obj.offsetLeft
+			obj = obj.offsetParent;
+		}
+	}
+	else if (obj.x)
+		curleft += obj.x;
+	return curleft;
+}
+
+function findPosY(obj) {
+	var curtop = 0;
+	if (obj.offsetParent) {
+		while (obj.offsetParent) {
+			curtop += obj.offsetTop
+			obj = obj.offsetParent;
+		}
+	}
+	else if (obj.y)
+		curtop += obj.y;
+	return curtop;
+}
+
+
 /******************************************************************************
  * now come action handler
  ******************************************************************************/
@@ -171,6 +212,35 @@ function show_only_necessary_fields (e) {
 	var cur	= get_current_show_xor_hide_table(get_admin_panel_owner(),
 						  this.getAttribute("value", "false"));
 	admin_panel_fields_show_xor_hide(cur[0], cur[1]);
+}
+
+function show_destination_options (e) {
+	var pane = document.getElementById("options");
+	pane.style.display = "";
+	pane.style.left = (findPosX(this) + this.offsetWidth + 5) + "px";
+	pane.style.top = findPosY(this) + "px";
+	pane.funcSource = this;
+}
+
+function flash_destination_textarea() {
+	document.getElementById("dest").style.borderColor = "#00ff33";
+	document.getElementById("dest").style.backgroundColor = "#e0e0e0";
+	setTimeout('document.getElementById("dest").style.backgroundColor = ""', 300);
+	setTimeout('document.getElementById("dest").style.borderColor = "#99ffcc"', 700);
+	setTimeout('document.getElementById("dest").style.borderColor = ""', 1000);
+}
+
+function transfer_addr_destination (e) {
+	if(document.getElementById('dest').parentNode.parentNode.style.display != "none") {
+		var dest = Array();
+		if(getElementsByClass(this.funcSource, "quasi_btn", "*").length > 0) {
+			dest = this.funcSource.firstChild.nextSibling.innerHTML.split("<br>").slice(1);
+		} else {
+			dest = this.funcSource.innerHTML.split("<br>");
+		}
+		document.getElementById("dest").value = dest.join("\n");
+		flash_destination_textarea();
+	}
 }
 
 /******************************************************************************
@@ -266,6 +336,26 @@ function init_set_visibility_for_last_action() {
 	}
 }
 
+function init_destination_option_pane() {
+	document.body.innerHTML += '<div id="options"><img border="0" src="images/destination_transfer.gif" alt="#" /></div>';
+	pane = document.getElementById("options");
+	pane.style.display = "none";
+	pane.style.position = "absolute";
+
+	pane.click_action = transfer_addr_destination;
+	XBrowserAddHandler(pane, "click", "click_action");
+}
+
+function init_destination_options() {
+	init_destination_option_pane();
+	// add handler
+	var tmp = getElementsByClass(document,'addr_dest','td');
+	for (var i = 0; i < tmp.length; i++) {
+		tmp[i].show_destination_options = show_destination_options;
+		XBrowserAddHandler(tmp[i], "mouseover", "show_destination_options");
+	}
+}
+
 function init_oma() {
 	init_admin_panel_buttons();
 	init_newsletter_buttons();
@@ -278,6 +368,9 @@ function init_oma() {
 				hide_all_checkboxes_in_admin_panel(null);
 			}
 			init_showing_checkboxes_on_demand();
+		}
+		if(current_panel == "virtual" || current_panel == "virtual_regexp") {
+			init_destination_options();
 		}
 		init_showing_only_necessary_fields();
 		init_set_visibility_for_last_action();
