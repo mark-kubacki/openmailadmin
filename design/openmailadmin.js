@@ -118,7 +118,7 @@ function findPosX(obj) {
 	}
 	else if (obj.x)
 		curleft += obj.x;
-	return curleft;
+	return curleft + document.body.offsetLeft;
 }
 
 function findPosY(obj) {
@@ -131,7 +131,7 @@ function findPosY(obj) {
 	}
 	else if (obj.y)
 		curtop += obj.y;
-	return curtop;
+	return curtop + document.body.offsetTop;
 }
 
 
