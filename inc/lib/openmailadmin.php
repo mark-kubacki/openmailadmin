@@ -51,7 +51,8 @@ class openmailadmin
 
 		$result = $this->db->Execute('SELECT mbox FROM '.$this->tablenames['user'].' WHERE active = 1');
 		while(!$result->EOF) {
-			$tmp[] = $result->fields['mbox'];
+			if($result->fields['mbox'] != '')
+				$tmp[] = $result->fields['mbox'];
 			$result->MoveNext();
 		}
 		return $tmp;
@@ -83,7 +84,7 @@ class openmailadmin
 		}
 
 		// Get valid destinations.
-		if(preg_match_all('/'.$pattern.'/i', $possible, $matched)) {
+		if(preg_match_all('/'.$pattern.'/iu', $possible, $matched)) {
 			if(is_array($matched[0])) {
 				// Replace every occurence of 'mailbox' with the correct name.
 				array_walk($matched[0],
