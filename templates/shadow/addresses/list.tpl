@@ -27,7 +27,7 @@ for($i = 0; isset($alias[$i]); $i++) {
 		<tr>
 			<td class="std"><?= implode('<br />', $entry['alias']) ?></td>
 			<td class="std">@<?= $entry['domain'][0] ?></td>
-			<td class="std"><?= $entry['dest'][0] ?></td>
+			<td class="std addr_dest"><?= $entry['dest'][0] ?></td>
 		</tr>
 	<?php } ?>
 </table>

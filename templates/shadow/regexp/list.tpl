@@ -29,7 +29,7 @@ for($i = 0; isset($regexp[$i]); $i++) {
 	<?php foreach($regexp as $entry) { ?>
 		<tr>
 			<td class="std"><?= implode('<br />', $entry['reg_exp']) ?></td>
-			<td class="std"><?= $entry['dest'][0] ?></td>
+			<td class="std addr_dest"><?= $entry['dest'][0] ?></td>
 		</tr>
 	<?php } ?>
 </table>
