@@ -235,7 +235,12 @@ function transfer_addr_destination (e) {
 		var dest = Array();
 		var BR = this.funcSource.innerHTML.match(/\<br.*?\>/i);
 		if(getElementsByClass(this.funcSource, "quasi_btn", "*").length > 0) {
-			dest = this.funcSource.firstChild.nextSibling.innerHTML.split(BR).slice(1);
+			var tmp = this.funcSource.firstChild.nextSibling;
+			if(!tmp.innerHTML) {
+				var tdiv = this.funcSource.getElementsByTagName("div");
+				tmp = tdiv[0];
+			}
+			dest = tmp.innerHTML.split(BR).slice(1);
 		} else {
 			dest = this.funcSource.innerHTML.split(BR);
 		}
