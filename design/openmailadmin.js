@@ -343,7 +343,8 @@ function init_set_visibility_for_last_action() {
 }
 
 function init_destination_option_pane() {
-	document.body.innerHTML += '<div id="options"><img border="0" src="images/destination_transfer.gif" alt="#" /></div>';
+	var fb = document.getElementById("flashbar");
+	fb.innerHTML += '<div id="options"><img border="0" src="images/destination_transfer.gif" alt="#" /></div>';
 	pane = document.getElementById("options");
 	pane.style.display = "none";
 	pane.style.position = "absolute";

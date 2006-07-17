@@ -9,4 +9,5 @@
 	<link rel="stylesheet" href="<?= $cfg['design_dir'] ?>/shadow.css" type="text/css" title="shadow" />
 	</head>
 <body onload="init_tree(); init_oma()">
+<div id="flashbar" style="float: left; clear: both"></div>
 <div class="body">
