@@ -233,10 +233,11 @@ function flash_destination_textarea() {
 function transfer_addr_destination (e) {
 	if(document.getElementById('dest').parentNode.parentNode.style.display != "none") {
 		var dest = Array();
+		var BR = this.funcSource.innerHTML.match(/\<br.*?\>/i);
 		if(getElementsByClass(this.funcSource, "quasi_btn", "*").length > 0) {
-			dest = this.funcSource.firstChild.nextSibling.innerHTML.split("<br>").slice(1);
+			dest = this.funcSource.firstChild.nextSibling.innerHTML.split(BR).slice(1);
 		} else {
-			dest = this.funcSource.innerHTML.split("<br>");
+			dest = this.funcSource.innerHTML.split(BR);
 		}
 		document.getElementById("dest").value = dest.join("\n");
 		flash_destination_textarea();
