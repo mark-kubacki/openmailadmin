@@ -105,7 +105,7 @@ class HTMLInputTagGenerator
 
 	public function textarea($name, $rows = 2, $cols=49) {
 		return($this->_generic('textarea',
-					array('rows' => $rows, 'cols' => $cols, 'name' => $name),
+					array('rows' => $rows, 'cols' => $cols, 'name' => $name, 'id' => $name),
 					isset($_POST[$name]) ? $_POST[$name] : '', true));
 	}
 
