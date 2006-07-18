@@ -598,15 +598,7 @@ class openmailadmin
 		$this->db->Execute('UPDATE '.$this->tablenames['user']
 				.' SET pass_md5='.$this->db->qstr($new_md5)
 				.' WHERE mbox='.$this->db->qstr($username));
-		if($this->db->Affected_Rows() > 0) {
-			$this->ErrorHandler->add_info(txt('48'));
-			return true;
-		} else {
-			if($this->db->ErrorNo() != 0) {
-				$this->ErrorHandler->add_error($this->db->ErrorMsg());
-			}
-			return false;
-		}
+		return $this->db->Affected_Rows() > 0;
 	}
 
 	/**
@@ -653,10 +645,10 @@ class openmailadmin
 				$this->ErrorHandler->add_error(txt('47'));
 			}
 			if($this->user_set_password($this->current_user->mbox, $new)) {
+				$this->ErrorHandler->add_info(txt('48'));
 				return true;
 			}
 		}
-
 		return false;
 	}
 
