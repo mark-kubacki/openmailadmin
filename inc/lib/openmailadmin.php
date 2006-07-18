@@ -609,6 +609,29 @@ class openmailadmin
 		}
 	}
 
+	/**
+	 * @param		The password as plain text.
+	 * @return	boolean
+	 */
+	private function is_password_secure($plaintext) {
+		return preg_match('/[a-z]{1}/', $plaintext) 
+			&& preg_match('/[A-Z]{1}/', $plaintext) 
+			&& preg_match('/[0-9]{1}/', $plaintext);
+	}
+
+	/**
+	 * @return	String	with the password assigned as plain text.
+	 */
+	private function user_set_random_password($username) {
+		srand((double)microtime()*1000000);
+		do {
+			$pw = generatePW(rand($this->cfg['passwd']['min_length'], 
+						$this->cfg['passwd']['max_length']));
+		} while(!$this->is_password_secure($pw));
+		$this->user_set_password($username, $pw);
+		return $pw;
+	}
+
 	/*
 	 * Changes the current user's password.
 	 * This requires the former password for authentication if current user and
@@ -626,7 +649,7 @@ class openmailadmin
 			$this->ErrorHandler->add_error(sprintf(txt('46'), $this->cfg['passwd']['min_length'], $this->cfg['passwd']['max_length']));
 		} else {
 			// Warn about insecure passwords, but let them pass.
-			if(!(preg_match('/[a-z]{1}/', $new) && preg_match('/[A-Z]{1}/', $new) && preg_match('/[0-9]{1}/', $new))) {
+			if(!$this->is_password_secure($new)) {
 				$this->ErrorHandler->add_error(txt('47'));
 			}
 			if($this->user_set_password($this->current_user->mbox, $new)) {
@@ -907,6 +930,8 @@ class openmailadmin
 		}
 		$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['user'].' WHERE mbox='.addslashes($this->db->qstr($mboxname)).'\')';
 
+		$pw = $this->user_set_random_password($props['mbox']);
+
 		// Decrease current users's contingents...
 		if($this->authenticated_user->a_super == 0) {
 			$rollback[] = '$this->db->Execute(\'UPDATE '.$this->tablenames['user'].' SET max_alias='.$this->current_user->max_alias.', max_regexp='.$this->current_user->max_regexp.' WHERE mbox='.addslashes($this->db->qstr($this->current_user->mbox)).'\')';
@@ -956,7 +981,7 @@ class openmailadmin
 				return false;
 			}
 		}
-		$this->ErrorHandler->add_info(sprintf(txt('72'), $mboxname, $props['person']));
+		$this->ErrorHandler->add_info(sprintf(txt('72'), $mboxname, $props['person'], $pw));
 		if(isset($_SESSION['paten'][$props['pate']])) {
 			$_SESSION['paten'][$props['pate']][] = $mboxname;
 		}
