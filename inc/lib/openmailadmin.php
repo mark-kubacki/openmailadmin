@@ -632,7 +632,7 @@ class openmailadmin
 	public function user_change_password($new, $new_repeat, $old_passwd = null) {
 		if($this->current_user->mbox == $this->authenticated_user->mbox
 		   && !is_null($old_passwd)
-		   && !passwd_check($old_passwd, $this->current_user->pass_md5)) {
+		   && !$this->current_user->check_password($old_passwd)) {
 			$this->ErrorHandler->add_error(txt('45'));
 		} else if($new != $new_repeat) {
 			$this->ErrorHandler->add_error(txt('44'));
