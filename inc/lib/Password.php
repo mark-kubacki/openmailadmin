@@ -77,7 +77,7 @@ class Password
 	public function set_random($min, $max) {
 		srand((double)microtime()*674563);
 		do {
-			$pw = $this->generatePW(rand($min, $max));
+			$pw = $this->generatePW(round( ($min + rand($min, $max)) /2));
 		} while(!Password::is_secure($pw));
 		$this->set($pw);
 		return $pw;
