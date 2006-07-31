@@ -114,7 +114,7 @@ function hsys_getACLInfo($folder, $name = null) {
 	}
 
 	if(preg_match('/\*\sACL\s[^\s]*\s(.*)/', $folder[0], $arr)) {
-		if(preg_match_all('/([^\s]*)\s(['.implode('', $oma->imap->get_acl_string()).']*)\s?/', $arr[1], $arr)) {
+		if(preg_match_all('/([^\s]*)\s(['.implode('', $oma->imap->get_acl_available()).']*)\s?/', $arr[1], $arr)) {
 			$result = array_combine($arr[1], $arr[2]);
 		}
 	}
