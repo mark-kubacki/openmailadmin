@@ -38,28 +38,28 @@ function make_hashfile_of_query($file, $query, $delimiter = "\t\t", $postprocess
 /* *********************** logic ******************************************** */
 include('adodb/adodb.inc.php');
 $db	= ADONewConnection($DB['TYPE']);
-$db->Connect($DB['HOST'], $DB['USER'], $DB['PASS'], $DB['DB']) or die('Cannot connect to MySQL Server.');
+$db->Connect($DB['HOST'], $DB['USER'], $DB['PASS'], $DB['DB']) or die('Cannot connect to database server.');
 $db->SetFetchMode(ADODB_FETCH_NUM);
 
 // virtual
 $amount_new	= $db->GetOne('SELECT COUNT(*) FROM '.$DB['PREFIX'].'virtual WHERE neu=1');
 if(!is_file($MTA['virtual']) || $amount_new > 0 || time()%6<1) {
 	make_hashfile_of_query($MTA['virtual'], 'SELECT address,dest FROM '.$DB['PREFIX'].'virtual WHERE active=1 ORDER BY address DESC');
-	$db->Execute('UPDATE LOW_PRIORITY IGNORE '.$DB['PREFIX'].'virtual SET neu=0 WHERE neu=1');
+	$db->Execute('UPDATE '.$DB['PREFIX'].'virtual SET neu=0 WHERE neu=1');
 }
 
 // virtual.regexp
 $amount_new	= $db->GetOne('SELECT COUNT(*) FROM '.$DB['PREFIX'].'virtual_regexp WHERE neu=1');
 if(!is_file($MTA['regexp']) || $amount_new > 0 || time()%6<1) {
 	make_hashfile_of_query($MTA['regexp'], 'SELECT reg_exp,dest FROM '.$DB['PREFIX'].'virtual_regexp WHERE active=1 ORDER BY LENGTH(reg_exp) DESC', "\t\t", false);
-	$db->Execute('UPDATE LOW_PRIORITY IGNORE '.$DB['PREFIX'].'virtual_regexp SET neu=0 WHERE neu=1');
+	$db->Execute('UPDATE '.$DB['PREFIX'].'virtual_regexp SET neu=0 WHERE neu=1');
 }
 
 // domains
 $amount_new	= $db->GetOne('SELECT COUNT(*) FROM '.$DB['PREFIX'].'domains WHERE neu=1');
 if(!is_file($MTA['domains']) || $amount_new > 0 || time()%96<1) {
-	make_hashfile_of_query($MTA['domains'], 'SELECT domain,domain FROM '.$DB['PREFIX'].'domains ORDER BY (SELECT count(*) FROM '.$DB['PREFIX'].'virtual WHERE address LIKE CONCAT(\'%\', \'@\', domain)) DESC');
-	$db->Execute('UPDATE LOW_PRIORITY IGNORE '.$DB['PREFIX'].'domains SET neu=0 WHERE neu=1');
+	make_hashfile_of_query($MTA['domains'], 'SELECT domain,domain FROM '.$DB['PREFIX'].'domains');
+	$db->Execute('UPDATE '.$DB['PREFIX'].'domains SET neu=0 WHERE neu=1');
 }
 
 // for pam_pwdfile

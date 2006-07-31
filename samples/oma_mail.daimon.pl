@@ -35,7 +35,7 @@ if(defined $passwd_cache && (!(-e $passwd_cache) || rand(24)<1)) {
 	writePasswdCache();
 }
 
-if(rand(25) < 1) {
+if(rand(25) < 1 && $DB{'TYPE'} eq 'mysql') {
 	$dbh->do(q{OPTIMIZE TABLE virtual, virtual_regexp, user, domains});
 }
 
@@ -67,10 +67,6 @@ sub writeDomains {
 	$sth = $dbh->prepare(q{
 		SELECT domain
 		FROM domains
-		ORDER BY (SELECT count(*)
-			  FROM virtual
-			  WHERE address LIKE CONCAT('%@', domain))
-			 DESC
 		});
 	$sth->execute();
 
@@ -100,7 +96,7 @@ sub writeFile {
 	}
 	close OUT;
 
-	$dbh->do(qq{UPDATE LOW_PRIORITY IGNORE $_[1] SET neu=0 WHERE neu=1});
+	$dbh->do(qq{UPDATE $_[1] SET neu=0 WHERE neu=1});
 	system($postprocess.$MTA{$_[0]});
 }
 
