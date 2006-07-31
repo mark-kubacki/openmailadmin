@@ -52,6 +52,22 @@ class Password
 	}
 
 	/**
+	 * @source		http://www.inside-php.de/scripte/PHP-Code%20Ausschnitte-18/Erweiterter-Passwort-Generator.html
+	 */
+	private function generatePW($length=8) {
+		$dummy = array_merge(range('0', '9'), range('a', 'z'), range('A', 'Z'),
+					array('#','&','@','$','_','-','?','+', '!', ':'));
+		mt_srand((double)microtime()*1000000);
+		for($i = 1; $i <= (count($dummy)*2); $i++) {
+			$swap = mt_rand(0,count($dummy)-1);
+			$tmp = $dummy[$swap];
+			$dummy[$swap] = $dummy[0];
+			$dummy[0] = $tmp;
+		}
+		return substr(implode('',$dummy),0,$length);
+	}
+
+	/**
 	 * Generates a random password and sets it.
 	 *
 	 * @param	min	New password's minimum length.
@@ -61,7 +77,7 @@ class Password
 	public function set_random($min, $max) {
 		srand((double)microtime()*674563);
 		do {
-			$pw = generatePW(rand($min, $max));
+			$pw = $this->generatePW(rand($min, $max));
 		} while(!Password::is_secure($pw));
 		$this->set($pw);
 		return $pw;
