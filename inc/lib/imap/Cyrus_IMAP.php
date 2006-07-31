@@ -104,7 +104,7 @@ class Cyrus_IMAP
 			$row = fgets($this->sp, 1024);
 			$this->_logger->debug('S: '.$row);
 			$out[] = $row;
-		} while($row{0} != '.');
+		} while($row{0} != '.' && !feof($this->sp));
 
 		if(count($out) > 1) {
 			return $out;
