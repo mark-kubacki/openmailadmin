@@ -60,6 +60,7 @@ switch($_GET['step']) {
 				$status[$name]	= array($_POST['prefix'].$name,
 							$dict->ExecuteSQLArray($sqlarray),
 							);
+				$cfg['tablenames'][$name] = $_POST['prefix'].$name;
 			}
 			// add sample data - only if table has been created and did not exist
 			if($status['user'][1] == 2) {
@@ -67,9 +68,15 @@ switch($_GET['step']) {
 					$_POST['imap_user'] = '---';
 				}
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', md5($_POST['admin_pass']), 'all', 1, time(), time(), 10000, 100, 2, 2, 2),
-						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', md5($_POST['imap_pass']), 'none', 1, time(), time(), 0, 0, 0, 0, 1),
+					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', '', 'all', 1, time(), time(), 10000, 100, 2, 2, 2),
+						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', '', 'none', 1, time(), time(), 0, 0, 0, 0, 1),
 						));
+				User::$db = $db;
+				User::$tablenames = $cfg['tablenames'];
+				$tmp = new User($_POST['admin_user']);
+				$tmp->password->set($_POST['admin_pass']);
+				$tmp = new User($_POST['imap_user']);
+				$tmp->password->set($_POST['imap_pass']);
 			}
 			if($status['domains'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('domain', $_POST['prefix'].'domains', 'domain', array('UNIQUE')));
