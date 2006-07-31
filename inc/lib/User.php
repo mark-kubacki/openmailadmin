@@ -10,7 +10,6 @@ class User
 	public static		$tablenames;
 
 	public		$password;
-	private		$username	= null;
 	private		$data		= array();
 
 	/**
@@ -22,9 +21,9 @@ class User
 		if($data === false) {
 			throw new Exception(txt(2));
 		}
+		$this->password = new Password($this, $data['password']);
+		unset($data['password']);
 		$this->data	= $data;
-		$this->password = new Password($this, $this->data['password']);
-		unset($this->data['password']);
 	}
 
 	/**
@@ -61,9 +60,12 @@ class User
 	public function immediate_set($attribute, $value) {
 		self::$db->Execute('UPDATE '.self::$tablenames['user']
 				.' SET '.$attribute.'='.self::$db->qstr($value)
-				.' WHERE mbox='.self::$db->qstr($this->username));
-		$this->{$attribute} = $value;
-		return self::$db->Affected_Rows() > 0;
+				.' WHERE mbox='.self::$db->qstr($this->mbox));
+		if($attribute != 'password')
+			$this->{$attribute} = $value;
+		if(! self::$db->Affected_Rows() > 0)
+			throw new RuntimeException('Cannot set "'.$attribute.'" to "'.$value.'".');
+		return true;
 	}
 
 	/**
