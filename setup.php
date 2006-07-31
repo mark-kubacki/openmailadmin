@@ -68,6 +68,10 @@ switch($_GET['step']) {
 			if($status['imap_demo'][1] == 2) {
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'imap_demo (mailbox,used,qmax,ACL) VALUES (?,?,?,?)',
 							array('shared', 0, 0, 'anyone lrswipcda'));
+				if($_POST['imap_type'] == 'fake-imap') {
+					$db->Execute('INSERT INTO '.$_POST['prefix'].'imap_demo (mailbox,used,qmax,ACL) VALUES (?,?,?,?)',
+								array('user.'.$_POST['admin_user'], 0, 0, $_POST['admin_user'].' lrswipcda'));
+				}
 			}
 			if($status['user'][1] == 2 or $status['user'][1] == 1) {
 				if($_POST['imap_user'] == '') {
@@ -84,15 +88,17 @@ switch($_GET['step']) {
 				$tmp = new User($_POST['imap_user']);
 				$tmp->password->set($_POST['imap_pass']);
 				// create superuser
-				$imap = IMAP_get_instance(array('HOST' => $_POST['imap_host'],
-								'PORT' => $_POST['imap_port'],
-								'ADMIN' => $_POST['imap_user'],
-								'PASS' => $_POST['imap_pass'],
-								), $_POST['imap_type']);
-				$imap->createmb($imap->format_user($_POST['admin_user']));
-				if(isset($cfg['folders']['create_default']) && is_array($cfg['folders']['create_default'])) {
-					foreach($cfg['folders']['create_default'] as $new_folder) {
-						$imap->createmb($imap->format_user($_POST['admin_user'], $new_folder));
+				if($_POST['imap_type'] != 'fake-imap') {
+					$imap = IMAP_get_instance(array('HOST' => $_POST['imap_host'],
+									'PORT' => $_POST['imap_port'],
+									'ADMIN' => $_POST['imap_user'],
+									'PASS' => $_POST['imap_pass'],
+									), $_POST['imap_type']);
+					$imap->createmb($imap->format_user($_POST['admin_user']));
+					if(isset($cfg['folders']['create_default']) && is_array($cfg['folders']['create_default'])) {
+						foreach($cfg['folders']['create_default'] as $new_folder) {
+							$imap->createmb($imap->format_user($_POST['admin_user'], $new_folder));
+						}
 					}
 				}
 			}
