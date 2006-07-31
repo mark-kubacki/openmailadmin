@@ -69,24 +69,6 @@ class User
 	}
 
 	/**
-	 * @return	Boolean		whether plaintext password matches stored hash.
-	 */
-	public function check_password($plaintext_password) {
-		return $this->password->equals($plaintext_password);
-	}
-
-	/**
-	 * @return	String		With decrypted plaintext password or empty string, if no password was set.
-	 */
-	public function get_plaintext_password() {
-		return $this->password->get_plaintext();
-	}
-
-	public function set_plaintext_password($plaintext_password) {
-		$this->password->store_plaintext($plaintext_password);
-	}
-
-	/**
 	 * Use this to get a new user only if given plaintext password matches.
 	 *
 	 * @param	username	User must exist.
@@ -96,9 +78,9 @@ class User
 	 */
 	public static function authenticate($username, $password) {
 		$usr	= new User($username);
-		if($usr->check_password($password)) {
+		if($usr->password->equals($password)) {
 			self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE mbox='.self::$db->qstr($username));
-			$usr->set_plaintext_password($password);
+			$usr->password->store_plaintext($password);
 			return $usr;
 		}
 		throw new Exception(txt(0));

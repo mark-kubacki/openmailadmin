@@ -577,13 +577,6 @@ class openmailadmin
 
 /* ******************************* passwords ******************************** */
 	/**
-	 * @return	String	with the password assigned as plain text.
-	 */
-	private function user_set_random_password(User $user) {
-		return $user->password->set_random($this->cfg['passwd']['min_length'], $this->cfg['passwd']['max_length']);
-	}
-
-	/**
 	 * Changes the current user's password.
 	 * This requires the former password for authentication if current user and
 	 * authenticated user are the same.
@@ -882,7 +875,7 @@ class openmailadmin
 		$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['user'].' WHERE mbox='.addslashes($this->db->qstr($mboxname)).'\')';
 
 		$tmpu = new User($props['mbox']);
-		$pw = $this->user_set_random_password($tmpu);
+		$pw = $tmpu->password->set_random($this->cfg['passwd']['min_length'], $this->cfg['passwd']['max_length']);
 
 		// Decrease current users's contingents...
 		if($this->authenticated_user->a_super == 0) {
