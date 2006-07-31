@@ -15,10 +15,7 @@ class Password
 	 * @param	user		The user this class manages password for.
 	 * @param	algorithm	Name of cipher algorithm. If none is given PasswordMD5 will be used.
 	 */
-	public function __construct(User $user, $ciphered = null, IPasswordStrategy $algorithm = null) {
-		if(is_null($algorithm)) {
-			$algorithm = new PasswordMD5();
-		}
+	public function __construct(User $user, $ciphered = null, IPasswordStrategy $algorithm) {
 		$this->cipher_strategy = $algorithm;
 		$this->ciphered = $ciphered;
 		$this->user = $user;

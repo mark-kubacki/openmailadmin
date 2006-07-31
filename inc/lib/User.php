@@ -17,11 +17,12 @@ class User
 	 * @throws	Exception	if user does not exist.
 	 */
 	public function __construct($username) {
+		global $cfg;
 		$data = self::$db->GetRow('SELECT * FROM '.self::$tablenames['user'].' WHERE mbox='.self::$db->qstr($username));
 		if($data === false) {
 			throw new Exception(txt(2));
 		}
-		$this->password = new Password($this, $data['password']);
+		$this->password = new Password($this, $data['password'], new $cfg['passwd']['strategy']());
 		unset($data['password']);
 		$this->data	= $data;
 	}

@@ -64,6 +64,9 @@ $cfg['mbox']['max_length']	= 16;
 // Set to 0 to deactivate.
 $cfg['mboxview_sec']		= 5*86400;
 
+// Name of class to handle ciphering of passwords. Defaults to PasswordMD5.
+// See inc/lib/Password* for available ciphering strategies.
+$cfg['passwd']['strategy']	= 'PasswordMD5';
 // Default settings for passwords.
 $cfg['passwd']['min_length']	= 8;
 $cfg['passwd']['max_length']	= 16;
