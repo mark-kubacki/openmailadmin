@@ -82,6 +82,12 @@
 </file>
 <file url="inc/lib/PasswordMD5.php" id="10CC43FC9B3L3cd9f8170x2649" name="PasswordMD5.php">
 </file>
+<file url="inc/lib/PasswordSHA1.php" id="10CC550B5B5Lce3d8a50x2649" name="PasswordSHA1.php">
+</file>
+<file url="inc/lib/PasswordPlaintext.php" id="10CC567CC27L6345c6740x2649" name="PasswordPlaintext.php">
+</file>
+<file url="inc/lib/PasswordCrypt.php" id="10CC569BEDCL48be9acc0x2649" name="PasswordCrypt.php">
+</file>
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
 </file>
