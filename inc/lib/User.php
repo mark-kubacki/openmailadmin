@@ -64,7 +64,7 @@ class User
 				.' WHERE mbox='.self::$db->qstr($this->mbox));
 		if($attribute != 'password')
 			$this->{$attribute} = $value;
-		if(! self::$db->Affected_Rows() > 0)
+		if(self::$db->ErrorNo() != 0)
 			throw new RuntimeException('Cannot set "'.$attribute.'" to "'.$value.'".');
 		return true;
 	}
