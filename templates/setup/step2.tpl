@@ -33,6 +33,25 @@
 	</tr>
 	</table>
 
+	<h3>how to store passwords</h3>
+	<p>Below you will be able to select which hashing algorithm should be applied on passwords which will be stored in DB.</p>
+	<p>If in doubt, leave at <code>MD5</code>.</p>
+	<table class="settings two">
+	<tr>
+		<th class="w140">field</th>
+		<th>value</th>
+	</tr>
+	<tr>
+		<td>hashed with</td>
+		<td><select name="hashing_strategy">
+			<option value="PasswordMD5">MD5</option>
+			<option value="PasswordCrypt">Crypt</option>
+			<option value="PasswordSHA1">SHA1</option>
+			<option value="PasswordPlaintext">plaintext (not hashed)</option>
+			</select></td>
+	</tr>
+	</table>
+
 	<h3>IMAP connection settings</h3>
 	<p><cite>Imap admin</cite> and his <cite>password</cite> are the settings required for IMAP maintenance by this tool.
 	This is not the user you will login as administrator - that is the user to be specified in <cite>first superuser</cite>.</p>

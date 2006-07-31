@@ -14,6 +14,7 @@ $config = <<<EOT
 <?php
 /* Created by setup.php (%s) on %s */
 \$cfg['user_ignore']		= array('%s');
+\$cfg['passwd']['strategy']	= '%s';
 
 // repeat these lines for every server or virtual domain
 \$cfg['Servers']['verbose'][] = '%s';
@@ -44,6 +45,7 @@ switch($_GET['step']) {
 		if(!$db) {
 			$failure	= 'Cannot connect to DB. Please correct your DSN';
 		} else {
+			$cfg['passwd']['strategy']	= $_POST['hashing_strategy'];
 			$tables
 			= array('user'		=>	'user.adodb.txt',
 				'domains'	=>	'domains.adodb.txt',
@@ -102,6 +104,7 @@ switch($_GET['step']) {
 			}
 			$config = sprintf($config, $version, date('r'),
 				$_POST['imap_user'] != '' ? $_POST['imap_user'] : '---',
+				$_POST['hashing_strategy'],
 				'my database', $_POST['dsn'], $_POST['prefix'],
 				$_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
 			if(!file_exists('./inc/config.local.inc.php')) {
