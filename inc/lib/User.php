@@ -55,7 +55,7 @@ class User
 	 * @return	Boolean		whether plaintext password matches stored hash.
 	 */
 	public function check_password($plaintext_password) {
-		return (md5($plaintext_password) == $this->data['pass_md5']);
+		return (md5($plaintext_password) == $this->data['password']);
 	}
 
 	/**

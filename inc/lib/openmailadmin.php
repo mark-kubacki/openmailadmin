@@ -596,7 +596,7 @@ class openmailadmin
 			$new_md5 = '';
 		}
 		$this->db->Execute('UPDATE '.$this->tablenames['user']
-				.' SET pass_md5='.$this->db->qstr($new_md5)
+				.' SET password='.$this->db->qstr($new_md5)
 				.' WHERE mbox='.$this->db->qstr($username));
 		return $this->db->Affected_Rows() > 0;
 	}
@@ -606,8 +606,8 @@ class openmailadmin
 	 * @return	boolean
 	 */
 	private function is_password_secure($plaintext) {
-		return preg_match('/[a-z]{1}/', $plaintext) 
-			&& preg_match('/[A-Z]{1}/', $plaintext) 
+		return preg_match('/[a-z]{1}/', $plaintext)
+			&& preg_match('/[A-Z]{1}/', $plaintext)
 			&& preg_match('/[0-9]{1}/', $plaintext);
 	}
 
@@ -617,7 +617,7 @@ class openmailadmin
 	private function user_set_random_password($username) {
 		srand((double)microtime()*1000000);
 		do {
-			$pw = generatePW(rand($this->cfg['passwd']['min_length'], 
+			$pw = generatePW(rand($this->cfg['passwd']['min_length'],
 						$this->cfg['passwd']['max_length']));
 		} while(!$this->is_password_secure($pw));
 		$this->user_set_password($username, $pw);

@@ -64,7 +64,7 @@ if(!is_file($MTA['domains']) || $amount_new > 0 || time()%96<1) {
 
 // for pam_pwdfile
 if(!is_null($PASSWD_CACHE) && (!is_file($PASSWD_CACHE) || time()%24<1)) {
-	make_hashfile_of_query($PASSWD_CACHE, 'SELECT mbox, pass_md5 FROM '.$DB['PREFIX'].'user', ':', false);
+	make_hashfile_of_query($PASSWD_CACHE, 'SELECT mbox, password FROM '.$DB['PREFIX'].'user', ':', false);
 }
 
 // optimize DB
