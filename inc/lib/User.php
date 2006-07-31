@@ -3,17 +3,15 @@
  * Does administer all the properties, permissions and any relationship
  * methods, such as "is_descendant" etc.
  * Use instances of this class whenever data about any user is needed.
- *
- * @see		obfuscator_decrypt(), obfuscator_encrypt()
  */
 class User
 {
 	public static		$db;
 	public static		$tablenames;
 
+	public		$password;
 	private		$username	= null;
 	private		$data		= array();
-	protected	$pass_clear	= null;
 
 	/**
 	 * @param	username	User must exist.
@@ -25,6 +23,8 @@ class User
 			throw new Exception(txt(2));
 		}
 		$this->data	= $data;
+		$this->password = new Password($this, $this->data['password']);
+		unset($this->data['password']);
 	}
 
 	/**
@@ -52,25 +52,36 @@ class User
 	}
 
 	/**
+	 * Immediately set given column in database to the given value.
+	 *
+	 * @param	attribute	Name of attribute/SQL column to be set.
+	 * @param	value		The value the field shall be assigned.
+	 * @return	boolean		True if column has been changed successfully.
+	 */
+	public function immediate_set($attribute, $value) {
+		self::$db->Execute('UPDATE '.self::$tablenames['user']
+				.' SET '.$attribute.'='.self::$db->qstr($value)
+				.' WHERE mbox='.self::$db->qstr($this->username));
+		$this->{$attribute} = $value;
+		return self::$db->Affected_Rows() > 0;
+	}
+
+	/**
 	 * @return	Boolean		whether plaintext password matches stored hash.
 	 */
 	public function check_password($plaintext_password) {
-		return (md5($plaintext_password) == $this->data['password']);
+		return $this->password->equals($plaintext_password);
 	}
 
 	/**
 	 * @return	String		With decrypted plaintext password or empty string, if no password was set.
 	 */
 	public function get_plaintext_password() {
-		if(is_null($this->pass_clear)) {
-			return '';
-		} else {
-			return obfuscator_decrypt($this->pass_clear);
-		}
+		return $this->password->get_plaintext();
 	}
 
 	public function set_plaintext_password($plaintext_password) {
-		$this->pass_clear = obfuscator_encrypt($plaintext_password);
+		$this->password->store_plaintext($plaintext_password);
 	}
 
 	/**

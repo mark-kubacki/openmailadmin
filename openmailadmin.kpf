@@ -76,6 +76,12 @@
 <file url="inc/lib/imap/Fake_IMAP.php" id="1E31943C-3998-469C-B69C-45112B421292" name="Fake_IMAP.php">
 </file>
 </folder>
+<file url="inc/lib/Password.php" id="10CC4059F47L1ee65bfc0x2649" name="Password.php">
+</file>
+<file url="inc/lib/IPasswordStrategy.php" id="10CC43C9112L1effa8fa0x2649" name="IPasswordStrategy.php">
+</file>
+<file url="inc/lib/PasswordMD5.php" id="10CC43FC9B3L3cd9f8170x2649" name="PasswordMD5.php">
+</file>
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
 </file>

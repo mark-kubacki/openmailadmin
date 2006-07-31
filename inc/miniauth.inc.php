@@ -13,10 +13,10 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 	$db	= ADONewConnection($cfg['Servers']['DB'][$_POST['server']]['DSN'])
 		or die('Cannot connect to MySQL Server.');
 	$db->SetFetchMode(ADODB_FETCH_ASSOC);
-	
+
 	User::$db		= $db;
 	User::$tablenames	= array('user' => $cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user');
-	
+
 	try {
 		$authinfo = User::authenticate($_POST['mboxname'], $_POST['password']);
 		unset($_POST['password']);

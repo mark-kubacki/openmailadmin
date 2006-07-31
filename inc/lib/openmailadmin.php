@@ -576,55 +576,14 @@ class openmailadmin
 	}
 
 /* ******************************* passwords ******************************** */
-	/*
-	 * (Re)sets the user's password.
-	 * Use this if the old password does not matter.
-	 * Includes the check whether the user has the right to do this.
-	 */
-	private function user_set_password($username, $plaintext_password) {
-		// Check whether the authenticated user has the right to do that.
-		if($this->authenticated_user->a_super < 1
-		   && $username != $this->authenticated_user->mbox
-		   && !$this->user_is_descendant($username, $this->authenticated_user->mbox)) {
-			$this->ErrorHandler->add_error(txt('49'));
-			return false;
-		}
-
-		if($plaintext_password != '') {
-			$new_md5	= md5($plaintext_password);
-		} else {
-			$new_md5 = '';
-		}
-		$this->db->Execute('UPDATE '.$this->tablenames['user']
-				.' SET password='.$this->db->qstr($new_md5)
-				.' WHERE mbox='.$this->db->qstr($username));
-		return $this->db->Affected_Rows() > 0;
-	}
-
-	/**
-	 * @param		The password as plain text.
-	 * @return	boolean
-	 */
-	private function is_password_secure($plaintext) {
-		return preg_match('/[a-z]{1}/', $plaintext)
-			&& preg_match('/[A-Z]{1}/', $plaintext)
-			&& preg_match('/[0-9]{1}/', $plaintext);
-	}
-
 	/**
 	 * @return	String	with the password assigned as plain text.
 	 */
 	private function user_set_random_password($username) {
-		srand((double)microtime()*1000000);
-		do {
-			$pw = generatePW(rand($this->cfg['passwd']['min_length'],
-						$this->cfg['passwd']['max_length']));
-		} while(!$this->is_password_secure($pw));
-		$this->user_set_password($username, $pw);
-		return $pw;
+		return $this->current_user->password->set_random($this->cfg['passwd']['min_length'], $this->cfg['passwd']['max_length']);
 	}
 
-	/*
+	/**
 	 * Changes the current user's password.
 	 * This requires the former password for authentication if current user and
 	 * authenticated user are the same.
@@ -632,7 +591,7 @@ class openmailadmin
 	public function user_change_password($new, $new_repeat, $old_passwd = null) {
 		if($this->current_user->mbox == $this->authenticated_user->mbox
 		   && !is_null($old_passwd)
-		   && !$this->current_user->check_password($old_passwd)) {
+		   && !$this->current_user->password->equals($old_passwd)) {
 			$this->ErrorHandler->add_error(txt('45'));
 		} else if($new != $new_repeat) {
 			$this->ErrorHandler->add_error(txt('44'));
@@ -641,10 +600,10 @@ class openmailadmin
 			$this->ErrorHandler->add_error(sprintf(txt('46'), $this->cfg['passwd']['min_length'], $this->cfg['passwd']['max_length']));
 		} else {
 			// Warn about insecure passwords, but let them pass.
-			if(!$this->is_password_secure($new)) {
+			if(!Password::is_secure($new)) {
 				$this->ErrorHandler->add_error(txt('47'));
 			}
-			if($this->user_set_password($this->current_user->mbox, $new)) {
+			if($this->current_user->password->set($new)) {
 				$this->ErrorHandler->add_info(txt('48'));
 				return true;
 			}
