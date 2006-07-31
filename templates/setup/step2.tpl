@@ -34,8 +34,8 @@
 	</table>
 
 	<h3>IMAP connection settings</h3>
-	<p><cite>Imap admin</cite> and his <cite>password</cite> are the settings required for IMAP.
-	They will be added to DB in step 3. Don't mix them up with your first superuser</p>
+	<p><cite>Imap admin</cite> and his <cite>password</cite> are the settings required for IMAP maintenance by this tool.
+	This is not the user you will login as administrator - that is the user to be specified in <cite>first superuser</cite>.</p>
 	<table class="settings two">
 	<tr>
 		<th class="w140">field</th>
@@ -65,7 +65,7 @@
 		<td><input type="text" name="imap_pass" value="" title="i.e. '<?= md5(time().rand()) ?>'" /></td>
 	</tr>
 	</table>
-	
+
 	<h3>first superuser</h3>
 	<p>This will be the first superuser.</p>
 	<p>As he won't have any special rights if connected through IMAP oder POP,

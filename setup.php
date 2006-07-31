@@ -100,7 +100,7 @@ switch($_GET['step']) {
 							array('shared', 0, 0, 'anyone lrswipcda'),
 							));
 			}
-			$config = sprintf($config, '0.9.2', date('r'),
+			$config = sprintf($config, $version, date('r'),
 				$_POST['imap_user'] != '' ? $_POST['imap_user'] : '---',
 				'my database', $_POST['dsn'], $_POST['prefix'],
 				$_POST['imap_type'], $_POST['imap_host'], $_POST['imap_port'], $_POST['imap_user'], $_POST['imap_pass']);
