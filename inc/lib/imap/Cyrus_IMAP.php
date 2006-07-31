@@ -38,8 +38,7 @@ class Cyrus_IMAP
 		$this->error_msg = $errstr;
 
 		if(!$this->sp) {
-			$this->_logger->error('I: Socket for IMAP connection couldn\'t be opened: "'.$errstr.'"');
-			return false;
+			throw new ConfigurationErrorException('Socket for IMAP connection couldn\'t be opened: "'.$errstr.'"');
 		}
 
 		$txt = fgets($this->sp, 1024);
@@ -50,7 +49,10 @@ class Cyrus_IMAP
 		}
 
 		$this->_logger->notice('C: -- on logging in with username "'.$this->connection_data['ADMIN'].'" --');
-		return $this->command('. login "'.$this->connection_data['ADMIN'].'" "'.$this->connection_data['PASS'].'"');
+		if(!$this->command('. login "'.$this->connection_data['ADMIN'].'" "'.$this->connection_data['PASS'].'"')) {
+			throw new ConfigurationErrorException('Login failed. Check your connection data.');
+		}
+		return true;
 	}
 
 	private function imap_logout() {
@@ -88,9 +90,8 @@ class Cyrus_IMAP
 	 * @return		Unless additional data is provided the return will be either true or false. On additional data an array will be returned.
 	 */
 	private function command($cmd) {
-		if(!$this->sp && !$this->imap_login()) {
-			$this->error_msg	= 'Login failed. Check your connection data.';
-			return false;
+		if(!$this->sp) {
+			$this->imap_login();
 		}
 
 		$out = array();
