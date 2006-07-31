@@ -6,9 +6,9 @@
 <div class="setup_body">
 	<h3>connection tests</h3>
 	<?php if(isset($failure)) { ?>
-		<p class="bad"><?= $failure ?></p>
+		<p class="bad">DB: <?= $failure ?></p>
 	<?php } else { ?>
-		<p class="good">Success.</p>
+		<p class="good">DB: Success.</p>
 
 		<h3>table and index creation</h3>
 		<table class="settings">

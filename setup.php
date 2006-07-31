@@ -65,7 +65,11 @@ switch($_GET['step']) {
 				$cfg['tablenames'][$name] = $_POST['prefix'].$name;
 			}
 			// add sample data - only if table has been created and did not exist
-			if($status['user'][1] == 2) {
+			if($status['imap_demo'][1] == 2) {
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'imap_demo (mailbox,used,qmax,ACL) VALUES (?,?,?,?)',
+							array('shared', 0, 0, 'anyone lrswipcda'));
+			}
+			if($status['user'][1] == 2 or $status['user'][1] == 1) {
 				if($_POST['imap_user'] == '') {
 					$_POST['imap_user'] = '---';
 				}
@@ -79,6 +83,18 @@ switch($_GET['step']) {
 				$tmp->password->set($_POST['admin_pass']);
 				$tmp = new User($_POST['imap_user']);
 				$tmp->password->set($_POST['imap_pass']);
+				// create superuser
+				$imap = IMAP_get_instance(array('HOST' => $_POST['imap_host'],
+								'PORT' => $_POST['imap_port'],
+								'ADMIN' => $_POST['imap_user'],
+								'PASS' => $_POST['imap_pass'],
+								), $_POST['imap_type']);
+				$imap->createmb($imap->format_user($_POST['admin_user']));
+				if(isset($cfg['folders']['create_default']) && is_array($cfg['folders']['create_default'])) {
+					foreach($cfg['folders']['create_default'] as $new_folder) {
+						$imap->createmb($imap->format_user($_POST['admin_user'], $new_folder));
+					}
+				}
 			}
 			if($status['domains'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('domain', $_POST['prefix'].'domains', 'domain', array('UNIQUE')));
@@ -96,12 +112,7 @@ switch($_GET['step']) {
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual_regexp (ID,reg_exp,dest,owner,active,neu) VALUES (?,?,?,?,?,?)',
 						array(11, '/^(postmaster|abuse|security|root)@example\\.com$/', $_POST['admin_user'], $_POST['admin_user'], 1, 1));
 			}
-			if($status['imap_demo'][1] == 2) {
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'imap_demo (mailbox,used,qmax,ACL) VALUES (?,?,?,?)',
-						array(	array('user.'.$_POST['admin_user'], 0, 0, $_POST['admin_user'].' lrswipcda'),
-							array('shared', 0, 0, 'anyone lrswipcda'),
-							));
-			}
+
 			$config = sprintf($config, $version, date('r'),
 				$_POST['imap_user'] != '' ? $_POST['imap_user'] : '---',
 				$_POST['hashing_strategy'],

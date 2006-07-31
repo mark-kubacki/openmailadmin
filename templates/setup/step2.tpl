@@ -84,12 +84,14 @@
 		<td><input type="text" name="imap_pass" value="" title="i.e. '<?= md5(time().rand()) ?>'" /></td>
 	</tr>
 	</table>
+	<p>In case you have selected as IMAP-type something other than <cite>demo</cite>
+	make sure you have already configured <b><cite>PAM</cite></b> or any other means of authentication.</p>
 
 	<h3>first superuser</h3>
 	<p>This will be the first superuser.</p>
 	<p>As he won't have any special rights if connected through IMAP oder POP,
-	you can enter the data for your first mailbox without worrying much.
-	Just make sure you have created that account manually befor logging in.</p>
+	you can enter the data for your first mailbox without worrying much.</p>
+	<p>The user need not exist as he will be created after this step.</p>
 	<table class="settings three">
 	<tr>
 		<th class="w140">field</th>
