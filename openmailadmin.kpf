@@ -25,6 +25,10 @@
 </file>
 <file url="design/setup.css" id="10890F0F7CAL2def6fce0x276a" name="setup.css">
 </file>
+<file url="design/exception.css" id="10CD62A6DD2L4c92dbdb0x1e0c" name="exception.css">
+</file>
+<file url="design/exception.js" id="10CD62A8973L2ccdceea0x1e0c" name="exception.js">
+</file>
 </folder>
 <folder url="inc" id="50320A59-8123-42D6-A4CE-48B69E72FE4D" name="inc">
 <file url="inc/.htaccess" id="211EBF24-30F8-49AB-80A2-C475242F105D" name=".htaccess">
@@ -239,6 +243,8 @@
 <file url="templates/setup/step3.tpl" id="10891C87C3FL1de2b0a30x276a" name="step3.tpl">
 </file>
 </folder>
+<file url="templates/ExceptionHandler.tpl" id="10CD62EE7CCL37b3ba3e0x3a4f" name="ExceptionHandler.tpl">
+</file>
 </folder>
 <file url="setup.php" id="10890F1EB0DL6da5443b0x276a" name="setup.php">
 </file>
