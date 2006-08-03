@@ -6,6 +6,7 @@
 set_exception_handler('PrettyBlueScreen');
 
 function PrettyBlueScreen($e) {
+	ob_clean();
 	$o = create_function('$in', 'echo htmlspecialchars($in);');
 	$sub = create_function('$f', '$loc="";if(isset($f["class"])){
 		$loc.=$f["class"].$f["type"];}
