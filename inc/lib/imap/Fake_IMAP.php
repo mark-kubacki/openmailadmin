@@ -187,7 +187,6 @@ class Fake_IMAP
 	}
 
 	public function getacl($mb) {
-		throw new Exception('Das kam unerwartet.');
 		$acl = $this->db->GetOne('SELECT ACL FROM '.$this->tablenames['imap_demo'].' WHERE mailbox='.$this->db->qstr($mb));
 		if($acl === false) {
 			return array();
