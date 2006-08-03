@@ -89,7 +89,7 @@ class HTMLInputTagGenerator
 	}
 
 	public function radio($name, $value, $prop = array()) {
-		return($this->_generate('radio', $name, $value, $prop));
+		return($this->_generate('radio', $name, $value, array_merge(array('id' => $name.'_'.$value), $prop)));
 	}
 
 	public function submit($name) {

@@ -231,6 +231,12 @@ function flash_destination_textarea() {
 }
 
 function transfer_addr_destination (e) {
+	if(document.getElementById('dest').parentNode.parentNode.style.display == "none") {
+		this.funcSource.parentNode.firstChild.firstChild.checked = true;
+		document.getElementById("action_dest").checked = true;
+		var cur	= get_current_show_xor_hide_table(get_admin_panel_owner(), 'dest');
+		admin_panel_fields_show_xor_hide(cur[0], cur[1]);
+	}
 	if(document.getElementById('dest').parentNode.parentNode.style.display != "none") {
 		var dest = Array();
 		var BR = this.funcSource.innerHTML.match(/\<br.*?\>/i);
