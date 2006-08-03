@@ -88,6 +88,8 @@
 </file>
 <file url="inc/lib/PasswordCrypt.php" id="10CC569BEDCL48be9acc0x2649" name="PasswordCrypt.php">
 </file>
+<file url="inc/lib/ConfigurationErrorException.php" id="10CD61B3FBDL429e9fc0x1e0c" name="ConfigurationErrorException.php">
+</file>
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
 </file>
@@ -103,6 +105,8 @@
 <file url="inc/database/virtual_regexp.adodb.txt" id="1089203A946L6dfcabff0x276a" name="virtual_regexp.adodb.txt">
 </file>
 </folder>
+<file url="inc/exception_handler.php" id="10CD61B0689L5662405d0x1e0c" name="exception_handler.php">
+</file>
 </folder>
 <folder url="samples" id="0A4E4102-48EC-4C5D-ACC1-B2211945407F" name="samples">
 <preference-set id="">

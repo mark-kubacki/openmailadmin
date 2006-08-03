@@ -7,6 +7,8 @@ $version	= '0.10.0-alpha';
 // leave these settings as they are.
 $cfg['logger']['facility']	= 'null';
 $cfg['logger']['name']		= '';
+// Beware: Do not set this to true or your connection data might get revealed.
+$cfg['show_exceptions_online']	= false;
 
 // If language detection fails, use that language as fallback.
 $default_lang = 	$lang	= 'en';
