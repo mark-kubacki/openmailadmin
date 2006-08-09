@@ -222,10 +222,10 @@ class openmailadmin
 	public function get_addresses() {
 		$alias = array();
 
-		$result = $this->db->SelectLimit('SELECT address, dest, active'
-					.' FROM '.$this->tablenames['virtual']
-					.' WHERE owner='.$this->db->qstr($this->current_user->mbox).$_SESSION['filter']['str']['address']
-					.' ORDER BY address, dest',
+		$result = $this->db->SelectLimit('SELECT v.ID, alias, d.domain, dest, active'
+					.' FROM '.$this->tablenames['virtual'].' v JOIN '.$this->tablenames['domains'].' d ON (v.domain = d.ID)'
+					.' WHERE v.owner='.$this->db->qstr($this->current_user->mbox).$_SESSION['filter']['str']['address']
+					.' ORDER BY domain, alias, dest',
 					$_SESSION['limit'], $_SESSION['offset']['address']);
 		if(!$result === false) {
 			while(!$result->EOF) {
@@ -242,19 +242,13 @@ class openmailadmin
 				}
 				sort($dest);
 				$row['dest'] = $dest;
-				// detect where the "@" is
-				$at = strpos($row['address'], '@');
-				//turn the alias of catchalls to a star
-				if($at == 0)
+				if($row['alias'] == '')
 					$row['alias'] = '*';
-				else
-					$row['alias'] = substr($row['address'], 0, $at);
-				$row['domain'] = substr($row['address'], $at+1);
 				// add the current entry to our list of aliases
 				$alias[] = $row;
 				$result->MoveNext();
 			}
-			usort($alias, create_function('$a, $b', 'return ($a["domain"] == $b["domain"] ? strcmp($a["alias"], $b["alias"]) : strcmp($a["domain"], $b["domain"]));'));
+//			usort($alias, create_function('$a, $b', 'return ($a["domain"] == $b["domain"] ? strcmp($a["alias"], $b["alias"]) : strcmp($a["domain"], $b["domain"]));'));
 		}
 		return $alias;
 	}
@@ -303,13 +297,15 @@ class openmailadmin
 
 		return false;
 	}
-	/*
+	/**
 	 * Deletes the given addresses if they belong to the current user.
+	 *
+	 * @param	arr_addresses		Array with IDs of the addresses to be deleted.
 	 */
 	public function address_delete($arr_addresses) {
 		$this->db->Execute('DELETE FROM '.$this->tablenames['virtual']
 				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
-				.' AND '.db_find_in_set($this->db, 'address', $arr_addresses));
+				.' AND '.db_find_in_set($this->db, 'ID', $arr_addresses));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());

@@ -56,9 +56,11 @@ switch($_GET['step']) {
 			// create tables
 			$status = array();
 			foreach($tables as $name=>$tablefile) {
-				$definition	= file_get_contents('./inc/database/'.$tablefile);
+				$definition	= str_replace('PREFIX_', $_POST['prefix'], file_get_contents('./inc/database/'.$tablefile));
 				$dict		= NewDataDictionary($db);
-				$sqlarray	= $dict->CreateTableSQL($_POST['prefix'].$name, $definition);
+				$sqlarray	= $dict->CreateTableSQL($_POST['prefix'].$name,
+									$definition,
+									array('mysql' => 'ENGINE=InnoDB'));
 				$status[$name]	= array($_POST['prefix'].$name,
 							$dict->ExecuteSQLArray($sqlarray),
 							);
@@ -109,9 +111,10 @@ switch($_GET['step']) {
 						array(1, 'example.com', 'all, samples', $_POST['admin_user'], $_POST['admin_user']));
 			}
 			if($status['virtual'][1] == 2) {
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('address', $_POST['prefix'].'virtual', array('alias', 'domain'), array('UNIQUE')));
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual', 'owner'));
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual (address,dest,owner,active,neu) VALUES (?,?,?,?,?)',
-						array('me@example.com', $_POST['admin_user'], $_POST['admin_user'], 1, 1));
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual (alias,domain,dest,owner,active,neu) VALUES (?,?,?,?,?,?)',
+						array('me', 1, $_POST['admin_user'], $_POST['admin_user'], 1, 1));
 			}
 			if($status['virtual_regexp'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual_regexp', 'owner'));

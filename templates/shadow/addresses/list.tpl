@@ -1,10 +1,10 @@
 <?php
 for($i = 0; isset($alias[$i]); $i++) {
 	if($alias[$i]['active'] == 1) {
-		$alias[$i]['alias']	= $input->checkbox('address[]', $alias[$i]['address']).$alias[$i]['alias'];
+		$alias[$i]['alias']	= $input->checkbox('address[]', $alias[$i]['ID']).$alias[$i]['alias'];
 	}
 	else {
-		$alias[$i]['alias']	= $input->checkbox('address[]', $alias[$i]['address']).'<span class="deactivated">'.$alias[$i]['alias'].'</span>';
+		$alias[$i]['alias']	= $input->checkbox('address[]', $alias[$i]['ID']).'<span class="deactivated">'.$alias[$i]['alias'].'</span>';
 	}
 }
 $alias = array_densify($alias, array('domain', 'dest'));
