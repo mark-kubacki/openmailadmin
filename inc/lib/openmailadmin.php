@@ -109,29 +109,6 @@ class openmailadmin
 	}
 
 	/*
-	 * Returns an array containing all domains the user may choose from.
-	 */
-	public function get_domain_set($user, $categories, $cache = true) {
-		$cat = '';
-		$poss_dom = array();
-
-		foreach(explode(',', $categories) as $value) {
-			$poss_dom[] = trim($value);
-			$cat .= ' OR categories LIKE '.$this->db->qstr('%'.trim($value).'%');
-		}
-		$dom = array();
-		$result = $this->db->Execute('SELECT domain FROM '.$this->tablenames['domains']
-			.' WHERE owner='.$this->db->qstr($user).' OR a_admin LIKE '.$this->db->qstr('%'.$user.'%').' OR '.db_find_in_set($this->db, 'domain', $poss_dom).$cat);
-		if(!$result === false) {
-			while(!$result->EOF) {
-				$dom[] = $result->fields['domain'];
-				$result->MoveNext();
-			}
-		}
-		return $dom;
-	}
-
-	/*
 	 * Checks whether a user is a descendant of another user.
 	 * (Unfortunately, PHP does not support inline functions.)
 	 */
