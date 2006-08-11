@@ -20,7 +20,7 @@ class RegexpAddressesController
 	 * Returns a long list with all regular expressions (the virtual_regexp table).
 	 * If $match_against is given, the flag "matching" will be set on matches.
 	 */
-	public function get_regexp($match_against = null) {
+	public function get_list($match_against = null) {
 		$regexp = array();
 
 		$result = $this->oma->db->SelectLimit('SELECT * FROM '.$this->oma->tablenames['virtual_regexp']
@@ -59,7 +59,7 @@ class RegexpAddressesController
 	/*
 	 * Creates a new regexp-address.
 	 */
-	public function regexp_create($regexp, $arr_destinations) {
+	public function create($regexp, $arr_destinations) {
 		// some dull checks;
 		// if someone knows how to find out whether an string is a valid regexp -> write me please
 		if($regexp == '' || $regexp{0} != '/') {
@@ -88,7 +88,7 @@ class RegexpAddressesController
 	/*
 	 * Deletes the given regular expressions if they belong to the current user.
 	 */
-	public function regexp_delete($arr_regexp_ids) {
+	public function delete($arr_regexp_ids) {
 		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual_regexp']
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
@@ -107,7 +107,7 @@ class RegexpAddressesController
 	/**
 	 * @see		AddressController::change_destination
 	 */
-	public function regexp_change_destination($arr_regexp_ids, $arr_destinations) {
+	public function change_destination($arr_regexp_ids, $arr_destinations) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations)).', neu = 1'
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
@@ -124,7 +124,7 @@ class RegexpAddressesController
 	/**
 	 * @see		AddressController::toggle_active
 	 */
-	public function regexp_toggle_active($arr_regexp_ids) {
+	public function toggle_active($arr_regexp_ids) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET active = NOT active, neu = 1'
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));

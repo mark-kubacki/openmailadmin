@@ -32,16 +32,16 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual_regexp') {
 			} else {
 				switch($_POST['action']) {
 					case 'new':
-						$oma->regexp_create(trim($_POST['reg_exp']), $destination);
+						$oma->regexp->create(trim($_POST['reg_exp']), $destination);
 						break;
 					case 'delete':
-						$oma->regexp_delete($_POST['expr']);
+						$oma->regexp->delete($_POST['expr']);
 						break;
 					case 'dest':
-						$oma->regexp_change_destination($_POST['expr'], $destination);
+						$oma->regexp->change_destination($_POST['expr'], $destination);
 						break;
 					case 'active':
-						$oma->regexp_toggle_active($_POST['expr']);
+						$oma->regexp->toggle_active($_POST['expr']);
 						break;
 				}
 
@@ -63,9 +63,9 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual_regexp') {
 // We need to determine whether an string for matching shall be provided.
 if(isset($_POST['frm']) && isset($_POST['action'])
    && $_POST['frm'] == 'virtual_regexp' && $_POST['action'] == 'probe') {
-	$regexp = $oma->get_regexp($_POST['probe']);
+	$regexp = $oma->regexp->get_list($_POST['probe']);
 } else {
-	$regexp = $oma->get_regexp();
+	$regexp = $oma->regexp->get_list();
 }
 
 // DISPLAY
