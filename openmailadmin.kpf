@@ -99,7 +99,23 @@
 </file>
 </folder>
 <folder id="10CFCE6CDEDL496e37b30x1dba" name="controller">
+<file url="inc/lib/controller/PasswordAndDataController.php" id="10CFD0A8671L54c294360x3274" name="PasswordAndDataController.php">
+</file>
+<file url="inc/lib/controller/AddressesController.php" id="10CFD206DC3L6a456f520x3274" name="AddressesController.php">
+</file>
+<file url="inc/lib/controller/DomainController.php" id="10CFD206DE6L52e2e2b20x3274" name="DomainController.php">
+</file>
+<file url="inc/lib/controller/IMAPFolderController.php" id="10CFD206E13L35771fb00x3274" name="IMAPFolderController.php">
+</file>
+<file url="inc/lib/controller/MailboxController.php" id="10CFD206E3BL3780405b0x3274" name="MailboxController.php">
+</file>
+<file url="inc/lib/controller/RegexpAddressesController.php" id="10CFD206E70L2cf9c2930x3274" name="RegexpAddressesController.php">
+</file>
 </folder>
+<file url="inc/lib/INavigationContributor.php" id="10CFCFA380EL2e9355cc0x1dba" name="INavigationContributor.php">
+</file>
+<file url="inc/lib/AOMAController.php" id="10CFD22511AL7cd8bf720x3274" name="AOMAController.php">
+</file>
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
 </file>
