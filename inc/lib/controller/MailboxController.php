@@ -17,7 +17,6 @@ class MailboxController
 		return 'mailbox';
 	}
 
-/* ******************************* mailboxes ******************************** */
 	/**
 	 * Returns a long list with every active mailbox.
 	 */

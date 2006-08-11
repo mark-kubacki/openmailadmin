@@ -17,7 +17,6 @@ class RegexpAddressesController
 		return 'regexp';
 	}
 
-/* ******************************* regexp *********************************** */
 	/*
 	 * Returns a long list with all regular expressions (the virtual_regexp table).
 	 * If $match_against is given, the flag "matching" will be set on matches.

@@ -32,7 +32,6 @@ class DomainController
 			.' WHERE owner='.$this->db->qstr($user).' OR a_admin LIKE '.$this->db->qstr('%'.$user.'%').' OR '.db_find_in_set($this->db, 'domain', $poss_dom).$cat);
 	}
 
-/* ******************************* domains ********************************** */
 	public $editable_domains;	// How many domains can the current user change?
 	/*
 	 * Returns a long list with all domains (from table 'domains').

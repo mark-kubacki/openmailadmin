@@ -17,7 +17,6 @@ class AddressesController
 		return 'address';
 	}
 
-/* ******************************* addresses ******************************** */
 	/*
 	 * Returns a long list with all addresses (the virtuals' table).
 	 */
@@ -50,7 +49,6 @@ class AddressesController
 				$alias[] = $row;
 				$result->MoveNext();
 			}
-//			usort($alias, create_function('$a, $b', 'return ($a["domain"] == $b["domain"] ? strcmp($a["alias"], $b["alias"]) : strcmp($a["domain"], $b["domain"]));'));
 		}
 		return $alias;
 	}
