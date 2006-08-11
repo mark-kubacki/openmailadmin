@@ -62,15 +62,11 @@
 <folder id="FA13EF8A-8D1F-413F-A74F-D69CC0FE4B98" name="lib">
 <file url="inc/lib/openmailadmin.php" id="B89C866E-1408-44AE-9B4B-7D80C981AFBC" name="openmailadmin.php">
 </file>
-<file url="inc/lib/Quota.php" id="108ABC394CEL594970bd0x3672" name="Quota.php">
-</file>
 <file url="inc/lib/ErrorHandler.php" id="108BA878C7BL12f76c280x2684" name="ErrorHandler.php">
 </file>
 <file url="inc/lib/InputValidatorSuite.php" id="108BAA194A3L54c4f99d0x2684" name="InputValidatorSuite.php">
 </file>
 <file url="inc/lib/HTMLInputTagGenerator.php" id="109CAAB2124L2c27b55c0x2926" name="HTMLInputTagGenerator.php">
-</file>
-<file url="inc/lib/User.php" id="10B56D41A1BL6b8c90a0x1f05" name="User.php">
 </file>
 <folder id="10C3482DBAAL569cf5920x2137" name="imap">
 <file url="inc/lib/imap/Cyrus_IMAP.php" id="1078973E1AEL52cf15470x24c3" name="Cyrus_IMAP.php">
@@ -80,20 +76,30 @@
 <file url="inc/lib/imap/Fake_IMAP.php" id="1E31943C-3998-469C-B69C-45112B421292" name="Fake_IMAP.php">
 </file>
 </folder>
-<file url="inc/lib/Password.php" id="10CC4059F47L1ee65bfc0x2649" name="Password.php">
-</file>
-<file url="inc/lib/IPasswordStrategy.php" id="10CC43C9112L1effa8fa0x2649" name="IPasswordStrategy.php">
-</file>
-<file url="inc/lib/PasswordMD5.php" id="10CC43FC9B3L3cd9f8170x2649" name="PasswordMD5.php">
-</file>
-<file url="inc/lib/PasswordSHA1.php" id="10CC550B5B5Lce3d8a50x2649" name="PasswordSHA1.php">
-</file>
-<file url="inc/lib/PasswordPlaintext.php" id="10CC567CC27L6345c6740x2649" name="PasswordPlaintext.php">
-</file>
-<file url="inc/lib/PasswordCrypt.php" id="10CC569BEDCL48be9acc0x2649" name="PasswordCrypt.php">
-</file>
 <file url="inc/lib/ConfigurationErrorException.php" id="10CD61B3FBDL429e9fc0x1e0c" name="ConfigurationErrorException.php">
 </file>
+<folder id="10CFCE24B9CL65788f730x1a41" name="view">
+<file url="inc/lib/view/Quota.php" id="108ABC394CEL594970bd0x3672" name="Quota.php">
+</file>
+</folder>
+<folder id="10CFCE25FC4L7b7e6b800x1a41" name="model">
+<file url="inc/lib/model/Password.php" id="10CC4059F47L1ee65bfc0x2649" name="Password.php">
+</file>
+<file url="inc/lib/model/IPasswordStrategy.php" id="10CC43C9112L1effa8fa0x2649" name="IPasswordStrategy.php">
+</file>
+<file url="inc/lib/model/PasswordMD5.php" id="10CC43FC9B3L3cd9f8170x2649" name="PasswordMD5.php">
+</file>
+<file url="inc/lib/model/PasswordSHA1.php" id="10CC550B5B5Lce3d8a50x2649" name="PasswordSHA1.php">
+</file>
+<file url="inc/lib/model/PasswordPlaintext.php" id="10CC567CC27L6345c6740x2649" name="PasswordPlaintext.php">
+</file>
+<file url="inc/lib/model/PasswordCrypt.php" id="10CC569BEDCL48be9acc0x2649" name="PasswordCrypt.php">
+</file>
+<file url="inc/lib/model/User.php" id="10B56D41A1BL6b8c90a0x1f05" name="User.php">
+</file>
+</folder>
+<folder id="10CFCE6CDEDL496e37b30x1dba" name="controller">
+</folder>
 </folder>
 <file url="inc/config.local.inc.php" id="1088BD827F5L356a71a20x2630" name="config.local.inc.php">
 </file>
