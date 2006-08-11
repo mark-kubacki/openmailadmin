@@ -4,7 +4,7 @@ class DomainController
 	implements INavigationContributor
 {
 	public function get_navigation_items() {
-		if($this->oma->authenticated_user->a_admin_domains >= 1 || $this->oma->user_get_number_domains($this->oma->current_user->mbox) > 0) {
+		if($this->oma->authenticated_user->a_admin_domains >= 1 || $this->oma->current_user->get_number_domains() > 0) {
 			return array('link'		=> 'domains.php'.($this->oma->current_user->mbox != $this->oma->authenticated_user->mbox ? '?cuser='.$this->oma->current_user->mbox : ''),
 					'caption'	=> txt('54'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'domains.php'));
@@ -64,9 +64,6 @@ class DomainController
 				$result->MoveNext();
 			}
 		}
-
-		$this->oma->current_user->n_domains = $this->oma->user_get_number_domains($this->oma->current_user->mbox);
-
 		return $domains;
 	}
 	/**
@@ -79,20 +76,18 @@ class DomainController
 	 * @return	Boolean
 	 */
 	public function only_subset_available(User $reference, User $tobechecked, $domain_key) {
-		if(!isset($reference->domain_set)) {
-			$reference->domain_set = $this->get_usable_by_user($reference);
-		}
+		$domains_available_to_reference = $this->get_usable_by_user($reference);
 		// new domain-key must not lead to more domains than the user already has to choose from
 		// A = Domains the new user will be able to choose from.
 		$dom_a = $this->get_usable_by_user($tobechecked, $domain_key);
-		// B = Domains the creator may choose from (that is $reference['domain_set'])?
+		// B = Domains the creator may choose from (that is $domains_available_to_reference)?
 		// Okay, if A is part of B. (Thus, no additional domains are added for user "A".)
 		// Indication: A <= B
 		if(count($dom_a) == 0) {
 			// This will be only a warning.
 			$this->ErrorHandler->add_error(txt('80'));
-		} else if(count($dom_a) > count($reference->domain_set)
-			   && count(array_diff($dom_a, $reference->domain_set)) > 0) {
+		} else if(count($dom_a) > count($domains_available_to_reference)
+			   && count(array_diff($dom_a, $domains_available_to_reference)) > 0) {
 			// A could have domains which the reference cannot access.
 			return false;
 		}

@@ -4,7 +4,7 @@ class AddressesController
 	implements INavigationContributor
 {
 	public function get_navigation_items() {
-		if($this->oma->current_user->max_alias > 0 || $this->oma->authenticated_user->a_super >= 1 || $this->oma->user_get_used_alias($this->oma->current_user->mbox)) {
+		if($this->oma->current_user->max_alias > 0 || $this->oma->authenticated_user->a_super >= 1 || $this->oma->current_user->get_used_alias()) {
 			return array('link'		=> 'addresses.php'.($this->oma->current_user->mbox != $this->oma->authenticated_user->mbox ? '?cuser='.$this->oma->current_user->mbox : ''),
 					'caption'	=> txt('17'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'addresses.php'));
@@ -57,7 +57,7 @@ class AddressesController
 	 */
 	public function create($alias, $domain, $arr_destinations) {
 		// May the user create another address?
-		if($this->oma->current_user->used_alias < $this->oma->current_user->max_alias
+		if($this->oma->current_user->get_used_alias() < $this->oma->current_user->max_alias
 		   || $this->oma->authenticated_user->a_super >= 1) {
 			// May he use the given domain?
 			if(! in_array($domain, $this->oma->domain->get_usable_by_user($this->oma->current_user))) {
@@ -95,7 +95,6 @@ class AddressesController
 				$this->ErrorHandler->add_error(txt('133'));
 			} else {
 				$this->ErrorHandler->add_info(sprintf(txt('135'), strtolower($alias).'@'.$domain));
-				$this->oma->current_user->used_alias++;
 				return true;
 			}
 		} else {
@@ -123,7 +122,6 @@ class AddressesController
 			}
 		} else {
 			$this->ErrorHandler->add_info(sprintf(txt('15'), implode(', ', $tmp)));
-			$this->oma->current_user->used_alias -= $this->oma->db->Affected_Rows();
 			return true;
 		}
 

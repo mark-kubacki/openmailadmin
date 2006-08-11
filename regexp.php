@@ -2,9 +2,6 @@
 include('./inc/_prepend.php');
 include('./inc/panel_filter.php');
 
-$oma->current_user->domain_set = $oma->domain->get_usable_by_user($oma->current_user);
-$oma->current_user->used_regexp = $oma->user_get_used_regexp($oma->current_user->mbox);
-
 // ------------------------------ Regexp ----------------------------------------------------------
 // PERFORM ACTION
 if(isset($_POST['frm']) && $_POST['frm'] == 'virtual_regexp') {

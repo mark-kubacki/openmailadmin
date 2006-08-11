@@ -5,7 +5,7 @@ count_same_cols($domains, 'a_admin', 'n_admin');
 <?php if($oma->authenticated_user->a_admin_domains > 0) { ?>
 	<form action="<?= mkSelfRef() ?>" method="post">
 <?php } ?>
-<?= caption(txt('54'), getPageList('<a href="'.mkSelfRef(array('dom_page' => '%d')).'">%d</a>', $oma->current_user->n_domains, $_SESSION['limit'], $_SESSION['offset']['dom_page'])) ?>
+<?= caption(txt('54'), getPageList('<a href="'.mkSelfRef(array('dom_page' => '%d')).'">%d</a>', $oma->current_user->get_number_domains(), $_SESSION['limit'], $_SESSION['offset']['dom_page'])) ?>
 <?php outer_shadow_start(); ?>
 <table border="0" cellpadding="1" cellspacing="1">
 	<tr>

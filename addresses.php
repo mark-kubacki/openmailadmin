@@ -2,9 +2,6 @@
 include('./inc/_prepend.php');
 include('./inc/panel_filter.php');
 
-$oma->current_user->domain_set = $oma->domain->get_usable_by_user($oma->current_user);
-$oma->current_user->used_alias = $oma->user_get_used_alias($oma->current_user->mbox);
-
 // ------------------------------ Addresses -------------------------------------------------------
 // PERFORM ACTION
 if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {

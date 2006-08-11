@@ -4,7 +4,7 @@ class RegexpAddressesController
 	implements INavigationContributor
 {
 	public function get_navigation_items() {
-		if($this->oma->current_user->max_regexp > 0 || $this->oma->authenticated_user->a_super >= 1 || $this->oma->user_get_used_regexp($this->oma->current_user->mbox)) {
+		if($this->oma->current_user->max_regexp > 0 || $this->oma->authenticated_user->a_super >= 1 || $this->oma->current_user->get_used_regexp()) {
 			return array('link'		=> 'regexp.php'.($this->oma->current_user->mbox != $this->oma->authenticated_user->mbox ? '?cuser='.$this->oma->current_user->mbox : ''),
 					'caption'	=> txt('33'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'regexp.php'));
@@ -67,7 +67,7 @@ class RegexpAddressesController
 			return false;
 		}
 
-		if($this->oma->current_user->used_regexp < $this->oma->current_user->max_regexp
+		if($this->oma->current_user->get_used_regexp() < $this->oma->current_user->max_regexp
 		   || $this->oma->authenticated_user->a_super > 0) {
 			$this->oma->db->Execute('INSERT INTO '.$this->oma->tablenames['virtual_regexp'].' (reg_exp, dest, owner) VALUES (?, ?, ?)',
 				array($regexp, implode(',', $arr_destinations), $this->oma->current_user->mbox));
@@ -76,7 +76,6 @@ class RegexpAddressesController
 					$this->ErrorHandler->add_error(txt('133'));
 				}
 			} else {
-				$this->oma->current_user->used_regexp++;
 				return true;
 			}
 		} else {
@@ -98,7 +97,6 @@ class RegexpAddressesController
 			}
 		} else {
 			$this->ErrorHandler->add_info(txt('32'));
-			$this->oma->current_user->used_regexp -= $this->oma->db->Affected_Rows();
 			return true;
 		}
 

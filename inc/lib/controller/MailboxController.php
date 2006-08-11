@@ -4,7 +4,7 @@ class MailboxController
 	implements INavigationContributor
 {
 	public function get_navigation_items() {
-		if($this->oma->authenticated_user->a_admin_user >= 1 || $this->oma->user_get_number_mailboxes($this->oma->current_user->mbox) > 0) {
+		if($this->oma->authenticated_user->a_admin_user >= 1 || $this->oma->current_user->get_number_mailboxes() > 0) {
 			return	array('link'		=> 'mailboxes.php'.($this->oma->current_user->mbox != $this->oma->authenticated_user->mbox ? '?cuser='.$this->oma->current_user->mbox : ''),
 					'caption'	=> txt('79'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php'));
@@ -69,7 +69,6 @@ class MailboxController
 				$result->MoveNext();
 			}
 		}
-		$this->oma->current_user->n_mbox = $this->oma->user_get_number_mailboxes($this->oma->current_user->mbox);
 
 		return $mailboxes;
 	}
@@ -145,7 +144,7 @@ class MailboxController
 		// check contingents (only if non-superuser)
 		if($this->oma->authenticated_user->a_super == 0) {
 			// As the current user's contingents will be decreased we have to use his values.
-			if($props['max_alias'] > ($this->oma->current_user->max_alias - $this->oma->user_get_used_alias($this->oma->current_user->mbox))
+			if($props['max_alias'] > ($this->oma->current_user->max_alias - $this->oma->current_user->get_used_alias())
 			   || $props['max_regexp'] > ($this->oma->current_user->max_regexp - $this->oma->user_get_used_regexp($this->oma->current_user->mbox))) {
 				$this->ErrorHandler->add_error(txt('66'));
 				return false;
@@ -322,7 +321,7 @@ class MailboxController
 						$has_to_be_free = $this->oma->db->GetOne('SELECT SUM('.$props[$what].'-'.$what.')'
 								.' FROM '.$this->oma->tablenames['user']
 								.' WHERE '.db_find_in_set($this->oma->db, 'mbox', $to_be_processed));
-						if($has_to_be_free <= $this->oma->user_get_used_alias($this->oma->current_user->mbox)) {
+						if($has_to_be_free <= $this->oma->current_user->get_used_alias()) {
 							// If so, set new contingents on the users...
 							$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['user']
 							.' SET '.$what.'='.$props[$what]
