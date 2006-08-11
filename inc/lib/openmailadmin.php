@@ -188,43 +188,26 @@ class openmailadmin
 	 * Does cache, but not session-wide.
 	 */
 	public function user_get_used_alias($username) {
-		static $used = array();
-		if(!isset($used[$username])) {
-			$used[$username] = $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['virtual'].' WHERE owner='.$this->db->qstr($username));
-		}
-		return $used[$username];
+		return $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['virtual'].' WHERE owner='.$this->db->qstr($username));
 	}
 	/*
 	 * How many regexp-addresses the user has already in use?
 	 * Does cache, but not session-wide.
 	 */
 	public function user_get_used_regexp($username) {
-		static $used = array();
-		if(!isset($used[$username])) {
-			$used[$username] = $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['virtual_regexp'].' WHERE owner='.$this->db->qstr($username));
-		}
-		return $used[$username];
+		return $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['virtual_regexp'].' WHERE owner='.$this->db->qstr($username));
 	}
-
 	/*
 	 * These just count how many elements have been assigned to that given user.
 	 */
 	public function user_get_number_mailboxes($username) {
-		if(!isset($_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'])) {
-			$tmp = $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['user'].' WHERE pate='.$this->db->qstr($username));
-			$_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'] = $tmp;
-		}
-		return $_SESSION['cache']['n_Mailboxes'][$username]['mailboxes'];
+		return $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['user'].' WHERE pate='.$this->db->qstr($username));
 	}
 	/*
 	 * These just count how many elements have been assigned to that given user.
 	 */
 	public function user_get_number_domains($username) {
-		if(!isset($_SESSION['cache']['n_Domains'][$username]['domains'])) {
-			$tmp = $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['domains'].' WHERE owner='.$this->db->qstr($username));
-			$_SESSION['cache']['n_Domains'][$username]['domains'] = $tmp;
-		}
-		return $_SESSION['cache']['n_Domains'][$username]['domains'];
+		return $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['domains'].' WHERE owner='.$this->db->qstr($username));
 	}
 
 }
