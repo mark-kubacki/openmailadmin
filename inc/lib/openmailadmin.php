@@ -57,19 +57,6 @@ class openmailadmin
 	}
 
 	/*
-	 * This procedure simply executes every command stored in the array.
-	 */
-	private function rollback($what) {
-		if(is_array($what)) {
-			foreach($what as $cmd) {
-				eval($cmd.';');
-			}
-		} else {
-			eval($what.';');
-		}
-	}
-
-	/*
 	 * Accepts a string containing possible destination for an email-address,
 	 * selects valid destinations and returns them.
 	 */

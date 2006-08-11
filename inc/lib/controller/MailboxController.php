@@ -17,6 +17,19 @@ class MailboxController
 		return 'mailbox';
 	}
 
+	/*
+	 * This procedure simply executes every command stored in the array.
+	 */
+	private function rollback($what) {
+		if(is_array($what)) {
+			foreach($what as $cmd) {
+				eval($cmd.';');
+			}
+		} else {
+			eval($what.';');
+		}
+	}
+
 	/**
 	 * Returns a long list with every active mailbox.
 	 */
