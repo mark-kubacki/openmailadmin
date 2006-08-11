@@ -70,14 +70,6 @@ class openmailadmin
 	}
 
 	/*
-	 * As the name says, returns an array containing the entire row
-	 * of the "user" table belonging to that mailbox.
-	 */
-	public function get_user_row($mailbox) {
-		return $this->db->GetRow('SELECT * FROM '.$this->tablenames['user'].' WHERE mbox='.$this->db->qstr($mailbox));
-	}
-
-	/*
 	 * Accepts a string containing possible destination for an email-address,
 	 * selects valid destinations and returns them.
 	 */
