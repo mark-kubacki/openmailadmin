@@ -104,8 +104,8 @@ class RegexpAddressesController
 
 		return false;
 	}
-	/*
-	 * See "address_change_destination".
+	/**
+	 * @see		AddressController::change_destination
 	 */
 	public function regexp_change_destination($arr_regexp_ids, $arr_destinations) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations)).', neu = 1'
@@ -121,8 +121,8 @@ class RegexpAddressesController
 
 		return false;
 	}
-	/*
-	 * See "address_toggle_active".
+	/**
+	 * @see		AddressController::toggle_active
 	 */
 	public function regexp_toggle_active($arr_regexp_ids) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET active = NOT active, neu = 1'

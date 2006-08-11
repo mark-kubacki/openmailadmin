@@ -161,7 +161,7 @@ class MailboxController
 		if($this->oma->cfg['create_canonical']) {
 			$tmp = explode('@', $props['canonical']);
 			if(!(is_array($tmp)
-			     && $this->oma->address_create($tmp[0], $tmp[1], array($mboxname))) ) {
+			     && $this->oma->address->create($tmp[0], $tmp[1], array($mboxname))) ) {
 				$this->ErrorHandler->add_error(txt('64'));
 				return false;
 			}

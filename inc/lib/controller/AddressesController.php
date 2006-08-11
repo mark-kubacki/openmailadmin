@@ -19,7 +19,7 @@ class AddressesController
 	/*
 	 * Returns a long list with all addresses (the virtuals' table).
 	 */
-	public function get_addresses() {
+	public function get_list() {
 		$alias = array();
 
 		$result = $this->oma->db->SelectLimit('SELECT v.ID, alias, d.domain, dest, active'
@@ -52,10 +52,10 @@ class AddressesController
 		return $alias;
 	}
 
-	/*
+	/**
 	 * Creates a new email-address.
 	 */
-	public function address_create($alias, $domain, $arr_destinations) {
+	public function create($alias, $domain, $arr_destinations) {
 		// May the user create another address?
 		if($this->oma->current_user->used_alias < $this->oma->current_user->max_alias
 		   || $this->oma->authenticated_user->a_super >= 1) {
@@ -108,7 +108,7 @@ class AddressesController
 	 *
 	 * @param	arr_addresses		Array with IDs of the addresses to be deleted.
 	 */
-	public function address_delete($arr_IDs) {
+	public function delete($arr_IDs) {
 		$tmp
 		= $this->oma->db->GetCol('SELECT CONCAT(v.alias, '.$this->oma->db->qstr('@').', d.domain)'
 				.' FROM '.$this->oma->tablenames['virtual'].' v JOIN '.$this->oma->tablenames['domains'].' d ON (v.domain = d.ID)'
@@ -132,7 +132,7 @@ class AddressesController
 	/*
 	 * Changes the destination of the given addresses if they belong to the current user.
 	 */
-	public function address_change_destination($arr_IDs, $arr_destinations) {
+	public function change_destination($arr_IDs, $arr_destinations) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations)).', neu=1'
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
 				.' AND '.db_find_in_set($this->oma->db, 'address', $arr_IDs));
@@ -149,7 +149,7 @@ class AddressesController
 	 * Toggles the 'active'-flag of a set of addresses  of the current user
 	 * and thus sets inactive ones to active ones and vice versa.
 	 */
-	public function address_toggle_active($arr_IDs) {
+	public function toggle_active($arr_IDs) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active=NOT active, neu=1'
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));

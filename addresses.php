@@ -29,16 +29,16 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 		} else {
 			switch($_POST['action']) {
 				case 'new':
-					$oma->address_create(trim($_POST['alias']), $_POST['domain'], $destination);
+					$oma->address->create(trim($_POST['alias']), $_POST['domain'], $destination);
 					break;
 				case 'delete':
-					$oma->address_delete($_POST['address']);
+					$oma->address->delete($_POST['address']);
 					break;
 				case 'dest':
-					$oma->address_change_destination($_POST['address'], $destination);
+					$oma->address->change_destination($_POST['address'], $destination);
 					break;
 				case 'active':
-					$oma->address_toggle_active($_POST['address']);
+					$oma->address->toggle_active($_POST['address']);
 					break;
 			}
 			unset($destination);
@@ -54,7 +54,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 }
 
 // DATA
-$alias = $oma->get_addresses();
+$alias = $oma->address->get_list();
 
 // DISPLAY
 include('./templates/'.$cfg['theme'].'/addresses/list.tpl');
