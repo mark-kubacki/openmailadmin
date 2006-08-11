@@ -4,12 +4,12 @@ class openmailadmin
 	public	$current_user;		// What user do we edit/display currently?
 	public	$authenticated_user;	// What user did log in?
 
-	private	$db;
-	private $validator;
+	public	$db;
+	public	$validator;
 	protected	$ErrorHandler;
 
-	private	$tablenames;
-	private	$cfg;
+	public	$tablenames;
+	public	$cfg;
 	public	$imap;
 
 	const	regex_valid_domain	= '[a-z0-9\-\_\.]{2,}\.[a-z]{2,}';

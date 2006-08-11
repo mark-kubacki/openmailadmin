@@ -4,7 +4,6 @@ class AddressesController
 	implements INavigationContributor
 {
 	public function get_navigation_items() {
-		$oma = $this->oma;
 		if($this->oma->current_user->max_alias > 0 || $this->oma->authenticated_user->a_super >= 1 || $this->oma->user_get_used_alias($this->oma->current_user->mbox)) {
 			return array('link'		=> 'addresses.php'.($this->oma->current_user->mbox != $this->oma->authenticated_user->mbox ? '?cuser='.$this->oma->current_user->mbox : ''),
 					'caption'	=> txt('17'),
@@ -23,9 +22,9 @@ class AddressesController
 	public function get_addresses() {
 		$alias = array();
 
-		$result = $this->db->SelectLimit('SELECT v.ID, alias, d.domain, dest, active'
-					.' FROM '.$this->tablenames['virtual'].' v JOIN '.$this->tablenames['domains'].' d ON (v.domain = d.ID)'
-					.' WHERE v.owner='.$this->db->qstr($this->current_user->mbox).$_SESSION['filter']['str']['address']
+		$result = $this->oma->db->SelectLimit('SELECT v.ID, alias, d.domain, dest, active'
+					.' FROM '.$this->oma->tablenames['virtual'].' v JOIN '.$this->oma->tablenames['domains'].' d ON (v.domain = d.ID)'
+					.' WHERE v.owner='.$this->oma->db->qstr($this->oma->current_user->mbox).$_SESSION['filter']['str']['address']
 					.' ORDER BY domain, alias, dest',
 					$_SESSION['limit'], $_SESSION['offset']['address']);
 		if(!$result === false) {
@@ -36,7 +35,7 @@ class AddressesController
 				foreach(explode(',', $row['dest']) as $value) {
 					$value = trim($value);
 					// replace the current user's name with "mailbox"
-					if($value == $this->current_user->mbox)
+					if($value == $this->oma->current_user->mbox)
 						$dest[] = txt('5');
 					else
 						$dest[] = $value;
@@ -58,21 +57,21 @@ class AddressesController
 	 */
 	public function address_create($alias, $domain, $arr_destinations) {
 		// May the user create another address?
-		if($this->current_user->used_alias < $this->current_user->max_alias
-		   || $this->authenticated_user->a_super >= 1) {
+		if($this->oma->current_user->used_alias < $this->oma->current_user->max_alias
+		   || $this->oma->authenticated_user->a_super >= 1) {
 			// May he use the given domain?
-			if(! in_array($domain, $this->get_domain_set($this->current_user->mbox, $this->current_user->domains))) {
+			if(! in_array($domain, $this->oma->get_domain_set($this->oma->current_user->mbox, $this->oma->current_user->domains))) {
 				$this->ErrorHandler->add_error(txt('16'));
 				return false;
 			}
 			// If he did choose a catchall, may he create such an address?
-			if($alias == '*' && $this->cfg['address']['allow_catchall']) {
-				if($this->cfg['address']['restrict_catchall']) {
+			if($alias == '*' && $this->oma->cfg['address']['allow_catchall']) {
+				if($this->oma->cfg['address']['restrict_catchall']) {
 					// If either the current or the authenticated user is
 					// owner of that given domain, we can permit creation of that catchall.
-					$result = $this->db->GetOne('SELECT domain FROM '.$this->tablenames['domains']
-								.' WHERE domain='.$this->db->qstr($domain)
-								.' AND (owner='.$this->db->qstr($this->current_user->mbox).' OR owner='.$this->db->qstr($this->authenticated_user->mbox).')');
+					$result = $this->oma->db->GetOne('SELECT domain FROM '.$this->oma->tablenames['domains']
+								.' WHERE domain='.$this->oma->db->qstr($domain)
+								.' AND (owner='.$this->oma->db->qstr($this->oma->current_user->mbox).' OR owner='.$this->oma->db->qstr($this->oma->authenticated_user->mbox).')');
 					if($result === false) {			// negative check!
 						$this->ErrorHandler->add_error(txt('16'));
 						return false;
@@ -88,15 +87,15 @@ class AddressesController
 			}
 			// Finally, create that address.
 			// ... get the domains ID
-			$domain_ID = $this->db->GetOne('SELECT ID FROM '.$this->tablenames['domains']
-								.' WHERE domain='.$this->db->qstr($domain));
-			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (alias, domain, dest, owner) VALUES (?, ?, ?, ?)',
-						array(strtolower($alias), $domain_ID, implode(',', $arr_destinations), $this->current_user->mbox));
-			if($this->db->Affected_Rows() < 1) {
+			$domain_ID = $this->oma->db->GetOne('SELECT ID FROM '.$this->oma->tablenames['domains']
+								.' WHERE domain='.$this->oma->db->qstr($domain));
+			$this->oma->db->Execute('INSERT INTO '.$this->oma->tablenames['virtual'].' (alias, domain, dest, owner) VALUES (?, ?, ?, ?)',
+						array(strtolower($alias), $domain_ID, implode(',', $arr_destinations), $this->oma->current_user->mbox));
+			if($this->oma->db->Affected_Rows() < 1) {
 				$this->ErrorHandler->add_error(txt('133'));
 			} else {
 				$this->ErrorHandler->add_info(sprintf(txt('135'), strtolower($alias).'@'.$domain));
-				$this->current_user->used_alias++;
+				$this->oma->current_user->used_alias++;
 				return true;
 			}
 		} else {
@@ -111,20 +110,20 @@ class AddressesController
 	 */
 	public function address_delete($arr_IDs) {
 		$tmp
-		= $this->db->GetCol('SELECT CONCAT(v.alias, '.$this->db->qstr('@').', d.domain)'
-				.' FROM '.$this->tablenames['virtual'].' v JOIN '.$this->tablenames['domains'].' d ON (v.domain = d.ID)'
-				.' WHERE v.owner='.$this->db->qstr($this->current_user->mbox)
-				.' AND '.db_find_in_set($this->db, 'v.ID', $arr_IDs));
-		$this->db->Execute('DELETE FROM '.$this->tablenames['virtual']
-				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
-				.' AND '.db_find_in_set($this->db, 'ID', $arr_IDs));
-		if($this->db->Affected_Rows() < 1) {
-			if($this->db->ErrorNo() != 0) {
-				$this->ErrorHandler->add_error($this->db->ErrorMsg());
+		= $this->oma->db->GetCol('SELECT CONCAT(v.alias, '.$this->oma->db->qstr('@').', d.domain)'
+				.' FROM '.$this->oma->tablenames['virtual'].' v JOIN '.$this->oma->tablenames['domains'].' d ON (v.domain = d.ID)'
+				.' WHERE v.owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' AND '.db_find_in_set($this->oma->db, 'v.ID', $arr_IDs));
+		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual']
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
+		if($this->oma->db->Affected_Rows() < 1) {
+			if($this->oma->db->ErrorNo() != 0) {
+				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
 			}
 		} else {
 			$this->ErrorHandler->add_info(sprintf(txt('15'), implode(', ', $tmp)));
-			$this->current_user->used_alias -= $this->db->Affected_Rows();
+			$this->oma->current_user->used_alias -= $this->oma->db->Affected_Rows();
 			return true;
 		}
 
@@ -134,12 +133,12 @@ class AddressesController
 	 * Changes the destination of the given addresses if they belong to the current user.
 	 */
 	public function address_change_destination($arr_IDs, $arr_destinations) {
-		$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET dest='.$this->db->qstr(implode(',', $arr_destinations)).', neu=1'
-				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
-				.' AND '.db_find_in_set($this->db, 'address', $arr_IDs));
-		if($this->db->Affected_Rows() < 1) {
-			if($this->db->ErrorNo() != 0) {
-				$this->ErrorHandler->add_error($this->db->ErrorMsg());
+		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations)).', neu=1'
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' AND '.db_find_in_set($this->oma->db, 'address', $arr_IDs));
+		if($this->oma->db->Affected_Rows() < 1) {
+			if($this->oma->db->ErrorNo() != 0) {
+				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
 			}
 		} else {
 			return true;
@@ -151,12 +150,12 @@ class AddressesController
 	 * and thus sets inactive ones to active ones and vice versa.
 	 */
 	public function address_toggle_active($arr_IDs) {
-		$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active=NOT active, neu=1'
-				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
-				.' AND '.db_find_in_set($this->db, 'ID', $arr_IDs));
-		if($this->db->Affected_Rows() < 1) {
-			if($this->db->ErrorNo() != 0) {
-				$this->ErrorHandler->add_error($this->db->ErrorMsg());
+		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active=NOT active, neu=1'
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
+		if($this->oma->db->Affected_Rows() < 1) {
+			if($this->oma->db->ErrorNo() != 0) {
+				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
 			}
 		} else {
 			return true;
