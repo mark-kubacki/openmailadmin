@@ -13,13 +13,13 @@ if($oma->authenticated_user->a_admin_domains > 0) {
 		} else {
 			switch($_POST['action']) {
 				case 'new':
-					$oma->domain_add($_POST['domain'], $_POST);
+					$oma->domain->add($_POST['domain'], $_POST);
 					break;
 				case 'delete':
-					$oma->domain_remove($_POST['dom']);
+					$oma->domain->remove($_POST['dom']);
 					break;
 				case 'change':
-					$oma->domain_change($_POST['dom'], $_POST['change'], $_POST);
+					$oma->domain->change($_POST['dom'], $_POST['change'], $_POST);
 					break;
 			}
 
@@ -34,7 +34,7 @@ if($oma->authenticated_user->a_admin_domains > 0) {
 }
 
 // DATA
-$domains = $oma->get_domains();
+$domains = $oma->domain->get_list();
 
 // DISPLAY
 include('./templates/'.$cfg['theme'].'/domains/list.tpl');

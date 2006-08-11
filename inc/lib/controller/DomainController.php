@@ -19,7 +19,7 @@ class DomainController
 	/*
 	 * Returns an array containing all domains the user may choose from.
 	 */
-	public function get_domain_set($user, $categories, $cache = true) {
+	public function get_usable_by_user($user, $categories, $cache = true) {
 		$cat = '';
 		$poss_dom = array();
 
@@ -35,7 +35,7 @@ class DomainController
 	/*
 	 * Returns a long list with all domains (from table 'domains').
 	 */
-	public function get_domains() {
+	public function get_list() {
 		$this->editable_domains = 0;
 		$domains = array();
 
@@ -69,19 +69,21 @@ class DomainController
 		return $domains;
 	}
 	/**
-	 * May the new user only select from domains which have been assigned to
-	 * the reference user? If so, return true.
+	 * Use this to check whether the user "tobechecked" wuth given "domain_key"
+	 * has not been granted access to more/other domains the user "reference"
+	 * already has.
 	 *
 	 * @param	reference	Instance of User
 	 * @param	tobechecked	Mailbox-name.
+	 * @return	Boolean
 	 */
-	public function domain_check(User $reference, $tobechecked, $domain_key) {
+	public function only_subset_available(User $reference, User $tobechecked, $domain_key) {
 		if(!isset($reference->domain_set)) {
-			$reference->domain_set = $this->get_domain_set($reference->mbox, $reference->domains);
+			$reference->domain_set = $this->get_usable_by_user($reference->mbox, $reference->domains);
 		}
 		// new domain-key must not lead to more domains than the user already has to choose from
 		// A = Domains the new user will be able to choose from.
-		$dom_a = $this->get_domain_set($tobechecked, $domain_key, false);
+		$dom_a = $this->get_usable_by_user($tobechecked, $domain_key, false);
 		// B = Domains the creator may choose from (that is $reference['domain_set'])?
 		// Okay, if A is part of B. (Thus, no additional domains are added for user "A".)
 		// Indication: A <= B
@@ -100,7 +102,7 @@ class DomainController
 	 * Adds a new domain into the corresponding table.
 	 * Categories are for grouping domains.
 	 */
-	public function domain_add($domain, $props) {
+	public function add($domain, $props) {
 		$props['domain'] = $domain;
 		if(!$this->oma->validator->validate($props, array('domain', 'categories', 'owner', 'a_admin'))) {
 			return false;
@@ -125,7 +127,7 @@ class DomainController
 	 * Not only removes the given domains by their ids,
 	 * it deactivates every address which ends in that domain.
 	 */
-	public function domain_remove($domains) {
+	public function remove($domains) {
 		// We need the old domain name later...
 		if(is_array($domains) && count($domains) > 0) {
 			if($this->oma->cfg['admins_delete_domains']) {
@@ -175,7 +177,7 @@ class DomainController
 	/*
 	 * Every parameter is an array. $domains contains IDs.
 	 */
-	public function domain_change($domains, $change, $data) {
+	public function change($domains, $change, $data) {
 		$toc = array();		// to be changed
 
 		if(!$this->oma->validator->validate($data, $change)) {

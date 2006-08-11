@@ -80,7 +80,7 @@ class InputValidatorSuite
 						);
 		$this->validate['domains']	= array(array(	'val'	=> '(~ = trim(~)) && preg_match(\'/^((?:[\w]+|[\w]+\.[\w]+),\s*)*([\w]+|[\w]+\.[\w]+)$/i\', ~)',
 							),
-						array(	'val'	=> '$this->oma->domain_check($this->oma->current_user, $this->oma->current_user->mbox, ~)',
+						array(	'val'	=> '$this->oma->domain->only_subset_available($this->oma->current_user, $this->oma->current_user, ~)',
 							'error'	=> txt('81')),
 						);
 		$this->validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.AEmailMapperController::regex_valid_email.\'/i\', ~)',

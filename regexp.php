@@ -2,7 +2,7 @@
 include('./inc/_prepend.php');
 include('./inc/panel_filter.php');
 
-$oma->current_user->domain_set = $oma->get_domain_set($oma->current_user->mbox, $oma->current_user->domains);
+$oma->current_user->domain_set = $oma->domain->get_usable_by_user($oma->current_user->mbox, $oma->current_user->domains);
 $oma->current_user->used_regexp = $oma->user_get_used_regexp($oma->current_user->mbox);
 
 // ------------------------------ Regexp ----------------------------------------------------------
