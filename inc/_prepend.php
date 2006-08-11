@@ -88,35 +88,7 @@ if($oma->current_user->mbox == $oma->current_user->pate) {
 }
 
 // Display navigation menu.
-$arr_navmenu = array();
-	$arr_navmenu[]	= array('link'		=> 'index.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
-					'caption'	=> txt('1'),
-					'active'	=> stristr($_SERVER['PHP_SELF'], 'index.php'));
-if($oma->current_user->max_alias > 0 || $oma->authenticated_user->a_super >= 1 || $oma->user_get_used_alias($oma->current_user->mbox)) {
-	$arr_navmenu[]	= array('link'		=> 'addresses.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
-					'caption'	=> txt('17'),
-					'active'	=> stristr($_SERVER['PHP_SELF'], 'addresses.php'));
-}
-if($oma->current_user->mbox == $oma->authenticated_user->mbox) {
-	$arr_navmenu[]	= array('link'		=> 'folders.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
-					'caption'	=> txt('103'),
-					'active'	=> stristr($_SERVER['PHP_SELF'], 'folders.php'));
-}
-if($oma->current_user->max_regexp > 0 || $oma->authenticated_user->a_super >= 1 || $oma->user_get_used_regexp($oma->current_user->mbox)) {
-	$arr_navmenu[]	= array('link'		=> 'regexp.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
-					'caption'	=> txt('33'),
-					'active'	=> stristr($_SERVER['PHP_SELF'], 'regexp.php'));
-}
-if($oma->authenticated_user->a_admin_domains >= 1 || $oma->user_get_number_domains($oma->current_user->mbox) > 0) {
-	$arr_navmenu[]	= array('link'		=> 'domains.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
-					'caption'	=> txt('54'),
-					'active'	=> stristr($_SERVER['PHP_SELF'], 'domains.php'));
-}
-if($oma->authenticated_user->a_admin_user >= 1 || $oma->user_get_number_mailboxes($oma->current_user->mbox) > 0) {
-	$arr_navmenu[]	= array('link'		=> 'mailboxes.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
-					'caption'	=> txt('79'),
-					'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php'));
-}
+$arr_navmenu = $oma->get_menu();
 include('./templates/'.$cfg['theme'].'/navigation/navigation.tpl');
 
 ?>

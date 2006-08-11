@@ -30,6 +30,42 @@ class openmailadmin
 		$this->ErrorHandler	= ErrorHandler::getInstance();
 	}
 
+	/**
+	 * Returns an array to be used in templates for generating the main menu.
+	 */
+	public function get_menu() {
+		$arr_navmenu = array();
+			$arr_navmenu[]	= array('link'		=> 'index.php'.($this->current_user->mbox != $this->authenticated_user->mbox ? '?cuser='.$this->current_user->mbox : ''),
+							'caption'	=> txt('1'),
+							'active'	=> stristr($_SERVER['PHP_SELF'], 'index.php'));
+		if($this->current_user->max_alias > 0 || $this->authenticated_user->a_super >= 1 || $this->user_get_used_alias($this->current_user->mbox)) {
+			$arr_navmenu[]	= array('link'		=> 'addresses.php'.($this->current_user->mbox != $this->authenticated_user->mbox ? '?cuser='.$this->current_user->mbox : ''),
+							'caption'	=> txt('17'),
+							'active'	=> stristr($_SERVER['PHP_SELF'], 'addresses.php'));
+		}
+		if($this->current_user->mbox == $this->authenticated_user->mbox) {
+			$arr_navmenu[]	= array('link'		=> 'folders.php'.($this->current_user->mbox != $this->authenticated_user->mbox ? '?cuser='.$this->current_user->mbox : ''),
+							'caption'	=> txt('103'),
+							'active'	=> stristr($_SERVER['PHP_SELF'], 'folders.php'));
+		}
+		if($this->current_user->max_regexp > 0 || $this->authenticated_user->a_super >= 1 || $this->user_get_used_regexp($this->current_user->mbox)) {
+			$arr_navmenu[]	= array('link'		=> 'regexp.php'.($this->current_user->mbox != $this->authenticated_user->mbox ? '?cuser='.$this->current_user->mbox : ''),
+							'caption'	=> txt('33'),
+							'active'	=> stristr($_SERVER['PHP_SELF'], 'regexp.php'));
+		}
+		if($this->authenticated_user->a_admin_domains >= 1 || $this->user_get_number_domains($this->current_user->mbox) > 0) {
+			$arr_navmenu[]	= array('link'		=> 'domains.php'.($this->current_user->mbox != $this->authenticated_user->mbox ? '?cuser='.$this->current_user->mbox : ''),
+							'caption'	=> txt('54'),
+							'active'	=> stristr($_SERVER['PHP_SELF'], 'domains.php'));
+		}
+		if($this->authenticated_user->a_admin_user >= 1 || $this->user_get_number_mailboxes($this->current_user->mbox) > 0) {
+			$arr_navmenu[]	= array('link'		=> 'mailboxes.php'.($this->current_user->mbox != $this->authenticated_user->mbox ? '?cuser='.$this->current_user->mbox : ''),
+							'caption'	=> txt('79'),
+							'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php'));
+		}
+		return $arr_navmenu;
+	}
+
 	/*
 	 * This procedure simply executes every command stored in the array.
 	 */
