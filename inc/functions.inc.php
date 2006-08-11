@@ -29,6 +29,18 @@ function ChngS($elem) {
 	return(addProp($elem, array('onchange' => 'submit()')));
 }
 
+// add a attribute to the given element
+function addProp($element, $prop = array()) {
+	if(count($prop) < 1) {
+		return $element;
+	} else {
+		$ret = '';
+		foreach($prop as $key => $value)
+			$ret	.= ' '.strtolower($key).'="'.$value.'"';
+		return preg_replace('/(<[a-z]+)\s(.*)/', '$1'.$ret.' $2', $element, 1);
+	}
+}
+
 /*
  * displays a nice error
  */
