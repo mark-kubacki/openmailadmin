@@ -14,16 +14,16 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $oma->authenticated_user->
 	} else {
 		switch($_POST['action']) {
 			case 'new':
-				$oma->mailbox_create($_POST['mbox'], $_POST);
+				$oma->mailbox->create($_POST['mbox'], $_POST);
 				break;
 			case 'delete':
-				$oma->mailbox_delete($_POST['user']);
+				$oma->mailbox->delete($_POST['user']);
 				break;
 			case 'change':
-				$oma->mailbox_change($_POST['user'], $_POST['change'], $_POST);
+				$oma->mailbox->change($_POST['user'], $_POST['change'], $_POST);
 				break;
 			case 'active':
-				$oma->mailbox_toggle_active($_POST['user']);
+				$oma->mailbox->toggle_active($_POST['user']);
 				break;
 		}
 
@@ -37,7 +37,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $oma->authenticated_user->
 }
 
 // DATA
-$mailboxes = $oma->get_mailboxes();
+$mailboxes = $oma->mailbox->get_list();
 
 // DISPLAY
 include('./templates/'.$cfg['theme'].'/mailboxes/list.tpl');
@@ -45,7 +45,7 @@ include('./templates/'.$cfg['theme'].'/mailboxes/list.tpl');
 // ADMIN PANEL
 if($oma->authenticated_user->a_admin_user >= 1) {
 	// What paten may he select?
-	$selectable_paten = $oma->get_selectable_paten($oma->current_user->mbox);
+	$selectable_paten = $oma->mailbox->get_selectable_paten($oma->current_user->mbox);
 
 	include('./templates/'.$cfg['theme'].'/mailboxes/admin.tpl');
 }

@@ -13,7 +13,7 @@ abstract class AEmailMapperController
 		$pattern  = self::regex_valid_email;
 		$pattern .= '|'.$this->oma->current_user->mbox.'|'.txt('5').'|'.strtolower(txt('5'));
 		if($this->oma->cfg['allow_mbox_as_target']) {
-			$mailboxes = &$this->oma->get_mailbox_names();
+			$mailboxes = $this->oma->mailbox->get_all_names();
 			if(count($mailboxes) > 0) {
 				$pattern .= '|'.implode('|', $mailboxes);
 			}

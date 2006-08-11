@@ -30,9 +30,9 @@ class MailboxController
 	}
 
 	/**
-	 * Returns a long list with every active mailbox.
+	 * @return 	Array 		with all(!) mailbox names as values.
 	 */
-	public function get_mailbox_names() {
+	public function get_all_names() {
 		return $this->oma->db->GetCol('SELECT mbox FROM '.$this->oma->tablenames['user'].' WHERE active = 1');
 	}
 
@@ -41,7 +41,7 @@ class MailboxController
 	 * Typically all his patenkinder will show up.
 	 * If the current user is at his pages and is superuser, he will see all mailboxes.
 	 */
-	public function get_mailboxes() {
+	public function get_list() {
 		$mailboxes = array();
 
 		if($this->oma->current_user->mbox == $this->oma->authenticated_user->mbox
@@ -105,7 +105,7 @@ class MailboxController
 	 * of $who. If the authenticated user is superuser, no filtering is done
 	 * except elimination imposed by $this->oma->cfg['user_ignore'].
 	 */
-	private function mailbox_filter_manipulable($who, $desired_mboxes) {
+	private function filter_manipulable($who, $desired_mboxes) {
 		$allowed = array();
 
 		// Does the authenticated user have the right to do that?
@@ -126,7 +126,7 @@ class MailboxController
 	 * $props is typically $_POST, as this function selects all the necessary fields
 	 * itself.
 	 */
-	public function mailbox_create($mboxname, $props) {
+	public function create($mboxname, $props) {
 		$rollback	= array();
 
 		// Check inputs for sanity and consistency.
@@ -244,7 +244,7 @@ class MailboxController
 	/*
 	 * $props can be $_POST, as every sutable field from $change is used.
 	 */
-	public function mailbox_change($mboxnames, $change, $props) {
+	public function change($mboxnames, $change, $props) {
 		// Ensure sanity of inputs and check requirements.
 		if(!$this->oma->authenticated_user->a_admin_user > 0) {
 			$this->ErrorHandler->add_error(txt('16'));
@@ -253,7 +253,7 @@ class MailboxController
 		if(!$this->oma->validator->validate($props, $change)) {
 			return false;
 		}
-		$mboxnames = $this->mailbox_filter_manipulable($this->oma->authenticated_user->mbox, $mboxnames);
+		$mboxnames = $this->filter_manipulable($this->oma->authenticated_user->mbox, $mboxnames);
 		if(!count($mboxnames) > 0) {
 			return false;
 		}
@@ -393,8 +393,8 @@ class MailboxController
 	/*
 	 * If ressources are freed, the current user will get them.
 	 */
-	public function mailbox_delete($mboxnames) {
-		$mboxnames = $this->mailbox_filter_manipulable($this->oma->authenticated_user->mbox, $mboxnames);
+	public function delete($mboxnames) {
+		$mboxnames = $this->filter_manipulable($this->oma->authenticated_user->mbox, $mboxnames);
 		if(count($mboxnames) == 0) {
 			return false;
 		}
@@ -474,8 +474,8 @@ class MailboxController
 	/*
 	 * active <-> inactive
 	 */
-	public function mailbox_toggle_active($mboxnames) {
-		$tobechanged = $this->mailbox_filter_manipulable($this->oma->current_user->mbox, $mboxnames);
+	public function toggle_active($mboxnames) {
+		$tobechanged = $this->filter_manipulable($this->oma->current_user->mbox, $mboxnames);
 		if(count($tobechanged) > 0) {
 			$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['user']
 					.' SET active = NOT active'
