@@ -60,7 +60,7 @@ class AddressesController
 		if($this->oma->current_user->used_alias < $this->oma->current_user->max_alias
 		   || $this->oma->authenticated_user->a_super >= 1) {
 			// May he use the given domain?
-			if(! in_array($domain, $this->oma->domain->get_usable_by_user($this->oma->current_user->mbox, $this->oma->current_user->domains))) {
+			if(! in_array($domain, $this->oma->domain->get_usable_by_user($this->oma->current_user))) {
 				$this->ErrorHandler->add_error(txt('16'));
 				return false;
 			}

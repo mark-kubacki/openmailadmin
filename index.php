@@ -2,7 +2,7 @@
 include('./inc/_prepend.php');
 
 // ------------------------------ Information -----------------------------------------------------
-$oma->current_user->domain_set = $oma->domain->get_usable_by_user($oma->current_user->mbox, $oma->current_user->domains);
+$oma->current_user->domain_set = $oma->domain->get_usable_by_user($oma->current_user);
 
 $a_tmp = array();
 if($oma->current_user->a_super > 0)		$a_tmp[] = txt('68');

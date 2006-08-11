@@ -16,19 +16,20 @@ class DomainController
 		return 'domain';
 	}
 
-	/*
-	 * Returns an array containing all domains the user may choose from.
+	/**
+	 * @param	domain_key	If set, the user's own domain_key is ignored and this is taken instead.
+	 * @return	Array		with all domains the user may choose from as values.
 	 */
-	public function get_usable_by_user($user, $categories, $cache = true) {
+	public function get_usable_by_user(User $user, $domain_key = null) {
 		$cat = '';
 		$poss_dom = array();
 
-		foreach(explode(',', $categories) as $value) {
+		foreach(explode(',', is_null($domain_key) ? $user->domains : $domain_key) as $value) {
 			$poss_dom[] = trim($value);
 			$cat .= ' OR categories LIKE '.$this->oma->db->qstr('%'.trim($value).'%');
 		}
 		return $this->oma->db->GetCol('SELECT domain FROM '.$this->oma->tablenames['domains']
-			.' WHERE owner='.$this->oma->db->qstr($user).' OR a_admin LIKE '.$this->oma->db->qstr('%'.$user.'%').' OR '.db_find_in_set($this->oma->db, 'domain', $poss_dom).$cat);
+			.' WHERE owner='.$this->oma->db->qstr($user->mbox).' OR a_admin LIKE '.$this->oma->db->qstr('%'.$user->mbox.'%').' OR '.db_find_in_set($this->oma->db, 'domain', $poss_dom).$cat);
 	}
 
 	public $editable_domains;	// How many domains can the current user change?
@@ -79,11 +80,11 @@ class DomainController
 	 */
 	public function only_subset_available(User $reference, User $tobechecked, $domain_key) {
 		if(!isset($reference->domain_set)) {
-			$reference->domain_set = $this->get_usable_by_user($reference->mbox, $reference->domains);
+			$reference->domain_set = $this->get_usable_by_user($reference);
 		}
 		// new domain-key must not lead to more domains than the user already has to choose from
 		// A = Domains the new user will be able to choose from.
-		$dom_a = $this->get_usable_by_user($tobechecked, $domain_key, false);
+		$dom_a = $this->get_usable_by_user($tobechecked, $domain_key);
 		// B = Domains the creator may choose from (that is $reference['domain_set'])?
 		// Okay, if A is part of B. (Thus, no additional domains are added for user "A".)
 		// Indication: A <= B
