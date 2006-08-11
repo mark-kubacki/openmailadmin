@@ -133,7 +133,7 @@ class AddressesController
 	public function change_destination($arr_IDs, $arr_destinations) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations)).', neu=1'
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
-				.' AND '.db_find_in_set($this->oma->db, 'address', $arr_IDs));
+				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
 		if($this->oma->db->Affected_Rows() < 1) {
 			if($this->oma->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
