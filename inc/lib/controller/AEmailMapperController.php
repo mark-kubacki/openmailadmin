@@ -8,7 +8,7 @@ abstract class AEmailMapperController
 	 * Accepts a string containing possible destination for an email-address,
 	 * selects valid destinations and returns them.
 	 */
-	protected function get_valid_destinations($possible) {
+	public function get_valid_destinations($possible) {
 		// Define what addresses we will accept.
 		$pattern  = self::regex_valid_email;
 		$pattern .= '|'.$this->oma->current_user->mbox.'|'.txt('5').'|'.strtolower(txt('5'));

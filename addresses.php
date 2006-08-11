@@ -16,7 +16,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 			if(isset($_POST['dest_is_mbox']) && $_POST['dest_is_mbox'] == '1') {
 				$destination = array($oma->current_user->mbox);
 			} else {
-				$destination = $oma->get_valid_destinations($_POST['dest']);
+				$destination = $oma->address->get_valid_destinations($_POST['dest']);
 				if(count($destination) < 1) {
 					$destination = array($oma->current_user->mbox);
 					error(txt('10'));
