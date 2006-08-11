@@ -83,7 +83,7 @@ class InputValidatorSuite
 						array(	'val'	=> '$this->oma->domain_check($this->oma->current_user, $this->oma->current_user->mbox, ~)',
 							'error'	=> txt('81')),
 						);
-		$this->validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.openmailadmin::regex_valid_email.\'/i\', ~)',
+		$this->validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.AEmailMapperController::regex_valid_email.\'/i\', ~)',
 							'error'	=> txt('64')),
 						);
 		$this->validate['quota']	= array(array(	'val'	=> 'is_numeric(~) && settype(~, \'int\') && ~ >= 0',

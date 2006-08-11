@@ -1,6 +1,6 @@
 <?php
 class RegexpAddressesController
-	extends AOMAController
+	extends AEmailMapperController
 	implements INavigationContributor
 {
 	public function get_navigation_items() {
