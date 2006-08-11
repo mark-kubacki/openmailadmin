@@ -91,5 +91,30 @@ class User
 		return $this->a_super >= 1;
 	}
 
+	/*
+	 * How many aliases the user has already in use?
+	 */
+	public function get_used_alias() {
+		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['virtual'].' WHERE owner='.self::$db->qstr($this->mbox));
+	}
+	/*
+	 * How many regexp-addresses the user has already in use?
+	 */
+	public function get_used_regexp() {
+		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['virtual_regexp'].' WHERE owner='.self::$db->qstr($this->mbox));
+	}
+	/*
+	 * These just count how many elements have been assigned to that given user.
+	 */
+	public function get_number_mailboxes() {
+		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['user'].' WHERE pate='.self::$db->qstr($this->mbox));
+	}
+	/*
+	 * These just count how many elements have been assigned to that given user.
+	 */
+	public function get_number_domains() {
+		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['domains'].' WHERE owner='.self::$db->qstr($this->mbox));
+	}
+
 }
 ?>

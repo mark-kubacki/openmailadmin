@@ -183,32 +183,5 @@ class openmailadmin
 		return $rec;
 	}
 
-	/*
-	 * How many aliases the user has already in use?
-	 * Does cache, but not session-wide.
-	 */
-	public function user_get_used_alias($username) {
-		return $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['virtual'].' WHERE owner='.$this->db->qstr($username));
-	}
-	/*
-	 * How many regexp-addresses the user has already in use?
-	 * Does cache, but not session-wide.
-	 */
-	public function user_get_used_regexp($username) {
-		return $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['virtual_regexp'].' WHERE owner='.$this->db->qstr($username));
-	}
-	/*
-	 * These just count how many elements have been assigned to that given user.
-	 */
-	public function user_get_number_mailboxes($username) {
-		return $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['user'].' WHERE pate='.$this->db->qstr($username));
-	}
-	/*
-	 * These just count how many elements have been assigned to that given user.
-	 */
-	public function user_get_number_domains($username) {
-		return $this->db->GetOne('SELECT COUNT(*) FROM '.$this->tablenames['domains'].' WHERE owner='.$this->db->qstr($username));
-	}
-
 }
 ?>
