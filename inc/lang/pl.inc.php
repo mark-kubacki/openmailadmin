@@ -143,6 +143,7 @@ $res['pl']	= array(
 '132'	=>	'nigdy',
 '133'	=>	'Adres został już przydzielony.',
 '134'	=>	'Domena została już przydzielona.',
+'135'	=>	'Te adresy zostały przydzielone: %s.',
 );
 
 ?>

@@ -62,14 +62,14 @@ if(isset($_POST['filtr']) && isset($_POST['filtr_addr']) && $_POST['filtr'] == '
 	}
 	switch($_POST['what']) {
 		case 'addr':
-			$_SESSION['filter']['str']['address'] = ' AND address LIKE '.$filtr_post;
+			$_SESSION['filter']['str']['address'] = ' AND alias LIKE '.$filtr_post;
 			break;
 		case 'target':
 			$_SESSION['filter']['str']['address'] = ' AND dest LIKE '.$filtr_post;
 			$_SESSION['filter']['str']['regexp'] = ' AND dest LIKE '.$filtr_post;
 			break;
 		case 'domain':
-			$_SESSION['filter']['str']['address'] = ' AND SUBSTRING_INDEX(address, "@", -1) LIKE '.$filtr_post;
+			$_SESSION['filter']['str']['address'] = ' AND d.domain LIKE '.$filtr_post;
 			$_SESSION['filter']['str']['domain'] = ' AND domain LIKE '.$filtr_post;
 			break;
 		case 'mbox':

@@ -260,6 +260,11 @@ class openmailadmin
 		// May the user create another address?
 		if($this->current_user->used_alias < $this->current_user->max_alias
 		   || $this->authenticated_user->a_super >= 1) {
+			// May he use the given domain?
+			if(! in_array($domain, $this->get_domain_set($this->current_user->mbox, $this->current_user->domains))) {
+				$this->ErrorHandler->add_error(txt('16'));
+				return false;
+			}
 			// If he did choose a catchall, may he create such an address?
 			if($alias == '*' && $this->cfg['address']['allow_catchall']) {
 				if($this->cfg['address']['restrict_catchall']) {
@@ -281,20 +286,22 @@ class openmailadmin
 				$this->ErrorHandler->add_error(txt('13'));
 				return false;
 			}
-
 			// Finally, create that address.
-			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
-						array(strtolower($alias.'@'.$domain), implode(',', $arr_destinations), $this->current_user->mbox));
+			// ... get the domains ID
+			$domain_ID = $this->db->GetOne('SELECT ID FROM '.$this->tablenames['domains']
+								.' WHERE domain='.$this->db->qstr($domain));
+			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (alias, domain, dest, owner) VALUES (?, ?, ?, ?)',
+						array(strtolower($alias), $domain_ID, implode(',', $arr_destinations), $this->current_user->mbox));
 			if($this->db->Affected_Rows() < 1) {
 				$this->ErrorHandler->add_error(txt('133'));
 			} else {
+				$this->ErrorHandler->add_info(sprintf(txt('135'), strtolower($alias).'@'.$domain));
 				$this->current_user->used_alias++;
 				return true;
 			}
 		} else {
 			$this->ErrorHandler->add_error(txt('14'));
 		}
-
 		return false;
 	}
 	/**
@@ -302,16 +309,21 @@ class openmailadmin
 	 *
 	 * @param	arr_addresses		Array with IDs of the addresses to be deleted.
 	 */
-	public function address_delete($arr_addresses) {
+	public function address_delete($arr_IDs) {
+		$tmp
+		= $this->db->GetCol('SELECT CONCAT(v.alias, '.$this->db->qstr('@').', d.domain)'
+				.' FROM '.$this->tablenames['virtual'].' v JOIN '.$this->tablenames['domains'].' d ON (v.domain = d.ID)'
+				.' WHERE v.owner='.$this->db->qstr($this->current_user->mbox)
+				.' AND '.db_find_in_set($this->db, 'v.ID', $arr_IDs));
 		$this->db->Execute('DELETE FROM '.$this->tablenames['virtual']
 				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
-				.' AND '.db_find_in_set($this->db, 'ID', $arr_addresses));
+				.' AND '.db_find_in_set($this->db, 'ID', $arr_IDs));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 		} else {
-			$this->ErrorHandler->add_info(sprintf(txt('15'), implode(',', $arr_addresses)));
+			$this->ErrorHandler->add_info(sprintf(txt('15'), implode(', ', $tmp)));
 			$this->current_user->used_alias -= $this->db->Affected_Rows();
 			return true;
 		}
@@ -321,10 +333,10 @@ class openmailadmin
 	/*
 	 * Changes the destination of the given addresses if they belong to the current user.
 	 */
-	public function address_change_destination($arr_addresses, $arr_destinations) {
+	public function address_change_destination($arr_IDs, $arr_destinations) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET dest='.$this->db->qstr(implode(',', $arr_destinations)).', neu=1'
 				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
-				.' AND '.db_find_in_set($this->db, 'address', $arr_addresses));
+				.' AND '.db_find_in_set($this->db, 'address', $arr_IDs));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -332,17 +344,16 @@ class openmailadmin
 		} else {
 			return true;
 		}
-
 		return false;
 	}
 	/*
 	 * Toggles the 'active'-flag of a set of addresses  of the current user
 	 * and thus sets inactive ones to active ones and vice versa.
 	 */
-	public function address_toggle_active($arr_addresses) {
+	public function address_toggle_active($arr_IDs) {
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active=NOT active, neu=1'
 				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
-				.' AND '.db_find_in_set($this->db, 'address', $arr_addresses));
+				.' AND '.db_find_in_set($this->db, 'ID', $arr_IDs));
 		if($this->db->Affected_Rows() < 1) {
 			if($this->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
@@ -350,7 +361,6 @@ class openmailadmin
 		} else {
 			return true;
 		}
-
 		return false;
 	}
 
@@ -550,8 +560,6 @@ class openmailadmin
 				$this->db->Execute('UPDATE '.$this->tablenames['domains'].' SET domain = '.$this->db->qstr($data['domain']).' WHERE ID = '.$domain['ID']);
 				// ... and then, change every old address.
 				if($this->db->Affected_Rows() == 1) {
-					// address
-					$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET neu = 1, address = REPLACE(address, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE address LIKE '.$this->db->qstr('%@'.$domain['name']));
 					// dest
 					$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET neu = 1, dest = REPLACE(dest, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->db->qstr('%@'.$domain['name'].'%'));
 					$this->db->Execute('UPDATE '.$this->tablenames['virtual_regexp'].' SET neu = 1, dest = REPLACE(dest, '.$this->db->qstr('@'.$domain['name']).', '.$this->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->db->qstr('%@'.$domain['name'].'%'));
@@ -741,7 +749,7 @@ class openmailadmin
 		}
 
 		$result = $this->db->SelectLimit('SELECT mbox, person, canonical, pate, max_alias, max_regexp, usr.active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
-						.'COUNT(DISTINCT virt.address) AS num_alias, '
+						.'COUNT(DISTINCT virt.alias) AS num_alias, '
 						.'COUNT(DISTINCT rexp.ID) AS num_regexp '
 					.'FROM '.$this->tablenames['user'].' usr '
 						.'LEFT OUTER JOIN '.$this->tablenames['virtual'].' virt ON (mbox=virt.owner) '
@@ -848,13 +856,13 @@ class openmailadmin
 
 		// first create the default-from (canonical) (must not already exist!)
 		if($this->cfg['create_canonical']) {
-			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
-					array($props['canonical'], $mboxname, $mboxname));
-			if($this->db->Affected_Rows() < 1) {
-				$this->ErrorHandler->add_error(txt('133'));
+			$tmp = explode('@', $props['canonical']);
+			if(!(is_array($tmp)
+			     && $this->address_create($tmp[0], $tmp[1], array($mboxname))) ) {
+				$this->ErrorHandler->add_error(txt('64'));
 				return false;
 			}
-			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['virtual'].' WHERE address='.addslashes($this->db->qstr($props['canonical'])).' AND owner='.addslashes($this->db->qstr($mboxname)).'\')';
+			$rollback[] = '$this->db->Execute(\'DELETE FROM '.$this->tablenames['virtual'].' WHERE owner='.addslashes($this->db->qstr($mboxname)).'\')';
 		}
 
 		// on success write the new user to database
