@@ -30,13 +30,13 @@ include('./templates/'.$cfg['theme'].'/information.tpl');
 if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'change') {
 	$ErrorHandler->status_reset();
 	if($oma->current_user->mbox == $oma->authenticated_user->mbox) {
-		if($oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2'], $_POST['old_pass'])) {
+		if($oma->password->change($oma->authenticated_user, $_POST['new_pass1'], $_POST['new_pass2'], $_POST['old_pass'])) {
 			// we have to reset the current user's cleartext password
 			// $_SESSION will later be read as $oma->authenticated_user
 			$_SESSION['pass_clear'] = obfuscator_encrypt($_POST['new_pass1']);
 		}
 	} else {
-		$oma->user_change_password($_POST['new_pass1'], $_POST['new_pass2']);
+		$oma->password->change($oma->current_user, $_POST['new_pass1'], $_POST['new_pass2']);
 	}
 
 	if($ErrorHandler->errors_occured()) {

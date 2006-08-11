@@ -15,14 +15,13 @@ class PasswordAndDataController
 	}
 
 	/**
-	 * Changes the current user's password.
 	 * This requires the former password for authentication if current user and
 	 * authenticated user are the same.
 	 */
-	public function user_change_password($new, $new_repeat, $old_passwd = null) {
-		if($this->oma->current_user->mbox == $this->oma->authenticated_user->mbox
+	public function change(User $user, $new, $new_repeat, $old_passwd = null) {
+		if($user->mbox == $this->oma->authenticated_user->mbox
 		   && !is_null($old_passwd)
-		   && !$this->oma->current_user->password->equals($old_passwd)) {
+		   && !$user->password->equals($old_passwd)) {
 			$this->ErrorHandler->add_error(txt('45'));
 		} else if($new != $new_repeat) {
 			$this->ErrorHandler->add_error(txt('44'));
@@ -34,7 +33,7 @@ class PasswordAndDataController
 			if(!Password::is_secure($new)) {
 				$this->ErrorHandler->add_error(txt('47'));
 			}
-			if($this->oma->current_user->password->set($new)) {
+			if($user->password->set($new)) {
 				$this->ErrorHandler->add_info(txt('48'));
 				return true;
 			}
