@@ -70,21 +70,6 @@ class openmailadmin
 	}
 
 	/*
-	 * Returns a long list with every active mailbox.
-	 */
-	private function get_mailbox_names() {
-		$tmp	= array();
-
-		$result = $this->db->Execute('SELECT mbox FROM '.$this->tablenames['user'].' WHERE active = 1');
-		while(!$result->EOF) {
-			if($result->fields['mbox'] != '')
-				$tmp[] = $result->fields['mbox'];
-			$result->MoveNext();
-		}
-		return $tmp;
-	}
-
-	/*
 	 * As the name says, returns an array containing the entire row
 	 * of the "user" table belonging to that mailbox.
 	 */

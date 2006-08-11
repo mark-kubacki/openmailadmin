@@ -18,6 +18,13 @@ class MailboxController
 	}
 
 /* ******************************* mailboxes ******************************** */
+	/**
+	 * Returns a long list with every active mailbox.
+	 */
+	private function get_mailbox_names() {
+		return $this->db->GetCol('SELECT mbox FROM '.$this->tablenames['user'].' WHERE active = 1');
+	}
+
 	/*
 	 * Returns list with mailboxes the current user can see.
 	 * Typically all his patenkinder will show up.
