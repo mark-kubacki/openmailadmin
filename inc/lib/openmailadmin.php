@@ -130,9 +130,6 @@ class openmailadmin
 		$cat = '';
 		$poss_dom = array();
 
-		if($cache && isset($_SESSION['cache']['getDomainSet'][$user][$categories])) {
-			return $_SESSION['cache']['getDomainSet'][$user][$categories];
-		} else {
 			foreach(explode(',', $categories) as $value) {
 				$poss_dom[] = trim($value);
 				$cat .= ' OR categories LIKE '.$this->db->qstr('%'.trim($value).'%');
@@ -146,10 +143,7 @@ class openmailadmin
 					$result->MoveNext();
 				}
 			}
-
-			$_SESSION['cache']['getDomainSet'][$user][$categories] = $dom;
-			return $_SESSION['cache']['getDomainSet'][$user][$categories];
-		}
+			return $dom;
 	}
 
 	/*
@@ -231,14 +225,6 @@ class openmailadmin
 			$_SESSION['cache']['n_Domains'][$username]['domains'] = $tmp;
 		}
 		return $_SESSION['cache']['n_Domains'][$username]['domains'];
-	}
-	/*
-	 * In case you have changed something about domains...
-	 */
-	private function user_invalidate_domain_sets() {
-		if(isset($_SESSION['cache']['getDomainSet'])) {
-			unset($_SESSION['cache']['getDomainSet']);
-		}
 	}
 
 }

@@ -103,7 +103,6 @@ class DomainController
 		if($this->db->Affected_Rows() < 1) {
 			$this->ErrorHandler->add_error(txt('134'));
 		} else {
-			$this->user_invalidate_domain_sets();
 			return true;
 		}
 
@@ -146,7 +145,6 @@ class DomainController
 							$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active = 0, neu = 1 WHERE address LIKE '.$this->db->qstr('%'.$domainname));
 						}
 						// We can't do such on REGEXP addresses: They may catch more than the given domains.
-						$this->user_invalidate_domain_sets();
 						return true;
 					}
 				} else {
@@ -199,7 +197,6 @@ class DomainController
 				.' SET owner='.$this->db->qstr($data['owner'])
 				.' WHERE owner='.$this->db->qstr($this->authenticated_user->mbox).' AND '.db_find_in_set($this->db, 'ID', $domains));
 		}
-		$this->user_invalidate_domain_sets();
 		// No domain be renamed?
 		if(! in_array('domain', $change)) {
 			return true;
