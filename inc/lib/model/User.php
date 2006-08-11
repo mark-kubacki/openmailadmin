@@ -13,6 +13,44 @@ class User
 	private		$data		= array();
 
 	/**
+	 * @param	child		Is a username.
+	 * @param	parent		Is a username.
+	 * @return	Boolean
+	 */
+	public static function is_descendant($child, $parent, $levels = 7, $cache = array()) {
+		// initialize cache
+		if(!isset($_SESSION['cache']['IsDescendant'])) {
+			$_SESSION['cache']['IsDescendant'] = array();
+		}
+
+		if(trim($child) == '' || trim($parent) == '')
+			return false;
+		if(isset($_SESSION['cache']['IsDescendant'][$parent][$child]))
+			return $_SESSION['cache']['IsDescendant'][$parent][$child];
+
+		if($child == $parent) {
+			$rec = true;
+		} else if($levels <= 0 ) {
+			$rec = false;
+		} else {
+			$inter = self::$db->GetOne('SELECT pate FROM '.self::$tablenames['user'].' WHERE mbox='.self::$db->qstr($child));
+			if($inter === false) {
+				$rec = false;
+			} else {
+				if($inter == $parent) {
+					$rec = true;
+				} else if(in_array($inter, $cache)) {	// avoids loops
+					$rec = false;
+				} else {
+					$rec = self::user_is_descendant($inter, $parent, $levels--, array_merge($cache, array($inter)));
+				}
+			}
+		}
+		$_SESSION['cache']['IsDescendant'][$parent][$child] = $rec;
+		return $rec;
+	}
+
+	/**
 	 * @param	username	User must exist.
 	 * @throws	Exception	if user does not exist.
 	 */

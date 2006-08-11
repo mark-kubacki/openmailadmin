@@ -87,42 +87,5 @@ class openmailadmin
 		return array();
 	}
 
-	/*
-	 * Checks whether a user is a descendant of another user.
-	 * (Unfortunately, PHP does not support inline functions.)
-	 */
-	public function user_is_descendant($child, $parent, $levels = 7, $cache = array()) {
-		// initialize cache
-		if(!isset($_SESSION['cache']['IsDescendant'])) {
-			$_SESSION['cache']['IsDescendant'] = array();
-		}
-
-		if(trim($child) == '' || trim($parent) == '')
-			return false;
-		if(isset($_SESSION['cache']['IsDescendant'][$parent][$child]))
-			return $_SESSION['cache']['IsDescendant'][$parent][$child];
-
-		if($child == $parent) {
-			$rec = true;
-		} else if($levels <= 0 ) {
-			$rec = false;
-		} else {
-			$inter = $this->db->GetOne('SELECT pate FROM '.$this->tablenames['user'].' WHERE mbox='.$this->db->qstr($child));
-			if($inter === false) {
-				$rec = false;
-			} else {
-				if($inter == $parent) {
-					$rec = true;
-				} else if(in_array($inter, $cache)) {	// avoids loops
-					$rec = false;
-				} else {
-					$rec = $this->user_is_descendant($inter, $parent, $levels--, array_merge($cache, array($inter)));
-				}
-			}
-		}
-		$_SESSION['cache']['IsDescendant'][$parent][$child] = $rec;
-		return $rec;
-	}
-
 }
 ?>
