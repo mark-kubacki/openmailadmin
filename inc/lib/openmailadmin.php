@@ -12,6 +12,8 @@ class openmailadmin
 	public	$cfg;
 	public	$imap;
 
+	private	$controller;
+
 	const	regex_valid_domain	= '[a-z0-9\-\_\.]{2,}\.[a-z]{2,}';
 
 	function __construct(ADOConnection $adodb_handler, array $tablenames, array $cfg, IMAP_Administrator $imap) {
@@ -21,6 +23,20 @@ class openmailadmin
 		$this->imap		= $imap;
 		$this->validator	= new InputValidatorSuite($this, $cfg);
 		$this->ErrorHandler	= ErrorHandler::getInstance();
+		$this->controller	= $this->get_active_controller();
+	}
+
+	/**
+	 * Abstract getter for the various active controller.
+	 *
+	 * @throw	RuntimeException	if no controller has been registered with given shortname.
+	 */
+	public function __get($shortname) {
+		if(array_key_exists($shortname, $this->controller)) {
+			return $this->controller[$shortname];
+		} else {
+			throw new RuntimeException('Unknown controller with shortname "'.$shortname.'".');
+		}
 	}
 
 	/**
@@ -33,7 +49,8 @@ class openmailadmin
 					'AddressesController', 'RegexpAddressesController',
 					'MailboxController', 'IMAPFolderController')
 				as $c) {
-				$controller[] = new $c($this);
+				$i = new $c($this);
+				$controller[$i->controller_get_shortname()] = $i;
 			}
 		}
 		return $controller;
@@ -44,7 +61,7 @@ class openmailadmin
 	 */
 	public function get_menu() {
 		$arr_navmenu = array();
-		foreach($this->get_active_controller() as $c) {
+		foreach($this->controller as $c) {
 			if($c instanceof INavigationContributor) {
 				$e = $c->get_navigation_items();
 				if(is_array($e)) {
