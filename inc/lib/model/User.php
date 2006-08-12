@@ -122,10 +122,18 @@ class User
 		return self::get_by_ID($id);
 	}
 
+	public static function get_by_ID($id) {
+		static $cache	= array();
+		if(!isset($cache[$id])) {
+			$cache[$id] = self::get_immediate_by_ID($id);
+		}
+		return $cache[$id];
+	}
+
 	/**
 	 * @throws	Exception	if user does not exist.
 	 */
-	public static function get_by_ID($id) {
+	private static function get_immediate_by_ID($id) {
 		$data = self::$db->GetRow('SELECT * FROM '.self::$tablenames['user'].' WHERE ID='.self::$db->qstr($id));
 		if($data === false) {
 			throw new Exception(txt(2));
