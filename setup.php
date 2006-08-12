@@ -77,12 +77,13 @@ switch($_GET['step']) {
 			}
 			if($status['user'][1] == 2 or $status['user'][1] == 1) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('mailbox', $_POST['prefix'].'user', array('mbox', 'vdom'), array('UNIQUE')));
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'user ADD (FOREIGN KEY (pate) REFERENCES '.$_POST['prefix'].'user(ID) )');
 				if($_POST['imap_user'] == '') {
 					$_POST['imap_user'] = '---';
 				}
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-					array(	array(1, $_POST['admin_user'], null, 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', '', 'all', 1, time(), 0, 10000, 100, 2, 2, 2),
-						array(2, $_POST['imap_user'], null, $_POST['imap_user'], $_POST['imap_user'], '--@example.com', '', 'none', 1, time(), 0, 0, 0, 0, 0, 1),
+					array(	array(1, $_POST['admin_user'], null, 'Admin John Doe', 1, $_POST['admin_user'].'@example.com', '', 'all', 1, time(), 0, 10000, 100, 2, 2, 2),
+						array(2, $_POST['imap_user'], null, $_POST['imap_user'], 2, '--@example.com', '', 'none', 1, time(), 0, 0, 0, 0, 0, 1),
 						));
 				User::$db = $db;
 				User::$tablenames = $cfg['tablenames'];
@@ -114,7 +115,7 @@ switch($_GET['step']) {
 			if($status['virtual'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('address', $_POST['prefix'].'virtual', array('alias', 'domain'), array('UNIQUE')));
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual', 'owner'));
-				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual'.' ADD (FOREIGN KEY (domain) REFERENCES '.$_POST['prefix'].'domains(ID) ON DELETE CASCADE )');
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual ADD (FOREIGN KEY (domain) REFERENCES '.$_POST['prefix'].'domains(ID) ON DELETE CASCADE )');
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual (alias,domain,dest,owner,active,neu) VALUES (?,?,?,?,?,?)',
 						array('me', 1, $_POST['admin_user'], $_POST['admin_user'], 1, 1));
 			}
