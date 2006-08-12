@@ -104,15 +104,14 @@ class MailboxController
 	 * of $who. If the authenticated user is superuser, no filtering is done
 	 * except elimination imposed by $this->oma->cfg['user_ignore'].
 	 */
-	private function filter_manipulable($who, $desired_mboxes) {
+	private function filter_manipulable(User $who, $desired_mboxes) {
 		$allowed = array();
-
 		// Does the authenticated user have the right to do that?
 		if($this->oma->authenticated_user->a_super >= 1) {
 			$allowed = array_diff($desired_mboxes, $this->oma->cfg['user_ignore']);
 		} else {
 			foreach($desired_mboxes as $mbox) {
-				if(!in_array($mbox, $this->oma->cfg['user_ignore']) && User::is_descendant($mbox, $who)) {
+				if(!in_array($mbox, $this->oma->cfg['user_ignore']) && User::is_descendant($mbox, $who->mbox)) {
 					$allowed[] = $mbox;
 				}
 			}
@@ -252,7 +251,7 @@ class MailboxController
 		if(!$this->oma->validator->validate($props, $change)) {
 			return false;
 		}
-		$mboxnames = $this->filter_manipulable($this->oma->authenticated_user->mbox, $mboxnames);
+		$mboxnames = $this->filter_manipulable($this->oma->authenticated_user, $mboxnames);
 		if(!count($mboxnames) > 0) {
 			return false;
 		}
@@ -393,7 +392,7 @@ class MailboxController
 	 * If ressources are freed, the current user will get them.
 	 */
 	public function delete($mboxnames) {
-		$mboxnames = $this->filter_manipulable($this->oma->authenticated_user->mbox, $mboxnames);
+		$mboxnames = $this->filter_manipulable($this->oma->authenticated_user, $mboxnames);
 		if(count($mboxnames) == 0) {
 			return false;
 		}
@@ -474,7 +473,7 @@ class MailboxController
 	 * active <-> inactive
 	 */
 	public function toggle_active($mboxnames) {
-		$tobechanged = $this->filter_manipulable($this->oma->current_user->mbox, $mboxnames);
+		$tobechanged = $this->filter_manipulable($this->oma->current_user, $mboxnames);
 		if(count($tobechanged) > 0) {
 			$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['user']
 					.' SET active = NOT active'
