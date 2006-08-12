@@ -76,12 +76,13 @@ switch($_GET['step']) {
 				}
 			}
 			if($status['user'][1] == 2 or $status['user'][1] == 1) {
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('mailbox', $_POST['prefix'].'user', array('mbox', 'vdom'), array('UNIQUE')));
 				if($_POST['imap_user'] == '') {
 					$_POST['imap_user'] = '---';
 				}
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-					array(	array($_POST['admin_user'], 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', '', 'all', 1, time(), 0, 10000, 100, 2, 2, 2),
-						array($_POST['imap_user'], $_POST['imap_user'], $_POST['imap_user'], '--@example.com', '', 'none', 1, time(), 0, 0, 0, 0, 0, 1),
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+					array(	array(1, $_POST['admin_user'], null, 'Admin John Doe', $_POST['admin_user'], $_POST['admin_user'].'@example.com', '', 'all', 1, time(), 0, 10000, 100, 2, 2, 2),
+						array(2, $_POST['imap_user'], null, $_POST['imap_user'], $_POST['imap_user'], '--@example.com', '', 'none', 1, time(), 0, 0, 0, 0, 0, 1),
 						));
 				User::$db = $db;
 				User::$tablenames = $cfg['tablenames'];

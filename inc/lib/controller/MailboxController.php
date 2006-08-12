@@ -51,14 +51,14 @@ class MailboxController
 			$where_clause = ' WHERE pate='.$this->oma->db->qstr($this->oma->current_user->mbox);
 		}
 
-		$result = $this->oma->db->SelectLimit('SELECT mbox, person, canonical, pate, max_alias, max_regexp, usr.active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
+		$result = $this->oma->db->SelectLimit('SELECT usr.ID, mbox, person, canonical, pate, max_alias, max_regexp, usr.active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
 						.'COUNT(DISTINCT virt.alias) AS num_alias, '
 						.'COUNT(DISTINCT rexp.ID) AS num_regexp '
 					.'FROM '.$this->oma->tablenames['user'].' usr '
 						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual'].' virt ON (mbox=virt.owner) '
 						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual_regexp'].' rexp ON (mbox=rexp.owner) '
 					.$where_clause.$_SESSION['filter']['str']['mbox']
-					.' GROUP BY mbox, person, canonical, pate,  max_alias, max_regexp, usr.active, last_login, a_super, a_admin_domains, a_admin_user '
+					.' GROUP BY usr.ID, mbox, person, canonical, pate,  max_alias, max_regexp, usr.active, last_login, a_super, a_admin_domains, a_admin_user '
 					.'ORDER BY pate, mbox',
 					$_SESSION['limit'], $_SESSION['offset']['mbox']);
 
