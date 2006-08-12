@@ -45,7 +45,7 @@ include('./templates/'.$cfg['theme'].'/mailboxes/list.tpl');
 // ADMIN PANEL
 if($oma->authenticated_user->a_admin_user >= 1) {
 	// What paten may he select?
-	$selectable_paten = $oma->mailbox->get_selectable_paten($oma->current_user->mbox);
+	$selectable_paten = $oma->mailbox->get_selectable_paten($oma->current_user);
 
 	include('./templates/'.$cfg['theme'].'/mailboxes/admin.tpl');
 }

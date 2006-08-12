@@ -27,10 +27,10 @@
 		</td>
 		<td class="ed"><?= $input->text('mbox', 16) ?></td>
 	</tr>
-	<?php if(count($selectable_paten) > 1) { ?>
+	<?php if(count($selectable_paten['ID']) > 1) { ?>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'pate') ?><b><?= txt('9') ?></b></td>
-		<td class="ed"><?= $input->hidden('dummy2', 'pate') ?><?= $input->select('pate', $selectable_paten) ?></td>
+		<td class="ed"><?= $input->hidden('dummy2', 'pate') ?><?= $input->select('pate', $selectable_paten['mbox'], $selectable_paten['ID']) ?></td>
 	</tr>
 	<?php } ?>
 	<tr>
@@ -113,7 +113,7 @@
 	<tr>
 		<td class="ed"><span class="quasi_btn" id="admin_hide">&laquo; <?= txt('60') ?></span></td>
 		<td class="ed" align="right">
-			<?php if(count($selectable_paten) <= 1) { ?>
+			<?php if(count($selectable_paten['ID']) <= 1) { ?>
 			<?= $input->hidden('pate', $oma->current_user->mbox) ?>
 			<?php } ?>
 			<?= $input->hidden('frm', 'user') ?><?= $input->submit(txt('27'))?>&nbsp;

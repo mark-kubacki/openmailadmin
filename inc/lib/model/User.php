@@ -13,6 +13,19 @@ class User
 	private		$data		= array();
 
 	/**
+	 * @return	Array
+	 */
+	public static function get_descendants_IDs(User $parent, $levels = 7) {
+		// unfortunately, we will have to emulate hierarchical queries
+		$sql = 'SELECT DISTINCT lvl'.$levels.'.ID FROM '.self::$tablenames['user'].' lvl1';
+		for($l = 2; $l <= $levels; $l++) {
+			$sql .= ' LEFT JOIN oma1_user lvl'.$l.' ON ( lvl'.($l - 1).'.ID = lvl'.$l.'.pate )';
+		}
+		$sql .= ' WHERE lvl1.ID = '.$parent->ID.' AND lvl'.$levels.'.ID IS NOT NULL';
+		return self::$db->GetCol($sql);
+	}
+
+	/**
 	 * @return	Boolean
 	 */
 	public static function is_descendant(User $child, User $parent, $levels = 7) {
@@ -20,14 +33,7 @@ class User
 		   || $child->get_pate() == $parent) {
 			return true;
 		} else {
-			// unfortunately, we will have to emulate hierarchical queries
-			$sql = 'SELECT DISTINCT lvl'.$levels.'.ID FROM '.self::$tablenames['user'].' lvl1';
-			for($l = 2; $l <= $levels; $l++) {
-				$sql .= ' LEFT JOIN oma1_user lvl'.$l.' ON ( lvl'.($l - 1).'.ID = lvl'.$l.'.pate )';
-			}
-			$sql .= ' WHERE lvl1.ID = '.$parent->ID.' AND lvl'.$levels.'.ID IS NOT NULL';
-			$tree = self::$db->GetCol($sql);
-			return in_array($child->ID, $tree);
+			return in_array($child->ID, self::get_descendants_IDs($parent, $levels));
 		}
 	}
 
@@ -40,6 +46,18 @@ class User
 		} else {
 			return self::get_by_ID($this->pate);
 		}
+	}
+
+	/**
+	 * @return 	Array 	of instances of User, including the user itself.
+	 * @todo 		Retrieve them with only one query.
+	 */
+	public function get_all_descendants() {
+		$paten = array();
+		foreach(self::get_descendants_IDs($this) as $id) {
+			$paten[] = self::get_by_ID($id);
+		}
+		return $paten;
 	}
 
 	/**

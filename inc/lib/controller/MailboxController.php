@@ -48,7 +48,7 @@ class MailboxController
 		   && $this->oma->authenticated_user->a_super >= 1) {
 			$where_clause = ' WHERE TRUE';
 		} else {
-			$where_clause = ' WHERE pate='.$this->oma->db->qstr($this->oma->current_user->mbox);
+			$where_clause = ' WHERE '.db_find_in_set($this->oma->db, 'ID', User::get_descendants_IDs($this->oma->current_user));
 		}
 
 		$result = $this->oma->db->SelectLimit('SELECT usr.ID, mbox, person, canonical, pate, max_alias, max_regexp, usr.active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
@@ -73,52 +73,30 @@ class MailboxController
 		return $mailboxes;
 	}
 
-	/*
-	 * This will return a list with $whose's patenkinder for further use in selections.
+	/**
+	 * To be used on page "Mailboxes".
+	 *
+	 * @return 	Array 		of three Arrays [ID, mbox, person]
 	 */
-	public function get_selectable_paten($whose) {
-		if(!isset($_SESSION['paten'][$whose])) {
-			$selectable_paten = array();
-			if($this->oma->authenticated_user->a_super >= 1) {
-				$result = $this->oma->db->Execute('SELECT mbox FROM '.$this->oma->tablenames['user']);
-			} else {
-				$result = $this->oma->db->Execute('SELECT mbox FROM '.$this->oma->tablenames['user'].' WHERE pate='.$this->oma->db->qstr($whose));
-			}
-			while(!$result->EOF) {
-				if(!in_array($result->fields['mbox'], $this->oma->cfg['user_ignore']))
-					$selectable_paten[] = $result->fields['mbox'];
-				$result->MoveNext();
-			}
-			$selectable_paten[] = $whose;
-			$selectable_paten[] = $this->oma->authenticated_user->mbox;
-
-			// Array_unique() will do alphabetical sorting.
-			$_SESSION['paten'][$whose] = array_unique($selectable_paten);
+	public function get_selectable_paten(User $whose) {
+		$tmp	= array('ID' => array(), 'mbox' => array(), 'person' => array(), );
+		foreach($whose->get_all_descendants() as $user) {
+			$tmp['ID'][]		= $user->ID;
+			$tmp['mbox'][]		= $user->mbox;
+			$tmp['person'][]	= $user->person;
 		}
-
-		return $_SESSION['paten'][$whose];
+		return $tmp;
 	}
 
-	/*
+	/**
 	 * Eliminates every mailbox name from $desired_mboxes which is no descendant
-	 * of $who. If the authenticated user is superuser, no filtering is done
-	 * except elimination imposed by $this->oma->cfg['user_ignore'].
-	 * @todo 		are_descendants
+	 * of $who. If the authenticated user is superuser, no filtering is done.
+	 *
+	 * @param	desired_mboxes	Array with IDs.
+	 * @return	Array		of IDs.
 	 */
-	private function filter_manipulable(User $who, $desired_mboxes) {
-		$allowed = array();
-		// Does the authenticated user have the right to do that?
-		if($this->oma->authenticated_user->a_super >= 1) {
-			$allowed = array_diff($desired_mboxes, $this->oma->cfg['user_ignore']);
-		} else {
-			foreach($desired_mboxes as $mbox) {
-				if(!in_array($mbox, $this->oma->cfg['user_ignore']) && User::is_descendant($mbox, $who)) {
-					$allowed[] = $mbox;
-				}
-			}
-		}
-
-		return $allowed;
+	private function filter_manipulable(User $who, array $desired_mboxes) {
+		return array_intersect($desired_mboxes, User::get_descendants_IDs($who));
 	}
 
 	/*
