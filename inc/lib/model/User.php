@@ -13,41 +13,22 @@ class User
 	private		$data		= array();
 
 	/**
-	 * @param	child		Is a username.
-	 * @param	parent		Is a username.
 	 * @return	Boolean
 	 */
-	public static function is_descendant($child, $parent, $levels = 7, $cache = array()) {
-		// initialize cache
-		if(!isset($_SESSION['cache']['IsDescendant'])) {
-			$_SESSION['cache']['IsDescendant'] = array();
-		}
-
-		if(trim($child) == '' || trim($parent) == '')
-			return false;
-		if(isset($_SESSION['cache']['IsDescendant'][$parent][$child]))
-			return $_SESSION['cache']['IsDescendant'][$parent][$child];
-
-		if($child == $parent) {
-			$rec = true;
-		} else if($levels <= 0 ) {
-			$rec = false;
+	public static function is_descendant(User $child, User $parent, $levels = 7) {
+		if($child == $parent
+		   || $child->get_pate() == $parent) {
+			return true;
 		} else {
-			$inter = self::$db->GetOne('SELECT pate FROM '.self::$tablenames['user'].' WHERE mbox='.self::$db->qstr($child));
-			if($inter === false) {
-				$rec = false;
-			} else {
-				if($inter == $parent) {
-					$rec = true;
-				} else if(in_array($inter, $cache)) {	// avoids loops
-					$rec = false;
-				} else {
-					$rec = self::is_descendant($inter, $parent, $levels--, array_merge($cache, array($inter)));
-				}
+			// unfortunately, we will have to emulate hierarchical queries
+			$sql = 'SELECT DISTINCT lvl'.$levels.'.ID FROM '.self::$tablenames['user'].' lvl1';
+			for($l = 2; $l <= $levels; $l++) {
+				$sql .= ' LEFT JOIN oma1_user lvl'.$l.' ON ( lvl'.($l - 1).'.ID = lvl'.$l.'.pate )';
 			}
+			$sql .= ' WHERE lvl1.ID = '.$parent->ID.' AND lvl'.$levels.'.ID IS NOT NULL';
+			$tree = self::$db->GetCol($sql);
+			return in_array($child->ID, $tree);
 		}
-		$_SESSION['cache']['IsDescendant'][$parent][$child] = $rec;
-		return $rec;
 	}
 
 	/**

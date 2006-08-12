@@ -103,6 +103,7 @@ class MailboxController
 	 * Eliminates every mailbox name from $desired_mboxes which is no descendant
 	 * of $who. If the authenticated user is superuser, no filtering is done
 	 * except elimination imposed by $this->oma->cfg['user_ignore'].
+	 * @todo 		are_descendants
 	 */
 	private function filter_manipulable(User $who, $desired_mboxes) {
 		$allowed = array();
@@ -111,7 +112,7 @@ class MailboxController
 			$allowed = array_diff($desired_mboxes, $this->oma->cfg['user_ignore']);
 		} else {
 			foreach($desired_mboxes as $mbox) {
-				if(!in_array($mbox, $this->oma->cfg['user_ignore']) && User::is_descendant($mbox, $who->mbox)) {
+				if(!in_array($mbox, $this->oma->cfg['user_ignore']) && User::is_descendant($mbox, $who)) {
 					$allowed[] = $mbox;
 				}
 			}

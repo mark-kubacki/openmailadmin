@@ -72,7 +72,7 @@ class InputValidatorSuite
 		$this->validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= $this->cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $this->cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
 							'error'	=> sprintf(txt('62'), $this->cfg['mbox']['min_length'], $this->cfg['mbox']['max_length']) ),
 						);
-		$this->validate['pate']	= array(array(	'val'	=> '$this->oma->authenticated_user->is_superuser() || User::is_descendant(~, $this->oma->authenticated_user->mbox)',
+		$this->validate['pate']	= array(array(	'val'	=> '$this->oma->authenticated_user->is_superuser() || User::is_descendant(User::get_by_ID(~), $this->oma->authenticated_user)',
 							),
 						);
 		$this->validate['person']	= array(array(	'val'	=> 'strlen(~) <= 100 && strlen(~) >= 4 && preg_match(\'/^[\w\s0-9-_\.\(\)]*$/\', ~)',
