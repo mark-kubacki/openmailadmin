@@ -87,9 +87,9 @@ switch($_GET['step']) {
 						));
 				User::$db = $db;
 				User::$tablenames = $cfg['tablenames'];
-				$tmp = new User($_POST['admin_user']);
+				$tmp = User::get_by_ID(1);
 				$tmp->password->set($_POST['admin_pass']);
-				$tmp = new User($_POST['imap_user']);
+				$tmp = User::get_by_ID(2);
 				$tmp->password->set($_POST['imap_pass']);
 				// create superuser
 				if($_POST['imap_type'] != 'fake-imap') {

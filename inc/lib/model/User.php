@@ -51,15 +51,21 @@ class User
 	}
 
 	/**
-	 * @param	username	User must exist.
-	 * @throws	Exception	if user does not exist.
+	 * @return 		User
 	 */
-	public function __construct($username) {
-		global $cfg;
-		$data = self::$db->GetRow('SELECT * FROM '.self::$tablenames['user'].' WHERE mbox='.self::$db->qstr($username));
-		if($data === false) {
-			throw new Exception(txt(2));
+	public function get_pate() {
+		if($this->pate == $this->ID) {
+			return $this;
+		} else {
+			return self::get_by_ID($this->pate);
 		}
+	}
+
+	/**
+	 * @param	data	Array with all available data about this particular user.
+	 */
+	protected function __construct($data) {
+		global $cfg;
 		$this->password = new Password($this, $data['password'], new $cfg['passwd']['strategy']());
 		unset($data['password']);
 		$this->data	= $data;
@@ -108,6 +114,26 @@ class User
 	}
 
 	/**
+	 * @deprecated 			Will be removed after native virtual domain support has been implemented.
+	 * @throws	Exception	if user does not exist.
+	 */
+	public static function get_by_name($username) {
+		$id = self::$db->GetOne('SELECT ID FROM '.self::$tablenames['user'].' WHERE mbox='.self::$db->qstr($username));
+		return self::get_by_ID($id);
+	}
+
+	/**
+	 * @throws	Exception	if user does not exist.
+	 */
+	public static function get_by_ID($id) {
+		$data = self::$db->GetRow('SELECT * FROM '.self::$tablenames['user'].' WHERE ID='.self::$db->qstr($id));
+		if($data === false) {
+			throw new Exception(txt(2));
+		}
+		return new User($data);
+	}
+
+	/**
 	 * Use this to get a new user only if given plaintext password matches.
 	 *
 	 * @param	username	User must exist.
@@ -116,7 +142,7 @@ class User
 	 * @throws	Exception	if user does not exist or password didn't match.
 	 */
 	public static function authenticate($username, $password) {
-		$usr	= new User($username);
+		$usr	= self::get_by_name($username);
 		if($usr->password->equals($password)) {
 			self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE mbox='.self::$db->qstr($username));
 			$usr->password->store_plaintext($password);

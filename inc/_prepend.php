@@ -64,7 +64,7 @@ $ErrorHandler	= ErrorHandler::getInstance();
 if(!(isset($_GET['cuser']) && $_GET['cuser'] != $oma->authenticated_user->mbox)) {
 	$oma->current_user	= $oma->authenticated_user;
 } else try {
-	$oma->current_user	= new User($_GET['cuser']);
+	$oma->current_user	= User::get_by_name($_GET['cuser']);
 	if(!($oma->authenticated_user->is_superuser()
 	   || $oma->current_user->pate == $oma->authenticated_user->mbox
 	   || User::is_descendant($oma->current_user->mbox, $oma->authenticated_user->mbox))) {
@@ -77,15 +77,7 @@ if(!(isset($_GET['cuser']) && $_GET['cuser'] != $oma->authenticated_user->mbox))
 }
 
 // ... and his paten.
-if($oma->current_user->mbox == $oma->current_user->pate) {
-	$cpate = $oma->current_user;
-} else {
-	try {
-		$cpate = new User($oma->current_user->pate);
-	} catch (Exception $e) {
-		$cpate = $oma->current_user;
-	}
-}
+$cpate = $oma->current_user->get_pate();
 
 // Display navigation menu.
 $arr_navmenu = $oma->get_menu();

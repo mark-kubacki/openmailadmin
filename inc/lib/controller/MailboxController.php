@@ -180,7 +180,7 @@ class MailboxController
 		}
 		$rollback[] = '$this->oma->db->Execute(\'DELETE FROM '.$this->oma->tablenames['user'].' WHERE mbox='.addslashes($this->oma->db->qstr($mboxname)).'\')';
 
-		$tmpu = new User($props['mbox']);
+		$tmpu = User::get_by_ID($this->oma->db->Insert_ID());
 		$pw = $tmpu->password->set_random($this->oma->cfg['passwd']['min_length'], $this->oma->cfg['passwd']['max_length']);
 
 		// Decrease current users's contingents...

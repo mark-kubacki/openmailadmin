@@ -12,8 +12,8 @@
 	<tr>
 		<td class="ed">
 			<b><?= txt('128') ?>: </b><a href="<?= mkSelfRef(array('cuser' => $oma->authenticated_user->mbox)) ?>"><?= $oma->authenticated_user->person ?></a><?php
-				if($oma->authenticated_user->pate != $oma->authenticated_user->mbox) { ?>, <b><?= txt('9')?>: </b>
-				<?php $apate = new User($oma->authenticated_user->pate); ?><?= $apate->person ?>
+				if($oma->authenticated_user->pate != $oma->authenticated_user->ID) { ?>, <b><?= txt('9')?>: </b>
+				<?php $apate = $oma->authenticated_user->get_pate(); ?><?= $apate->person ?>
 				<?php } ?>
 			<?php if($oma->current_user->mbox != $oma->authenticated_user->mbox) { ?><br />
 				<b><?= txt('113') ?>: </b><a href="<?= mkSelfRef(array('cuser' => $oma->current_user->mbox)) ?>"><?= $oma->current_user->person ?></a><?php
