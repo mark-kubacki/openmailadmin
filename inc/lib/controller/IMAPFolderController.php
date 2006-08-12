@@ -4,9 +4,8 @@ class IMAPFolderController
 	implements INavigationContributor
 {
 	public function get_navigation_items() {
-		$oma = $this->oma;
-		if($this->oma->current_user->mbox == $this->oma->authenticated_user->mbox) {
-			return array('link'		=> 'folders.php'.($this->oma->current_user->mbox != $this->oma->authenticated_user->mbox ? '?cuser='.$this->oma->current_user->mbox : ''),
+		if($this->oma->current_user == $this->oma->authenticated_user) {
+			return array('link'		=> 'folders.php',
 					'caption'	=> txt('103'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'folders.php'));
 		}

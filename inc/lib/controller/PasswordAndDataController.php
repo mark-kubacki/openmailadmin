@@ -5,7 +5,7 @@ class PasswordAndDataController
 {
 	public function get_navigation_items() {
 		$oma = $this->oma;
-		return array('link'		=> 'index.php'.($oma->current_user->mbox != $oma->authenticated_user->mbox ? '?cuser='.$oma->current_user->mbox : ''),
+		return array('link'		=> 'index.php'.($oma->current_user != $oma->authenticated_user ? '?cuser='.$oma->current_user->mbox : ''),
 				'caption'	=> txt('1'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'index.php'));
 	}
@@ -19,7 +19,7 @@ class PasswordAndDataController
 	 * authenticated user are the same.
 	 */
 	public function change(User $user, $new, $new_repeat, $old_passwd = null) {
-		if($user->mbox == $this->oma->authenticated_user->mbox
+		if($user == $this->oma->authenticated_user
 		   && !is_null($old_passwd)
 		   && !$user->password->equals($old_passwd)) {
 			$this->ErrorHandler->add_error(txt('45'));

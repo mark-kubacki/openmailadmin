@@ -12,12 +12,13 @@
 	<tr>
 		<td class="ed">
 			<b><?= txt('128') ?>: </b><a href="<?= mkSelfRef(array('cuser' => $oma->authenticated_user->mbox)) ?>"><?= $oma->authenticated_user->person ?></a><?php
-				if($oma->authenticated_user->pate != $oma->authenticated_user->ID) { ?>, <b><?= txt('9')?>: </b>
-				<?php $apate = $oma->authenticated_user->get_pate(); ?><?= $apate->person ?>
+				$apate = $oma->authenticated_user->get_pate();
+				if($oma->authenticated_user != $apate) { ?>, <b><?= txt('9')?>: </b>
+					<?= $apate->person ?>
 				<?php } ?>
-			<?php if($oma->current_user->mbox != $oma->authenticated_user->mbox) { ?><br />
+			<?php if($oma->current_user != $oma->authenticated_user) { ?><br />
 				<b><?= txt('113') ?>: </b><a href="<?= mkSelfRef(array('cuser' => $oma->current_user->mbox)) ?>"><?= $oma->current_user->person ?></a><?php
-				if($cpate->mbox != $oma->authenticated_user->mbox) { ?>, <b><?= txt('9')?>: </b>
+				if($cpate != $oma->authenticated_user) { ?>, <b><?= txt('9')?>: </b>
 				<a href="<?= mkSelfRef(array('cuser' => $cpate->mbox)) ?>"><?= $cpate->person ?></a>
 				<?php } ?>
 			<?php } ?>

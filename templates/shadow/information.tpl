@@ -10,7 +10,7 @@
 	<tr>
 		<td class="std" width="180"><b><?= txt('9') ?></b></td>
 		<td class="std" width="400">
-			<?= $cpate->person ?> (<a href="<?= mkSelfRef(array('cuser' => $cpate->mbox)) ?>"><?= $cpate->mbox ?></a><?php if($cpate->mbox != $oma->authenticated_user->mbox && $oma->current_user->mbox != $oma->authenticated_user->mbox) { ?>
+			<?= $cpate->person ?> (<a href="<?= mkSelfRef(array('cuser' => $cpate->mbox)) ?>"><?= $cpate->mbox ?></a><?php if($cpate != $oma->authenticated_user && $oma->current_user != $oma->authenticated_user) { ?>
 				-&gt;<a href="<?= mkSelfRef(array('cuser' => $oma->authenticated_user->mbox)) ?>"><?= $oma->authenticated_user->mbox ?></a>
 			<?php } ?>)
 		</td>

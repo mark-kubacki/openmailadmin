@@ -5,7 +5,7 @@ class MailboxController
 {
 	public function get_navigation_items() {
 		if($this->oma->authenticated_user->a_admin_user >= 1 || $this->oma->current_user->get_number_mailboxes() > 0) {
-			return	array('link'		=> 'mailboxes.php'.($this->oma->current_user->mbox != $this->oma->authenticated_user->mbox ? '?cuser='.$this->oma->current_user->mbox : ''),
+			return	array('link'		=> 'mailboxes.php'.($this->oma->current_user != $this->oma->authenticated_user ? '?cuser='.$this->oma->current_user->mbox : ''),
 					'caption'	=> txt('79'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'mailboxes.php'));
 		}
@@ -44,7 +44,7 @@ class MailboxController
 	public function get_list() {
 		$mailboxes = array();
 
-		if($this->oma->current_user->mbox == $this->oma->authenticated_user->mbox
+		if($this->oma->current_user == $this->oma->authenticated_user
 		   && $this->oma->authenticated_user->a_super >= 1) {
 			$where_clause = ' WHERE TRUE';
 		} else {

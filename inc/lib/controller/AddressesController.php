@@ -5,7 +5,7 @@ class AddressesController
 {
 	public function get_navigation_items() {
 		if($this->oma->current_user->max_alias > 0 || $this->oma->authenticated_user->a_super >= 1 || $this->oma->current_user->get_used_alias()) {
-			return array('link'		=> 'addresses.php'.($this->oma->current_user->mbox != $this->oma->authenticated_user->mbox ? '?cuser='.$this->oma->current_user->mbox : ''),
+			return array('link'		=> 'addresses.php'.($this->oma->current_user != $this->oma->authenticated_user ? '?cuser='.$this->oma->current_user->mbox : ''),
 					'caption'	=> txt('17'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'addresses.php'));
 		}

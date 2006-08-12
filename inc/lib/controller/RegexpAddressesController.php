@@ -5,7 +5,7 @@ class RegexpAddressesController
 {
 	public function get_navigation_items() {
 		if($this->oma->current_user->max_regexp > 0 || $this->oma->authenticated_user->a_super >= 1 || $this->oma->current_user->get_used_regexp()) {
-			return array('link'		=> 'regexp.php'.($this->oma->current_user->mbox != $this->oma->authenticated_user->mbox ? '?cuser='.$this->oma->current_user->mbox : ''),
+			return array('link'		=> 'regexp.php'.($this->oma->current_user != $this->oma->authenticated_user ? '?cuser='.$this->oma->current_user->mbox : ''),
 					'caption'	=> txt('33'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'regexp.php'));
 		}
