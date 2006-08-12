@@ -39,7 +39,7 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 					</span>
 			</td>
 			<?php if(isset($mailbox['n_paten'])) { ?>
-				<td class="std" rowspan="<?= $mailbox['n_paten'] ?>"><?= $mailbox['pate'] ?></td>
+				<td class="std" rowspan="<?= $mailbox['n_paten'] ?>"><?= User::get_by_id($mailbox['pate'])->mbox ?></td>
 			<?php } ?>
 			<td class="std"><?= $imap->get_users_quota($mailbox['mbox'])->format('</td><td class="std">') ?></td>
 			<td class="std">
