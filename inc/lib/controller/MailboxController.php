@@ -112,7 +112,7 @@ class MailboxController
 			$allowed = array_diff($desired_mboxes, $this->oma->cfg['user_ignore']);
 		} else {
 			foreach($desired_mboxes as $mbox) {
-				if(!in_array($mbox, $this->oma->cfg['user_ignore']) && $this->oma->user_is_descendant($mbox, $who)) {
+				if(!in_array($mbox, $this->oma->cfg['user_ignore']) && User::is_descendant($mbox, $who)) {
 					$allowed[] = $mbox;
 				}
 			}

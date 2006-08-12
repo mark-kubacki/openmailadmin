@@ -42,7 +42,7 @@ class User
 				} else if(in_array($inter, $cache)) {	// avoids loops
 					$rec = false;
 				} else {
-					$rec = self::user_is_descendant($inter, $parent, $levels--, array_merge($cache, array($inter)));
+					$rec = self::is_descendant($inter, $parent, $levels--, array_merge($cache, array($inter)));
 				}
 			}
 		}
