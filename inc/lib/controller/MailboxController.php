@@ -30,10 +30,11 @@ class MailboxController
 	}
 
 	/**
-	 * @return 	Array 		with all(!) mailbox names as values.
+	 * @return 	Array 		with all(!) mailbox names as values, except for incative mailboxes and those to be ignored.
 	 */
 	public function get_all_names() {
-		return $this->oma->db->GetCol('SELECT mbox FROM '.$this->oma->tablenames['user'].' WHERE active = 1');
+		return array_diff($this->oma->db->GetCol('SELECT mbox FROM '.$this->oma->tablenames['user'].' WHERE active = 1'),
+					$this->oma->cfg['user_ignore']);
 	}
 
 	/*
