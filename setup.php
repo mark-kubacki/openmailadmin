@@ -113,6 +113,7 @@ switch($_GET['step']) {
 			if($status['virtual'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('address', $_POST['prefix'].'virtual', array('alias', 'domain'), array('UNIQUE')));
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual', 'owner'));
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual'.' ADD (FOREIGN KEY (domain) REFERENCES '.$_POST['prefix'].'domains(ID) ON DELETE CASCADE )');
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual (alias,domain,dest,owner,active,neu) VALUES (?,?,?,?,?,?)',
 						array('me', 1, $_POST['admin_user'], $_POST['admin_user'], 1, 1));
 			}
