@@ -158,13 +158,10 @@ switch($_GET['step']) {
 			'log_errors'			=> 1,
 			'ignore_repeated_errors'	=> 1,
 			'ignore_repeated_source'	=> 1,
-			'safe_mode'			=> 1,
 			);
 
 		$requirements
-		= array('magic_quotes_gpc'		=> 0,
-			'magic_quotes_runtime'		=> 0,
-			'register_globals'		=> 0,
+		= array(
 			'short_open_tag'		=> 1,
 			);
 
