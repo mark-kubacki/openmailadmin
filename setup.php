@@ -9,6 +9,7 @@ include('./inc/config.inc.php');
 include('./inc/functions.inc.php');
 include('./inc/lib/OMAExceptions.php');
 @include('adodb/adodb.inc.php');
+@include('Log.php');
 
 // definition of configuration file's format
 $config = <<<EOT
@@ -174,6 +175,7 @@ switch($_GET['step']) {
 				array('Socket or IMAP support available?', function_exists('fsockopen') || function_exists('imap_open')),
 				array('MySQL or MySQLi, SQLite, PostgreSQL, Oracle (OCI8)?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('sqlite_open') || function_exists('pg_connect') || function_exists('oci_connect')),
 				array('Is ADOdb installed?', function_exists('ADONewConnection')),
+				array('Is PEAR::Log installed?', class_exists('Log')),
 			);
 
 		$reality	= array();
