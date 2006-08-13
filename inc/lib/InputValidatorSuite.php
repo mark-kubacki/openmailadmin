@@ -56,10 +56,10 @@ class InputValidatorSuite
 		$this->inputs['domain']	= array('cap'	=> txt('55'),
 					);
 		$this->inputs['owner']	= array('cap'	=> txt('56'),
-					'def'	=> $this->oma->current_user->mbox,
+					'def'	=> $this->oma->current_user->ID,
 					);
 		$this->inputs['a_admin']	= array('cap'	=> txt('57'),
-					'def'	=> implode(',', array_unique(array($this->oma->current_user->mbox, $this->oma->authenticated_user->mbox))),
+					'def'	=> array_unique(array($this->oma->current_user->mbox, $this->oma->authenticated_user->mbox)),
 					);
 		$this->inputs['categories']	= array('cap'	=> txt('58'),
 					);
@@ -104,7 +104,7 @@ class InputValidatorSuite
 		$this->validate['owner']	= array(array(	'val'	=> 'is_numeric(~)',
 							),
 						);
-		$this->validate['a_admin']	= array(array(	'val'	=> 'preg_match(\'/^([a-z0-9]+,\s*)*[a-z0-9]+$/i\', ~)',
+		$this->validate['a_admin']	= array(array(	'val'	=> 'is_array(~)',
 							),
 						);
 		$this->validate['categories']	= array(array(	'val'	=> '(~ = trim(~)) && preg_match(\'/^((?:[\w]+|[\w]+\.[\w]+),\s*)*([\w]+|[\w]+\.[\w]+)$/i\', ~)',
