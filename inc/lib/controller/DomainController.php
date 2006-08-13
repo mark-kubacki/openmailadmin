@@ -28,8 +28,9 @@ class DomainController
 			$poss_dom[] = trim($value);
 			$cat .= ' OR categories LIKE '.$this->oma->db->qstr('%'.trim($value).'%');
 		}
-		return $this->oma->db->GetCol('SELECT domain FROM '.$this->oma->tablenames['domains']
-			.' WHERE owner='.$this->oma->db->qstr($user->ID).' OR a_admin LIKE '.$this->oma->db->qstr('%'.$user->mbox.'%').' OR '.db_find_in_set($this->oma->db, 'domain', $poss_dom).$cat);
+		return $this->oma->db->GetCol('SELECT DISTINCT d.domain'
+			.' FROM '.$this->oma->tablenames['domains'].' d LEFT JOIN '.$this->oma->tablenames['domain_admins'].' da ON (d.ID = da.domain)'
+			.' WHERE d.owner='.$this->oma->db->qstr($user->ID).' OR da.admin = '.$this->oma->db->qstr($user->ID).' OR '.db_find_in_set($this->oma->db, 'd.domain', $poss_dom).$cat);
 	}
 
 	public $editable_domains;	// How many domains can the current user change?
