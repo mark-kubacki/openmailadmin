@@ -57,7 +57,7 @@ class MailboxController
 						.'COUNT(DISTINCT rexp.ID) AS num_regexp '
 					.'FROM '.$this->oma->tablenames['user'].' usr '
 						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual'].' virt ON (usr.ID=virt.owner) '
-						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual_regexp'].' rexp ON (mbox=rexp.owner) '
+						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual_regexp'].' rexp ON (usr.ID=rexp.owner) '
 					.$where_clause.$_SESSION['filter']['str']['mbox']
 					.' GROUP BY usr.ID, mbox, person, canonical, pate,  max_alias, max_regexp, usr.active, last_login, a_super, a_admin_domains, a_admin_user '
 					.'ORDER BY pate, mbox',
@@ -262,8 +262,8 @@ class MailboxController
 				$to_be_processed = $mboxnames;
 				// Select users which use more aliases than allowed in future.
 				$result = $this->oma->db->Execute('SELECT COUNT(*) AS consum, owner, person'
-						.' FROM '.$seek_table.','.$this->oma->tablenames['user']
-						.' WHERE '.db_find_in_set($this->oma->db, 'owner', $mboxnames).' AND owner=mbox'
+						.' FROM '.$seek_table.' s JOIN '.$this->oma->tablenames['user'].' usr ON (s.owner = usr.ID)'
+						.' WHERE '.db_find_in_set($this->oma->db, 'usr.ID', $mboxnames)
 						.' GROUP BY owner'
 						.' HAVING consum > '.$props[$what]);
 				if(!$result === false) {
@@ -427,7 +427,7 @@ class MailboxController
 		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual_regexp'].' WHERE '.db_find_in_set($this->oma->db, 'owner', $processed));
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET active=0, neu=1 WHERE '.db_find_in_set($this->oma->db, 'dest', $processed));
 		// domain (if the one to be deleted owns domains, the deletor will inherit them)
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains'].' SET owner='.$this->oma->db->qstr($this->oma->current_user->mbox).' WHERE '.db_find_in_set($this->oma->db, 'owner', $processed));
+		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains'].' SET owner='.$this->oma->db->qstr($this->oma->current_user->ID).' WHERE '.db_find_in_set($this->oma->db, 'owner', $processed));
 		// user
 		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['user'].' WHERE '.db_find_in_set($this->oma->db, 'ID', $processed));
 		if($this->oma->authenticated_user->a_super == 0 && isset($will_be_free['nr_alias'])) {

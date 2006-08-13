@@ -71,7 +71,7 @@ class AddressesController
 					// owner of that given domain, we can permit creation of that catchall.
 					$result = $this->oma->db->GetOne('SELECT domain FROM '.$this->oma->tablenames['domains']
 								.' WHERE domain='.$this->oma->db->qstr($domain)
-								.' AND (owner='.$this->oma->db->qstr($this->oma->current_user->mbox).' OR owner='.$this->oma->db->qstr($this->oma->authenticated_user->mbox).')');
+								.' AND (owner='.$this->oma->db->qstr($this->oma->current_user->ID).' OR owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).')');
 					if($result === false) {			// negative check!
 						$this->ErrorHandler->add_error(txt('16'));
 						return false;

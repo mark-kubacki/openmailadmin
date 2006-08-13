@@ -53,7 +53,7 @@ class DomainController
 		if(!$result === false) {
 			while(!$result->EOF) {
 				$row	= $result->fields;
-				if($row['owner'] == $this->oma->authenticated_user->mbox
+				if($row['owner'] == $this->oma->authenticated_user->ID
 				   || find_in_set($this->oma->authenticated_user->mbox, $row['a_admin'])) {
 					$row['selectable']	= true;
 					++$this->editable_domains;
