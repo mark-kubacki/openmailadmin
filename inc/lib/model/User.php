@@ -19,7 +19,7 @@ class User
 		// unfortunately, we will have to emulate hierarchical queries
 		$sql = 'SELECT DISTINCT lvl'.$levels.'.ID FROM '.self::$tablenames['user'].' lvl1';
 		for($l = 2; $l <= $levels; $l++) {
-			$sql .= ' LEFT JOIN oma1_user lvl'.$l.' ON ( lvl'.($l - 1).'.ID = lvl'.$l.'.pate )';
+			$sql .= ' LEFT JOIN '.self::$tablenames['user'].' lvl'.$l.' ON ( lvl'.($l - 1).'.ID = lvl'.$l.'.pate OR lvl1.ID = lvl'.$l.'.ID )';
 		}
 		$sql .= ' WHERE lvl1.ID = '.$parent->ID.' AND lvl'.$levels.'.ID IS NOT NULL';
 		return self::$db->GetCol($sql);
@@ -178,7 +178,7 @@ class User
 	 * These just count how many elements have been assigned to that given user.
 	 */
 	public function get_number_mailboxes() {
-		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['user'].' WHERE pate='.self::$db->qstr($this->mbox));
+		return count(self::get_descendants_IDs($this)) - 1;
 	}
 	/*
 	 * These just count how many elements have been assigned to that given user.
