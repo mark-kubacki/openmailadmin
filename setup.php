@@ -116,16 +116,15 @@ switch($_GET['step']) {
 			}
 			if($status['virtual'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('address', $_POST['prefix'].'virtual', array('alias', 'domain'), array('UNIQUE')));
-				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual', 'owner'));
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual ADD (FOREIGN KEY (owner) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual ADD (FOREIGN KEY (domain) REFERENCES '.$_POST['prefix'].'domains(ID) ON DELETE CASCADE )');
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual (alias,domain,dest,owner,active,neu) VALUES (?,?,?,?,?,?)',
 						array('me', 1, $_POST['admin_user'], 1, 1, 1));
 			}
 			if($status['virtual_regexp'][1] == 2) {
-				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'virtual_regexp', 'owner'));
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual_regexp ADD (FOREIGN KEY (owner) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual_regexp (ID,reg_exp,dest,owner,active,neu) VALUES (?,?,?,?,?,?)',
-						array(11, '/^(postmaster|abuse|security|root)@example\\.com$/', $_POST['admin_user'], $_POST['admin_user'], 1, 1));
+						array(1, '/^(postmaster|abuse|security|root)@example\\.com$/', $_POST['admin_user'], 1, 1, 1));
 			}
 
 			$config = sprintf($config, $version, date('r'),

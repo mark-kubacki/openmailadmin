@@ -24,7 +24,7 @@ class RegexpAddressesController
 		$regexp = array();
 
 		$result = $this->oma->db->SelectLimit('SELECT * FROM '.$this->oma->tablenames['virtual_regexp']
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox).$_SESSION['filter']['str']['regexp']
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID).$_SESSION['filter']['str']['regexp']
 				.' ORDER BY dest',
 				$_SESSION['limit'], $_SESSION['offset']['regexp']);
 		if(!$result === false) {
@@ -70,7 +70,7 @@ class RegexpAddressesController
 		if($this->oma->current_user->get_used_regexp() < $this->oma->current_user->max_regexp
 		   || $this->oma->authenticated_user->a_super > 0) {
 			$this->oma->db->Execute('INSERT INTO '.$this->oma->tablenames['virtual_regexp'].' (reg_exp, dest, owner) VALUES (?, ?, ?)',
-				array($regexp, implode(',', $arr_destinations), $this->oma->current_user->mbox));
+				array($regexp, implode(',', $arr_destinations), $this->oma->current_user->ID));
 			if($this->oma->db->Affected_Rows() < 1) {
 				if($this->oma->db->ErrorNo() != 0) {
 					$this->ErrorHandler->add_error(txt('133'));
@@ -89,7 +89,7 @@ class RegexpAddressesController
 	 */
 	public function delete($arr_regexp_ids) {
 		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual_regexp']
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
 		if($this->oma->db->Affected_Rows() < 1) {
 			if($this->oma->db->ErrorNo() != 0) {
@@ -107,7 +107,7 @@ class RegexpAddressesController
 	 */
 	public function change_destination($arr_regexp_ids, $arr_destinations) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations)).', neu = 1'
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
 		if($this->oma->db->Affected_Rows() < 1) {
 			if($this->oma->db->ErrorNo() != 0) {
@@ -124,7 +124,7 @@ class RegexpAddressesController
 	 */
 	public function toggle_active($arr_regexp_ids) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET active = NOT active, neu = 1'
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
 		if($this->oma->db->Affected_Rows() < 1) {
 			if($this->oma->db->ErrorNo() != 0) {

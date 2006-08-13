@@ -172,7 +172,7 @@ class User
 	 * How many regexp-addresses the user has already in use?
 	 */
 	public function get_used_regexp() {
-		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['virtual_regexp'].' WHERE owner='.self::$db->qstr($this->mbox));
+		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['virtual_regexp'].' WHERE owner='.self::$db->qstr($this->ID));
 	}
 	/*
 	 * These just count how many elements have been assigned to that given user.
