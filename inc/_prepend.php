@@ -61,10 +61,10 @@ unset($authinfo);
 $ErrorHandler	= ErrorHandler::getInstance();
 
 // Query for the current user...
-if(!(isset($_GET['cuser']) && $_GET['cuser'] != $oma->authenticated_user->mbox)) {
+if(!(isset($_GET['cuser']) && $_GET['cuser'] != $oma->authenticated_user->ID)) {
 	$oma->current_user	= $oma->authenticated_user;
 } else try {
-	$oma->current_user	= User::get_by_name($_GET['cuser']);
+	$oma->current_user	= User::get_by_ID($_GET['cuser']);
 	if(!($oma->authenticated_user->is_superuser()
 	   || User::is_descendant($oma->current_user, $oma->authenticated_user))) {
 		throw new Exception(txt(2));

@@ -5,7 +5,7 @@ class PasswordAndDataController
 {
 	public function get_navigation_items() {
 		$oma = $this->oma;
-		return array('link'		=> 'index.php'.($oma->current_user != $oma->authenticated_user ? '?cuser='.$oma->current_user->mbox : ''),
+		return array('link'		=> 'index.php'.($oma->current_user != $oma->authenticated_user ? '?cuser='.$oma->current_user->ID : ''),
 				'caption'	=> txt('1'),
 				'active'	=> stristr($_SERVER['PHP_SELF'], 'index.php'));
 	}

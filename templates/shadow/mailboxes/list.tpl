@@ -32,9 +32,9 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 					<span class="active">
 				<?php } ?>
 					<?php if($cfg['mboxview_pers']) { ?>
-						<a href="<?= mkSelfRef(array('cuser' => $mailbox['mbox'])) ?>" title="<?= $mailbox['mbox'].' ('.$mailbox['canonical'].'); R='.$mailbox['a_super'].':'.$mailbox['a_admin_domains'].':'.$mailbox['a_admin_user'] ?>"><?= $mailbox['person'] ?></a>
+						<a href="<?= mkSelfRef(array('cuser' => $mailbox['ID'])) ?>" title="<?= $mailbox['mbox'].' ('.$mailbox['canonical'].'); R='.$mailbox['a_super'].':'.$mailbox['a_admin_domains'].':'.$mailbox['a_admin_user'] ?>"><?= $mailbox['person'] ?></a>
 					<?php } else { ?>
-						<a href="<?= mkSelfRef(array('cuser' => $mailbox['mbox'])) ?>" title="<?= $mailbox['person'].' ('.$mailbox['canonical'].'); R='.$mailbox['a_super'].':'.$mailbox['a_admin_domains'].':'.$mailbox['a_admin_user'] ?>"><?= $mailbox['mbox'] ?></a>
+						<a href="<?= mkSelfRef(array('cuser' => $mailbox['ID'])) ?>" title="<?= $mailbox['person'].' ('.$mailbox['canonical'].'); R='.$mailbox['a_super'].':'.$mailbox['a_admin_domains'].':'.$mailbox['a_admin_user'] ?>"><?= $mailbox['mbox'] ?></a>
 					<?php } ?>
 					</span>
 			</td>

@@ -5,7 +5,7 @@ class DomainController
 {
 	public function get_navigation_items() {
 		if($this->oma->authenticated_user->a_admin_domains >= 1 || $this->oma->current_user->get_number_domains() > 0) {
-			return array('link'		=> 'domains.php'.($this->oma->current_user != $this->oma->authenticated_user ? '?cuser='.$this->oma->current_user->mbox : ''),
+			return array('link'		=> 'domains.php'.($this->oma->current_user != $this->oma->authenticated_user ? '?cuser='.$this->oma->current_user->ID : ''),
 					'caption'	=> txt('54'),
 					'active'	=> stristr($_SERVER['PHP_SELF'], 'domains.php'));
 		}
