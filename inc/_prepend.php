@@ -14,6 +14,7 @@ if($cfg['show_exceptions_online']) {
 }
 include('adodb/adodb.inc.php');
 include('./inc/functions.inc.php');
+include('./inc/lib/OMAExceptions.php');
 
 if(is_readable('./templates/'.$cfg['theme'].'/__aux.php')) {
 	include('./templates/'.$cfg['theme'].'/__aux.php');

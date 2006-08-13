@@ -7,6 +7,7 @@ ob_start('ob_gzhandler');
 
 include('./inc/config.inc.php');
 include('./inc/functions.inc.php');
+include('./inc/lib/OMAExceptions.php');
 @include('adodb/adodb.inc.php');
 
 // definition of configuration file's format

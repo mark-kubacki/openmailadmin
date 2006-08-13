@@ -18,6 +18,7 @@ if($ret == 0) {
 include('./inc/config.inc.php');
 	@(include('./inc/config.local.inc.php'));
 include('./inc/functions.inc.php');
+include('./inc/lib/OMAExceptions.php');
 include('./inc/translation.inc.php');
 
 if(!defined('PHPUnit2_MAIN_METHOD')) {

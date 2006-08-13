@@ -76,7 +76,7 @@
 <file url="inc/lib/imap/Fake_IMAP.php" id="1E31943C-3998-469C-B69C-45112B421292" name="Fake_IMAP.php">
 </file>
 </folder>
-<file url="inc/lib/ConfigurationErrorException.php" id="10CD61B3FBDL429e9fc0x1e0c" name="ConfigurationErrorException.php">
+<file url="inc/lib/OMAExceptions.php" id="10CD61B3FBDL429e9fc0x1e0c" name="OMAExceptions.php">
 </file>
 <folder id="10CFCE24B9CL65788f730x1a41" name="view">
 <file url="inc/lib/view/Quota.php" id="108ABC394CEL594970bd0x3672" name="Quota.php">
