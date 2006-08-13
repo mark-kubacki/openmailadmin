@@ -113,15 +113,12 @@ class User
 	}
 
 	/**
-	 * @deprecated 			Will be removed after native virtual domain support has been implemented.
-	 * @throws	Exception	if user does not exist.
+	 * @throws	InvalidArgumentException
 	 */
-	public static function get_by_name($username) {
-		$id = self::$db->GetOne('SELECT ID FROM '.self::$tablenames['user'].' WHERE mbox='.self::$db->qstr($username));
-		return self::get_by_ID($id);
-	}
-
 	public static function get_by_ID($id) {
+		if(!is_numeric($id)) {
+			throw new InvalidArgumentException();
+		}
 		static $cache	= array();
 		if(!isset($cache[$id])) {
 			$cache[$id] = self::get_immediate_by_ID($id);
@@ -130,12 +127,12 @@ class User
 	}
 
 	/**
-	 * @throws	Exception	if user does not exist.
+	 * @throws	UserNotFoundException	if user does not exist.
 	 */
 	private static function get_immediate_by_ID($id) {
 		$data = self::$db->GetRow('SELECT * FROM '.self::$tablenames['user'].' WHERE ID='.self::$db->qstr($id));
-		if($data === false) {
-			throw new Exception(txt(2));
+		if($data === false || count($data) == 0) {
+			throw new UserNotFoundException(txt(2));
 		}
 		return new User($data);
 	}
@@ -146,16 +143,19 @@ class User
 	 * @param	username	User must exist.
 	 * @param	password	Plaintext password
 	 * @return			User
-	 * @throws	Exception	if user does not exist or password didn't match.
+	 * @throws	AuthenticationFailureException	if user does not exist or password didn't match.
 	 */
 	public static function authenticate($username, $password) {
-		$usr	= self::get_by_name($username);
-		if($usr->password->equals($password)) {
-			self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE mbox='.self::$db->qstr($username));
-			$usr->password->store_plaintext($password);
-			return $usr;
+		try {
+			$usr	= self::get_by_ID(self::$db->GetOne('SELECT ID FROM '.self::$tablenames['user'].' WHERE mbox='.self::$db->qstr($username)));
+			if($usr->password->equals($password)) {
+				self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE ID='.self::$db->qstr($usr->ID));
+				$usr->password->store_plaintext($password);
+				return $usr;
+			}
+		} catch (InvalidArgumentException $e) {
 		}
-		throw new Exception(txt(0));
+		throw new AuthenticationFailureException(txt(0));
 	}
 
 	public function is_superuser() {

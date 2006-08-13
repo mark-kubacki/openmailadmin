@@ -24,7 +24,7 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 		$_SESSION['authinfo']		= $authinfo;
 		$_SESSION['server']		= $_POST['server'];
 		$_SESSION['REMOTE_ADDR']	= $_SERVER['REMOTE_ADDR'];
-	} catch (Exception $e) {
+	} catch (AccessDeniedException $e) {
 		$login_error = $e->getMessage();
 	}
 } else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER['REMOTE_ADDR']) {
