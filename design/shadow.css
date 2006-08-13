@@ -140,6 +140,9 @@ SELECT {
 	font-size: 10pt;
 	border: 1px solid #c0c0c0;
 }
+SELECT[name="owner"], SELECT[name="a_admin[]"], SELECT[name="pate"] {
+	width: 98%;
+}
 .error {
 	color: red
 }
