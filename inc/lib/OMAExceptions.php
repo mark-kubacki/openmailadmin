@@ -7,8 +7,12 @@ class AccessDeniedException
 	extends RuntimeException
 {};
 
-class UserNotFoundException
+class ObjectNotFoundException
 	extends AccessDeniedException
+{};
+
+class UserNotFoundException
+	extends ObjectNotFoundException
 {};
 
 class AuthenticationFailureException
