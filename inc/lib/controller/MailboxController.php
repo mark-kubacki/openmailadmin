@@ -49,7 +49,7 @@ class MailboxController
 		   && $this->oma->authenticated_user->a_super >= 1) {
 			$where_clause = ' WHERE TRUE';
 		} else {
-			$where_clause = ' WHERE '.db_find_in_set($this->oma->db, 'ID', User::get_descendants_IDs($this->oma->current_user));
+			$where_clause = ' WHERE '.db_find_in_set($this->oma->db, 'usr.ID', User::get_descendants_IDs($this->oma->current_user));
 		}
 
 		$result = $this->oma->db->SelectLimit('SELECT usr.ID, mbox, person, canonical, pate, max_alias, max_regexp, usr.active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
@@ -212,9 +212,6 @@ class MailboxController
 			}
 		}
 		$this->ErrorHandler->add_info(sprintf(txt('72'), $mboxname, $props['person'], $pw));
-		if(isset($_SESSION['paten'][$props['pate']])) {
-			$_SESSION['paten'][$props['pate']][] = $mboxname;
-		}
 
 		return true;
 	}
@@ -361,40 +358,36 @@ class MailboxController
 			}
 		}
 
-		if(isset($_SESSION['paten']) && in_array(array('mbox', 'pate'), $change)) {
-			unset($_SESSION['paten']);	// again: inefficient, but maybe we come up with something more elegant
-		}
-
 		return true;
 	}
 
 	/*
 	 * If ressources are freed, the current user will get them.
 	 */
-	public function delete($mboxnames) {
-		$mboxnames = $this->filter_manipulable($this->oma->authenticated_user, $mboxnames);
-		if(count($mboxnames) == 0) {
-			return false;
-		}
+	public function delete($mbox_IDs) {
+		$mbox_IDs = $this->filter_manipulable($this->oma->authenticated_user, $mbox_IDs);
 
 		// Delete the given mailboxes from server.
 		$add_quota = 0;			// how many space was actually freed?
 		$toadd = 0;
 		$processed = array();		// which users did we delete successfully?
-		foreach($mboxnames as $user) {
-			if($user != '') {
+		$deleted = array();
+		foreach($mbox_IDs as $id) {
+			if($id != '') {
+				$user = User::get_by_ID($id);
 				// We have to sum up all the space which gets freed in case we later want increase the deleter's quota.
-				$quota	= $this->oma->imap->get_users_quota($user);
+				$quota	= $this->oma->imap->get_users_quota($user->mbox);
 				if($this->oma->authenticated_user->a_super == 0
 				   && $quota->is_set) {
 					$toadd = $quota->max;
 				}
-				$result = $this->oma->imap->deletemb($this->oma->imap->format_user($user));
+				$result = $this->oma->imap->deletemb($this->oma->imap->format_user($user->mbox));
 				if(!$result) {		// failure
 					$this->ErrorHandler->add_error($this->oma->imap->error_msg);
 				} else {		// success
 					$add_quota += $toadd;
-					$processed[] = $user;
+					$processed[] = $id;
+					$deleted[] = $user->person;
 				}
 			}
 		}
@@ -417,12 +410,16 @@ class MailboxController
 		if($this->oma->authenticated_user->a_super == 0) {
 			$result = $this->oma->db->GetRow('SELECT SUM(max_alias) AS nr_alias, SUM(max_regexp) AS nr_regexp'
 					.' FROM '.$this->oma->tablenames['user']
-					.' WHERE '.db_find_in_set($this->oma->db, 'mbox', $processed));
+					.' WHERE '.db_find_in_set($this->oma->db, 'ID', $processed));
 			if(!$result === false) {
 				$will_be_free = $result;
 			}
 		}
 
+		// patenkinder (will be inherited by the one deleting)
+		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['user']
+			.' SET pate='.$this->oma->db->qstr($this->oma->current_user->ID)
+			.' WHERE '.db_find_in_set($this->oma->db, 'pate', $processed));
 		// virtual
 		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual'].' WHERE '.db_find_in_set($this->oma->db, 'owner', $processed));
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active=0, neu=1 WHERE '.db_find_in_set($this->oma->db, 'dest', $processed));
@@ -432,19 +429,13 @@ class MailboxController
 		// domain (if the one to be deleted owns domains, the deletor will inherit them)
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains'].' SET owner='.$this->oma->db->qstr($this->oma->current_user->mbox).' WHERE '.db_find_in_set($this->oma->db, 'owner', $processed));
 		// user
-		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['user'].' WHERE '.db_find_in_set($this->oma->db, 'mbox', $processed));
+		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['user'].' WHERE '.db_find_in_set($this->oma->db, 'ID', $processed));
 		if($this->oma->authenticated_user->a_super == 0 && isset($will_be_free['nr_alias'])) {
 			$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['user']
 			.' SET max_alias='.($this->oma->current_user->max_alias+$will_be_free['nr_alias']).', max_regexp='.($this->oma->current_user->max_regexp+$will_be_free['nr_regexp'])
-			.' WHERE mbox='.$this->oma->db->qstr($this->oma->current_user->mbox));
+			.' WHERE ID='.$this->oma->db->qstr($this->oma->current_user->ID));
 		}
-		// patenkinder (will be inherited by the one deleting)
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['user']
-			.' SET pate='.$this->oma->db->qstr($this->oma->current_user->mbox)
-			.' WHERE '.db_find_in_set($this->oma->db, 'pate', $processed));
-
-		$this->ErrorHandler->add_info(sprintf(txt('75'), implode(',', $processed)));
-		if(isset($_SESSION['paten'])) unset($_SESSION['paten']); // inefficient, but maybe we come up with something more elegant
+		$this->ErrorHandler->add_info(sprintf(txt('75'), implode(',', $deleted)));
 
 		return true;
 	}
@@ -452,12 +443,12 @@ class MailboxController
 	/*
 	 * active <-> inactive
 	 */
-	public function toggle_active($mboxnames) {
-		$tobechanged = $this->filter_manipulable($this->oma->current_user, $mboxnames);
+	public function toggle_active($mbox_IDs) {
+		$tobechanged = $this->filter_manipulable($this->oma->current_user, $mbox_IDs);
 		if(count($tobechanged) > 0) {
 			$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['user']
 					.' SET active = NOT active'
-					.' WHERE '.db_find_in_set($this->oma->db, 'mbox', $tobechanged));
+					.' WHERE '.db_find_in_set($this->oma->db, 'ID', $tobechanged));
 			if($this->oma->db->Affected_Rows() < 1) {
 				if($this->oma->db->ErrorNo() != 0) {
 					$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
