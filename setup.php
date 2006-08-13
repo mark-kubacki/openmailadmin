@@ -51,6 +51,7 @@ switch($_GET['step']) {
 			$tables
 			= array('user'		=>	'user.adodb.txt',
 				'domains'	=>	'domains.adodb.txt',
+				'domain_admins'	=>	'domain_admins.adodb.txt',
 				'virtual'	=>	'virtual.adodb.txt',
 				'virtual_regexp'=>	'virtual_regexp.adodb.txt',
 				'imap_demo'	=>	'imap_demo.adodb.txt',
@@ -113,6 +114,12 @@ switch($_GET['step']) {
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'domains ADD (FOREIGN KEY (owner) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE SET NULL )');
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'domains (ID,domain,categories,owner,a_admin) VALUES (?,?,?,?,?)',
 						array(1, 'example.com', 'all, samples', $_POST['admin_user'], $_POST['admin_user']));
+			}
+			if($status['domain_admins'][1] == 2) {
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'domain_admins ADD (FOREIGN KEY (domain) REFERENCES '.$_POST['prefix'].'domains(ID) ON DELETE CASCADE )');
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'domain_admins ADD (FOREIGN KEY (admin) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'domain_admins (domain,admin) VALUES (?,?)',
+						array(1, 1));
 			}
 			if($status['virtual'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('address', $_POST['prefix'].'virtual', array('alias', 'domain'), array('UNIQUE')));
