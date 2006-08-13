@@ -110,7 +110,7 @@ switch($_GET['step']) {
 			}
 			if($status['domains'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('domain', $_POST['prefix'].'domains', 'domain', array('UNIQUE')));
-				$dict->ExecuteSQLArray($dict->CreateIndexSQL('owner', $_POST['prefix'].'domains', 'owner'));
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'domains ADD (FOREIGN KEY (owner) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE SET NULL )');
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'domains (ID,domain,categories,owner,a_admin) VALUES (?,?,?,?,?)',
 						array(1, 'example.com', 'all, samples', $_POST['admin_user'], $_POST['admin_user']));
 			}

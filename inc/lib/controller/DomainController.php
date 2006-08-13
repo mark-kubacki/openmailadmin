@@ -29,7 +29,7 @@ class DomainController
 			$cat .= ' OR categories LIKE '.$this->oma->db->qstr('%'.trim($value).'%');
 		}
 		return $this->oma->db->GetCol('SELECT domain FROM '.$this->oma->tablenames['domains']
-			.' WHERE owner='.$this->oma->db->qstr($user->mbox).' OR a_admin LIKE '.$this->oma->db->qstr('%'.$user->mbox.'%').' OR '.db_find_in_set($this->oma->db, 'domain', $poss_dom).$cat);
+			.' WHERE owner='.$this->oma->db->qstr($user->ID).' OR a_admin LIKE '.$this->oma->db->qstr('%'.$user->mbox.'%').' OR '.db_find_in_set($this->oma->db, 'domain', $poss_dom).$cat);
 	}
 
 	public $editable_domains;	// How many domains can the current user change?
@@ -44,7 +44,7 @@ class DomainController
 		if($this->oma->authenticated_user->a_super > 0) {
 			$query .= ' WHERE 1=1 '.$_SESSION['filter']['str']['domain'];
 		} else {
-			$query .= ' WHERE (owner='.$this->oma->db->qstr($this->oma->current_user->mbox).' or a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->current_user->mbox.'%').')'
+			$query .= ' WHERE (owner='.$this->oma->db->qstr($this->oma->current_user->ID).' or a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->current_user->mbox.'%').')'
 				 .$_SESSION['filter']['str']['domain'];
 		}
 		$query .= ' ORDER BY owner, length(a_admin), domain';
@@ -129,12 +129,12 @@ class DomainController
 			if($this->oma->cfg['admins_delete_domains']) {
 				$result = $this->oma->db->SelectLimit('SELECT ID, domain'
 					.' FROM '.$this->oma->tablenames['domains']
-					.' WHERE (owner='.$this->oma->db->qstr($this->oma->authenticated_user->mbox).' OR a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->authenticated_user->mbox.'%').') AND '.db_find_in_set($this->oma->db, 'ID', $domains),
+					.' WHERE (owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' OR a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->authenticated_user->mbox.'%').') AND '.db_find_in_set($this->oma->db, 'ID', $domains),
 					count($domains));
 			} else {
 				$result = $this->oma->db->SelectLimit('SELECT ID, domain'
 					.' FROM '.$this->oma->tablenames['domains']
-					.' WHERE owner='.$this->oma->db->qstr($this->oma->authenticated_user->mbox).' AND '.db_find_in_set($this->oma->db, 'ID', $domains),
+					.' WHERE owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' AND '.db_find_in_set($this->oma->db, 'ID', $domains),
 					count($domains));
 			}
 			if(!$result === false) {
@@ -193,7 +193,7 @@ class DomainController
 		if(count($toc) > 0) {
 			$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains']
 				.' SET '.implode(',', $toc)
-				.' WHERE (owner='.$this->oma->db->qstr($this->oma->authenticated_user->mbox).' or a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->authenticated_user->mbox.'%').') AND '.db_find_in_set($this->oma->db, 'ID', $domains));
+				.' WHERE (owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' or a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->authenticated_user->mbox.'%').') AND '.db_find_in_set($this->oma->db, 'ID', $domains));
 			if($this->oma->db->Affected_Rows() < 1) {
 				if($this->oma->db->ErrorNo() != 0) {
 					$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
@@ -206,7 +206,7 @@ class DomainController
 		if(!$this->oma->cfg['admins_delete_domains'] && in_array('owner', $change)) {
 			$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains']
 				.' SET owner='.$this->oma->db->qstr($data['owner'])
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->authenticated_user->mbox).' AND '.db_find_in_set($this->oma->db, 'ID', $domains));
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' AND '.db_find_in_set($this->oma->db, 'ID', $domains));
 		}
 		// No domain be renamed?
 		if(! in_array('domain', $change)) {
@@ -215,7 +215,7 @@ class DomainController
 		// Otherwise (and if only one) try adapting older addresses.
 		if(count($domains) == 1) {
 			// Grep the old name, we will need it later for replacement.
-			$domain = $this->oma->db->GetRow('SELECT ID, domain AS name FROM '.$this->oma->tablenames['domains'].' WHERE ID = '.$this->oma->db->qstr($domains[0]).' AND (owner='.$this->oma->db->qstr($this->oma->authenticated_user->mbox).' or a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->authenticated_user->mbox.'%').')');
+			$domain = $this->oma->db->GetRow('SELECT ID, domain AS name FROM '.$this->oma->tablenames['domains'].' WHERE ID = '.$this->oma->db->qstr($domains[0]).' AND (owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' or a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->authenticated_user->mbox.'%').')');
 			if(!$domain === false) {
 				// First, update the name. (Corresponding field is marked as unique, therefore we will not receive doublettes.)...
 				$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains'].' SET domain = '.$this->oma->db->qstr($data['domain']).' WHERE ID = '.$domain['ID']);

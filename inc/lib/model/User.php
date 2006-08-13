@@ -184,7 +184,7 @@ class User
 	 * These just count how many elements have been assigned to that given user.
 	 */
 	public function get_number_domains() {
-		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['domains'].' WHERE owner='.self::$db->qstr($this->mbox));
+		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['domains'].' WHERE owner='.self::$db->qstr($this->ID));
 	}
 
 }
