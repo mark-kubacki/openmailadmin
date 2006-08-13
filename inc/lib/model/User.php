@@ -166,7 +166,7 @@ class User
 	 * How many aliases the user has already in use?
 	 */
 	public function get_used_alias() {
-		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['virtual'].' WHERE owner='.self::$db->qstr($this->mbox));
+		return self::$db->GetOne('SELECT COUNT(*) FROM '.self::$tablenames['virtual'].' WHERE owner='.self::$db->qstr($this->ID));
 	}
 	/*
 	 * How many regexp-addresses the user has already in use?

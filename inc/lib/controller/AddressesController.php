@@ -24,7 +24,7 @@ class AddressesController
 
 		$result = $this->oma->db->SelectLimit('SELECT v.ID, alias, d.domain, dest, active'
 					.' FROM '.$this->oma->tablenames['virtual'].' v JOIN '.$this->oma->tablenames['domains'].' d ON (v.domain = d.ID)'
-					.' WHERE v.owner='.$this->oma->db->qstr($this->oma->current_user->mbox).$_SESSION['filter']['str']['address']
+					.' WHERE v.owner='.$this->oma->db->qstr($this->oma->current_user->ID).$_SESSION['filter']['str']['address']
 					.' ORDER BY domain, alias, dest',
 					$_SESSION['limit'], $_SESSION['offset']['address']);
 		if(!$result === false) {
@@ -90,7 +90,7 @@ class AddressesController
 			$domain_ID = $this->oma->db->GetOne('SELECT ID FROM '.$this->oma->tablenames['domains']
 								.' WHERE domain='.$this->oma->db->qstr($domain));
 			$this->oma->db->Execute('INSERT INTO '.$this->oma->tablenames['virtual'].' (alias, domain, dest, owner) VALUES (?, ?, ?, ?)',
-						array(strtolower($alias), $domain_ID, implode(',', $arr_destinations), $this->oma->current_user->mbox));
+						array(strtolower($alias), $domain_ID, implode(',', $arr_destinations), $this->oma->current_user->ID));
 			if($this->oma->db->Affected_Rows() < 1) {
 				$this->ErrorHandler->add_error(txt('133'));
 			} else {
@@ -111,10 +111,10 @@ class AddressesController
 		$tmp
 		= $this->oma->db->GetCol('SELECT CONCAT(v.alias, '.$this->oma->db->qstr('@').', d.domain)'
 				.' FROM '.$this->oma->tablenames['virtual'].' v JOIN '.$this->oma->tablenames['domains'].' d ON (v.domain = d.ID)'
-				.' WHERE v.owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' WHERE v.owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'v.ID', $arr_IDs));
 		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual']
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
 		if($this->oma->db->Affected_Rows() < 1) {
 			if($this->oma->db->ErrorNo() != 0) {
@@ -132,7 +132,7 @@ class AddressesController
 	 */
 	public function change_destination($arr_IDs, $arr_destinations) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations)).', neu=1'
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
 		if($this->oma->db->Affected_Rows() < 1) {
 			if($this->oma->db->ErrorNo() != 0) {
@@ -149,7 +149,7 @@ class AddressesController
 	 */
 	public function toggle_active($arr_IDs) {
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active=NOT active, neu=1'
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->mbox)
+				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
 		if($this->oma->db->Affected_Rows() < 1) {
 			if($this->oma->db->ErrorNo() != 0) {

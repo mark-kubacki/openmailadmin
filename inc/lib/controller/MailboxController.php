@@ -56,7 +56,7 @@ class MailboxController
 						.'COUNT(DISTINCT virt.alias) AS num_alias, '
 						.'COUNT(DISTINCT rexp.ID) AS num_regexp '
 					.'FROM '.$this->oma->tablenames['user'].' usr '
-						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual'].' virt ON (mbox=virt.owner) '
+						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual'].' virt ON (usr.ID=virt.owner) '
 						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual_regexp'].' rexp ON (mbox=rexp.owner) '
 					.$where_clause.$_SESSION['filter']['str']['mbox']
 					.' GROUP BY usr.ID, mbox, person, canonical, pate,  max_alias, max_regexp, usr.active, last_login, a_super, a_admin_domains, a_admin_user '
