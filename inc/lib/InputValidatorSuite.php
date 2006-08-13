@@ -101,7 +101,7 @@ class InputValidatorSuite
 		$this->validate['domain']	= array(array(	'val'	=> 'preg_match(\'/^\'.openmailadmin::regex_valid_domain.\'$/i\', ~)',
 							'error'	=> txt('51')),
 						);
-		$this->validate['owner']	= array(array(	'val'	=> 'strlen(~) >= $this->cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $this->cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
+		$this->validate['owner']	= array(array(	'val'	=> 'is_numeric(~)',
 							),
 						);
 		$this->validate['a_admin']	= array(array(	'val'	=> 'preg_match(\'/^([a-z0-9]+,\s*)*[a-z0-9]+$/i\', ~)',
