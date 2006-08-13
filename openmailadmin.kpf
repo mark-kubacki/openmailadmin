@@ -93,6 +93,8 @@
 </file>
 <file url="inc/lib/model/User.php" id="10B56D41A1BL6b8c90a0x1f05" name="User.php">
 </file>
+<file url="inc/lib/model/Domain.php" id="10D08E2A2C2L50ba29010x5676" name="Domain.php">
+</file>
 </folder>
 <folder id="10CFCE6CDEDL496e37b30x1dba" name="controller">
 <file url="inc/lib/controller/PasswordAndDataController.php" id="10CFD0A8671L54c294360x3274" name="PasswordAndDataController.php">
@@ -127,6 +129,8 @@
 <file url="inc/database/virtual.adodb.txt" id="1089203A93CL1a16e070x276a" name="virtual.adodb.txt">
 </file>
 <file url="inc/database/virtual_regexp.adodb.txt" id="1089203A946L6dfcabff0x276a" name="virtual_regexp.adodb.txt">
+</file>
+<file url="inc/database/domain_admins.adodb.txt" id="10D08E1827BL697a9e050x5676" name="domain_admins.adodb.txt">
 </file>
 </folder>
 <file url="inc/exception_handler.php" id="10CD61B0689L5662405d0x1e0c" name="exception_handler.php">
