@@ -336,12 +336,9 @@ class MailboxController
 		if(in_array('mbox', $change)) {
 			if($this->oma->imap->renamemb($this->oma->imap->format_user($mboxnames['0']), $this->oma->imap->format_user($props['mbox']))) {
 				$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['user'].' SET mbox='.$this->oma->db->qstr($props['mbox']).' WHERE mbox='.$this->oma->db->qstr($mboxnames['0']));
-				$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains'].' SET owner='.$this->oma->db->qstr($props['mbox']).' WHERE owner='.$this->oma->db->qstr($mboxnames['0']));
 				$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains'].' SET a_admin = REPLACE(a_admin, '.$this->oma->db->qstr($mboxnames['0']).', '.$this->oma->db->qstr($props['mbox']).') WHERE a_admin LIKE '.$this->oma->db->qstr('%'.$mboxnames['0'].'%'));
 				$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest=REPLACE(dest, '.$this->oma->db->qstr($mboxnames['0']).', '.$this->oma->db->qstr($props['mbox']).'), neu = 1 WHERE dest REGEXP '.$this->oma->db->qstr($mboxnames['0'].'[^@]{1,}').' OR dest LIKE '.$this->oma->db->qstr('%'.$mboxnames['0']));
-				$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET owner='.$this->oma->db->qstr($props['mbox']).' WHERE owner='.$this->oma->db->qstr($mboxnames['0']));
 				$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET dest=REPLACE(dest, '.$this->oma->db->qstr($mboxnames['0']).', '.$this->oma->db->qstr($props['mbox']).'), neu = 1 WHERE dest REGEXP '.$this->oma->db->qstr($mboxnames['0'].'[^@]{1,}').' OR dest LIKE '.$this->oma->db->qstr('%'.$mboxnames['0']));
-				$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET owner='.$this->oma->db->qstr($props['mbox']).' WHERE owner='.$this->oma->db->qstr($mboxnames['0']));
 			} else {
 				$this->ErrorHandler->add_error($this->oma->imap->error_msg.'<br />'.txt('94'));
 			}
@@ -410,10 +407,8 @@ class MailboxController
 			.' SET pate='.$this->oma->db->qstr($this->oma->current_user->ID)
 			.' WHERE '.db_find_in_set($this->oma->db, 'pate', $processed));
 		// virtual
-		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual'].' WHERE '.db_find_in_set($this->oma->db, 'owner', $processed));
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active=0, neu=1 WHERE '.db_find_in_set($this->oma->db, 'dest', $processed));
 		// virtual.regexp
-		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual_regexp'].' WHERE '.db_find_in_set($this->oma->db, 'owner', $processed));
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET active=0, neu=1 WHERE '.db_find_in_set($this->oma->db, 'dest', $processed));
 		// domain (if the one to be deleted owns domains, the deletor will inherit them)
 		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains'].' SET owner='.$this->oma->db->qstr($this->oma->current_user->ID).' WHERE '.db_find_in_set($this->oma->db, 'owner', $processed));
