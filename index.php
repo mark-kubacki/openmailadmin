@@ -15,7 +15,6 @@ $quota	= $imap->getquota($imap->format_user($oma->current_user->mbox));
 $information	= array();
 $information[]	= array(txt('5'),	$oma->current_user->mbox.$cfg['Servers']['IMAP'][$_SESSION['server']]['VDOM']);
 $information[]	= array(txt('6'),	$oma->current_user->person);
-$information[]	= array(txt('7'),	$oma->current_user->canonical);
 $information[]	= array(txt('86'),	$oma->current_user->domains);
 $information[]	= array(txt('8'),	$quota->is_set
 					? intval(round($quota->used/1024)).' / '.floor($quota->max/1024).' [MiB] '

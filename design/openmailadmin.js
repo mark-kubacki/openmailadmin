@@ -200,9 +200,9 @@ function get_current_show_xor_hide_table(panel_owner, current_action) {
 	tbl['domains']['delete']	= new Array(new Array(), new Array('domain', 'owner', 'a_admin', 'categories'));
 	tbl['domains']['change']	= tbl['domains']['new'];
 	tbl['user']			= new Object();
-	tbl['user']['new']		= new Array(new Array('mbox', 'dummy2', 'person', 'canonical', 'domains', 'quota', 'max_alias', 'max_regexp', 'dummy'), new Array());
+	tbl['user']['new']		= new Array(new Array('mbox', 'dummy2', 'person', 'domains', 'quota', 'max_alias', 'max_regexp', 'dummy'), new Array());
 	tbl['user']['change']		= tbl['user']['new']
-	tbl['user']['delete']		= new Array(new Array(), new Array('mbox', 'dummy2', 'person', 'canonical', 'domains', 'quota', 'max_alias', 'max_regexp', 'dummy'));
+	tbl['user']['delete']		= new Array(new Array(), new Array('mbox', 'dummy2', 'person', 'domains', 'quota', 'max_alias', 'max_regexp', 'dummy'));
 	tbl['user']['active']		= tbl['user']['delete']
 
 	return tbl[panel_owner][current_action];

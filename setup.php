@@ -83,9 +83,9 @@ switch($_GET['step']) {
 				if($_POST['imap_user'] == '') {
 					$_POST['imap_user'] = '---';
 				}
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-					array(	array(1, $_POST['admin_user'], null, 'Admin John Doe', 1, $_POST['admin_user'].'@example.com', '', 'all', 1, time(), 0, 10000, 100, 2, 2, 2),
-						array(2, $_POST['imap_user'], null, $_POST['imap_user'], 2, '--@example.com', '', 'none', 1, time(), 0, 0, 0, 0, 0, 1),
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+					array(	array(1, $_POST['admin_user'], null, 'Admin John Doe', 1, '', 'all', 1, time(), 0, 10000, 100, 2, 2, 2),
+						array(2, $_POST['imap_user'], null, $_POST['imap_user'], 2, '', 'none', 1, time(), 0, 0, 0, 0, 0, 1),
 						));
 				User::$db = $db;
 				User::$tablenames = $cfg['tablenames'];

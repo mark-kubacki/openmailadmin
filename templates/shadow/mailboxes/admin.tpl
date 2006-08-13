@@ -38,10 +38,6 @@
 		<td class="ed"><?= $input->text('person', 100) ?></td>
 	</tr>
 	<tr>
-		<td class="ed"><?= $input->checkbox('change[]', 'canonical') ?><b><?= txt('7') ?></b></td>
-		<td class="ed"><?= $input->text('canonical', 100) ?></td>
-	</tr>
-	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'domains') ?><b><?= txt('86') ?></b></td>
 		<td class="ed"><?= $input->text('domains', 100, $oma->current_user->domains) ?></td>
 	</tr>

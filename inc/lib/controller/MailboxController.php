@@ -52,14 +52,14 @@ class MailboxController
 			$where_clause = ' WHERE '.db_find_in_set($this->oma->db, 'usr.ID', User::get_descendants_IDs($this->oma->current_user));
 		}
 
-		$result = $this->oma->db->SelectLimit('SELECT usr.ID, mbox, person, canonical, pate, max_alias, max_regexp, usr.active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
+		$result = $this->oma->db->SelectLimit('SELECT usr.ID, mbox, person, pate, max_alias, max_regexp, usr.active, last_login AS lastlogin, a_super, a_admin_domains, a_admin_user, '
 						.'COUNT(DISTINCT virt.alias) AS num_alias, '
 						.'COUNT(DISTINCT rexp.ID) AS num_regexp '
 					.'FROM '.$this->oma->tablenames['user'].' usr '
 						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual'].' virt ON (usr.ID=virt.owner) '
 						.'LEFT OUTER JOIN '.$this->oma->tablenames['virtual_regexp'].' rexp ON (usr.ID=rexp.owner) '
 					.$where_clause.$_SESSION['filter']['str']['mbox']
-					.' GROUP BY usr.ID, mbox, person, canonical, pate,  max_alias, max_regexp, usr.active, last_login, a_super, a_admin_domains, a_admin_user '
+					.' GROUP BY usr.ID, mbox, person, pate,  max_alias, max_regexp, usr.active, last_login, a_super, a_admin_domains, a_admin_user '
 					.'ORDER BY pate, mbox',
 					$_SESSION['limit'], $_SESSION['offset']['mbox']);
 
@@ -116,7 +116,7 @@ class MailboxController
 			$this->ErrorHandler->add_error(sprintf(txt('130'), txt('83')));
 			return false;
 		}
-		if(!$this->oma->validator->validate($props, array('mbox','person','pate','canonical','domains','max_alias','max_regexp','a_admin_domains','a_admin_user','a_super','quota'))) {
+		if(!$this->oma->validator->validate($props, array('mbox','person','pate','domains','max_alias','max_regexp','a_admin_domains','a_admin_user','a_super','quota'))) {
 			return false;
 		}
 
@@ -135,21 +135,10 @@ class MailboxController
 			}
 		}
 
-		// first create the default-from (canonical) (must not already exist!)
-		if($this->oma->cfg['create_canonical']) {
-			$tmp = explode('@', $props['canonical']);
-			if(!(is_array($tmp)
-			     && $this->oma->address->create($tmp[0], $tmp[1], array($mboxname))) ) {
-				$this->ErrorHandler->add_error(txt('64'));
-				return false;
-			}
-			$rollback[] = '$this->oma->db->Execute(\'DELETE FROM '.$this->oma->tablenames['virtual'].' WHERE owner='.addslashes($this->oma->db->qstr($mboxname)).'\')';
-		}
-
 		// on success write the new user to database
-		$this->oma->db->Execute('INSERT INTO '.$this->oma->tablenames['user'].' (mbox, person, pate, canonical, domains, max_alias, max_regexp, created, a_admin_domains, a_admin_user, a_super)'
-				.' VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-				array($props['mbox'], $props['person'], $props['pate'], $props['canonical'], $props['domains'], $props['max_alias'], $props['max_regexp'], time(), $props['a_admin_domains'], $props['a_admin_user'], $props['a_super'])
+		$this->oma->db->Execute('INSERT INTO '.$this->oma->tablenames['user'].' (mbox, person, pate, domains, max_alias, max_regexp, created, a_admin_domains, a_admin_user, a_super)'
+				.' VALUES (?,?,?,?,?,?,?,?,?,?)',
+				array($props['mbox'], $props['person'], $props['pate'], $props['domains'], $props['max_alias'], $props['max_regexp'], time(), $props['a_admin_domains'], $props['a_admin_user'], $props['a_super'])
 				);
 		if($this->oma->db->Affected_Rows() < 1) {
 			$this->ErrorHandler->add_error(txt('92'));
@@ -235,7 +224,7 @@ class MailboxController
 
 		// Create an array holding every property we have to change.
 		$to_change	= array();
-		foreach(array('person', 'canonical', 'pate', 'domains', 'a_admin_domains', 'a_admin_user', 'a_super')
+		foreach(array('person', 'pate', 'domains', 'a_admin_domains', 'a_admin_user', 'a_super')
 			as $property) {
 			if(in_array($property, $change)) {
 				if(is_numeric($props[$property])) {

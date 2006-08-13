@@ -224,8 +224,6 @@ class DomainController
 					// dest
 					$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET neu = 1, dest = REPLACE(dest, '.$this->oma->db->qstr('@'.$domain['name']).', '.$this->oma->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->oma->db->qstr('%@'.$domain['name'].'%'));
 					$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET neu = 1, dest = REPLACE(dest, '.$this->oma->db->qstr('@'.$domain['name']).', '.$this->oma->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->oma->db->qstr('%@'.$domain['name'].'%'));
-					// canonical
-					$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['user'].' SET canonical = REPLACE(canonical, '.$this->oma->db->qstr('@'.$domain['name']).', '.$this->oma->db->qstr('@'.$data['domain']).') WHERE canonical LIKE '.$this->oma->db->qstr('%@'.$domain['name']));
 				} else {
 					$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
 				}

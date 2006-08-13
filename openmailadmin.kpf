@@ -146,8 +146,6 @@
 </file>
 </folder>
 <folder id="88376299-E399-4127-B8D2-06D97891D3C4" name="postfix">
-<file url="samples/postfix/canonical.mysql" id="2C69A0CF-D7AF-4865-B53D-2F79C0B7AA14" name="canonical.mysql">
-</file>
 <file url="samples/postfix/mydestination.mysql" id="49CE5D62-265F-4AE9-8475-B495814F7D53" name="mydestination.mysql">
 </file>
 <file url="samples/postfix/virtual.mysql" id="EC902CEB-FA9D-4241-81C3-248B74E0454A" name="virtual.mysql">

@@ -36,8 +36,6 @@ class InputValidatorSuite
 		$this->inputs['domains']	= array('cap'	=> txt('86'),
 					'def'	=> $this->oma->current_user->domains,
 					);
-		$this->inputs['canonical']	= array('cap'	=> txt('7'),
-					);
 		$this->inputs['quota']	= array('cap'	=> txt('87'),
 					);
 		$this->inputs['max_alias']	= array('cap'	=> txt('88'),
@@ -82,9 +80,6 @@ class InputValidatorSuite
 							),
 						array(	'val'	=> '$this->oma->domain->only_subset_available($this->oma->current_user, $this->oma->current_user, ~)',
 							'error'	=> txt('81')),
-						);
-		$this->validate['canonical']	= array(array(	'val'	=> 'preg_match(\'/\'.AEmailMapperController::regex_valid_email.\'/i\', ~)',
-							'error'	=> txt('64')),
 						);
 		$this->validate['quota']	= array(array(	'val'	=> 'is_numeric(~) && settype(~, \'int\') && ~ >= 0',
 							'error'	=> txt('63')),

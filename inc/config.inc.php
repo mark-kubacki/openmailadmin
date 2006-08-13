@@ -44,11 +44,6 @@ $cfg['allow_mbox_as_target']	= true;
 // Moved from Webcyradm? An specialized equivalent:
 $cfg['allow_wcyr_as_target']	= false;
 
-// Shall the canonical-address be created along with the new mailbox?
-// (Set this to false if your users may own several mailboxes with same canonicals
-//  or if external addresses occur here.)
-$cfg['create_canonical']	= true;
-
 // Set this to true and domain-administrators may delete "their" domains,
 // else only the owner is allowed to. If true implies, that admins cannot
 // change ownership of domains which are not their own.
