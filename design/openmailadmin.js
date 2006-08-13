@@ -196,8 +196,8 @@ function get_current_show_xor_hide_table(panel_owner, current_action) {
 	tbl['virtual_regexp']['active']	= tbl['virtual_regexp']['delete']
 	tbl['virtual_regexp']['probe']	= new Array(new Array('reg_exp', 'probe'), new Array('dest_is_mbox'));
 	tbl['domains']			= new Object();
-	tbl['domains']['new']		= new Array(new Array('domain', 'owner', 'a_admin', 'categories'), new Array());
-	tbl['domains']['delete']	= new Array(new Array(), new Array('domain', 'owner', 'a_admin', 'categories'));
+	tbl['domains']['new']		= new Array(new Array('domain', 'dummy2', 'owner', 'dummy1', 'a_admin', 'categories'), new Array());
+	tbl['domains']['delete']	= new Array(new Array(), new Array('domain', 'dummy2', 'owner', 'dummy1', 'a_admin', 'categories'));
 	tbl['domains']['change']	= tbl['domains']['new'];
 	tbl['user']			= new Object();
 	tbl['user']['new']		= new Array(new Array('mbox', 'dummy2', 'person', 'domains', 'quota', 'max_alias', 'max_regexp', 'dummy'), new Array());

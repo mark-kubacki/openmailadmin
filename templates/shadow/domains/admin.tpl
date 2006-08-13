@@ -20,11 +20,11 @@
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'owner') ?><b><?= txt('56') ?></b></td>
-		<td class="ed"><?= $input->_generate('text', 'owner', $oma->current_user->mbox, array('class' => 'textwhite', 'style' => 'width: 98%', 'maxlength' => '16')) ?></td>
+		<td class="ed"><?= $input->hidden('dummy1', 'owner') ?><?= $input->select('owner', $selectable_paten['mbox'], $selectable_paten['ID']) ?></td>
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'a_admin') ?><b><?= txt('57') ?></b></td>
-		<td class="ed"><?= $input->_generate('text', 'a_admin', $oma->current_user->mbox, array('class' => 'textwhite', 'style' => 'width: 98%')) ?></td>
+		<td class="ed"><?= $input->hidden('dummy2', 'a_admin') ?><?= $input->select('a_admin[]', $selectable_paten['mbox'], $selectable_paten['ID'], 5, 1) ?></td>
 	</tr>
 	<tr>
 		<td class="ed"><?= $input->checkbox('change[]', 'categories') ?><b><?= txt('58') ?></b></td>

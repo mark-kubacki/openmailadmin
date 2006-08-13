@@ -40,6 +40,7 @@ $domains = $oma->domain->get_list();
 include('./templates/'.$cfg['theme'].'/domains/list.tpl');
 
 if($oma->authenticated_user->a_admin_domains > 0) {
+	$selectable_paten = $oma->mailbox->get_selectable_paten($oma->current_user);
 	// ADMIN PANEL
 	include('./templates/'.$cfg['theme'].'/domains/admin.tpl');
 }
