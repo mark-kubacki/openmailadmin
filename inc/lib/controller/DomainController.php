@@ -154,7 +154,7 @@ class DomainController
 						$this->ErrorHandler->add_info(txt('52').'<br />'.implode(', ', $del_nm));
 						// We better deactivate all aliases containing that domain, so users can see the domain was deleted.
 						foreach($del_nm as $domainname) {
-							$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active = 0, neu = 1 WHERE address LIKE '.$this->oma->db->qstr('%'.$domainname));
+							$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active = 0 WHERE address LIKE '.$this->oma->db->qstr('%'.$domainname));
 						}
 						// We can't do such on REGEXP addresses: They may catch more than the given domains.
 						return true;
@@ -223,8 +223,8 @@ class DomainController
 				// ... and then, change every old address.
 				if($this->oma->db->Affected_Rows() == 1) {
 					// dest
-					$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET neu = 1, dest = REPLACE(dest, '.$this->oma->db->qstr('@'.$domain['name']).', '.$this->oma->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->oma->db->qstr('%@'.$domain['name'].'%'));
-					$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET neu = 1, dest = REPLACE(dest, '.$this->oma->db->qstr('@'.$domain['name']).', '.$this->oma->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->oma->db->qstr('%@'.$domain['name'].'%'));
+					$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest = REPLACE(dest, '.$this->oma->db->qstr('@'.$domain['name']).', '.$this->oma->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->oma->db->qstr('%@'.$domain['name'].'%'));
+					$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET dest = REPLACE(dest, '.$this->oma->db->qstr('@'.$domain['name']).', '.$this->oma->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->oma->db->qstr('%@'.$domain['name'].'%'));
 				} else {
 					$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
 				}

@@ -131,7 +131,7 @@ class AddressesController
 	 * Changes the destination of the given addresses if they belong to the current user.
 	 */
 	public function change_destination($arr_IDs, $arr_destinations) {
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations)).', neu=1'
+		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations))
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
 		if($this->oma->db->Affected_Rows() < 1) {
@@ -148,7 +148,7 @@ class AddressesController
 	 * and thus sets inactive ones to active ones and vice versa.
 	 */
 	public function toggle_active($arr_IDs) {
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active=NOT active, neu=1'
+		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active=NOT active'
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
 		if($this->oma->db->Affected_Rows() < 1) {

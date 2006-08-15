@@ -106,7 +106,7 @@ class RegexpAddressesController
 	 * @see		AddressController::change_destination
 	 */
 	public function change_destination($arr_regexp_ids, $arr_destinations) {
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations)).', neu = 1'
+		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations))
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
 		if($this->oma->db->Affected_Rows() < 1) {
@@ -123,7 +123,7 @@ class RegexpAddressesController
 	 * @see		AddressController::toggle_active
 	 */
 	public function toggle_active($arr_regexp_ids) {
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET active = NOT active, neu = 1'
+		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET active = NOT active'
 				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
 				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
 		if($this->oma->db->Affected_Rows() < 1) {
