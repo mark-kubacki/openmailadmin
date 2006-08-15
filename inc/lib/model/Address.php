@@ -23,14 +23,8 @@ class Address
 		return $cache[$id];
 	}
 
-	/**
-	 * @throws	InvalidArgumentException
-	 */
 	public static function delete_by_ID($id) {
-		if(!is_numeric($id)) {
-			throw new InvalidArgumentException();
-		}
-		return self::$db->Execute('DELETE FROM '.self::$tablenames['virtual'].' WHERE ID='.self::$db->qstr($id));
+		return parent::delete_by_ID($id, self::$tablenames['virtual']);
 	}
 
 	/**
@@ -44,15 +38,8 @@ class Address
 		return self::get_by_ID($id);
 	}
 
-	/**
-	 * @throws	UserNotFoundException	if user does not exist.
-	 */
-	private static function get_immediate_by_ID($id) {
-		$data = self::$db->GetRow('SELECT * FROM '.self::$tablenames['virtual'].' WHERE ID='.self::$db->qstr($id));
-		if($data === false || count($data) == 0) {
-			throw new ObjectNotFoundException();
-		}
-		return new self($data);
+	protected static function get_immediate_by_ID($id) {
+		return parent::get_immediate_by_ID($id, self::$tablenames['virtual'], 'Address');
 	}
 
 }
