@@ -167,7 +167,7 @@ class User
 		if($data === false || count($data) == 0) {
 			throw new UserNotFoundException(txt(2));
 		}
-		return new User($data);
+		return new self($data);
 	}
 
 	/**

@@ -86,7 +86,7 @@ class IMAPVirtualDomain
 		if($data === false || count($data) == 0) {
 			throw new ObjectNotFoundException();
 		}
-		return new IMAPVirtualDomain($data);
+		return new self($data);
 	}
 
 	private function get_admin_IDs() {
