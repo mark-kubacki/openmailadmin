@@ -6,6 +6,7 @@ if(is_file('./inc/config.local.inc.php')) {
 ob_start('ob_gzhandler');
 
 include('./inc/config.inc.php');
+include('./inc/translation.inc.php');
 include('./inc/functions.inc.php');
 include('./inc/lib/OMAExceptions.php');
 @include('adodb/adodb.inc.php');
