@@ -5,12 +5,12 @@
  * Use instances of this class whenever data about any user is needed.
  */
 class User
+	extends ATableWrapperModel
 {
 	public static		$db;
 	public static		$tablenames;
 
 	public		$password;
-	private		$data		= array();
 
 	/**
 	 * @return	Array
@@ -60,38 +60,11 @@ class User
 		return $paten;
 	}
 
-	/**
-	 * @param	data	Array with all available data about this particular user.
-	 */
 	protected function __construct($data) {
 		global $cfg;
 		$this->password = new Password($this, $data['password'], new $cfg['passwd']['strategy']());
 		unset($data['password']);
-		$this->data	= $data;
-	}
-
-	/**
-	 * This is from Openmaillist's DataCarrier.
-	 *
-	 * @throw		If no value for $key has yet been set.
-	 */
-	protected function __get($key) {
-		if(array_key_exists($key, $this->data)) {
-			return $this->data[$key];
-		} else {
-			throw new Exception('Variable does not exist or has not been set.');
-		}
-	}
-
-	protected function __set($key, $value) {
-		if(is_null($value)) {
-			if(array_key_exists($key, $this->data)) {
-				unset($this->data[$key]);
-			}
-		} else {
-			$this->data[$key] = $value;
-		}
-		return true;
+		parent::__construct($data);
 	}
 
 	/**
