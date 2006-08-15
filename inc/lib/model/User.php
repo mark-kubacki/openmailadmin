@@ -112,6 +112,14 @@ class User
 		return true;
 	}
 
+	public function set_pate(User $pate) {
+		return $this->immediate_set('pate', $pate->ID);
+	}
+
+	public function get_virtual_domain() {
+		return IMAPVirtualDomain::get_by_ID($this->vdom);
+	}
+
 	/**
 	 * @throws	InvalidArgumentException
 	 */
@@ -124,6 +132,31 @@ class User
 			$cache[$id] = self::get_immediate_by_ID($id);
 		}
 		return $cache[$id];
+	}
+
+	/**
+	 * @param	imap		if set to null, user will not be created on IMAP backend and quota will not be set.
+	 * @param	realname	also known as column person.
+	 * @param	domains		domain categories.
+	 * @param	pate		if set to null or left empty, ID 1 will be set.
+	 * @param	quota		integer, unit MiB. If set to null or left empty, no quota will be set.
+	 * @return	User
+	 */
+	public static function create(IMAP_Administrator $imap = null, IMAPVirtualDomain $virtual_domain,
+					$name, $realname, $domains = '',
+					User $pate = null, $quota = null) {
+		$res = self::$db->Execute('INSERT INTO '.self::$tablenames['user']
+				.' (mbox, vdom, person, pate, domains, created) VALUES (?,?,?,?,?,?)',
+				array($name, $virtual_domain->vdom, $realname, (is_null($pate) ? 1 : $pate->ID), $domains, time()));
+		$id = self::$db->Insert_ID();
+		$usr = self::get_by_ID($id);
+		if(!is_null($imap)) {
+			$imap->createmb($imap->format_user($usr));
+			if(!is_null($quota)) {
+				$imap->setquota($imap->format_user($usr), $quota*1024);
+			}
+		}
+		return $usr;
 	}
 
 	/**
