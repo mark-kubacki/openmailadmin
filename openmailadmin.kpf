@@ -97,6 +97,8 @@
 </file>
 <file url="inc/lib/model/IMAPVirtualDomain.php" id="10D11916DB9L534c41b80x252c" name="IMAPVirtualDomain.php">
 </file>
+<file url="inc/lib/model/RegexpAddress.php" id="10D1297D0FFL5842658b0x79c9" name="RegexpAddress.php">
+</file>
 </folder>
 <folder id="10CFCE6CDEDL496e37b30x1dba" name="controller">
 <file url="inc/lib/controller/PasswordAndDataController.php" id="10CFD0A8671L54c294360x3274" name="PasswordAndDataController.php">

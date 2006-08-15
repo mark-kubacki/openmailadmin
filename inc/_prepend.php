@@ -57,6 +57,10 @@ Domain::$db		= $db;
 Domain::$tablenames	= $cfg['tablenames'];
 IMAPVirtualDomain::$db	= $db;
 IMAPVirtualDomain::$tablenames	= $cfg['tablenames'];
+Address::$db		= $db;
+Address::$tablenames	= $cfg['tablenames'];
+RegexpAddress::$db		= $db;
+RegexpAddress::$tablenames	= $cfg['tablenames'];
 
 // IMAP
 $imap = IMAP_get_instance($cfg['Servers']['IMAP'][$_SESSION['server']],
