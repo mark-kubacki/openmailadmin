@@ -43,6 +43,7 @@ if(!isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])) {
 $cfg['tablenames']
 	= array('user'		=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'user',
 		'vdomains'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'vdomains',
+		'vdom_admins'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'vdom_admins',
 		'domains'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'domains',
 		'domain_admins'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'domain_admins',
 		'virtual'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'virtual',

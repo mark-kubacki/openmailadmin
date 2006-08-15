@@ -95,6 +95,8 @@
 </file>
 <file url="inc/lib/model/Domain.php" id="10D08E2A2C2L50ba29010x5676" name="Domain.php">
 </file>
+<file url="inc/lib/model/IMAPVirtualDomain.php" id="10D11916DB9L534c41b80x252c" name="IMAPVirtualDomain.php">
+</file>
 </folder>
 <folder id="10CFCE6CDEDL496e37b30x1dba" name="controller">
 <file url="inc/lib/controller/PasswordAndDataController.php" id="10CFD0A8671L54c294360x3274" name="PasswordAndDataController.php">
@@ -133,6 +135,8 @@
 <file url="inc/database/domain_admins.adodb.txt" id="10D08E1827BL697a9e050x5676" name="domain_admins.adodb.txt">
 </file>
 <file url="inc/database/vdomains.adodb.txt" id="10D11523E9DL1d5f95ea0x252c" name="vdomains.adodb.txt">
+</file>
+<file url="inc/database/vdom_admins.adodb.txt" id="10D1197D7A6Ld0596370x252c" name="vdom_admins.adodb.txt">
 </file>
 </folder>
 <file url="inc/exception_handler.php" id="10CD61B0689L5662405d0x1e0c" name="exception_handler.php">

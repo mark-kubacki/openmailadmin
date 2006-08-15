@@ -51,6 +51,7 @@ switch($_GET['step']) {
 			$tables
 			= array('vdomains'	=>	'vdomains.adodb.txt',
 				'user'		=>	'user.adodb.txt',
+				'vdom_admins'	=>	'vdom_admins.adodb.txt',
 				'domains'	=>	'domains.adodb.txt',
 				'domain_admins'	=>	'domain_admins.adodb.txt',
 				'virtual'	=>	'virtual.adodb.txt',
@@ -115,6 +116,12 @@ switch($_GET['step']) {
 						}
 					}
 				}
+			}
+			if($status['vdom_admins'][1] == 2) {
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'vdom_admins ADD (FOREIGN KEY (vdom) REFERENCES '.$_POST['prefix'].'vdomains(vdom) ON DELETE CASCADE )');
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'vdom_admins ADD (FOREIGN KEY (admin) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'vdom_admins (vdom,admin) VALUES (?,?)',
+						array(1, 1));
 			}
 			if($status['domains'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('domain', $_POST['prefix'].'domains', 'domain', array('UNIQUE')));
