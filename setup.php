@@ -118,6 +118,7 @@ switch($_GET['step']) {
 				}
 			}
 			if($status['vdom_admins'][1] == 2) {
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('admin_privilege', $_POST['prefix'].'vdom_admins', array('vdom', 'admin'), array('UNIQUE')));
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'vdom_admins ADD (FOREIGN KEY (vdom) REFERENCES '.$_POST['prefix'].'vdomains(vdom) ON DELETE CASCADE )');
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'vdom_admins ADD (FOREIGN KEY (admin) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'vdom_admins (vdom,admin) VALUES (?,?)',
@@ -130,6 +131,7 @@ switch($_GET['step']) {
 						array(1, 'example.com', 'all, samples', 1));
 			}
 			if($status['domain_admins'][1] == 2) {
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('admin_privilege', $_POST['prefix'].'domain_admins', array('domain', 'admin'), array('UNIQUE')));
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'domain_admins ADD (FOREIGN KEY (domain) REFERENCES '.$_POST['prefix'].'domains(ID) ON DELETE CASCADE )');
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'domain_admins ADD (FOREIGN KEY (admin) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'domain_admins (domain,admin) VALUES (?,?)',

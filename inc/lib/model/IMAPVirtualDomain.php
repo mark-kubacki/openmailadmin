@@ -69,6 +69,16 @@ class IMAPVirtualDomain
 	}
 
 	/**
+	 * @return	IMAPVirtualDomain
+	 */
+	public static function create($name) {
+		self::$db->Execute('INSERT INTO '.$_POST['prefix'].'vdomains (vdomain, new_emails, new_regexp, new_domains) VALUES (?,?,?,?)',
+				array($name, 0, 0, 0));
+		$id = self::$db->Insert_ID();
+		return self::get_by_ID($id);
+	}
+
+	/**
 	 * @throws	ObjectNotFoundException	if user does not exist.
 	 */
 	private static function get_immediate_by_ID($id) {
