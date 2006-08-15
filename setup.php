@@ -79,6 +79,8 @@ switch($_GET['step']) {
 			Domain::$tablenames = $cfg['tablenames'];
 			IMAPVirtualDomain::$db = $db;
 			IMAPVirtualDomain::$tablenames = $cfg['tablenames'];
+			AEmailMapperModel::$db		= $db;
+			AEmailMapperModel::$tablenames	= $cfg['tablenames'];
 			Address::$db		= $db;
 			Address::$tablenames	= $cfg['tablenames'];
 			RegexpAddress::$db		= $db;
