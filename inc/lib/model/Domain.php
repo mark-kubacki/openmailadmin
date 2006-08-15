@@ -7,7 +7,7 @@ class Domain
 	private		$data		= array();
 
 	/**
-	 * @param	data	Array with all available data about this particular user.
+	 * @param	data	Array with all available data .
 	 */
 	protected function __construct($data) {
 		$this->data	= $data;
@@ -69,6 +69,16 @@ class Domain
 	}
 
 	/**
+	 * @return	Domain
+	 */
+	public static function create($name, User $owner, $categories = 'all') {
+		self::$db->Execute('INSERT INTO '.self::$tablenames['domains'].' (domain,categories,owner) VALUES (?,?,?)',
+				array($name, $categories, $owner->ID));
+		$id = self::$db->Insert_ID();
+		return self::get_by_ID($id);
+	}
+
+	/**
 	 * @throws	ObjectNotFoundException	if user does not exist.
 	 */
 	private static function get_immediate_by_ID($id) {
@@ -76,7 +86,7 @@ class Domain
 		if($data === false || count($data) == 0) {
 			throw new ObjectNotFoundException();
 		}
-		return new User($data);
+		return new Domain($data);
 	}
 
 	private function get_admin_IDs() {
@@ -95,6 +105,10 @@ class Domain
 			}
 		}
 		return $admins;
+	}
+
+	public function add_administrator(User $admin) {
+		return self::$db->Execute('INSERT INTO '.self::$tablenames['domain_admins'].' (domain,admin) VALUES (?,?)', array($this->ID, $admin->ID));
 	}
 
 }
