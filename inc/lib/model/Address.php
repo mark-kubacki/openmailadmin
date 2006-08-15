@@ -9,13 +9,7 @@ class Address
 		return parent::set_destinations($destinations, self::$tablenames['virtual']);
 	}
 
-	/**
-	 * @throws	InvalidArgumentException
-	 */
 	public static function get_by_ID($id) {
-		if(!is_numeric($id)) {
-			throw new InvalidArgumentException();
-		}
 		static $cache	= array();
 		if(!isset($cache[$id])) {
 			$cache[$id] = self::get_immediate_by_ID($id);
