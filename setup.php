@@ -71,19 +71,25 @@ switch($_GET['step']) {
 							);
 				$cfg['tablenames'][$name] = $_POST['prefix'].$name;
 			}
+			// initialize models
+			User::$db = $db;
+			User::$tablenames = $cfg['tablenames'];
+			Domain::$db = $db;
+			Domain::$tablenames = $cfg['tablenames'];
+			IMAPVirtualDomain::$db = $db;
+			IMAPVirtualDomain::$tablenames = $cfg['tablenames'];
+			Address::$db		= $db;
+			Address::$tablenames	= $cfg['tablenames'];
+			RegexpAddress::$db		= $db;
+			RegexpAddress::$tablenames	= $cfg['tablenames'];
 			// add sample data - only if table has been created and did not exist
 			if($status['imap_demo'][1] == 2) {
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'imap_demo (mailbox,used,qmax,ACL) VALUES (?,?,?,?)',
 							array('shared', 0, 0, 'anyone lrswipcda'));
-				if($_POST['imap_type'] == 'fake-imap') {
-					$db->Execute('INSERT INTO '.$_POST['prefix'].'imap_demo (mailbox,used,qmax,ACL) VALUES (?,?,?,?)',
-								array('user.'.$_POST['admin_user'], 0, 0, $_POST['admin_user'].' lrswipcda'));
-				}
 			}
 			if($status['vdomains'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('virtual_domain', $_POST['prefix'].'vdomains', 'vdomain', array('UNIQUE')));
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'vdomains (vdom, vdomain, new_emails, new_regexp, new_domains) VALUES (?,?,?,?,?)',
-						array(1, '', 0, 0, 0));
+				IMAPVirtualDomain::create('');
 			}
 			if($status['user'][1] == 2 or $status['user'][1] == 1) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('mailbox', $_POST['prefix'].'user', array('mbox', 'vdom'), array('UNIQUE')));
@@ -92,62 +98,53 @@ switch($_GET['step']) {
 				if($_POST['imap_user'] == '') {
 					$_POST['imap_user'] = '---';
 				}
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-					array(	array(1, $_POST['admin_user'], 1, 'Admin John Doe', 1, '', 'all', 1, time(), 0, 10000, 100, 2, 2, 2),
-						array(2, $_POST['imap_user'], 1, $_POST['imap_user'], 2, '', 'none', 1, time(), 0, 0, 0, 0, 0, 1),
-						));
-				User::$db = $db;
-				User::$tablenames = $cfg['tablenames'];
-				$tmp = User::get_by_ID(1);
-				$tmp->password->set($_POST['admin_pass']);
-				$tmp = User::get_by_ID(2);
-				$tmp->password->set($_POST['imap_pass']);
-				// create superuser
-				if($_POST['imap_type'] != 'fake-imap') {
-					$imap = IMAP_get_instance(array('HOST' => $_POST['imap_host'],
-									'PORT' => $_POST['imap_port'],
-									'ADMIN' => $_POST['imap_user'],
-									'PASS' => $_POST['imap_pass'],
-									), $_POST['imap_type']);
-					$imap->createmb($imap->format_user($_POST['admin_user']));
-					if(isset($cfg['folders']['create_default']) && is_array($cfg['folders']['create_default'])) {
-						foreach($cfg['folders']['create_default'] as $new_folder) {
-							$imap->createmb($imap->format_user($_POST['admin_user'], $new_folder));
-						}
-					}
-				}
+				$imap = IMAP_get_instance(array('HOST' => $_POST['imap_host'],
+								'PORT' => $_POST['imap_port'],
+								'ADMIN' => $_POST['imap_user'],
+								'PASS' => $_POST['imap_pass'],
+								), $_POST['imap_type']);
+				$vdom = IMAPVirtualDomain::get_by_ID(1);
+				$admin_user = User::create($imap, $vdom, $_POST['admin_user'], 'Admin John Doe', 'all');
+				$admin_user->immediate_set('active', 1);
+				$admin_user->immediate_set('max_alias', 10000);
+				$admin_user->immediate_set('max_regexp', 100);
+				$admin_user->immediate_set('a_admin_domains', 2);
+				$admin_user->immediate_set('a_admin_user', 2);
+				$admin_user->immediate_set('a_super', 2);
+				$admin_user->password->set($_POST['admin_pass']);
+				$imap_user = User::create(null, $vdom, $_POST['imap_user'], $_POST['imap_user']);
+				$imap_user->set_pate($imap_user);
+				$imap_user->immediate_set('active', 1);
+				$imap_user->password->set($_POST['imap_pass']);
 			}
 			if($status['vdom_admins'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('admin_privilege', $_POST['prefix'].'vdom_admins', array('vdom', 'admin'), array('UNIQUE')));
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'vdom_admins ADD (FOREIGN KEY (vdom) REFERENCES '.$_POST['prefix'].'vdomains(vdom) ON DELETE CASCADE )');
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'vdom_admins ADD (FOREIGN KEY (admin) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'vdom_admins (vdom,admin) VALUES (?,?)',
-						array(1, 1));
+				$vdom = IMAPVirtualDomain::get_by_ID(1);
+				$vdom->add_administrator(User::get_by_ID(1));
 			}
 			if($status['domains'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('domain', $_POST['prefix'].'domains', 'domain', array('UNIQUE')));
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'domains ADD (FOREIGN KEY (owner) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE SET NULL )');
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'domains (ID,domain,categories,owner) VALUES (?,?,?,?)',
-						array(1, 'example.com', 'all, samples', 1));
+				Domain::create('example.com', User::get_by_ID(1), 'all, samples');
 			}
 			if($status['domain_admins'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('admin_privilege', $_POST['prefix'].'domain_admins', array('domain', 'admin'), array('UNIQUE')));
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'domain_admins ADD (FOREIGN KEY (domain) REFERENCES '.$_POST['prefix'].'domains(ID) ON DELETE CASCADE )');
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'domain_admins ADD (FOREIGN KEY (admin) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'domain_admins (domain,admin) VALUES (?,?)',
-						array(1, 1));
+				$domain = Domain::get_by_ID(1);
+				$domain->add_administrator(User::get_by_ID(1));
 			}
 			if($status['virtual'][1] == 2) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('address', $_POST['prefix'].'virtual', array('alias', 'domain'), array('UNIQUE')));
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual ADD (FOREIGN KEY (owner) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual ADD (FOREIGN KEY (domain) REFERENCES '.$_POST['prefix'].'domains(ID) ON DELETE CASCADE )');
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual (alias,domain,dest,owner,active) VALUES (?,?,?,?,?)',
-						array('me', 1, $_POST['admin_user'], 1, 1));
+				Address::create('me', Domain::get_by_ID(1), User::get_by_ID(1), array($_POST['admin_user']));
 			}
 			if($status['virtual_regexp'][1] == 2) {
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual_regexp ADD (FOREIGN KEY (owner) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
-				$db->Execute('INSERT INTO '.$_POST['prefix'].'virtual_regexp (ID,reg_exp,dest,owner,active) VALUES (?,?,?,?,?)',
-						array(1, '/^(postmaster|abuse|security|root)@example\\.com$/', $_POST['admin_user'], 1, 1));
+				RegexpAddress::create('/^(postmaster|abuse|security|root)@example\\.com$/', User::get_by_ID(1), array($_POST['admin_user']));
 			}
 
 			$config = sprintf($config, $version, date('r'),
