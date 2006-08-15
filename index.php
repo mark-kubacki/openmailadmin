@@ -11,7 +11,7 @@ else			$rightstring = txt('85');
 unset($a_tmp);
 
 // DISPLAY
-$quota	= $imap->getquota($imap->format_user($oma->current_user->mbox));
+$quota	= $imap->getquota($imap->format_user($oma->current_user));
 $information	= array();
 $information[]	= array(txt('5'),	$oma->current_user->mbox.$cfg['Servers']['IMAP'][$_SESSION['server']]['VDOM']);
 $information[]	= array(txt('6'),	$oma->current_user->person);

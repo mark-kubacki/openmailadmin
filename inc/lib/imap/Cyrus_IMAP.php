@@ -167,8 +167,8 @@ class Cyrus_IMAP
 		return new Quota();
 	}
 
-	public function get_users_quota($username) {
-		return $this->getquota($this->format_user($username));
+	public function get_users_quota(User $user) {
+		return $this->getquota($this->format_user($user));
 	}
 
 	/**
@@ -230,19 +230,19 @@ class Cyrus_IMAP
 		return $this->command('. deleteacl "'.$mailboxname.'" "'.$user.'"');
 	}
 
-	public function format_user($username, $folder = null) {
+	public function format_user(User $user, $folder = null) {
 		$ret = '';
 		$this->gethierarchyseparator();
 		if(is_null($folder)) {
-			if(isset($this->connection_data['VDOM']) && $this->connection_data['VDOM'] != '') {
-				$ret = $this->connection_data['VDOM'].'!user'.$this->separator.$username;
+			if($user->get_virtual_domain()->vdomain != '') {
+				$ret = $user->get_virtual_domain()->vdomain.'!user'.$this->separator.$user->mbox;
 			} else {
-				$ret = 'user'.$this->separator.$username;
+				$ret = 'user'.$this->separator.$user->mbox;
 			}
 		} else {
-			$ret = $this->format_user($username).$this->separator.$folder;
+			$ret = $this->format_user($user).$this->separator.$folder;
 		}
-		$this->_logger->notice('I: ("'.$username.'", '.(is_null($folder) ? 'null' : '"'.$folder.'"').') has been formatted as "'.$ret.'"');
+		$this->_logger->notice('I: ("'.$user->mbox.'", '.(is_null($folder) ? 'null' : '"'.$folder.'"').') has been formatted as "'.$ret.'"');
 		return $ret;
 	}
 

@@ -145,8 +145,8 @@ class Fake_IMAP
 		}
 	}
 
-	public function get_users_quota($username) {
-		return $this->getquota($this->format_user($username));
+	public function get_users_quota(User $user) {
+		return $this->getquota($this->format_user($user));
 	}
 
 	public function get_acl_available() {
@@ -199,11 +199,11 @@ class Fake_IMAP
 		return '2.2.12';
 	}
 
-	public function format_user($username, $folder = null) {
+	public function format_user(User $user, $folder = null) {
 		if(is_null($folder)) {
-			return('user'.$this->gethierarchyseparator().$username.$this->connection_data['VDOM']);
+			return('user'.$this->gethierarchyseparator().$user->mbox.$this->connection_data['VDOM']);
 		} else {
-			return($this->format_user($username).$this->gethierarchyseparator().$folder);
+			return($this->format_user($user).$this->gethierarchyseparator().$folder);
 		}
 	}
 

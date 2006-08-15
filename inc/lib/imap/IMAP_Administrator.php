@@ -30,10 +30,9 @@ interface IMAP_Administrator
 	/**
 	 * This is to avoid perpetual calls to format_user.
 	 *
-	 * @param	username	Username, not mailbox' name.
 	 * @return		Instance of class Quota.
 	 */
-	function get_users_quota($username);
+	function get_users_quota(User $user);
 	/**
 	 * @param	mb	Mailbox. May be a submailbox (aka subfolder).
 	 * @param	many	Quota. Has to be an integer kiB as dimension. If left out or null the mailbox' quota will be removed and thus regarded as 'not set' - that means unlimited.
@@ -65,11 +64,10 @@ interface IMAP_Administrator
 	/**
 	 * Some IMAP servers don't repsect standards and introduce their own formatting of mailboxes and subfolders.
 	 *
-	 * @param	username	Mailboxname without formatting.
-	 * @param	folder		Possible subfolder of that given mailbox.
+	 * @param	folder		Possible subfolder of that given mailbox. If none provided, the root folder of given user is taken (i.e. INBOX).
 	 * @return			Fully formatted mailbox as string.
 	 */
-	function format_user($username, $folder = null);
+	function format_user(User $user, $folder = null);
 	/**
 	 * @return		Version of connected IMAP server as string.
 	 */
