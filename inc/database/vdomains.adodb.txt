@@ -1,0 +1,5 @@
+vdom		I	UNSIGNED PRIMARY AUTO,
+vdomain		C 128	NOTNULL,
+new_emails	L 1	DEFAULT 0 NOTNULL,
+new_regexp	L 1	DEFAULT 0 NOTNULL,
+new_domains	L 1	DEFAULT 0 NOTNULL

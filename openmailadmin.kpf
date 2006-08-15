@@ -132,6 +132,8 @@
 </file>
 <file url="inc/database/domain_admins.adodb.txt" id="10D08E1827BL697a9e050x5676" name="domain_admins.adodb.txt">
 </file>
+<file url="inc/database/vdomains.adodb.txt" id="10D11523E9DL1d5f95ea0x252c" name="vdomains.adodb.txt">
+</file>
 </folder>
 <file url="inc/exception_handler.php" id="10CD61B0689L5662405d0x1e0c" name="exception_handler.php">
 </file>

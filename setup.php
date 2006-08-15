@@ -49,7 +49,8 @@ switch($_GET['step']) {
 		} else {
 			$cfg['passwd']['strategy']	= $_POST['hashing_strategy'];
 			$tables
-			= array('user'		=>	'user.adodb.txt',
+			= array('vdomains'	=>	'vdomains.adodb.txt',
+				'user'		=>	'user.adodb.txt',
 				'domains'	=>	'domains.adodb.txt',
 				'domain_admins'	=>	'domain_admins.adodb.txt',
 				'virtual'	=>	'virtual.adodb.txt',
@@ -78,15 +79,21 @@ switch($_GET['step']) {
 								array('user.'.$_POST['admin_user'], 0, 0, $_POST['admin_user'].' lrswipcda'));
 				}
 			}
+			if($status['vdomains'][1] == 2) {
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('virtual_domain', $_POST['prefix'].'vdomains', 'vdomain', array('UNIQUE')));
+				$db->Execute('INSERT INTO '.$_POST['prefix'].'vdomains (vdom, vdomain, new_emails, new_regexp, new_domains) VALUES (?,?,?,?,?)',
+						array(1, '', 0, 0, 0));
+			}
 			if($status['user'][1] == 2 or $status['user'][1] == 1) {
 				$dict->ExecuteSQLArray($dict->CreateIndexSQL('mailbox', $_POST['prefix'].'user', array('mbox', 'vdom'), array('UNIQUE')));
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'user ADD (FOREIGN KEY (pate) REFERENCES '.$_POST['prefix'].'user(ID) )');
+				$db->Execute('ALTER TABLE '.$_POST['prefix'].'user ADD (FOREIGN KEY (vdom) REFERENCES '.$_POST['prefix'].'vdomains(vdom) ON DELETE RESTRICT)');
 				if($_POST['imap_user'] == '') {
 					$_POST['imap_user'] = '---';
 				}
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'user VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-					array(	array(1, $_POST['admin_user'], null, 'Admin John Doe', 1, '', 'all', 1, time(), 0, 10000, 100, 2, 2, 2),
-						array(2, $_POST['imap_user'], null, $_POST['imap_user'], 2, '', 'none', 1, time(), 0, 0, 0, 0, 0, 1),
+					array(	array(1, $_POST['admin_user'], 1, 'Admin John Doe', 1, '', 'all', 1, time(), 0, 10000, 100, 2, 2, 2),
+						array(2, $_POST['imap_user'], 1, $_POST['imap_user'], 2, '', 'none', 1, time(), 0, 0, 0, 0, 0, 1),
 						));
 				User::$db = $db;
 				User::$tablenames = $cfg['tablenames'];
