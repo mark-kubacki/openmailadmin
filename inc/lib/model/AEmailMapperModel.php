@@ -2,9 +2,6 @@
 abstract class AEmailMapperModel
 	extends ATableWrapperModel
 {
-	public static		$db;
-	public static		$tablenames;
-
 	protected function __construct($data) {
 		if(!is_array($data['dest'])) {
 			$data['dest']	= self::make_dest_array($data['dest']);

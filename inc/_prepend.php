@@ -51,18 +51,8 @@ $cfg['tablenames']
 		'imap_demo'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'imap_demo'
 		);
 // Objects' initialization
-User::$db		= $db;
-User::$tablenames	= $cfg['tablenames'];
-Domain::$db		= $db;
-Domain::$tablenames	= $cfg['tablenames'];
-IMAPVirtualDomain::$db	= $db;
-IMAPVirtualDomain::$tablenames	= $cfg['tablenames'];
-AEmailMapperModel::$db		= $db;
-AEmailMapperModel::$tablenames	= $cfg['tablenames'];
-Address::$db		= $db;
-Address::$tablenames	= $cfg['tablenames'];
-RegexpAddress::$db		= $db;
-RegexpAddress::$tablenames	= $cfg['tablenames'];
+ATableWrapperModel::$db		= $db;
+ATableWrapperModel::$tablenames	= $cfg['tablenames'];
 
 // IMAP
 $imap = IMAP_get_instance($cfg['Servers']['IMAP'][$_SESSION['server']],

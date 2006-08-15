@@ -2,9 +2,6 @@
 class RegexpAddress
 	extends AEmailMapperModel
 {
-	public static		$db;
-	public static		$tablenames;
-
 	public function set_destinations(array $destinations) {
 		return parent::set_destinations($destinations, self::$tablenames['virtual']);
 	}

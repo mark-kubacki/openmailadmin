@@ -7,9 +7,6 @@
 class User
 	extends ATableWrapperModel
 {
-	public static		$db;
-	public static		$tablenames;
-
 	public		$password;
 
 	/**

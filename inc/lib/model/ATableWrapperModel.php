@@ -1,6 +1,9 @@
 <?php
 abstract class ATableWrapperModel
 {
+	public static	$db;
+	public static	$tablenames;
+
 	private		$data		= array();
 
 	/**

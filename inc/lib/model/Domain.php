@@ -2,9 +2,6 @@
 class Domain
 	extends ATableWrapperModel
 {
-	public static		$db;
-	public static		$tablenames;
-
 	/**
 	 * Immediately set given column in database to the given value.
 	 *

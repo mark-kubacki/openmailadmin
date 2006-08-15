@@ -73,18 +73,8 @@ switch($_GET['step']) {
 				$cfg['tablenames'][$name] = $_POST['prefix'].$name;
 			}
 			// initialize models
-			User::$db = $db;
-			User::$tablenames = $cfg['tablenames'];
-			Domain::$db = $db;
-			Domain::$tablenames = $cfg['tablenames'];
-			IMAPVirtualDomain::$db = $db;
-			IMAPVirtualDomain::$tablenames = $cfg['tablenames'];
-			AEmailMapperModel::$db		= $db;
-			AEmailMapperModel::$tablenames	= $cfg['tablenames'];
-			Address::$db		= $db;
-			Address::$tablenames	= $cfg['tablenames'];
-			RegexpAddress::$db		= $db;
-			RegexpAddress::$tablenames	= $cfg['tablenames'];
+			ATableWrapperModel::$db = $db;
+			ATableWrapperModel::$tablenames = $cfg['tablenames'];
 			// add sample data - only if table has been created and did not exist
 			if($status['imap_demo'][1] == 2) {
 				$db->Execute('INSERT INTO '.$_POST['prefix'].'imap_demo (mailbox,used,qmax,ACL) VALUES (?,?,?,?)',
