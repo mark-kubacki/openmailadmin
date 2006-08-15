@@ -104,7 +104,7 @@ class User
 	public function immediate_set($attribute, $value) {
 		self::$db->Execute('UPDATE '.self::$tablenames['user']
 				.' SET '.$attribute.'='.self::$db->qstr($value)
-				.' WHERE mbox='.self::$db->qstr($this->mbox));
+				.' WHERE ID='.self::$db->qstr($this->ID));
 		if($attribute != 'password')
 			$this->{$attribute} = $value;
 		if(self::$db->ErrorNo() != 0)
@@ -135,12 +135,23 @@ class User
 	}
 
 	/**
+	 * @throws	InvalidArgumentException
+	 */
+	public static function delete_by_ID($id) {
+		if(!is_numeric($id)) {
+			throw new InvalidArgumentException();
+		}
+		return self::$db->Execute('DELETE FROM '.self::$tablenames['user'].' WHERE ID='.self::$db->qstr($id));
+	}
+
+	/**
 	 * @param	imap		if set to null, user will not be created on IMAP backend and quota will not be set.
 	 * @param	realname	also known as column person.
 	 * @param	domains		domain categories.
 	 * @param	pate		if set to null or left empty, ID 1 will be set.
 	 * @param	quota		integer, unit MiB. If set to null or left empty, no quota will be set.
 	 * @return	User
+	 * @throws	MailboxCreationError
 	 */
 	public static function create(IMAP_Administrator $imap = null, IMAPVirtualDomain $virtual_domain,
 					$name, $realname, $domains = '',
@@ -151,9 +162,13 @@ class User
 		$id = self::$db->Insert_ID();
 		$usr = self::get_by_ID($id);
 		if(!is_null($imap)) {
-			$imap->createmb($imap->format_user($usr));
-			if(!is_null($quota)) {
-				$imap->setquota($imap->format_user($usr), $quota*1024);
+			if($imap->createmb($imap->format_user($usr))) {
+				if(!is_null($quota)) {
+					$imap->setquota($imap->format_user($usr), $quota*1024);
+				}
+			} else {
+				self::delete_by_ID($id);
+				throw new MailboxCreationError($imap->error_msg);
 			}
 		}
 		return $usr;

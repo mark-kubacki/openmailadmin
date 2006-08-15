@@ -18,3 +18,11 @@ class UserNotFoundException
 class AuthenticationFailureException
 	extends AccessDeniedException
 {};
+
+class IMAPException
+	extends Exception
+{};
+
+class MailboxCreationError
+	extends IMAPException
+{};
