@@ -13,7 +13,7 @@ unset($a_tmp);
 // DISPLAY
 $quota	= $imap->getquota($imap->format_user($oma->current_user));
 $information	= array();
-$information[]	= array(txt('5'),	$oma->current_user->mbox.$cfg['Servers']['IMAP'][$_SESSION['server']]['VDOM']);
+$information[]	= array(txt('5'),	$oma->current_user->mbox);
 $information[]	= array(txt('6'),	$oma->current_user->person);
 $information[]	= array(txt('86'),	$oma->current_user->domains);
 $information[]	= array(txt('8'),	$quota->is_set

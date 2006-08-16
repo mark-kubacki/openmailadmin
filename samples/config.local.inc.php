@@ -8,7 +8,6 @@ $cfg['Servers']['IMAP'][] = array(
 	'PORT'	=> 143,
 	'ADMIN'	=> 'cyrus',
 	'PASS'	=> '##secret##',
-	'VDOM'	=> ''
 );
 $cfg['Servers']['DB'][] = array(
 	'DSN'		=> 'mysql://user:pass@host/db',

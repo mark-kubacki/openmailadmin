@@ -201,7 +201,7 @@ class Fake_IMAP
 
 	public function format_user(User $user, $folder = null) {
 		if(is_null($folder)) {
-			return('user'.$this->gethierarchyseparator().$user->mbox.$this->connection_data['VDOM']);
+			return('user'.$this->gethierarchyseparator().$user->mbox);
 		} else {
 			return($this->format_user($user).$this->gethierarchyseparator().$folder);
 		}

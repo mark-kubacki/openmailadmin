@@ -32,7 +32,6 @@ $config = <<<EOT
 	'PORT'	=> %d,
 	'ADMIN'	=> '%s',
 	'PASS'	=> '%s',
-	'VDOM'	=> ''
 );
 ?>
 EOT;
