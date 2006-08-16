@@ -1,6 +1,6 @@
 <?php
 class IMAPVirtualDomain
-	extends ATableWrapperModel
+	extends ADomainModel
 {
 	public function immediate_set($attribute, $value) {
 		return parent::immediate_set($attribute, $value, self::$tablenames['vdomains'], 'vdom');
@@ -26,20 +26,6 @@ class IMAPVirtualDomain
 
 	private function get_admin_IDs() {
 		return self::$db->GetCol('SELECT admin FROM '.self::$tablenames['vdom_admins'].' WHERE vdom = '.self::$db->qstr($this->vdom));
-	}
-
-	/**
-	 * @return	Array		of User
-	 */
-	public function get_administrators() {
-		$admins = array();
-		foreach($this->get_admin_IDs() as $id) {
-			try {
-				$admins[] = User::get_by_ID($id);
-			} catch (ObjectNotFoundException $e) {
-			}
-		}
-		return $admins;
 	}
 
 	public function add_administrator(User $admin) {

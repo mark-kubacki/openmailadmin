@@ -1,6 +1,6 @@
 <?php
 class Domain
-	extends ATableWrapperModel
+	extends ADomainModel
 {
 	public function immediate_set($attribute, $value) {
 		return parent::immediate_set($attribute, $value, self::$tablenames['domains'], 'ID');
@@ -26,20 +26,6 @@ class Domain
 
 	private function get_admin_IDs() {
 		return self::$db->GetCol('SELECT admin FROM '.self::$tablenames['domain_admins'].' WHERE domain = '.self::$db->qstr($this->ID));
-	}
-
-	/**
-	 * @return	Array		of users
-	 */
-	public function get_administrators() {
-		$admins = array();
-		foreach($this->get_admin_IDs() as $id) {
-			try {
-				$admins[] = User::get_by_ID($id);
-			} catch (ObjectNotFoundException $e) {
-			}
-		}
-		return $admins;
 	}
 
 	public function add_administrator(User $admin) {
