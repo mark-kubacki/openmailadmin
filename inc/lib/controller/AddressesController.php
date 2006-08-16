@@ -16,63 +16,54 @@ class AddressesController
 		return 'address';
 	}
 
-	/*
-	 * Returns a long list with all addresses (the virtuals' table).
+	/**
+	 * @return	Array		with instances as values and IDs as keys.
 	 */
-	public function get_list() {
-		$alias = array();
-
-		$result = $this->oma->db->SelectLimit('SELECT v.ID, alias, d.domain, dest, active'
-					.' FROM '.$this->oma->tablenames['virtual'].' v JOIN '.$this->oma->tablenames['domains'].' d ON (v.domain = d.ID)'
-					.' WHERE v.owner='.$this->oma->db->qstr($this->oma->current_user->ID).$_SESSION['filter']['str']['address']
-					.' ORDER BY domain, alias, dest',
-					$_SESSION['limit'], $_SESSION['offset']['address']);
-		if(!$result === false) {
-			while(!$result->EOF) {
-				$row	= $result->fields;
-				// explode all destinations (as there may be many)
-				$dest = array();
-				foreach(explode(',', $row['dest']) as $value) {
-					$value = trim($value);
-					// replace the current user's name with "mailbox"
-					if($value == $this->oma->current_user->mbox)
-						$dest[] = txt('5');
-					else
-						$dest[] = $value;
-				}
-				sort($dest);
-				$row['dest'] = $dest;
-				if($row['alias'] == '')
-					$row['alias'] = '*';
-				// add the current entry to our list of aliases
-				$alias[] = $row;
-				$result->MoveNext();
+	private function get_manipulable(User $owner, array $ids) {
+		$addr = Address::get_by_owner($owner);
+		$list = array();
+		foreach($ids as $id) {
+			if(isset($addr[$id])) {
+				$list[$id] = $addr[$id];
 			}
 		}
-		return $alias;
+		return $list;
 	}
 
-	/**
-	 * Creates a new email-address.
-	 */
-	public function create($alias, $domain, $arr_destinations) {
+	public function get_list() {
+		$addresses = Address::get_by_owner($this->oma->current_user, $_SESSION['limit'], $_SESSION['offset']['address']);
+		$list = array();
+		foreach($addresses as $addr) {
+			$row = array();
+			$row['ID'] = $addr->ID;
+			$row['active'] = $addr->active;
+			if($addr->alias == '')
+				$row['alias'] = '*';
+			else
+				$row['alias'] = $addr->alias;
+			$row['domain'] = $addr->get_domain()->domain;
+			$row['dest'] = $addr->get_destinations();
+			$list[] = $row;
+		}
+		return $list;
+	}
+
+	public function create($alias, $domain_ID, array $destinations) {
 		// May the user create another address?
 		if($this->oma->current_user->get_used_alias() < $this->oma->current_user->max_alias
 		   || $this->oma->authenticated_user->a_super >= 1) {
 			// May he use the given domain?
-			if(! in_array($domain, $this->oma->domain->get_usable_by_user($this->oma->current_user))) {
+			if(! in_array($domain_ID,
+					array_keys($this->oma->domain->get_usable_by_user($this->oma->current_user)))) {
 				$this->ErrorHandler->add_error(txt('16'));
 				return false;
 			}
+			$domain = Domain::get_by_ID($domain_ID);
 			// If he did choose a catchall, may he create such an address?
 			if($alias == '*' && $this->oma->cfg['address']['allow_catchall']) {
 				if($this->oma->cfg['address']['restrict_catchall']) {
-					// If either the current or the authenticated user is
-					// owner of that given domain, we can permit creation of that catchall.
-					$result = $this->oma->db->GetOne('SELECT domain FROM '.$this->oma->tablenames['domains']
-								.' WHERE domain='.$this->oma->db->qstr($domain)
-								.' AND (owner='.$this->oma->db->qstr($this->oma->current_user->ID).' OR owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).')');
-					if($result === false) {			// negative check!
+					if(! ($domain->get_owner() == $this->oma->current_user
+					      || in_array($this->oma->current_user, $domain->get_administrators())) ) {
 						$this->ErrorHandler->add_error(txt('16'));
 						return false;
 					}
@@ -85,80 +76,48 @@ class AddressesController
 				$this->ErrorHandler->add_error(txt('13'));
 				return false;
 			}
-			// Finally, create that address.
-			// ... get the domains ID
-			$domain_ID = $this->oma->db->GetOne('SELECT ID FROM '.$this->oma->tablenames['domains']
-								.' WHERE domain='.$this->oma->db->qstr($domain));
-			$this->oma->db->Execute('INSERT INTO '.$this->oma->tablenames['virtual'].' (alias, domain, dest, owner) VALUES (?, ?, ?, ?)',
-						array(strtolower($alias), $domain_ID, implode(',', $arr_destinations), $this->oma->current_user->ID));
-			if($this->oma->db->Affected_Rows() < 1) {
-				$this->ErrorHandler->add_error(txt('133'));
-			} else {
-				$this->ErrorHandler->add_info(sprintf(txt('135'), strtolower($alias).'@'.$domain));
+			$ret = Address::create($alias, $domain, $this->oma->current_user, $destinations);
+			if($ret instanceof Address) {
+				$this->ErrorHandler->add_info(sprintf(txt('135'), $ret->__toString()));
 				return true;
+			} else {
+				$this->ErrorHandler->add_error(txt('133'));
 			}
 		} else {
 			$this->ErrorHandler->add_error(txt('14'));
 		}
 		return false;
 	}
-	/**
-	 * Deletes the given addresses if they belong to the current user.
-	 *
-	 * @param	arr_addresses		Array with IDs of the addresses to be deleted.
-	 */
-	public function delete($arr_IDs) {
-		$tmp
-		= $this->oma->db->GetCol('SELECT CONCAT(v.alias, '.$this->oma->db->qstr('@').', d.domain)'
-				.' FROM '.$this->oma->tablenames['virtual'].' v JOIN '.$this->oma->tablenames['domains'].' d ON (v.domain = d.ID)'
-				.' WHERE v.owner='.$this->oma->db->qstr($this->oma->current_user->ID)
-				.' AND '.db_find_in_set($this->oma->db, 'v.ID', $arr_IDs));
-		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual']
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
-				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
-		if($this->oma->db->Affected_Rows() < 1) {
-			if($this->oma->db->ErrorNo() != 0) {
-				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
-			}
-		} else {
-			$this->ErrorHandler->add_info(sprintf(txt('15'), implode(', ', $tmp)));
-			return true;
-		}
 
-		return false;
+	public function delete($arr_IDs) {
+		$res = true;
+		$deleted = array();
+		foreach($this->get_manipulable($this->oma->current_user, $arr_IDs) as $id => $addr) {
+			$t = Address::delete_by_ID($id);
+			if($res && !$t
+			   && $this->oma->db->ErrorNo() != 0) {
+				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
+			} else {
+				$deleted[] = $addr->__toString();
+			}
+			$res = $res && $t;
+		}
+		if(count($deleted) > 0) {
+			$this->ErrorHandler->add_info(sprintf(txt(15), '<ul><li><cite>'.implode('</cite></li><li><cite>', $deleted).'</cite></li></ul>'));
+		}
+		return count($deleted) > 0 && $res;
 	}
-	/*
-	 * Changes the destination of the given addresses if they belong to the current user.
-	 */
+
 	public function change_destination($arr_IDs, $arr_destinations) {
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations))
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
-				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
-		if($this->oma->db->Affected_Rows() < 1) {
-			if($this->oma->db->ErrorNo() != 0) {
-				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
-			}
-		} else {
-			return true;
+		foreach($this->get_manipulable($this->oma->current_user, $arr_IDs) as $addr) {
+			$addr->set_destinations($arr_destinations);
 		}
-		return false;
 	}
-	/*
-	 * Toggles the 'active'-flag of a set of addresses  of the current user
-	 * and thus sets inactive ones to active ones and vice versa.
-	 */
+
 	public function toggle_active($arr_IDs) {
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active=NOT active'
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
-				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_IDs));
-		if($this->oma->db->Affected_Rows() < 1) {
-			if($this->oma->db->ErrorNo() != 0) {
-				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
-			}
-		} else {
-			return true;
+		foreach($this->get_manipulable($this->oma->current_user, $arr_IDs) as $addr) {
+			$addr->set_active(!$addr->active);
 		}
-		return false;
 	}
 
 }

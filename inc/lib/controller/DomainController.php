@@ -18,7 +18,7 @@ class DomainController
 
 	/**
 	 * @param	domain_key	If set, the user's own domain_key is ignored and this is taken instead.
-	 * @return	Array		with all domains the user may choose from as values.
+	 * @return	Array		with all domains the user may choose from as values and their IDs as keys.
 	 */
 	public function get_usable_by_user(User $user, $domain_key = null) {
 		$cat = '';
@@ -28,9 +28,14 @@ class DomainController
 			$poss_dom[] = trim($value);
 			$cat .= ' OR categories LIKE '.$this->oma->db->qstr('%'.trim($value).'%');
 		}
-		return $this->oma->db->GetCol('SELECT DISTINCT d.domain'
+		$rs = $this->oma->db->Execute('SELECT DISTINCT d.ID, d.domain'
 			.' FROM '.$this->oma->tablenames['domains'].' d LEFT JOIN '.$this->oma->tablenames['domain_admins'].' da ON (d.ID = da.domain)'
 			.' WHERE d.owner='.$this->oma->db->qstr($user->ID).' OR da.admin = '.$this->oma->db->qstr($user->ID).' OR '.db_find_in_set($this->oma->db, 'd.domain', $poss_dom).$cat);
+		$list = array();
+		foreach($rs as $k => $row) {
+			$list[$row['ID']] = $row['domain'];
+		}
+		return $list;
 	}
 
 	public $editable_domains;	// How many domains can the current user change?

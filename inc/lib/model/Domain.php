@@ -13,6 +13,18 @@ class Domain
 		return User::get_by_ID($this->owner);
 	}
 
+	/**
+	 * @return	Array 		of User
+	 */
+	public function get_administrators() {
+		$adm = array();
+		foreach($this->get_admin_IDs() as $id) {
+			$tmp = User::get_by_ID($id);
+			$adm[$tmp->ID] = $tmp;
+		}
+		return $adm;
+	}
+
 	public static function get_by_ID($id) {
 		static $cache	= array();
 		if(!isset($cache[$id])) {

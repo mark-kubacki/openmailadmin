@@ -19,7 +19,7 @@
 			<td class="ed"><b><?= txt('18') ?></b></td>
 			<td class="ed">
 				<?= $input->_generate('text', 'alias', null, array('class' => 'textwhite', 'maxlength' => '190')) ?>
-				@<?= $input->select('domain', $oma->domain->get_usable_by_user($oma->current_user)) ?>
+				@<?php $usable = $oma->domain->get_usable_by_user($oma->current_user); ?><?= $input->select('domain', array_values($usable), array_keys($usable)) ?>
 			</td>
 		</tr>
 		<tr>
