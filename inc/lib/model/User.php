@@ -76,13 +76,7 @@ class User
 		return IMAPVirtualDomain::get_by_ID($this->vdom);
 	}
 
-	/**
-	 * @throws	InvalidArgumentException
-	 */
 	public static function get_by_ID($id) {
-		if(!is_numeric($id)) {
-			throw new InvalidArgumentException();
-		}
 		static $cache	= array();
 		if(!isset($cache[$id])) {
 			$cache[$id] = self::get_immediate_by_ID($id);
@@ -133,12 +127,12 @@ class User
 	/**
 	 * @throws	UserNotFoundException	if user does not exist.
 	 */
-	private static function get_immediate_by_ID($id) {
-		$data = self::$db->GetRow('SELECT * FROM '.self::$tablenames['user'].' WHERE ID='.self::$db->qstr($id));
-		if($data === false || count($data) == 0) {
+	protected static function get_immediate_by_ID($id) {
+		try {
+			return parent::get_immediate_by_ID($id, self::$tablenames['user'], 'User', 'ID');
+		} catch(ObjectNotFoundException $e) {
 			throw new UserNotFoundException(txt(2));
 		}
-		return new self($data);
 	}
 
 	/**

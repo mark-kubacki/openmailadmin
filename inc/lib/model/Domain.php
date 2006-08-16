@@ -6,16 +6,10 @@ class Domain
 		return parent::immediate_set($attribute, $value, self::$tablenames['domains'], 'ID');
 	}
 
-	/**
-	 * @throws	InvalidArgumentException
-	 */
 	public static function get_by_ID($id) {
-		if(!is_numeric($id)) {
-			throw new InvalidArgumentException();
-		}
 		static $cache	= array();
 		if(!isset($cache[$id])) {
-			$cache[$id] = self::get_immediate_by_ID($id);
+			$cache[$id] = parent::get_immediate_by_ID($id, self::$tablenames['domains'], 'Domain', 'ID');
 		}
 		return $cache[$id];
 	}
@@ -28,17 +22,6 @@ class Domain
 				array($name, $categories, $owner->ID));
 		$id = self::$db->Insert_ID();
 		return self::get_by_ID($id);
-	}
-
-	/**
-	 * @throws	ObjectNotFoundException	if user does not exist.
-	 */
-	private static function get_immediate_by_ID($id) {
-		$data = self::$db->GetRow('SELECT * FROM '.self::$tablenames['domains'].' WHERE ID='.self::$db->qstr($id));
-		if($data === false || count($data) == 0) {
-			throw new ObjectNotFoundException();
-		}
-		return new self($data);
 	}
 
 	private function get_admin_IDs() {

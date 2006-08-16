@@ -9,7 +9,7 @@ class Address
 	public static function get_by_ID($id) {
 		static $cache	= array();
 		if(!isset($cache[$id])) {
-			$cache[$id] = self::get_immediate_by_ID($id);
+			$cache[$id] = parent::get_immediate_by_ID($id, self::$tablenames['virtual'], 'Address', 'ID');
 		}
 		return $cache[$id];
 	}
@@ -27,10 +27,6 @@ class Address
 				array($owner->ID, $alias, $domain->ID, implode(',', $destinations), 1));
 		$id = self::$db->Insert_ID();
 		return self::get_by_ID($id);
-	}
-
-	protected static function get_immediate_by_ID($id) {
-		return parent::get_immediate_by_ID($id, self::$tablenames['virtual'], 'Address');
 	}
 
 }

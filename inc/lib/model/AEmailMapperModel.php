@@ -38,20 +38,5 @@ abstract class AEmailMapperModel
 		return self::$db->Execute('DELETE FROM '.$tablename.' WHERE ID='.self::$db->qstr($id));
 	}
 
-	/**
-	 * @throws	InvalidArgumentException
-	 * @throws	ObjectNotFoundException	if user does not exist.
-	 */
-	protected static function get_immediate_by_ID($id, $tablename, $class) {
-		if(!is_numeric($id)) {
-			throw new InvalidArgumentException();
-		}
-		$data = self::$db->GetRow('SELECT * FROM '.$tablename.' WHERE ID='.self::$db->qstr($id));
-		if($data === false || count($data) == 0) {
-			throw new ObjectNotFoundException();
-		}
-		return new $class($data);
-	}
-
 }
 ?>

@@ -6,16 +6,10 @@ class IMAPVirtualDomain
 		return parent::immediate_set($attribute, $value, self::$tablenames['vdomains'], 'vdom');
 	}
 
-	/**
-	 * @throws	InvalidArgumentException
-	 */
 	public static function get_by_ID($id) {
-		if(!is_numeric($id)) {
-			throw new InvalidArgumentException();
-		}
 		static $cache	= array();
 		if(!isset($cache[$id])) {
-			$cache[$id] = self::get_immediate_by_ID($id);
+			$cache[$id] = parent::get_immediate_by_ID($id, self::$tablenames['vdomains'], 'IMAPVirtualDomain', 'vdom');
 		}
 		return $cache[$id];
 	}
@@ -28,17 +22,6 @@ class IMAPVirtualDomain
 				array($name, 0, 0, 0));
 		$id = self::$db->Insert_ID();
 		return self::get_by_ID($id);
-	}
-
-	/**
-	 * @throws	ObjectNotFoundException
-	 */
-	private static function get_immediate_by_ID($id) {
-		$data = self::$db->GetRow('SELECT * FROM '.self::$tablenames['vdomains'].' WHERE vdom='.self::$db->qstr($id));
-		if($data === false || count($data) == 0) {
-			throw new ObjectNotFoundException();
-		}
-		return new self($data);
 	}
 
 	private function get_admin_IDs() {

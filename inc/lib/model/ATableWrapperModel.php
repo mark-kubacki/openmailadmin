@@ -57,5 +57,20 @@ abstract class ATableWrapperModel
 		return true;
 	}
 
+	/**
+	 * @throws	InvalidArgumentException
+	 * @throws	ObjectNotFoundException	if user does not exist.
+	 */
+	protected static function get_immediate_by_ID($id, $tablename, $class, $id_key) {
+		if(!is_numeric($id)) {
+			throw new InvalidArgumentException();
+		}
+		$data = self::$db->GetRow('SELECT * FROM '.$tablename.' WHERE '.$id_key.'='.self::$db->qstr($id));
+		if($data === false || count($data) == 0) {
+			throw new ObjectNotFoundException();
+		}
+		return new $class($data);
+	}
+
 }
 ?>
