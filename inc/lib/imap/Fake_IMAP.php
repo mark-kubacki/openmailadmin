@@ -71,7 +71,7 @@ class Fake_IMAP
 		} else if(isset($_POST['mbox'])) {
 			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $_POST['mbox'].' lrswipcda'));
 		} else {
-			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $oma->current_user->mbox.' lrswipcda'));
+			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, (isset($oma->current_user->mbox) ? $oma->current_user->mbox : $mb).' lrswipcda'));
 		}
 		if($this->db->Affected_Rows() < 1) {
 			$this->error_msg	= $this->db->ErrorMsg();
