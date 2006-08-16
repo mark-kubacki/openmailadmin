@@ -136,6 +136,7 @@ switch($_GET['step']) {
 				Address::create('me', Domain::get_by_ID(1), User::get_by_ID(1), array($_POST['admin_user']));
 			}
 			if($status['virtual_regexp'][1] == 2) {
+				$dict->ExecuteSQLArray($dict->CreateIndexSQL('regexp_address', $_POST['prefix'].'virtual_regexp', 'reg_exp', array('UNIQUE')));
 				$db->Execute('ALTER TABLE '.$_POST['prefix'].'virtual_regexp ADD (FOREIGN KEY (owner) REFERENCES '.$_POST['prefix'].'user(ID) ON DELETE CASCADE )');
 				RegexpAddress::create('/^(postmaster|abuse|security|root)@example\\.com$/', User::get_by_ID(1), array($_POST['admin_user']));
 			}
