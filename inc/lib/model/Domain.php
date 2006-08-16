@@ -35,11 +35,14 @@ class Domain
 
 	/**
 	 * @return	Domain
+	 * @throws	DuplicateEntryException
 	 */
 	public static function create($name, User $owner, $categories = 'all') {
 		self::$db->Execute('INSERT INTO '.self::$tablenames['domains'].' (domain,categories,owner) VALUES (?,?,?)',
 				array($name, $categories, $owner->ID));
 		$id = self::$db->Insert_ID();
+		if($id === false || $id == 0)
+			throw new DuplicateEntryException();
 		$owner->get_virtual_domain()->immediate_set('new_domains', 1);
 		return self::get_by_ID($id);
 	}

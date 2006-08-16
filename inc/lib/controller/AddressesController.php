@@ -76,11 +76,11 @@ class AddressesController
 				$this->ErrorHandler->add_error(txt('13'));
 				return false;
 			}
-			$ret = Address::create($alias, $domain, $this->oma->current_user, $destinations);
-			if($ret instanceof Address) {
+			try {
+				$ret = Address::create($alias, $domain, $this->oma->current_user, $destinations);
 				$this->ErrorHandler->add_info(sprintf(txt('135'), $ret->__toString()));
 				return true;
-			} else {
+			} catch(DuplicateEntryException $e) {
 				$this->ErrorHandler->add_error(txt('133'));
 			}
 		} else {

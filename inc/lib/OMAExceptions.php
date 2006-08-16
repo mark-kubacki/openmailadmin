@@ -3,6 +3,20 @@ class ConfigurationErrorException
 	extends Exception
 {};
 
+////////////////////////////////////////////////////////////////////////////////
+class OpenmailadminException
+	extends Exception
+{};
+
+class DataException
+	extends OpenmailadminException
+{};
+
+class DuplicateEntryException
+	extends DataException
+{};
+
+////////////////////////////////////////////////////////////////////////////////
 class AccessDeniedException
 	extends RuntimeException
 {};
@@ -19,6 +33,7 @@ class AuthenticationFailureException
 	extends AccessDeniedException
 {};
 
+////////////////////////////////////////////////////////////////////////////////
 class IMAPException
 	extends Exception
 {};

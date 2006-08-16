@@ -54,12 +54,15 @@ class Address
 
 	/**
 	 * @return	Address
+	 * @throws	DuplicateEntryException
 	 */
 	public static function create($alias, Domain $domain, User $owner, array $destinations) {
 		$res = self::$db->Execute('INSERT INTO '.self::$tablenames['virtual']
 				.' (owner,alias,domain,dest,active) VALUES (?,?,?,?,?)',
 				array($owner->ID, $alias, $domain->ID, implode(',', $destinations), 1));
 		$id = self::$db->Insert_ID();
+		if($id === false || $id == 0)
+			throw new DuplicateEntryException();
 		$addr = self::get_by_ID($id);
 		$addr->set_destinations($destinations);
 		return $addr;

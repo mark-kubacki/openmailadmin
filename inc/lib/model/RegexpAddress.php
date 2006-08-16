@@ -12,6 +12,10 @@ class RegexpAddress
 		return parent::set_destinations($destinations, self::$tablenames['virtual_regexp']);
 	}
 
+	public function __toString() {
+		return $this->reg_exp;
+	}
+
 	public static function get_by_ID($id) {
 		static $cache	= array();
 		if(!isset($cache[$id])) {
@@ -41,12 +45,15 @@ class RegexpAddress
 
 	/**
 	 * @return	RegexpAddress
+	 * @throws	DuplicateEntryException
 	 */
 	public static function create($regexp, User $owner, array $destinations) {
 		$res = self::$db->Execute('INSERT INTO '.self::$tablenames['virtual_regexp']
 				.' (owner,reg_exp,dest,active) VALUES (?,?,?,?)',
 				array($owner->ID, $regexp, '', 1));
 		$id = self::$db->Insert_ID();
+		if($id === false || $id == 0)
+			throw new DuplicateEntryException();
 		$rexp =  self::get_by_ID($id);
 		$rexp->set_destinations($destinations);
 		return $rexp;

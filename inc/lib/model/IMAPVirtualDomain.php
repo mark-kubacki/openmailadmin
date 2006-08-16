@@ -16,11 +16,14 @@ class IMAPVirtualDomain
 
 	/**
 	 * @return	IMAPVirtualDomain
+	 * @throws	DuplicateEntryException
 	 */
 	public static function create($name) {
 		self::$db->Execute('INSERT INTO '.self::$tablenames['vdomains'].' (vdomain, new_emails, new_regexp, new_domains) VALUES (?,?,?,?)',
 				array($name, 0, 0, 0));
 		$id = self::$db->Insert_ID();
+		if($id === false || $id == 0)
+			throw new DuplicateEntryException();
 		return self::get_by_ID($id);
 	}
 

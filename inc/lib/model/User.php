@@ -110,6 +110,8 @@ class User
 				.' (mbox, vdom, person, pate, domains, created) VALUES (?,?,?,?,?,?)',
 				array($name, $virtual_domain->vdom, $realname, (is_null($pate) ? 1 : $pate->ID), $domains, time()));
 		$id = self::$db->Insert_ID();
+		if($id === false || $id == 0)
+			throw new MailboxCreationError(self::$db->ErrorMsg());
 		$usr = self::get_by_ID($id);
 		if(!is_null($imap)) {
 			if($imap->createmb($imap->format_user($usr))) {

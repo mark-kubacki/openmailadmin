@@ -64,8 +64,13 @@ class RegexpAddressesController
 
 		if($this->oma->current_user->get_used_regexp() < $this->oma->current_user->max_regexp
 		   || $this->oma->authenticated_user->a_super > 0) {
-			$ret = RegexpAddress::create($regexp, $this->oma->current_user, $destinations);
-			return $ret instanceof RegexpAddress;
+			try {
+				$ret = RegexpAddress::create($regexp, $this->oma->current_user, $destinations);
+				$this->ErrorHandler->add_info(sprintf(txt('135'), $ret->__toString()));
+				return true;
+			} catch(DuplicateEntryException $e) {
+				$this->ErrorHandler->add_error(txt('133'));
+			}
 		} else {
 			$this->ErrorHandler->add_error(txt('31'));
 		}
@@ -82,7 +87,7 @@ class RegexpAddressesController
 			   && $this->oma->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
 			} else {
-				$deleted[] = $rexp->reg_exp;
+				$deleted[] = $rexp->__toString();
 			}
 			$res = $res && $t;
 		}
