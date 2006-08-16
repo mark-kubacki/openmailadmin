@@ -21,6 +21,7 @@ abstract class AEmailMapperModel
 	}
 
 	protected function set_destinations(array $destinations, $tablename) {
+		$destinations = array_unique($destinations);
 		if($this->immediate_set('dest', implode(',', $destinations), $tablename)) {
 			$this->dest = $destinations;
 			return true;
