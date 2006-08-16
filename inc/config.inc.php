@@ -74,6 +74,18 @@ $cfg['motd']		= 'motd.txt';
 // Select one of: shadow, blueray
 $cfg['theme']		= 'shadow';
 
+// This is a list with the controllers to be initialized.
+// If you have written a new controller or wrapper, append to this list.
+// Else do not change it.
+$cfg['controller'] = array(
+		'PasswordAndDataController',
+		'DomainController',
+		'AddressesController',
+		'RegexpAddressesController',
+		'MailboxController',
+		'IMAPFolderController',
+		);
+
 $i = 0;
 /*
  * Please see samples/config.local.inc.php for appropriate database configuration.

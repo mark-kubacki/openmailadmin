@@ -45,10 +45,7 @@ class openmailadmin
 	private function get_active_controller() {
 		static $controller = array();
 		if(count($controller) == 0) {
-			foreach(array('PasswordAndDataController', 'DomainController',
-					'AddressesController', 'RegexpAddressesController',
-					'MailboxController', 'IMAPFolderController')
-				as $c) {
+			foreach($this->cfg['controller'] as $c) {
 				$i = new $c($this);
 				$controller[$i->controller_get_shortname()] = $i;
 			}
