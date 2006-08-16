@@ -64,22 +64,8 @@ class User
 		parent::__construct($data);
 	}
 
-	/**
-	 * Immediately set given column in database to the given value.
-	 *
-	 * @param	attribute	Name of attribute/SQL column to be set.
-	 * @param	value		The value the field shall be assigned.
-	 * @return	boolean		True if column has been changed successfully.
-	 */
 	public function immediate_set($attribute, $value) {
-		self::$db->Execute('UPDATE '.self::$tablenames['user']
-				.' SET '.$attribute.'='.self::$db->qstr($value)
-				.' WHERE ID='.self::$db->qstr($this->ID));
-		if($attribute != 'password')
-			$this->{$attribute} = $value;
-		if(self::$db->ErrorNo() != 0)
-			throw new RuntimeException('Cannot set "'.$attribute.'" to "'.$value.'".');
-		return true;
+		return parent::immediate_set($attribute, $value, self::$tablenames['user'], 'ID', array('password'));
 	}
 
 	public function set_pate(User $pate) {

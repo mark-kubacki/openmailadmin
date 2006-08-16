@@ -2,21 +2,8 @@
 class Domain
 	extends ATableWrapperModel
 {
-	/**
-	 * Immediately set given column in database to the given value.
-	 *
-	 * @param	attribute	Name of attribute/SQL column to be set.
-	 * @param	value		The value the field shall be assigned.
-	 * @return	boolean		True if column has been changed successfully.
-	 */
 	public function immediate_set($attribute, $value) {
-		self::$db->Execute('UPDATE '.self::$tablenames['domains']
-				.' SET '.$attribute.'='.self::$db->qstr($value)
-				.' WHERE ID='.self::$db->qstr($this->ID));
-		$this->{$attribute} = $value;
-		if(self::$db->ErrorNo() != 0)
-			throw new RuntimeException('Cannot set "'.$attribute.'" to "'.$value.'".');
-		return true;
+		return parent::immediate_set($attribute, $value, self::$tablenames['domains'], 'ID');
 	}
 
 	/**
