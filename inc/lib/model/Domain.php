@@ -6,6 +6,13 @@ class Domain
 		return parent::immediate_set($attribute, $value, self::$tablenames['domains'], 'ID');
 	}
 
+	/**
+	 * @return	User
+	 */
+	public function get_owner() {
+		return User::get_by_ID($this->owner);
+	}
+
 	public static function get_by_ID($id) {
 		static $cache	= array();
 		if(!isset($cache[$id])) {
@@ -21,6 +28,7 @@ class Domain
 		self::$db->Execute('INSERT INTO '.self::$tablenames['domains'].' (domain,categories,owner) VALUES (?,?,?)',
 				array($name, $categories, $owner->ID));
 		$id = self::$db->Insert_ID();
+		$owner->get_virtual_domain()->immediate_set('new_domains', 1);
 		return self::get_by_ID($id);
 	}
 

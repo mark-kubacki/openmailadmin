@@ -3,6 +3,7 @@ class Address
 	extends AEmailMapperModel
 {
 	public function set_destinations(array $destinations) {
+		$this->get_owner()->get_virtual_domain()->immediate_set('new_emails', 1);
 		return parent::set_destinations($destinations, self::$tablenames['virtual']);
 	}
 
@@ -26,6 +27,7 @@ class Address
 				.' (owner,alias,domain,dest,active) VALUES (?,?,?,?,?)',
 				array($owner->ID, $alias, $domain->ID, implode(',', $destinations), 1));
 		$id = self::$db->Insert_ID();
+		$owner->get_virtual_domain()->immediate_set('new_emails', 1);
 		return self::get_by_ID($id);
 	}
 

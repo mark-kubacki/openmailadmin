@@ -3,6 +3,7 @@ class RegexpAddress
 	extends AEmailMapperModel
 {
 	public function set_destinations(array $destinations) {
+		$this->get_owner()->get_virtual_domain()->immediate_set('new_regexp', 1);
 		return parent::set_destinations($destinations, self::$tablenames['virtual_regexp']);
 	}
 
@@ -26,6 +27,7 @@ class RegexpAddress
 				.' (owner,reg_exp,dest,active) VALUES (?,?,?,?)',
 				array($owner->ID, $regexp, implode(',', $destinations), 1));
 		$id = self::$db->Insert_ID();
+		$owner->get_virtual_domain()->immediate_set('new_regexp', 1);
 		return self::get_by_ID($id);
 	}
 

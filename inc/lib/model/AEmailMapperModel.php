@@ -29,6 +29,13 @@ abstract class AEmailMapperModel
 	}
 
 	/**
+	 * @return	User
+	 */
+	public function get_owner() {
+		return User::get_by_ID($this->owner);
+	}
+
+	/**
 	 * @throws	InvalidArgumentException
 	 */
 	protected static function delete_by_ID($id, $tablename) {
