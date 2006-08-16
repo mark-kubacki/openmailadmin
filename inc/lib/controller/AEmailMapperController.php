@@ -34,5 +34,25 @@ abstract class AEmailMapperController
 		}
 		return array();
 	}
+
+	/**
+	 * Formatting for output in XHTML.
+	 */
+	public static function format_destinations(AEmailMapperModel $mapper) {
+		global $cfg;
+		$dest = $mapper->get_destinations();
+		if(count($dest) < $cfg['address']['hide_threshold'])
+			return implode('<br />', $dest);
+		else
+			return '<span class="quasi_btn">'
+					.sprintf(txt('96'), count($dest))
+				.' &raquo;</span>'
+				.'<div><span class="quasi_btn">&laquo; '
+					.sprintf(txt('96'), count($dest))
+					.'</span><br />'
+					.implode('<br />', $dest)
+				.'</div>';
+	}
+
 }
 ?>

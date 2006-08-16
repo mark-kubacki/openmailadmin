@@ -16,125 +16,92 @@ class RegexpAddressesController
 		return 'regexp';
 	}
 
+	/**
+	 * @return	Array		with instances as values and IDs as keys.
+	 */
+	private function get_manipulable(User $owner, array $ids) {
+		$regexp = RegexpAddress::get_by_owner($owner);
+		$list = array();
+		foreach($ids as $id) {
+			if(isset($regexp[$id])) {
+				$list[$id] = $regexp[$id];
+			}
+		}
+		return $list;
+	}
+
 	/*
 	 * Returns a long list with all regular expressions (the virtual_regexp table).
 	 * If $match_against is given, the flag "matching" will be set on matches.
 	 */
 	public function get_list($match_against = null) {
-		$regexp = array();
-
-		$result = $this->oma->db->SelectLimit('SELECT * FROM '.$this->oma->tablenames['virtual_regexp']
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID).$_SESSION['filter']['str']['regexp']
-				.' ORDER BY dest',
-				$_SESSION['limit'], $_SESSION['offset']['regexp']);
-		if(!$result === false) {
-			while(!$result->EOF) {
-				$row	= $result->fields;
-				// if ordered, check whether expression matches probe address
-				if(!is_null($match_against)
-				   && @preg_match($row['reg_exp'], $match_against)) {
-					$row['matching']	= true;
-				} else {
-					$row['matching']	= false;
+		$regexp = RegexpAddress::get_by_owner($this->oma->current_user, $_SESSION['limit'], $_SESSION['offset']['regexp']);
+		$list = array();
+		foreach($regexp as $rexp) {
+			$row = array();
+			$row['ID'] = $rexp->ID;
+			$row['active'] = $rexp->active;
+			$row['reg_exp'] = $rexp->reg_exp;
+			$row['dest'] = $rexp->get_destinations();
+			if(!is_null($match_against)
+			   && @preg_match($row['reg_exp'], $match_against)) {
+				$row['matching']	= true;
+			} else {
+				$row['matching']	= false;
 				}
-				// explode all destinations (as there may be many)
-				$dest = array();
-				foreach(explode(',', $row['dest']) as $value) {
-					$value = trim($value);
-					// replace the current user's name with "mailbox"
-					if($value == $this->oma->current_user->mbox)
-					$dest[] = txt('5');
-					else
-					$dest[] = $value;
-				}
-				sort($dest);
-				$row['dest'] = $dest;
-				// add the current entry to our list of aliases
-				$regexp[] = $row;
-				$result->MoveNext();
-			}
+			$list[] = $row;
 		}
-		return $regexp;
+		return $list;
 	}
-	/*
-	 * Creates a new regexp-address.
-	 */
-	public function create($regexp, $arr_destinations) {
+
+	public function create($regexp, array $destinations) {
 		// some dull checks;
 		// if someone knows how to find out whether an string is a valid regexp -> write me please
-		if($regexp == '' || $regexp{0} != '/') {
+		if($regexp{0} != '/') {
 			$this->ErrorHandler->add_error(txt('127'));
 			return false;
 		}
 
 		if($this->oma->current_user->get_used_regexp() < $this->oma->current_user->max_regexp
 		   || $this->oma->authenticated_user->a_super > 0) {
-			$this->oma->db->Execute('INSERT INTO '.$this->oma->tablenames['virtual_regexp'].' (reg_exp, dest, owner) VALUES (?, ?, ?)',
-				array($regexp, implode(',', $arr_destinations), $this->oma->current_user->ID));
-			if($this->oma->db->Affected_Rows() < 1) {
-				if($this->oma->db->ErrorNo() != 0) {
-					$this->ErrorHandler->add_error(txt('133'));
-				}
-			} else {
-				return true;
-			}
+			$ret = RegexpAddress::create($regexp, $this->oma->current_user, $destinations);
+			return $ret instanceof RegexpAddress;
 		} else {
 			$this->ErrorHandler->add_error(txt('31'));
 		}
 
 		return false;
 	}
-	/*
-	 * Deletes the given regular expressions if they belong to the current user.
-	 */
+
 	public function delete($arr_regexp_ids) {
-		$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['virtual_regexp']
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
-				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
-		if($this->oma->db->Affected_Rows() < 1) {
-			if($this->oma->db->ErrorNo() != 0) {
+		$res = true;
+		$deleted = array();
+		foreach($this->get_manipulable($this->oma->current_user, $arr_regexp_ids) as $id => $rexp) {
+			$t = RegexpAddress::delete_by_ID($id);
+			if($res && !$t
+			   && $this->oma->db->ErrorNo() != 0) {
 				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
+			} else {
+				$deleted[] = $rexp->reg_exp;
 			}
-		} else {
-			$this->ErrorHandler->add_info(txt('32'));
-			return true;
+			$res = $res && $t;
 		}
-
-		return false;
+		if(count($deleted) > 0) {
+			$this->ErrorHandler->add_info(sprintf(txt(15), '<ul><li><cite>'.implode('</cite></li><li><cite>', $deleted).'</cite></li></ul>'));
+		}
+		return count($deleted) > 0 && $res;
 	}
-	/**
-	 * @see		AddressController::change_destination
-	 */
+
 	public function change_destination($arr_regexp_ids, $arr_destinations) {
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET dest='.$this->oma->db->qstr(implode(',', $arr_destinations))
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
-				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
-		if($this->oma->db->Affected_Rows() < 1) {
-			if($this->oma->db->ErrorNo() != 0) {
-				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
-			}
-		} else {
-			return true;
+		foreach($this->get_manipulable($this->oma->current_user, $arr_regexp_ids) as $rexp) {
+			$rexp->set_destinations($arr_destinations);
 		}
-
-		return false;
 	}
-	/**
-	 * @see		AddressController::toggle_active
-	 */
-	public function toggle_active($arr_regexp_ids) {
-		$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET active = NOT active'
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->current_user->ID)
-				.' AND '.db_find_in_set($this->oma->db, 'ID', $arr_regexp_ids));
-		if($this->oma->db->Affected_Rows() < 1) {
-			if($this->oma->db->ErrorNo() != 0) {
-				$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
-			}
-		} else {
-			return true;
-		}
 
-		return false;
+	public function toggle_active($arr_regexp_ids) {
+		foreach($this->get_manipulable($this->oma->current_user, $arr_regexp_ids) as $rexp) {
+			$rexp->set_active(!$rexp->active);
+		}
 	}
 
 }

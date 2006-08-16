@@ -29,6 +29,21 @@ abstract class AEmailMapperModel
 	}
 
 	/**
+	 * @return 	Array 		with destinations as text, with the ownername replaced my 'mailbox'.
+	 */
+	public function get_destinations() {
+		$ret = array();
+		foreach($this->dest as $dest) {
+			if($dest == $this->get_owner()->mbox)
+				$ret[] = txt('5');
+			else
+				$ret[] = trim($dest);
+		}
+		sort($ret);
+		return $ret;
+	}
+
+	/**
 	 * @return	User
 	 */
 	public function get_owner() {
