@@ -18,7 +18,8 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 	User::$tablenames	= array('user' => $cfg['Servers']['DB'][$_POST['server']]['PREFIX'].'user');
 
 	try {
-		$authinfo = User::authenticate($_POST['mboxname'], $_POST['password']);
+		$authinfo['ID'] = User::authenticate($_POST['mboxname'], $_POST['password'])->ID;
+		$authinfo['password'] = obfuscator_encrypt($_POST['password']);
 		unset($_POST['password']);
 		session_regenerate_id();
 		$_SESSION['authinfo']		= $authinfo;

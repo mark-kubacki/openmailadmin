@@ -60,7 +60,7 @@ $imap = IMAP_get_instance($cfg['Servers']['IMAP'][$_SESSION['server']],
 
 // include the backend
 $oma	= new openmailadmin($db, $cfg['tablenames'], $cfg, $imap);
-$oma->authenticated_user	= $authinfo;
+$oma->authenticated_user	= User::get_by_ID($authinfo['ID']);
 unset($authinfo);
 $ErrorHandler	= ErrorHandler::getInstance();
 

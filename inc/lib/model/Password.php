@@ -7,7 +7,6 @@
 class Password
 {
 	public		$ciphered;
-	private		$plaintext		= null;
 	private		$cipher_strategy;
 	private		$user;
 
@@ -87,7 +86,7 @@ class Password
 	 * For storing the entire class in $_SESSION.
 	 */
 	public function store_plaintext($plaintext_password) {
-		$this->plaintext = obfuscator_encrypt($plaintext_password);
+		$_SESSION['authinfo']['password'] = obfuscator_encrypt($plaintext_password);
 	}
 
 	/**
@@ -95,10 +94,10 @@ class Password
 	 * @throws	RuntimeException	if no plaintext password has been stored so far.
 	 */
 	public function get_plaintext() {
-		if(is_null($this->plaintext)) {
+		if(!isset($_SESSION['authinfo']['password']) || is_null($_SESSION['authinfo']['password'])) {
 			throw new RuntimeException('No plaintext password has been provided for storage, yet.');
 		} else {
-			return obfuscator_decrypt($this->plaintext);
+			return obfuscator_decrypt($_SESSION['authinfo']['password']);
 		}
 	}
 
