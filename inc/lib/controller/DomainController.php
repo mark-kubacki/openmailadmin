@@ -17,23 +17,14 @@ class DomainController
 	}
 
 	/**
-	 * @param	domain_key	If set, the user's own domain_key is ignored and this is taken instead.
-	 * @return	Array		with all domains the user may choose from as values and their IDs as keys.
+	 * @see 	Domain::get_usable_by_user
+	 * @return	Array		with all domains the user may choose from as stringified values and their IDs as keys.
 	 */
 	public function get_usable_by_user(User $user, $domain_key = null) {
-		$cat = '';
-		$poss_dom = array();
-
-		foreach(explode(',', is_null($domain_key) ? $user->domains : $domain_key) as $value) {
-			$poss_dom[] = trim($value);
-			$cat .= ' OR categories LIKE '.$this->oma->db->qstr('%'.trim($value).'%');
-		}
-		$rs = $this->oma->db->Execute('SELECT DISTINCT d.ID, d.domain'
-			.' FROM '.$this->oma->tablenames['domains'].' d LEFT JOIN '.$this->oma->tablenames['domain_admins'].' da ON (d.ID = da.domain)'
-			.' WHERE d.owner='.$this->oma->db->qstr($user->ID).' OR da.admin = '.$this->oma->db->qstr($user->ID).' OR '.db_find_in_set($this->oma->db, 'd.domain', $poss_dom).$cat);
+		$usable = Domain::get_usable_by_user($user, $domain_key);
 		$list = array();
-		foreach($rs as $k => $row) {
-			$list[$row['ID']] = $row['domain'];
+		foreach($usable as $domain) {
+			$list[$domain->ID] = $domain->__toString();
 		}
 		return $list;
 	}
