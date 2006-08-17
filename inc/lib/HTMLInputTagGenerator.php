@@ -117,6 +117,9 @@ class HTMLInputTagGenerator
 	 * @param	multiple	Set to 1 to allow multiple selection.
 	 */
 	public function select($name, $arr_names, $arr_values = array(), $size = '1', $multiple = 0) {
+		$props = array('size' => $size, 'name' => $name);
+		if($multiple == 1)
+			$props['multiple'] = 1;
 		$select_value = '';
 		foreach($arr_names as $key => $value) {
 			$select_value .= '<option';
@@ -130,7 +133,7 @@ class HTMLInputTagGenerator
 			}
 			$select_value .= ">$value</option>";
 		}
-		return($this->_generic('select', array('size' => $size, 'name' => $name), $select_value, true));
+		return($this->_generic('select', $props, $select_value, true));
 	}
 
 	public function password($name, $maxlength = '') {
