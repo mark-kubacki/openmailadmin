@@ -34,7 +34,7 @@ class Fake_IMAP
 				// query for all visible folders
 				$ret = array();
 				$result = $this->db->Execute('SELECT mailbox as folder,'
-					.' (SELECT COUNT(*) FROM '.$this->tablenames['imap_demo'].' WHERE mailbox LIKE CONCAT(folder, '.$this->db->qstr('.%').')) AS children'
+					.' (SELECT COUNT(*) FROM '.$this->tablenames['imap_demo'].' WHERE mailbox LIKE '.$this->db->Concat('folder', $this->db->qstr('.%')).') AS children'
 					.' FROM '.$this->tablenames['imap_demo']
 					.' WHERE ACL LIKE '.$this->db->qstr('% '.$oma->current_user->mbox.' l%').' OR ACL LIKE '.$this->db->qstr($oma->current_user->mbox.' l%').' OR ACL LIKE '.$this->db->qstr('% anyone l%').' OR ACL LIKE '.$this->db->qstr('anyone l%'));
 				if(!$result === false) {
