@@ -76,5 +76,15 @@ abstract class ATableWrapperModel
 		return new $class($data);
 	}
 
+	/**
+	 * @throws	InvalidArgumentException
+	 */
+	protected static function delete_by_ID($id, $tablename, $key = 'ID') {
+		if(!is_numeric($id)) {
+			throw new InvalidArgumentException();
+		}
+		return self::$db->Execute('DELETE FROM '.$tablename.' WHERE '.$key.'='.self::$db->qstr($id));
+	}
+
 }
 ?>

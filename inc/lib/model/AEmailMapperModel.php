@@ -51,15 +51,5 @@ abstract class AEmailMapperModel
 		return User::get_by_ID($this->owner);
 	}
 
-	/**
-	 * @throws	InvalidArgumentException
-	 */
-	protected static function delete_by_ID($id, $tablename) {
-		if(!is_numeric($id)) {
-			throw new InvalidArgumentException();
-		}
-		return self::$db->Execute('DELETE FROM '.$tablename.' WHERE ID='.self::$db->qstr($id));
-	}
-
 }
 ?>

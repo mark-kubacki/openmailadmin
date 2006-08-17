@@ -92,10 +92,7 @@ class User
 	 * @throws	InvalidArgumentException
 	 */
 	public static function delete_by_ID($id) {
-		if(!is_numeric($id)) {
-			throw new InvalidArgumentException();
-		}
-		return self::$db->Execute('DELETE FROM '.self::$tablenames['user'].' WHERE ID='.self::$db->qstr($id));
+		return parent::delete_by_ID($id, self::$tablenames['user']);
 	}
 
 	/**
