@@ -147,6 +147,8 @@ $res['de']	= array(
 '135'	=>	'Folgende Adressen wurden erstellt: %s.',
 '136'	=>	'(niemand)',
 '137'	=>	'(keine)',
+'138'	=>	'Domäne wurde erfolgreich erstellt.',
+'139'	=>	'Folgende Domänen wurden gelöscht: %s.',
 );
 
 ?>

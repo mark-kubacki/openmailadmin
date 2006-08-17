@@ -15,6 +15,18 @@ class Domain
 		}
 	}
 
+	public function set_categories($categories) {
+		if(!is_array($categories)) {
+			$categories = explode(',', $categories);
+		}
+		$categories = implode(',', array_map('trim', $categories));
+		return $this->immediate_set('categories', $categories);
+	}
+
+	public function set_owner(User $owner) {
+		return parent::immediate_set('owner', $owner->ID, self::$tablenames['domains'], 'ID');
+	}
+
 	/**
 	 * @return	User
 	 */
@@ -83,15 +95,19 @@ class Domain
 	 * @return	Array		containing matching instances of this class with their ID as key.
 	 */
 	public static function get_by_categories($categories) {
-		$poss_dom = array();
-		$cat = '';
-		foreach(explode(',', $categories) as $value) {
-			$poss_dom[] = trim($value);
-			$cat .= ' OR categories LIKE '.self::$db->qstr('%'.trim($value).'%');
+		if(in_array('all', explode(',', $categories))) {
+			$ids = self::$db->GetCol('SELECT ID FROM '.self::$tablenames['domains'].' ORDER BY domain');
+		} else {
+			$poss_dom = array();
+			$cat = '';
+			foreach(explode(',', $categories) as $value) {
+				$poss_dom[] = trim($value);
+				$cat .= ' OR categories LIKE '.self::$db->qstr('%'.trim($value).'%');
+			}
+			$ids = self::$db->GetCol('SELECT DISTINCT ID FROM '.self::$tablenames['domains']
+				.' WHERE '.db_find_in_set(self::$db, 'domain', $poss_dom).$cat
+				.' ORDER BY domain');
 		}
-		$ids = self::$db->GetCol('SELECT DISTINCT ID FROM '.self::$tablenames['domains']
-			.' WHERE '.db_find_in_set(self::$db, 'domain', $poss_dom).$cat
-			.' ORDER BY domain');
 		$res	= array();
 		foreach($ids as $id) {
 			$res[$id] = self::get_by_ID($id);
@@ -126,6 +142,10 @@ class Domain
 
 	private function get_admin_IDs() {
 		return self::$db->GetCol('SELECT admin FROM '.self::$tablenames['domain_admins'].' WHERE domain = '.self::$db->qstr($this->ID));
+	}
+
+	public function purge_admin_list() {
+		return self::$db->Execute('DELETE FROM '.self::$tablenames['domain_admins'].' WHERE domain='.self::$db->qstr($this->ID));
 	}
 
 	public function add_administrator(User $admin) {

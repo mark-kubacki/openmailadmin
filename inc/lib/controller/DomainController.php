@@ -87,148 +87,151 @@ class DomainController
 
 		return true;
 	}
-	/*
-	 * Adds a new domain into the corresponding table.
-	 * Categories are for grouping domains.
-	 */
-	public function add($domain, $props) {
+
+	public function add($domain, array $props) {
+		if(!$this->oma->authenticated_user->a_admin_domains > 1) {
+			$this->ErrorHandler->add_error(txt(16));
+			return false;
+		}
 		$props['domain'] = $domain;
 		if(!$this->oma->validator->validate($props, array('domain', 'categories', 'owner', 'a_admin'))) {
 			return false;
 		}
-
 		if(!stristr($props['categories'], 'all'))
-			$props['categories'] = 'all,'.$props['categories'];
-		if(!stristr($props['a_admin'], $this->oma->current_user->mbox))
-			$props['a_admin'] .= ','.$this->oma->current_user->mbox;
+			$props['categories'] = 'all, '.$props['categories'];
+		if(!in_array($this->oma->current_user->ID, $props['a_admin']))
+			$props['a_admin'][] = $this->oma->current_user->ID;
+		try {
+			$domain = Domain::create($props['domain'], $this->oma->current_user, $props['categories']);
+			foreach($props['a_admin'] as $id) {
+				try {
+					$domain->add_administrator(User::get_by_ID($id));
+				} catch(ObjectNotFoundException $e) {
+				}
+			}
+			$this->ErrorHandler->add_info(txt(138));
+		} catch(DuplicateEntryException $e) {
+			$this->ErrorHandler->add_error(txt(134));
+			return false;
+		}
+		return true;
+	}
 
-		$this->oma->db->Execute('INSERT INTO '.$this->oma->tablenames['domains'].' (domain, categories, owner, a_admin) VALUES (?, ?, ?, ?)',
-				array($domain, $props['categories'], $props['owner'], $props['a_admin']));
-		if($this->oma->db->Affected_Rows() < 1) {
-			$this->ErrorHandler->add_error(txt('134'));
+	/**
+	 * @param	domains	as array of their IDs.
+	 * @todo		Store deleted emails somewhere so users can see what they have lost.
+	 */
+	public function remove(array $domains) {
+		$deleted = array();
+		foreach($domains as $id) {
+			try {
+				$domain = Domain::get_by_ID($id);
+				if($domain->get_owner() == $this->oma->authenticated_user
+				   || $this->oma->cfg['admins_delete_domains']
+				      && in_array($this->oma->authenticated_user, $domain->get_administrators())) {
+					if(Domain::delete_by_ID($id)) {
+						$deleted[] = $domain->__toString();
+					}
+				}
+			} catch(ObjectNotFoundException $e) {
+			}
+		}
+		if(count($deleted) > 0) {
+			$this->ErrorHandler->add_info(sprintf(txt(139), '<ul><li><cite>'.implode('</cite></li><li><cite>', $deleted).'</cite></li></ul>'));
 		} else {
+			$this->ErrorHandler->add_error(txt(16));
+		}
+		return count($deleted) > 0;
+	}
+
+	protected function change_name(Domain $domain, $newname) {
+		if($domain->get_owner() == $this->oma->authenticated_user
+				   || $this->oma->cfg['admins_delete_domains']
+				      && in_array($this->oma->authenticated_user, $domain->get_administrators())) {
+			$oldname = $domain->domain;
+			try {
+				$domain->immediate_set('domain', $newname);
+				// @todo commit change to every destination of any mapper;
+				return true;
+			} catch(DuplicateEntryException $e) {
+				$this->ErrorHandler->add_error(txt(134));
+			}
+		} else {
+			$this->ErrorHandler->add_error(txt(16));
+		}
+		return false;
+	}
+
+	protected function change_owner(Domain $domain, User $new_owner) {
+		if($domain->get_owner() == $this->oma->authenticated_user
+		   || $this->oma->cfg['admins_delete_domains']
+		      && in_array($this->oma->authenticated_user, $domain->get_administrators())) {
+			return $domain->set_owner($new_owner);
+		}
+		$this->ErrorHandler->add_error(txt(16));
+		return false;
+	}
+
+	/**
+	 * @param	admins		array of IDs
+	 */
+	protected function change_administrators(Domain $domain, array $admins) {
+		if($domain->get_owner() == $this->oma->authenticated_user
+		   || $this->oma->cfg['admins_delete_domains']
+		      && in_array($this->oma->authenticated_user, $domain->get_administrators())) {
+			$domain->purge_admin_list();
+			foreach($admins as $id) {
+				try {
+					$domain->add_administrator(User::get_by_ID($id));
+				} catch(ObjectNotFoundException $e) {
+				} catch(InvalidArgumentException $e) {
+				}
+			}
 			return true;
 		}
-
+		$this->ErrorHandler->add_error(txt(16));
 		return false;
 	}
-	/*
-	 * Not only removes the given domains by their ids,
-	 * it deactivates every address which ends in that domain.
-	 */
-	public function remove($domains) {
-		// We need the old domain name later...
-		if(is_array($domains) && count($domains) > 0) {
-			if($this->oma->cfg['admins_delete_domains']) {
-				$result = $this->oma->db->SelectLimit('SELECT ID, domain'
-					.' FROM '.$this->oma->tablenames['domains']
-					.' WHERE (owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' OR a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->authenticated_user->mbox.'%').') AND '.db_find_in_set($this->oma->db, 'ID', $domains),
-					count($domains));
-			} else {
-				$result = $this->oma->db->SelectLimit('SELECT ID, domain'
-					.' FROM '.$this->oma->tablenames['domains']
-					.' WHERE owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' AND '.db_find_in_set($this->oma->db, 'ID', $domains),
-					count($domains));
-			}
-			if(!$result === false) {
-				while(!$result->EOF) {
-					$del_ID[] = $result->fields['ID'];
-					$del_nm[] = $result->fields['domain'];
-					$result->MoveNext();
-				}
-				if(isset($del_ID)) {
-					$this->oma->db->Execute('DELETE FROM '.$this->oma->tablenames['domains'].' WHERE '.db_find_in_set($this->oma->db, 'ID', $del_ID));
-					if($this->oma->db->Affected_Rows() < 1) {
-						if($this->oma->db->ErrorNo() != 0) {
-							$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
-						}
-					} else {
-						$this->ErrorHandler->add_info(txt('52').'<br />'.implode(', ', $del_nm));
-						// We better deactivate all aliases containing that domain, so users can see the domain was deleted.
-						foreach($del_nm as $domainname) {
-							$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET active = 0 WHERE address LIKE '.$this->oma->db->qstr('%'.$domainname));
-						}
-						// We can't do such on REGEXP addresses: They may catch more than the given domains.
-						return true;
-					}
-				} else {
-					$this->ErrorHandler->add_error(txt('16'));
-				}
-			} else {
-				$this->ErrorHandler->add_error(txt('16'));
-			}
-		} else {
-			$this->ErrorHandler->add_error(txt('11'));
+
+	protected function change_categories(Domain $domain, $new_categories) {
+		if($domain->get_owner() == $this->oma->authenticated_user
+		   || in_array($this->oma->authenticated_user, $domain->get_administrators())) {
+			$domain->set_categories($new_categories);
+			return true;
 		}
-
+		$this->ErrorHandler->add_error(txt(16));
 		return false;
 	}
-	/*
-	 * Every parameter is an array. $domains contains IDs.
-	 */
-	public function change($domains, $change, $data) {
-		$toc = array();		// to be changed
 
+	/**
+	 * @param	domains		contains IDs.
+	 */
+	public function change(array $domains, array $change, array $data) {
 		if(!$this->oma->validator->validate($data, $change)) {
 			return false;
 		}
-
-		if(!is_array($change)) {
-			$this->ErrorHandler->add_error(txt('53'));
+		if(in_array('domain', $change) && count($domains) != 1) {
+			$this->ErrorHandler->add_error(txt(91));
 			return false;
 		}
-		if($this->oma->cfg['admins_delete_domains'] && in_array('owner', $change))
-			$toc[] = 'owner='.$this->oma->db->qstr($data['owner']);
-		if(in_array('a_admin', $change))
-			$toc[] = 'a_admin='.$this->oma->db->qstr($data['a_admin']);
-		if(in_array('categories', $change))
-			$toc[] = 'categories='.$this->oma->db->qstr($data['categories']);
-		if(count($toc) > 0) {
-			$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains']
-				.' SET '.implode(',', $toc)
-				.' WHERE (owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' or a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->authenticated_user->mbox.'%').') AND '.db_find_in_set($this->oma->db, 'ID', $domains));
-			if($this->oma->db->Affected_Rows() < 1) {
-				if($this->oma->db->ErrorNo() != 0) {
-					$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
-				} else {
-					$this->ErrorHandler->add_error(txt('16'));
+		foreach($domains as $id) {
+			try {
+				$domain = Domain::get_by_ID($id);
+				if(in_array('domain', $change) && count($domains) == 1) {
+					$this->change_name($domain, $data['domain']);
 				}
+				if(in_array('categories', $change)) {
+					$this->change_categories($domain, $data['categories']);
+				}
+				if(in_array('a_admin', $change)) {
+					$this->change_administrators($domain, $data['a_admin']);
+				}
+				if(in_array('owner', $change)) {
+					$this->change_owner($domain, User::get_by_ID($data['owner']));
+				}
+			} catch(ObjectNotFoundException $e) {
 			}
 		}
-		// changing ownership if $this->oma->cfg['admins_delete_domains'] == false
-		if(!$this->oma->cfg['admins_delete_domains'] && in_array('owner', $change)) {
-			$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains']
-				.' SET owner='.$this->oma->db->qstr($data['owner'])
-				.' WHERE owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' AND '.db_find_in_set($this->oma->db, 'ID', $domains));
-		}
-		// No domain be renamed?
-		if(! in_array('domain', $change)) {
-			return true;
-		}
-		// Otherwise (and if only one) try adapting older addresses.
-		if(count($domains) == 1) {
-			// Grep the old name, we will need it later for replacement.
-			$domain = $this->oma->db->GetRow('SELECT ID, domain AS name FROM '.$this->oma->tablenames['domains'].' WHERE ID = '.$this->oma->db->qstr($domains[0]).' AND (owner='.$this->oma->db->qstr($this->oma->authenticated_user->ID).' or a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->authenticated_user->mbox.'%').')');
-			if(!$domain === false) {
-				// First, update the name. (Corresponding field is marked as unique, therefore we will not receive doublettes.)...
-				$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['domains'].' SET domain = '.$this->oma->db->qstr($data['domain']).' WHERE ID = '.$domain['ID']);
-				// ... and then, change every old address.
-				if($this->oma->db->Affected_Rows() == 1) {
-					// dest
-					$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual'].' SET dest = REPLACE(dest, '.$this->oma->db->qstr('@'.$domain['name']).', '.$this->oma->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->oma->db->qstr('%@'.$domain['name'].'%'));
-					$this->oma->db->Execute('UPDATE '.$this->oma->tablenames['virtual_regexp'].' SET dest = REPLACE(dest, '.$this->oma->db->qstr('@'.$domain['name']).', '.$this->oma->db->qstr('@'.$data['domain']).') WHERE dest LIKE '.$this->oma->db->qstr('%@'.$domain['name'].'%'));
-				} else {
-					$this->ErrorHandler->add_error($this->oma->db->ErrorMsg());
-				}
-				return true;
-			} else {
-				$this->ErrorHandler->add_error(txt('91'));
-			}
-		} else {
-			$this->ErrorHandler->add_error(txt('53'));
-		}
-
-		return false;
 	}
 
 }

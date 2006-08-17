@@ -80,7 +80,7 @@ $res['pl']	= array(
 '72'	=>	'Konto %s dla %s z hasłem <cite>%s</cite> zostało otworzone.<br />Nie zapomnij zaaktywować je.',
 '73'	=>	'jest',
 '74'	=>	'może przydzielać',
-'75'	=>	'Wymażone konta: %s',
+'75'	=>	'Wymażane konta: %s',
 '76'	=>	'Pojemność niniejszego konta została podwyższona na %d MiB.',
 '77'	=>	'Status',
 '78'	=>	'Pojemność niniejszego konta została ustalona na %d MiB.',
@@ -146,6 +146,8 @@ $res['pl']	= array(
 '135'	=>	'Te adresy zostały przydzielone: %s.',
 '136'	=>	'(nikt)',
 '137'	=>	'(żadne)',
+'138'	=>	'Domena została przydzielona.',
+'139'	=>	'Wymażane domeny: %s.',
 );
 
 ?>

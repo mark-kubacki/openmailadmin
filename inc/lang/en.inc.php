@@ -147,6 +147,8 @@ $res['en']	= array(
 '135'	=>	'Following addresses have been created: %s.',
 '136'	=>	'(nobody)',
 '137'	=>	'(none)',
+'138'	=>	'Domain has been successfully created.',
+'139'	=>	'Follwing domains have been deleted: %s.',
 );
 
 ?>
