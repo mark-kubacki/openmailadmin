@@ -98,7 +98,7 @@ class InputValidatorSuite
 		$this->validate['a_admin_domains']	= $this->validate['a_super'];
 		$this->validate['a_admin_user']	= $this->validate['a_super'];
 		// domains
-		$this->validate['domain']	= array(array(	'val'	=> 'preg_match(\'/^\'.openmailadmin::regex_valid_domain.\'$/i\', ~)',
+		$this->validate['domain']	= array(array(	'val'	=> 'preg_match(Domain::regex_valid_domain, ~)',
 							'error'	=> txt('51')),
 						);
 		$this->validate['owner']	= array(array(	'val'	=> 'is_numeric(~)',
