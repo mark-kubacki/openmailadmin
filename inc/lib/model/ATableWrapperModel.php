@@ -44,16 +44,20 @@ abstract class ATableWrapperModel
 	 * @param	value		The value the field shall be assigned.
 	 * @param	exceptions	If attribute is in this list it won't we set locally.
 	 * @return	boolean		True if column has been changed successfully.
+	 * @throws	DataException
 	 */
 	protected function immediate_set($attribute, $value, $tablename, $key = 'ID', $exceptions = array()) {
+		if(!in_array($attribute, $exceptions)
+		   && $this->{$attribute} == $value)
+			return true;
 		self::$db->Execute('UPDATE '.$tablename
 				.' SET '.$attribute.'='.self::$db->qstr($value)
 				.' WHERE '.$key.'='.self::$db->qstr($this->{$key}));
+		if(self::$db->ErrorNo() != 0)
+			throw new DataException('Cannot set "'.$attribute.'" to "'.$value.'".');
 		if(!in_array($attribute, $exceptions)) {
 			$this->{$attribute} = $value;
 		}
-		if(self::$db->ErrorNo() != 0)
-			throw new RuntimeException('Cannot set "'.$attribute.'" to "'.$value.'".');
 		return true;
 	}
 
