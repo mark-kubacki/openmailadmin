@@ -151,7 +151,8 @@ class DomainController
 			$oldname = $domain->domain;
 			try {
 				$domain->immediate_set('domain', $newname);
-				// @todo commit change to every destination of any mapper;
+				Address::replace_in_dest($oldname, $newname);
+				RegexpAddress::replace_in_dest($oldname, $newname);
 				return true;
 			} catch(DuplicateEntryException $e) {
 				$this->ErrorHandler->add_error(txt(134));

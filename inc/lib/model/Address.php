@@ -68,5 +68,9 @@ class Address
 		return $addr;
 	}
 
+	public static function replace_in_dest($from, $to) {
+		return parent::replace_in_dest(self::$tablenames['virtual'], $from, $to);
+	}
+
 }
 ?>

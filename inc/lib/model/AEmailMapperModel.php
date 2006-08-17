@@ -20,6 +20,16 @@ abstract class AEmailMapperModel
 		return explode(',', $dest_string);
 	}
 
+	protected static function replace_in_dest($tablename, $from, $to) {
+		$arr = self::$db->GetAll('SELECT ID, dest FROM '.$tablename.' WHERE dest LIKE '.
+					self::$db->qstr('%'.$from.'%'));
+		foreach($arr as $k => $row) {
+			self::$db->Execute('UPDATE '.$tablename
+					.' SET dest='.self::$db->qstr(str_ireplace($from, $to, $row['dest']))
+					.' WHERE ID='.self::$db->qstr($row['ID']));
+		}
+	}
+
 	protected function set_destinations(array $destinations, $tablename) {
 		$destinations = array_unique($destinations);
 		if($this->immediate_set('dest', implode(',', $destinations), $tablename)) {

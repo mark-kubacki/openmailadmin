@@ -59,5 +59,9 @@ class RegexpAddress
 		return $rexp;
 	}
 
+	public static function replace_in_dest($from, $to) {
+		return parent::replace_in_dest(self::$tablenames['virtual_regexp'], $from, $to);
+	}
+
 }
 ?>
