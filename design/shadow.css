@@ -67,6 +67,10 @@ TD.box_left {
 TD.box_right {
 	text-align: left
 }
+TD.box_left UL, TD.box_right UL {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
 TD.caption {
 	font-family: Verdana, Geneva, Arial, sans-serif;
 	font-size: 10pt;
