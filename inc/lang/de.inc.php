@@ -145,6 +145,8 @@ $res['de']	= array(
 '133'	=>	'Die Adresse ist bereits vergeben.',
 '134'	=>	'Die Domäne wurde bereits vergeben.',
 '135'	=>	'Folgende Adressen wurden erstellt: %s.',
+'136'	=>	'(niemand)',
+'137'	=>	'(keine)',
 );
 
 ?>

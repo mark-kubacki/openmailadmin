@@ -25,7 +25,7 @@ count_same_cols($domains, 'a_admin', 'n_admin');
 				<?= $domain['domain'] ?>
 			</td>
 			<?php if(isset($domain['n_owner'])) { ?>
-				<td class="std" rowspan="<?= $domain['n_owner'] ?>"><?= User::get_by_ID($domain['owner'])->mbox ?></td>
+				<td class="std" rowspan="<?= $domain['n_owner'] ?>"><?= $domain['owner'] ?></td>
 			<?php } ?>
 			<?php if(isset($domain['n_admin'])) { ?>
 				<td class="std" rowspan="<?= $domain['n_admin'] ?>"><?= $domain['a_admin'] ?></td>

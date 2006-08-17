@@ -76,6 +76,10 @@ class User
 		return IMAPVirtualDomain::get_by_ID($this->vdom);
 	}
 
+	public function __toString() {
+		return $this->mbox;
+	}
+
 	public static function get_by_ID($id) {
 		static $cache	= array();
 		if(!isset($cache[$id])) {

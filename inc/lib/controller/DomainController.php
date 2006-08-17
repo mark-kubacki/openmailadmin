@@ -30,39 +30,35 @@ class DomainController
 	}
 
 	public $editable_domains;	// How many domains can the current user change?
-	/*
-	 * Returns a long list with all domains (from table 'domains').
-	 */
+
 	public function get_list() {
 		$this->editable_domains = 0;
-		$domains = array();
-
-		$query  = 'SELECT * FROM '.$this->oma->tablenames['domains'];
-		if($this->oma->authenticated_user->a_super > 0) {
-			$query .= ' WHERE 1=1 '.$_SESSION['filter']['str']['domain'];
-		} else {
-			$query .= ' WHERE (owner='.$this->oma->db->qstr($this->oma->current_user->ID).' or a_admin LIKE '.$this->oma->db->qstr('%'.$this->oma->current_user->mbox.'%').')'
-				 .$_SESSION['filter']['str']['domain'];
-		}
-		$query .= ' ORDER BY owner, length(a_admin), domain';
-
-		$result = $this->oma->db->SelectLimit($query, $_SESSION['limit'], $_SESSION['offset']['mbox']);
-		if(!$result === false) {
-			while(!$result->EOF) {
-				$row	= $result->fields;
-				if($row['owner'] == $this->oma->authenticated_user->ID
-				   || find_in_set($this->oma->authenticated_user->mbox, $row['a_admin'])) {
-					$row['selectable']	= true;
-					++$this->editable_domains;
-				} else {
-					$row['selectable']	= false;
-				}
-				$domains[] = $row;
-				$result->MoveNext();
+		$ret = array();
+		foreach(Domain::get_usable_by_user($this->oma->current_user) as $domain) {
+			$row['ID'] = $domain->ID;
+			$row['domain'] = $domain->__toString();
+			$row['owner'] = is_null($domain->owner) ? txt(136) : $domain->get_owner()->__toString();
+			$row['categories'] = $domain->categories;
+			$adm = array();
+			foreach($domain->get_administrators() as $admin) {
+				$adm[] = $admin->mbox;
 			}
+			if(count($adm) == 0)
+				$row['a_admin'] = txt(137);
+			else
+				$row['a_admin'] = implode(', ', $adm);
+			if($this->oma->current_user->ID == $domain->owner
+			   || in_array($this->oma->current_user->mbox, $adm)) {
+				++$this->editable_domains;
+				$row['selectable'] = true;
+			} else {
+				$row['selectable'] = false;
+			}
+			$ret[] = $row;
 		}
-		return $domains;
+		return $ret;
 	}
+
 	/**
 	 * Use this to check whether the user "tobechecked" wuth given "domain_key"
 	 * has not been granted access to more/other domains the user "reference"

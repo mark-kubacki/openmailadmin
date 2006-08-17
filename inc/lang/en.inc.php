@@ -145,6 +145,8 @@ $res['en']	= array(
 '133'	=>	'Given address is already in use.',
 '134'	=>	'Given domain has already been claimed.',
 '135'	=>	'Following addresses have been created: %s.',
+'136'	=>	'(nobody)',
+'137'	=>	'(none)',
 );
 
 ?>
