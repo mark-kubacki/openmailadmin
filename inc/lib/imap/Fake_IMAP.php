@@ -71,7 +71,7 @@ class Fake_IMAP
 		} else if(isset($_POST['mbox'])) {
 			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, $_POST['mbox'].' lrswipcda'));
 		} else {
-			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, (isset($oma->current_user->mbox) ? $oma->current_user->mbox : $mb).' lrswipcda'));
+			$this->db->Execute('INSERT INTO '.$this->tablenames['imap_demo'].' (mailbox, ACL) VALUES (?,?)', array($mb, (isset($oma->current_user->mbox) ? $oma->current_user->mbox : str_replace('user.', '', $mb)).' lrswipcda'));
 		}
 		if($this->db->Affected_Rows() < 1) {
 			$this->error_msg	= $this->db->ErrorMsg();
@@ -158,8 +158,9 @@ class Fake_IMAP
 		global $oma;
 
 		// does the user exist?
-		$user = $this->db->GetOne('SELECT mbox FROM '.$this->tablenames['user'].' WHERE mbox='.$this->db->qstr($user));
-		if(!$user === false) {
+		if($user == 'anyone'
+		   || $user == $this->db->GetOne('SELECT mbox FROM '.$this->tablenames['user'].' WHERE mbox='.$this->db->qstr($user))
+		   ) {
 			// fetch old ACL
 			$facl = $this->getacl($mb);
 			if(isset($facl[$oma->current_user->mbox]) && stristr($facl[$oma->current_user->mbox], 'a')
