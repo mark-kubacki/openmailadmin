@@ -2,8 +2,17 @@
 class Domain
 	extends ADomainModel
 {
+	const	regex_valid_domain	= '/^[a-z0-9\-\_\.]{2,}\.[a-z]{2,}$/i';
+
 	public function immediate_set($attribute, $value) {
-		return parent::immediate_set($attribute, $value, self::$tablenames['domains'], 'ID');
+		try {
+			return parent::immediate_set($attribute, $value, self::$tablenames['domains'], 'ID');
+		} catch(DataException $e) {
+			if($attribute == 'domain')
+				throw new DuplicateEntryException();
+			else
+				throw $e;
+		}
 	}
 
 	/**
@@ -35,6 +44,10 @@ class Domain
 			$cache[$id] = parent::get_immediate_by_ID($id, self::$tablenames['domains'], 'Domain', 'ID');
 		}
 		return $cache[$id];
+	}
+
+	public static function delete_by_ID($id) {
+		return parent::delete_by_ID($id, self::$tablenames['domains']);
 	}
 
 	/**

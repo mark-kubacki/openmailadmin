@@ -14,8 +14,6 @@ class openmailadmin
 
 	private	$controller;
 
-	const	regex_valid_domain	= '[a-z0-9\-\_\.]{2,}\.[a-z]{2,}';
-
 	function __construct(ADOConnection $adodb_handler, array $tablenames, array $cfg, IMAP_Administrator $imap) {
 		$this->db		= $adodb_handler;
 		$this->tablenames	= $tablenames;
