@@ -258,9 +258,9 @@ function transfer_addr_destination (e) {
 /******************************************************************************
  * for initialization
  ******************************************************************************/
-function get_inputs_with_nearby_checkboxes(root) {
+function get_tags_with_nearby_checkboxes(root, tagname) {
 	var result = new Array();
-	var tinp = root.getElementsByTagName("input");
+	var tinp = root.getElementsByTagName(tagname);
 	for (var i = 0; i < tinp.length; i++) {
 		// If this is already a checkbox there is no need of checking another one.
 		if(tinp[i].getAttribute("type", "false") == "checkbox") {
@@ -308,10 +308,13 @@ function init_newsletter_buttons() {
 }
 
 function init_change_sensitive_inputs() {
-	var tinp = get_inputs_with_nearby_checkboxes(document);
-	for (var i = 0; i < tinp.length; i++) {
-		tinp[i].check_corresponding_box = check_corresponding_box;
-		XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
+	var tagnames = new Array("input", "select");
+	for(k in tagnames) {
+		var tinp = get_tags_with_nearby_checkboxes(document, tagnames[k]);
+		for (var i = 0; i < tinp.length; i++) {
+			tinp[i].check_corresponding_box = check_corresponding_box;
+			XBrowserAddHandler(tinp[i],"change","check_corresponding_box");
+		}
 	}
 }
 
