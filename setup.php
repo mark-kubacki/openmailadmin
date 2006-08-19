@@ -8,6 +8,7 @@ ob_start('ob_gzhandler');
 include('./inc/config.inc.php');
 include('./inc/functions.inc.php');
 @include('adodb/adodb.inc.php');
+@include('Log.php');
 
 // definition of configuration file's format
 $config = <<<EOT
@@ -138,25 +139,20 @@ switch($_GET['step']) {
 		if(function_exists('mysqli_connect'))	$available_db[] = array('mysqli', 'mysqli://user:pwd@host/mydb');
 		if(function_exists('oci_connect'))	$available_db[] = array('oci8', 'oci8://user:pwd@host/sid');
 		if(function_exists('pg_connect'))	$available_db[] = array('postgres', 'postgres://user:pwd@host/mydb');
-		if(function_exists('sqlite_open'))	$available_db[] = array('sqlite', 'sqlite://..%2Fmydb.db');
 		include('./templates/setup/step2.tpl');
 		break;
 	default:
 	case '1':
 		$expectations
 		= array('asp_tags'			=> 0,
-			'file_uploads'			=> 0,
 			'display_errors'		=> 0,
 			'log_errors'			=> 1,
 			'ignore_repeated_errors'	=> 1,
 			'ignore_repeated_source'	=> 1,
-			'safe_mode'			=> 1,
 			);
 
 		$requirements
-		= array('magic_quotes_gpc'		=> 0,
-			'magic_quotes_runtime'		=> 0,
-			'register_globals'		=> 0,
+		= array(
 			'short_open_tag'		=> 1,
 			);
 
@@ -165,8 +161,9 @@ switch($_GET['step']) {
 				array('PHP is version 5.1.0 or later?', version_compare(PHP_VERSION, '5.1.0', '>=')),
 				array('Multibyte String support active?', function_exists('mb_convert_encoding')),
 				array('Socket or IMAP support available?', function_exists('fsockopen') || function_exists('imap_open')),
-				array('MySQL or MySQLi, SQLite, PostgreSQL, Oracle (OCI8)?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('sqlite_open') || function_exists('pg_connect') || function_exists('oci_connect')),
+				array('MySQL or MySQLi, PostgreSQL, Oracle (OCI8)?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('pg_connect') || function_exists('oci_connect')),
 				array('Is ADOdb installed?', function_exists('ADONewConnection')),
+				array('Is PEAR::Log installed?', class_exists('Log')),
 			);
 
 		$reality	= array();

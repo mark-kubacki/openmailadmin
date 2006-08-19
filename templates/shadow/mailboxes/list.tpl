@@ -22,7 +22,7 @@ count_same_cols($mailboxes, 'pate', 'n_paten');
 		<?php } ?>
 			<td class="std">
 				<?php if($mailbox['mbox'] == $oma->authenticated_user->mbox || $mailbox['mbox'] == $oma->current_user->mbox) { ?>
-					&nbsp;-&nbsp;
+					<?= $input->checkbox('user[]', $mailbox['mbox'], array('disabled' => '1')) ?>
 				<?php } else { ?>
 					<?= $input->checkbox('user[]', $mailbox['mbox']) ?>
 				<?php } ?>

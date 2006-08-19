@@ -17,7 +17,11 @@ count_same_cols($domains, 'a_admin', 'n_admin');
 	<?php foreach($domains as $domain) { ?>
 		<tr>
 			<td class="std">
-				<?= $input->checkbox('dom[]', $domain['ID']) ?>
+				<?php if($domain['selectable']) { ?>
+					<?= $input->checkbox('dom[]', $domain['ID']) ?>
+				<?php } else { ?>
+					<?= $input->checkbox('dom[]', $domain['ID'], array('disabled' => '1')) ?>
+				<?php } ?>
 				<?= $domain['domain'] ?>
 			</td>
 			<?php if(isset($domain['n_owner'])) { ?>

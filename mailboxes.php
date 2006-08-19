@@ -8,7 +8,7 @@ if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $oma->authenticated_user->
 	if(!isset($_POST['action'])) {
 		error(txt('112'));
 	} else if(isset($_POST['action'])
-			&& ($_POST['action'] == 'change' || $_POST['action'] == 'delete')
+			&& $_POST['action'] != 'new'
 			&& !(isset($_POST['user']) && is_array($_POST['user']))) {
 		error(txt('11'));
 	} else {
