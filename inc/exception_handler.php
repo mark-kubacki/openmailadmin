@@ -6,7 +6,8 @@
 set_exception_handler('PrettyBlueScreen');
 
 function PrettyBlueScreen($e) {
-	ob_clean();
+	ob_end_clean();
+	@ob_start('ob_gzhandler');
 	$o = create_function('$in', 'echo htmlspecialchars($in);');
 	$sub = create_function('$f', '$loc="";if(isset($f["class"])){
 		$loc.=$f["class"].$f["type"];}
@@ -24,4 +25,5 @@ function PrettyBlueScreen($e) {
 	$clean = create_function('$line', 'return trim(strip_tags($line));');
 	$desc = get_class($e)." making ".$_SERVER['REQUEST_METHOD']." request to ".$_SERVER['REQUEST_URI'];
 	include('./templates/ExceptionHandler.tpl');
+	ob_end_flush();
 }
