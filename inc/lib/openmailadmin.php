@@ -316,6 +316,10 @@ class openmailadmin
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 		} else {
+			array_walk($arr_addresses,
+					create_function('&$item,$index',
+							'$parts = explode(\'@\', $item); $item = implode(\'@\', array($parts[0], idn_to_utf8($parts[1])));'
+							));
 			$this->ErrorHandler->add_info(sprintf(txt('15'), implode(',', $arr_addresses)));
 			$this->current_user->used_alias -= $this->db->Affected_Rows();
 			return true;
