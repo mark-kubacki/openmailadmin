@@ -67,10 +67,10 @@ $res['pl']	= array(
 
 '60'	=>	'zamknij',
 '61'	=>	'Aby nowe konto założyć muszą być wszystkie pola wypełnione.<br />',
-'62'	=>	'Nazwa konta składa się z conajmniej %d do %d alphanumericznych znaków.<br />',
+'62'	=>	'Nazwa konta składa się z conajmniej %d do %d alfanumericznych znaków.<br />',
 '63'	=>	'Pojemności i ilości muszą być podane w zyfrach.<br />Jedność pojemności jest MiB.<br />',
 '64'	=>	'Pole "standartowy nadawca" nie zawiera prawidłowego adresu email.<br />',
-'65'	=>	'Nie posiadasz wystarczajśnco mijejsca, ktory by mógł być dostarczony wybranym kont.<br />',
+'65'	=>	'Nie posiadasz wystarczajonco mijejsca, ktory by mógł być dostarczony wybranym kont.<br />',
 '66'	=>	'Ilość nieużywanych lub wolnych adressów nie jest wystarczajśca.',
 '67'	=>	'Potrzebne są %d, ale wolne tylko są %d.<br />',
 '68'	=>	'Super-użytkownik',
@@ -143,6 +143,7 @@ $res['pl']	= array(
 '132'	=>	'nigdy',
 '133'	=>	'Adres został już przydzielony.',
 '134'	=>	'Domena została już przydzielona.',
+'135'	=>	'Konto tej nazwy nie może być otworzone.',
 );
 
 ?>

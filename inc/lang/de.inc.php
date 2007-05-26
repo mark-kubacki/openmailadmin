@@ -144,6 +144,7 @@ $res['de']	= array(
 '132'	=>	'nie',
 '133'	=>	'Die Adresse ist bereits vergeben.',
 '134'	=>	'Die Domäne wurde bereits vergeben.',
+'135'	=>	'Eine Mailbox dieses Namens kann nicht erstellt werden.',
 );
 
 ?>
