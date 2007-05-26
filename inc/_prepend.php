@@ -9,9 +9,7 @@ include('./inc/config.inc.php');
 @(include('./inc/config.local.inc.php'))
 	or die('You have to create an configuration file, first. Try <a href="setup.php">setup.php</a>.');
 include('./inc/translation.inc.php');
-if($cfg['show_exceptions_online']) {
-	include('./inc/exception_handler.php');
-}
+include('./inc/exception_handler.php');
 include('adodb/adodb.inc.php');
 include('./inc/functions.inc.php');
 

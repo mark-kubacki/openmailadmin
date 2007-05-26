@@ -1,10 +1,26 @@
 <?php
+if($cfg['show_exceptions_online']) {
+	set_exception_handler('PrettyBlueScreen');
+} else {
+	set_exception_handler('PrimitiveBlueScreen');
+}
+
+function PrimitiveBlueScreen($e) {
+	ob_clean();
+	global $lang, $cfg;
+	$text = $e->getMessage();
+	$width = 580;
+	include('./templates/shadow/common-header.tpl');
+	include('./templates/shadow/error_box.tpl');
+	include('./templates/shadow/common-footer_nv.tpl');
+	ob_end_flush();
+	trigger_error($e->__toString(), E_USER_ERROR);
+}
+
 /**
  * @source	http://www.sitepoint.com/blogs/2006/04/04/pretty-blue-screen/
  * @author	Harry Fuecks; http://www.sitepoint.com/articlelist/210
  */
-set_exception_handler('PrettyBlueScreen');
-
 function PrettyBlueScreen($e) {
 	ob_clean();
 	$o = create_function('$in', 'echo htmlspecialchars($in);');
@@ -24,4 +40,6 @@ function PrettyBlueScreen($e) {
 	$clean = create_function('$line', 'return trim(strip_tags($line));');
 	$desc = get_class($e)." making ".$_SERVER['REQUEST_METHOD']." request to ".$_SERVER['REQUEST_URI'];
 	include('./templates/ExceptionHandler.tpl');
+	ob_end_flush();
+	trigger_error($e->__toString(), E_USER_ERROR);
 }
