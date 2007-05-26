@@ -207,5 +207,9 @@ class Fake_IMAP
 		}
 	}
 
+	public function is_valid_username($username) {
+		return preg_match('/^\w{2,16}$/', $username);
+	}
+
 }
 ?>

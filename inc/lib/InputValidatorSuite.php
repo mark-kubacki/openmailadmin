@@ -71,7 +71,7 @@ class InputValidatorSuite
 		// If a test fails the next won't be invoked.
 		$this->validate['mbox']	= array(array(	'val'	=> 'strlen(~) >= $this->cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $this->cfg[\'mbox\'][\'max_length\']',
 							'error'	=> sprintf(txt('62'), $this->cfg['mbox']['min_length'], $this->cfg['mbox']['max_length']) ),
-						array(	'val'	=> 'preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
+						array(	'val'	=> '$this->oma->imap->is_valid_username(~)',
 							'error'	=> txt('135') ),
 						);
 		$this->validate['pate']	= array(array(	'val'	=> '$this->oma->authenticated_user->is_superuser() || $this->oma->user_is_descendant(~, $this->oma->authenticated_user->mbox)',

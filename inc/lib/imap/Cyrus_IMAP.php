@@ -246,5 +246,13 @@ class Cyrus_IMAP
 		return $ret;
 	}
 
+	public function is_valid_username($username) {
+		if($this->gethierarchyseparator() == '.') {
+			return preg_match('/^[a-z0-9]+(?:(?<![_-])[_-][a-z0-9]+)*$/i', $username);
+		} else {
+			return preg_match('/^[a-z0-9]+(?:(?<![_.-])[_.-][a-z0-9]+)*$/i', $username);
+		}
+	}
+
 }
 ?>

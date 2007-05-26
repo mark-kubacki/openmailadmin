@@ -63,6 +63,11 @@ interface IMAP_Administrator
 	function setacl($mb, $user, $acl);
 
 	/**
+	 * @param	username	Mailboxname without formatting.
+	 * @return			true or false
+	 */
+	function is_valid_username($username);
+	/**
 	 * Some IMAP servers don't repsect standards and introduce their own formatting of mailboxes and subfolders.
 	 *
 	 * @param	username	Mailboxname without formatting.
