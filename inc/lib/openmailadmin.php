@@ -77,6 +77,7 @@ class openmailadmin
 		if($this->cfg['allow_mbox_as_target']) {
 			$mailboxes = &$this->get_mailbox_names();
 			if(count($mailboxes) > 0) {
+				$mailboxes = array_map('preg_quote', $mailboxes);
 				$pattern .= '|'.implode('|', $mailboxes);
 			}
 		} else if($this->cfg['allow_wcyr_as_target']) {
