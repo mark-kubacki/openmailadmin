@@ -18,6 +18,8 @@ class openmailadmin
 	private	$cfg;
 	public	$imap;
 
+	// "alias" == "local part"
+	const	regex_valid_alias	= '(?=^.{1,64}$)[a-z0-9!$*+\-_]+(?:\.[a-z0-9!$*+\-_]+)*';
 	const	regex_valid_email	= '[a-z0-9!$*+\-_]+(?:\.[a-z0-9!$*+\-_]+)*@(?:(?:(?!\d+\.|-)[a-z0-9_\-]{1,63}(?<!-)\.?)+(?:(?<!\.)\.[a-z]{2,}))';
 	const	regex_valid_domain	= '(?=^.{1,254}$)(?:^localhost$)|(?:^(?:(?!\d+\.|-)[a-z0-9_\-]{1,63}(?<!-)\.?)+(?:(?<!\.)\.[a-z]{2,})$)';
 
@@ -284,7 +286,7 @@ class openmailadmin
 				}
 			}
 			// Will his new address be a valid one?
-			else if(! preg_match('/([A-Z0-9\.\-\_]{'.strlen($alias).'})/i', $alias)) {
+			else if(! preg_match('/^'.openmailadmin::regex_valid_alias.'$/i', $alias)) {
 				$this->ErrorHandler->add_error(txt('13'));
 				return false;
 			}
