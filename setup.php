@@ -164,6 +164,7 @@ switch($_GET['step']) {
 				array('MySQL or MySQLi, PostgreSQL, Oracle (OCI8)?', function_exists('mysql_connect') || function_exists('mysqli_connect') || function_exists('pg_connect') || function_exists('oci_connect')),
 				array('Is ADOdb installed?', function_exists('ADONewConnection')),
 				array('Is PEAR::Log installed?', class_exists('Log')),
+				array('Is PECL::idn installed?', function_exists('idn_to_ascii') && function_exists('idn_to_utf8')),
 			);
 
 		$reality	= array();

@@ -119,7 +119,7 @@ class openmailadmin
 				.' WHERE owner='.$this->db->qstr($user).' OR a_admin LIKE '.$this->db->qstr('%'.$user.'%').' OR '.db_find_in_set($this->db, 'domain', $poss_dom).$cat);
 			if(!$result === false) {
 				while(!$result->EOF) {
-					$dom[] = $result->fields['domain'];
+					$dom[] = idn_to_utf8($result->fields['domain']);
 					$result->MoveNext();
 				}
 			}
@@ -252,7 +252,7 @@ class openmailadmin
 					$row['alias'] = '*';
 				else
 					$row['alias'] = substr($row['address'], 0, $at);
-				$row['domain'] = substr($row['address'], $at+1);
+				$row['domain'] = idn_to_utf8(substr($row['address'], $at+1));
 				// add the current entry to our list of aliases
 				$alias[] = $row;
 				$result->MoveNext();
@@ -266,6 +266,7 @@ class openmailadmin
 	 * Creates a new email-address.
 	 */
 	public function address_create($alias, $domain, $arr_destinations) {
+		$domain = idn_to_ascii($domain);
 		// May the user create another address?
 		if($this->current_user->used_alias < $this->current_user->max_alias
 		   || $this->authenticated_user->a_super >= 1) {
@@ -318,6 +319,10 @@ class openmailadmin
 				$this->ErrorHandler->add_error($this->db->ErrorMsg());
 			}
 		} else {
+			array_walk($arr_addresses,
+					create_function('&$item,$index',
+							'$parts = explode(\'@\', $item); $item = implode(\'@\', array($parts[0], idn_to_utf8($parts[1])));'
+							));
 			$this->ErrorHandler->add_info(sprintf(txt('15'), implode(',', $arr_addresses)));
 			$this->current_user->used_alias -= $this->db->Affected_Rows();
 			return true;
@@ -390,6 +395,7 @@ class openmailadmin
 				} else {
 					$row['selectable']	= false;
 				}
+				$row['domain'] = idn_to_utf8($row['domain']);
 				$domains[] = $row;
 				$result->MoveNext();
 			}
@@ -432,6 +438,7 @@ class openmailadmin
 	 * Categories are for grouping domains.
 	 */
 	public function domain_add($domain, $props) {
+		$domain = idn_to_ascii($domain);
 		$props['domain'] = $domain;
 		if(!$this->validator->validate($props, array('domain', 'categories', 'owner', 'a_admin'))) {
 			return false;
@@ -474,7 +481,7 @@ class openmailadmin
 			if(!$result === false) {
 				while(!$result->EOF) {
 					$del_ID[] = $result->fields['ID'];
-					$del_nm[] = $result->fields['domain'];
+					$del_nm[] = idn_to_utf8($result->fields['domain']);
 					$result->MoveNext();
 				}
 				if(isset($del_ID)) {
@@ -487,7 +494,7 @@ class openmailadmin
 						$this->ErrorHandler->add_info(txt('52').'<br />'.implode(', ', $del_nm));
 						// We better deactivate all aliases containing that domain, so users can see the domain was deleted.
 						foreach($del_nm as $domainname) {
-							$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active = 0, neu = 1 WHERE address LIKE '.$this->db->qstr('%'.$domainname));
+							$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET active = 0, neu = 1 WHERE address LIKE '.$this->db->qstr('%'.idn_to_ascii($domainname)));
 						}
 						// We can't do such on REGEXP addresses: They may catch more than the given domains.
 						$this->user_invalidate_domain_sets();
