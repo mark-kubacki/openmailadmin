@@ -18,8 +18,8 @@ class openmailadmin
 	private	$cfg;
 	public	$imap;
 
-	const	regex_valid_email	= '[a-z0-9]{1,}[a-z0-9\.\-\_\+]*@[a-z0-9\.\-\_]{2,}\.[a-z]{2,}';
-	const	regex_valid_domain	= '[a-z0-9\-\_\.]{2,}\.[a-z]{2,}';
+	const	regex_valid_email	= '[a-z0-9!$*+\-_]+(\.[a-z0-9!$*+\-_]+)*@(?:(?:(?!\d+\.|-)[a-z0-9_\-]{1,63}(?<!-)\.?)+(?:(?<!\.)\.[a-z]{2,}))';
+	const	regex_valid_domain	= '(?=^.{1,254}$)(?:^localhost$)|(?:^(?:(?!\d+\.|-)[a-z0-9_\-]{1,63}(?<!-)\.?)+(?:(?<!\.)\.[a-z]{2,})$)';
 
 	function __construct(ADOConnection $adodb_handler, array $tablenames, array $cfg, IMAP_Administrator $imap) {
 		$this->db		= $adodb_handler;

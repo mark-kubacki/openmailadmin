@@ -103,7 +103,7 @@ class InputValidatorSuite
 		$this->validate['a_admin_domains']	= $this->validate['a_super'];
 		$this->validate['a_admin_user']	= $this->validate['a_super'];
 		// domains
-		$this->validate['domain']	= array(array(	'val'	=> 'preg_match(\'/^\'.openmailadmin::regex_valid_domain.\'$/i\', ~)',
+		$this->validate['domain']	= array(array(	'val'	=> 'preg_match(\'/\'.openmailadmin::regex_valid_domain.\'/i\', ~)',
 							'error'	=> txt('51')),
 						);
 		$this->validate['owner']	= array(array(	'val'	=> 'strlen(~) >= $this->cfg[\'mbox\'][\'min_length\'] && strlen(~) <= $this->cfg[\'mbox\'][\'max_length\'] && preg_match(\'/^[a-zA-Z0-9]*$/\', ~)',
