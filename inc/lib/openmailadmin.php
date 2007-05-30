@@ -338,6 +338,17 @@ class openmailadmin
 	 * Changes the destination of the given addresses if they belong to the current user.
 	 */
 	public function address_change_destination($arr_addresses, $arr_destinations) {
+		$max = $this->cfg['address']['max_dest_p_address'];
+		foreach($arr_addresses as $addr) {
+			if($addr{0} == '@') { // catchall!
+				$max = $this->cfg['address']['max_dest_p_catchall'];
+				break;
+			}
+		}
+		if(count($arr_destinations) > $max) {
+			$this->ErrorHandler->add_error(sprintf(txt('136'), $max));
+			return false;
+		}
 		$this->db->Execute('UPDATE '.$this->tablenames['virtual'].' SET dest='.$this->db->qstr(implode(',', $arr_destinations)).', neu=1'
 				.' WHERE owner='.$this->db->qstr($this->current_user->mbox)
 				.' AND '.db_find_in_set($this->db, 'address', $arr_addresses));
@@ -348,7 +359,6 @@ class openmailadmin
 		} else {
 			return true;
 		}
-
 		return false;
 	}
 	/*
