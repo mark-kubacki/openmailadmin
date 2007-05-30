@@ -145,6 +145,7 @@ $res['de']	= array(
 '133'	=>	'Die Adresse ist bereits vergeben.',
 '134'	=>	'Die Domäne wurde bereits vergeben.',
 '135'	=>	'Eine Mailbox dieses Namens kann nicht erstellt werden.',
+'136'	=>	'Die Adresse darf nicht mehr als %d Zustellungs-Ziele haben.',
 );
 
 ?>

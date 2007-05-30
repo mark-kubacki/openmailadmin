@@ -291,7 +291,12 @@ class openmailadmin
 				$this->ErrorHandler->add_error(txt('13'));
 				return false;
 			}
-
+			// Restrict amount of possible destinations.
+			if(($alias == '' && count($arr_destinations) > $this->cfg['address']['max_dest_p_catchall'])
+			   || ($alias != '' && count($arr_destinations) > $this->cfg['address']['max_dest_p_address'])) {
+				$this->ErrorHandler->add_error(sprintf(txt('136'), count($arr_destinations)));
+				return false;
+			}
 			// Finally, create that address.
 			$this->db->Execute('INSERT INTO '.$this->tablenames['virtual'].' (address, dest, owner) VALUES (?, ?, ?)',
 						array(strtolower($alias.'@'.$domain), implode(',', $arr_destinations), $this->current_user->mbox));
@@ -304,7 +309,6 @@ class openmailadmin
 		} else {
 			$this->ErrorHandler->add_error(txt('14'));
 		}
-
 		return false;
 	}
 	/*

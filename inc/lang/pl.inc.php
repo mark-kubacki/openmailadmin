@@ -144,6 +144,7 @@ $res['pl']	= array(
 '133'	=>	'Adres został już przydzielony.',
 '134'	=>	'Domena została już przydzielona.',
 '135'	=>	'Konto tej nazwy nie może być otworzone.',
+'136'	=>	'Nie więcej niż %d celów może być połoczone z stym adresem email.',
 );
 
 ?>

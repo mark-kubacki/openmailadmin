@@ -145,6 +145,7 @@ $res['en']	= array(
 '133'	=>	'Given address is already in use.',
 '134'	=>	'Given domain has already been claimed.',
 '135'	=>	'A mailbox with this name cannot be created.',
+'136'	=>	'You cannot assign more destinations than %d to this address.',
 );
 
 ?>
