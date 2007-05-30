@@ -292,9 +292,9 @@ class openmailadmin
 				return false;
 			}
 			// Restrict amount of possible destinations.
-			if(($alias == '' && count($arr_destinations) > $this->cfg['address']['max_dest_p_catchall'])
-			   || ($alias != '' && count($arr_destinations) > $this->cfg['address']['max_dest_p_address'])) {
-				$this->ErrorHandler->add_error(sprintf(txt('136'), count($arr_destinations)));
+			$max = $alias == '' ? $this->cfg['address']['max_dest_p_catchall'] : $this->cfg['address']['max_dest_p_address'];
+			if(count($arr_destinations) > $max) {
+				$this->ErrorHandler->add_error(sprintf(txt('136'), $max));
 				return false;
 			}
 			// Finally, create that address.
