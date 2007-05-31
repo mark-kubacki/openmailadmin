@@ -1,7 +1,6 @@
 <?php
 include('./inc/_prepend.php');
 
-// ------------------------------ Folder & ACL ----------------------------------------------------
 if($oma->current_user->mbox != $oma->authenticated_user->mbox) {
 	error(txt('104'));
 	include('./inc/_append.php');

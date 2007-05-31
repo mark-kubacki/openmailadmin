@@ -1,7 +1,7 @@
 <?php
 include('./inc/_prepend.php');
 
-// ------------------------------ Information -----------------------------------------------------
+// account information
 $oma->current_user->domain_set = $oma->get_domain_set($oma->current_user->mbox, $oma->current_user->domains);
 
 $a_tmp = array();
@@ -26,7 +26,7 @@ $information[]	= array(txt('77'),	$rightstring);
 unset($rightstring);
 include('./templates/'.$cfg['theme'].'/information.tpl');
 
-// ------------------------------ Password --------------------------------------------------------
+// handling password changes
 if(isset($_POST['frm']) && $_POST['frm'] == 'pass' && $_POST['action'] == 'change') {
 	$ErrorHandler->status_reset();
 	if($oma->current_user->mbox == $oma->authenticated_user->mbox) {

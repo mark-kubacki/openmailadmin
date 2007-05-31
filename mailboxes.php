@@ -2,7 +2,6 @@
 include('./inc/_prepend.php');
 include('./inc/panel_filter.php');
 
-// ------------------------------ Mailboxes -------------------------------------------------------
 // PERFORM ACTION
 if(isset($_POST['frm']) && $_POST['frm'] == 'user' && $oma->authenticated_user->a_admin_user >= 1) {
 	if(!isset($_POST['action'])) {

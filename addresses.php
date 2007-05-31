@@ -5,7 +5,6 @@ include('./inc/panel_filter.php');
 $oma->current_user->domain_set = $oma->get_domain_set($oma->current_user->mbox, $oma->current_user->domains);
 $oma->current_user->used_alias = $oma->user_get_used_alias($oma->current_user->mbox);
 
-// ------------------------------ Addresses -------------------------------------------------------
 // PERFORM ACTION
 if(isset($_POST['frm']) && $_POST['frm'] == 'virtual') {
 	if(!isset($_POST['action'])) {

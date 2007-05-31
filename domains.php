@@ -2,7 +2,6 @@
 include('./inc/_prepend.php');
 include('./inc/panel_filter.php');
 
-// ------------------------------ Domains ---------------------------------------------------------
 if($oma->authenticated_user->a_admin_domains > 0) {
 	if(isset($_POST['frm']) && $_POST['frm'] == 'domains') {
 		if(!isset($_POST['action'])) {
