@@ -2,8 +2,6 @@
 /**
  * This class collects all methods of Openmailadmin, except for the view
  * and data storage.
- *
- * @todo	Refactorings: Extract classes.
  */
 class openmailadmin
 {

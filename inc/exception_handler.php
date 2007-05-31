@@ -6,7 +6,8 @@ if($cfg['show_exceptions_online']) {
 }
 
 function PrimitiveBlueScreen($e) {
-	ob_clean();
+	ob_end_clean();
+	@ob_start('ob_gzhandler');
 	global $lang, $cfg;
 	$text = $e->getMessage();
 	$width = 580;
@@ -22,7 +23,8 @@ function PrimitiveBlueScreen($e) {
  * @author	Harry Fuecks; http://www.sitepoint.com/articlelist/210
  */
 function PrettyBlueScreen($e) {
-	ob_clean();
+	ob_end_clean();
+	@ob_start('ob_gzhandler');
 	$o = create_function('$in', 'echo htmlspecialchars($in);');
 	$sub = create_function('$f', '$loc="";if(isset($f["class"])){
 		$loc.=$f["class"].$f["type"];}

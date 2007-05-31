@@ -1,6 +1,6 @@
 #!/bin/env php
 <?php
-/* *********************** change these according to your environmant ******* */
+/* *********************** change these according to your environment ******* */
 $MTA['virtual']	= '/etc/postfix/db/virtual';
 $MTA['regexp']	= '/etc/postfix/db/virtual.regex';
 $MTA['domains']	= '/etc/postfix/db/domains';
@@ -8,16 +8,13 @@ $POSTPROCESS	= '/usr/sbin/postmap %s';
 // Set this to null if you don't use pam_pwdfile for caching.
 $PASSWD_CACHE	= '/var/lib/pam_mysql.cache';
 
-$DB	= array('TYPE'	=> 'mysql',
-		'HOST'	=> 'localhost',
-		'USER'	=> 'yourMySQL-User',
-		'PASS'	=> 'yourMySQL-Passwd',
-		'DB'	=> 'yourMySQL-DB',
-		'PREFIX'=> '',
-		);
+$DB = array(
+	'DSN'		=> 'mysqli://User:Passwd@localhost/DB',
+	'PREFIX'	=> '',
+);
 
 /* *********************** functions **************************************** */
-//		Don't edit anything below.
+/* *********************** don't edit anything below +++++++++++++++++******* */
 function make_hashfile_of_query($file, $query, $delimiter = "\t\t", $postprocess = true) {
 	global $POSTPROCESS, $db;
 
@@ -37,8 +34,7 @@ function make_hashfile_of_query($file, $query, $delimiter = "\t\t", $postprocess
 
 /* *********************** logic ******************************************** */
 include('adodb/adodb.inc.php');
-$db	= ADONewConnection($DB['TYPE']);
-$db->Connect($DB['HOST'], $DB['USER'], $DB['PASS'], $DB['DB']) or die('Cannot connect to database server.');
+$db	= ADONewConnection($DB['DSN']);
 $db->SetFetchMode(ADODB_FETCH_NUM);
 
 // virtual
