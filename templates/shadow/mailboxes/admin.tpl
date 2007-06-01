@@ -25,7 +25,7 @@
 			<?php } ?>
 			<b><?= txt('83') ?></b>
 		</td>
-		<td class="ed"><?= $input->text('mbox', 16) ?></td>
+		<td class="ed"><?= $input->text('mbox', $cfg['mbox']['max_length']) ?></td>
 	</tr>
 	<?php if(count($selectable_paten) > 1) { ?>
 	<tr>
