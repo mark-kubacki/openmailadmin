@@ -25,7 +25,7 @@ class Quota
 		} else if($this->used == 0) {
 			return '0% '.$delimiter.' '.round($this->max/1024);
 		} else {
-			return '>1% '.$delimiter.' '.round($this->max/1024);
+			return '<1% '.$delimiter.' '.round($this->max/1024);
 		}
 	}
 
