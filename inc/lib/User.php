@@ -69,6 +69,10 @@ class User
 		return true;
 	}
 
+	public function update_last_login() {
+		return self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE mbox='.self::$db->qstr($this->mbox));
+	}
+
 	/**
 	 * Use this to get a new user only if given plaintext password matches.
 	 *
@@ -80,7 +84,7 @@ class User
 	public static function authenticate($username, $password) {
 		$usr	= new User($username);
 		if($usr->password->equals($password)) {
-			self::$db->Execute('UPDATE '.self::$tablenames['user'].' SET last_login='.time().' WHERE mbox='.self::$db->qstr($username));
+			$usr->update_last_login();
 			$usr->password->store_plaintext($password);
 			return $usr;
 		}
