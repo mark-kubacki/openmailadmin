@@ -36,14 +36,12 @@ if(!isset($cfg['Servers']['IMAP'][$_SESSION['server']]['TYPE'])) {
 	die('You have forgotten to set TYPEs in the configuration files!');
 }
 
-// table names with prefixes
-$cfg['tablenames']
-	= array('user'		=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'user',
-		'domains'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'domains',
-		'virtual'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'virtual',
-		'virtual_regexp'=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'virtual_regexp',
-		'imap_demo'	=> $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].'imap_demo'
-		);
+// prefix table names
+$cfg['tablenames'] = array();
+foreach(array('user', 'domains', 'virtual', 'virtual_regexp', 'imap_demo') as $table) {
+	$cfg['tablenames'][$table] = $cfg['Servers']['DB'][$_SESSION['server']]['PREFIX'].$table;
+}
+
 // Objects' initialization
 User::$db		= $db;
 User::$tablenames	= $cfg['tablenames'];

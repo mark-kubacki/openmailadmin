@@ -34,13 +34,11 @@ if(!isset($cfg['Servers']['IMAP'][$server_no]['TYPE'])) {
 }
 
 // table names with prefixes
-$cfg['tablenames']
-	= array('user'		=> $cfg['Servers']['DB'][$server_no]['PREFIX'].'user',
-		'domains'	=> $cfg['Servers']['DB'][$server_no]['PREFIX'].'domains',
-		'virtual'	=> $cfg['Servers']['DB'][$server_no]['PREFIX'].'virtual',
-		'virtual_regexp'=> $cfg['Servers']['DB'][$server_no]['PREFIX'].'virtual_regexp',
-		'imap_demo'	=> $cfg['Servers']['DB'][$server_no]['PREFIX'].'imap_demo'
-		);
+$cfg['tablenames'] = array();
+foreach(array('user', 'domains', 'virtual', 'virtual_regexp', 'imap_demo') as $table) {
+	$cfg['tablenames'][$table] = $cfg['Servers']['DB'][$server_no]['PREFIX'].$table;
+}
+
 // Objects' initialization
 $db			= ADONewConnection($cfg['Servers']['DB'][$server_no]['DSN'])
 				or die('Cannot connect to database server.');
