@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Komodo Project File - DO NOT EDIT -->
-<project id="3deaee25-277d-40c3-a0ac-794394b0b650" name="openmailadmin.kpf" kpf_version="3">
-<folder idref="3deaee25-277d-40c3-a0ac-794394b0b650" id="dc04ed69-514d-40ed-963a-a05926780627" name="__dev">
+<project id="31352658-e2cf-4e19-ae45-5da714737478" kpf_version="4" name="openmailadmin.kpf">
+<folder id="d9dd3b03-8882-4a0e-bea5-0a0481659472" idref="31352658-e2cf-4e19-ae45-5da714737478" name="__dev">
 </folder>
-<command insertOutput="0" keyboard_shortcut="" idref="dc04ed69-514d-40ed-963a-a05926780627" name="run tests" parseRegex="" operateOnSelection="0" id="46add692-181f-4a8a-8661-3c14b32a7eda" env="" doNotOpenOutputWindow="0" showParsedOutputList="0" cwd="" parseOutput="0" runIn="command-output-window">
-cd %p &amp;&amp; php run_tests</command>
-<URL keyboard_shortcut="" idref="dc04ed69-514d-40ed-963a-a05926780627" id="9e5bcaa3-20a3-4d91-89ac-4dd79cb2ae48" name="Timeline">
-http://openmailadmin.ossdl.de/timeline</URL>
-<URL keyboard_shortcut="" idref="dc04ed69-514d-40ed-963a-a05926780627" id="121070d5-c528-416d-858f-92faafc7059b" name="active tickets, mine first">
+<command cwd="%p" doNotOpenOutputWindow="0" env="" id="9d53ac05-5ddb-46ef-b6cc-afb135fd1374" idref="d9dd3b03-8882-4a0e-bea5-0a0481659472" insertOutput="0" keyboard_shortcut="" name="run tests" operateOnSelection="0" parseOutput="0" parseRegex="" runIn="command-output-window" showParsedOutputList="0">
+php run_tests</command>
+<URL id="21f67ed6-51b3-4c8b-902d-8447b8edcb00" idref="d9dd3b03-8882-4a0e-bea5-0a0481659472" keyboard_shortcut="" name="active tickets, mine first">
 http://openmailadmin.ossdl.de/report/8</URL>
-<preference-set idref="3deaee25-277d-40c3-a0ac-794394b0b650">
+<URL id="d06ce70b-cb0c-4aa7-9759-86b12ec71976" idref="d9dd3b03-8882-4a0e-bea5-0a0481659472" keyboard_shortcut="" name="mailings lists page">
+http://openmailadmin.ossdl.de/wiki/MailingLists</URL>
+<URL id="3130479d-78b4-4ab0-a985-a3f315de1ebb" idref="d9dd3b03-8882-4a0e-bea5-0a0481659472" keyboard_shortcut="" name="downloads' directory">
+http://static.ossdl.de/openmailadmin/downloads/</URL>
+<preference-set idref="31352658-e2cf-4e19-ae45-5da714737478">
   <boolean id="import_live">1</boolean>
 </preference-set>
 </project>

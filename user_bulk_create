@@ -73,19 +73,20 @@ if($fp = fopen('php://stdin', 'r')) {
 
 			try {
 				$oma->mailbox_create($usr, $w);
+				$users_created[] = $usr;
 				echo("OK\n");
 
-				// activate that user
 				echo($ErrorHandler->errors_get());
 				echo($ErrorHandler->info_get());
 				$ErrorHandler->status_reset();
-				$users_created[] = $usr;
 			} catch (Exception $e) {
+				echo($ErrorHandler->errors_get());
 				echo("failed: ".$e->getMessage()."\n");
 			}
 		}
 	}
 	fclose($fp);
+	// activate users which have been created successfully
 	$oma->mailbox_toggle_active($users_created);
 }
 echo("--\n");

@@ -1,5 +1,4 @@
 <?php
-// ------------------------------ Filter ----------------------------------------------------------
 // calculate LIMIT and OFFSET for SQL
 if(!isset($_SESSION['limit'])) {
 	$_SESSION['limit'] = $cfg['max_elements_per_page'];

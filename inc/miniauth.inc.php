@@ -11,7 +11,7 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 	if(!(isset($_POST['server']) && is_numeric($_POST['server'])))
 		$_POST['server'] = 0;
 	$db	= ADONewConnection($cfg['Servers']['DB'][$_POST['server']]['DSN'])
-		or die('Cannot connect to MySQL Server.');
+		or die('Cannot connect to database.');
 	$db->SetFetchMode(ADODB_FETCH_ASSOC);
 
 	User::$db		= $db;
@@ -30,7 +30,7 @@ if(isset($_GET['login']) && $_GET['login'] == 'change') {
 } else if(isset($_SESSION['REMOTE_ADDR']) && $_SESSION['REMOTE_ADDR'] == $_SERVER['REMOTE_ADDR']) {
 	$authinfo	= $_SESSION['authinfo'];
 	$db	= ADONewConnection($cfg['Servers']['DB'][$_SESSION['server']]['DSN'])
-		or die('Cannot connect to MySQL Server.');
+		or die('Cannot connect to database.');
 	$db->SetFetchMode(ADODB_FETCH_ASSOC);
 }
 
