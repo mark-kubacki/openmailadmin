@@ -3,6 +3,7 @@
 $creator_mbox 	= 'admin';
 $creator_passwd = 'geheim';
 $server_no 	= 0;				// you can leave it at that
+$verbose	= true;				// display information (including passwords) and errors?
 
 $new_user_ops	= array(			// see inc/lib/openmailadmin.php::mailbox_create
 	'pate'		=> $creator_mbox,
@@ -70,16 +71,23 @@ if($fp = fopen('php://stdin', 'r')) {
 			echo("Creating mailbox for '".$usr."'... ");
 
 			try {
-				$oma->mailbox_create($usr, $w);
-				$users_created[] = $usr;
-				echo("OK\n");
-
+				if($oma->mailbox_create($usr, $w)) {
+					$users_created[] = $usr;
+					echo("OK\n");
+				} else {
+					throw new Exception('mailbox_create returned false');
+				}
+			} catch (Exception $e) {
+				if($verbose) {
+					echo("failed: \n".$e->getMessage()."\n");
+				} else {
+					echo("failed\n");
+				}
+			}
+			if($verbose) {
 				echo($ErrorHandler->errors_get());
 				echo($ErrorHandler->info_get());
 				$ErrorHandler->status_reset();
-			} catch (Exception $e) {
-				echo($ErrorHandler->errors_get());
-				echo("failed: ".$e->getMessage()."\n");
 			}
 		}
 	}
