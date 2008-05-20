@@ -18,8 +18,8 @@ class openmailadmin
 
 	// "alias" == "local part"
 	const	regex_valid_alias	= '(?=^.{1,64}$)[a-z0-9]+(?:(?<![!$+\-_.])[!$+\-_.][a-z0-9]+)*';
-	const	regex_valid_email	= '[a-z0-9]+(?:(?<![!$+\-_.])[!$+\-_.][a-z0-9]+)*@(?:(?:(?![.-])[a-z0-9_\-]{1,63}(?<!-)\.?)+(?:(?<!\.)\.[a-z]{2,}))';
-	const	regex_valid_domain	= '(?=^.{1,254}$)(?:^localhost$)|(?:^(?:(?![.-])[a-z0-9_\-]{1,63}(?<!-)\.?)+(?:(?<!\.)\.[a-z]{2,})$)';
+	const	regex_valid_email	= '[a-z0-9]+(?:(?<![!$+\-_.])[!$+\-_.][a-z0-9]+)*@(?:(?:(?![.-])[a-z0-9\-]{1,63}(?<!-)\.?)+(?:(?<!\.)\.[a-z]{2,}))';
+	const	regex_valid_domain	= '(?=^.{1,254}$)(?:^localhost$)|(?:^(?:(?![.-])[a-z0-9\-]{1,63}(?<!-)\.?)+(?:(?<!\.)\.[a-z]{2,})$)';
 
 	function __construct(ADOConnection $adodb_handler, array $tablenames, array $cfg, IMAP_Administrator $imap) {
 		$this->db		= $adodb_handler;
