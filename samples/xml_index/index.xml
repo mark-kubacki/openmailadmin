@@ -15,21 +15,21 @@
 	>
 ]>
 <services>
-	<title>Mailsystem Services - HurriKaNe</title>
+	<title>Mailsystem Services</title>
 	<description>Applications and services on mailservers of HurriKaNe Systems.</description>
 	<service typename="Verwaltung">
 		<application name="Openmailadmin" href="/openmailadmin/">
-			Diese Oberfläche steht jedem mit einem Mailkonto zur Verfügung.
-			Hier kann das Kennwort geändert werden.
+			Here you can change your password and create more email addresses for your mailbox.
 		</application>
 	</service>
 	<service typename="Webmailer">
 		<application name="IMP aus Horde" href="/horde/imp/">
-			Ein mächtiger Email-Client. Adressen werden mittels Turba und Filterregeln mittels INGO verwaltet.
+			The allround webmailer. By Turba you can manage your contacts and by INGO create
+			rules for incoming emails as well as create vacation messages.
 		</application>
 		<application name="RoundCube" href="/roundcube/">
-			Ein spartanischer aber einfach zu bedienender Web 2.0 Webmailer.
-			Unterstützt keine Verschlüsselung.
+			A leightweight and easy-to-use web 2.0 webmailer.
+			Does not support encryption!
 		</application>
 	</service>
 </services>
