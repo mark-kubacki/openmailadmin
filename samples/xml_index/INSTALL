@@ -1,0 +1,14 @@
+= XML Index =
+A nice looking an easily customizable directory index for your mailserver
+maintenance domain.
+
+== installation ==
+Copy index.xml and oma_tabular.xsl to the root directory of your domain,
+with Openmailadmin being installed at /openmailadmin. (Else you will have to
+alter paths by hand.)
+
+== known bugs ==
+Width of tables is not preserved under Firefox.
+
+----
+Author: W-Mark Kubacki; mark@ossdl.de

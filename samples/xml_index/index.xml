@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="/oma_tabular.xsl"?>
+<!DOCTYPE services [
+	<!ELEMENT services	(title, description, service+)>
+	<!ELEMENT title		(#PCDATA)>
+	<!ELEMENT description	(#PCDATA)>
+	<!ELEMENT service	(application*)>
+	<!ATTLIST service
+		typename CDATA	#REQUIRED
+	>
+	<!ELEMENT application	(#PCDATA)>
+	<!ATTLIST application
+		name	CDATA	#REQUIRED
+		href	CDATA	#REQUIRED
+	>
+]>
+<services>
+	<title>Mailsystem Services - HurriKaNe</title>
+	<description>Applications and services on mailservers of HurriKaNe Systems.</description>
+	<service typename="Verwaltung">
+		<application name="Openmailadmin" href="/openmailadmin/">
+			Diese Oberfläche steht jedem mit einem Mailkonto zur Verfügung.
+			Hier kann das Kennwort geändert werden.
+		</application>
+	</service>
+	<service typename="Webmailer">
+		<application name="IMP aus Horde" href="/horde/imp/">
+			Ein mächtiger Email-Client. Adressen werden mittels Turba und Filterregeln mittels INGO verwaltet.
+		</application>
+		<application name="RoundCube" href="/roundcube/">
+			Ein spartanischer aber einfach zu bedienender Web 2.0 Webmailer.
+			Unterstützt keine Verschlüsselung.
+		</application>
+	</service>
+</services>
